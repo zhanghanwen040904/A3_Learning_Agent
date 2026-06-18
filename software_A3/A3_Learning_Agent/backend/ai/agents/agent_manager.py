@@ -1,0 +1,74 @@
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from typing import Any, Dict
+
+from ai.spark_api import content_audit
+from .profile_agent import ProfileAgent
+from .retrieve_agent import RetrieveAgent
+from .text_agent import TextAgent
+from .video_agent import VideoAgent
+from .visual_agent import VisualAgent
+
+
+class AgentManager:
+    """多智能体流水线调度器。
+
+    功能：按照“学生对话 → 画像生成 → RAG检索 → 文本/可视化/视频资源并行生成 → 汇总”的流程调度 5 个智能体。
+    输入：学生自然语言对话文本。
+    输出：包含画像、教材原文、6类学习资源和错误信息的字典。
+    """
+
+    def __init__(self):
+        self.profile_agent = ProfileAgent()
+        self.retrieve_agent = RetrieveAgent()
+        self.text_agent = TextAgent()
+        self.visual_agent = VisualAgent()
+        self.video_agent = VideoAgent()
+
+    def run_pipeline(self, dialogue_text: str) -> Dict[str, Any]:
+        result: Dict[str, Any] = {"profile": {}, "knowledge": "", "resources": {}, "errors": []}
+        if not content_audit(dialogue_text):
+            result["errors"].append("学生对话未通过内容审核")
+            return result
+
+        try:
+            result["profile"] = self.profile_agent.analyze(dialogue_text)
+        except Exception as exc:
+            result["errors"].append(f"ProfileAgent失败：{exc}")
+            result["profile"] = {}
+
+        try:
+            result["knowledge"] = self.retrieve_agent.retrieve(result["profile"])
+        except Exception as exc:
+            result["errors"].append(f"RetrieveAgent失败：{exc}")
+            result["knowledge"] = ""
+
+        tasks = {
+            "text": lambda: self.text_agent.generate(result["profile"], result["knowledge"]),
+            "visual": lambda: self.visual_agent.generate(result["knowledge"]),
+            "video": lambda: self.video_agent.generate(result["knowledge"]),
+        }
+        with ThreadPoolExecutor(max_workers=3) as executor:
+            futures = {executor.submit(task): name for name, task in tasks.items()}
+            for future in as_completed(futures):
+                name = futures[future]
+                try:
+                    result["resources"][name] = future.result()
+                except Exception as exc:
+                    result["errors"].append(f"{name}资源生成失败：{exc}")
+                    result["resources"][name] = {}
+
+        text_resources = result["resources"].get("text") or {}
+        visual_resources = result["resources"].get("visual") or {}
+        video_resource = result["resources"].get("video") or ""
+        result["resource_list"] = [
+            {"resource_type": "doc", "title": "课程讲解文档", "content": text_resources.get("doc", "")},
+            {"resource_type": "quiz", "title": "分难度练习题", "content": text_resources.get("quiz", "")},
+            {"resource_type": "reading", "title": "拓展阅读材料", "content": text_resources.get("reading", "")},
+            {"resource_type": "mindmap", "title": "知识点思维导图", "content": visual_resources.get("mindmap", "")},
+            {"resource_type": "code", "title": "代码实操案例", "content": visual_resources.get("code", "")},
+            {"resource_type": "video", "title": "AI教学短视频", "content": video_resource},
+        ]
+        return result
+
+
+agent_manager = AgentManager()
