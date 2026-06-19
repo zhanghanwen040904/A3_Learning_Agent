@@ -1,6 +1,7 @@
 import json
 from typing import Any, Dict
 
+from ai.json_utils import extract_json_object
 from ai.spark_api import spark_chat
 from .base_agent import XunfeiAgentSpec
 
@@ -38,12 +39,7 @@ class TextAgent:
         return self._parse(raw)
 
     def _parse(self, raw: str) -> Dict[str, str]:
-        try:
-            start = raw.find("{")
-            end = raw.rfind("}") + 1
-            data = json.loads(raw[start:end]) if start >= 0 and end > start else {}
-        except Exception:
-            data = {}
+        data = extract_json_object(raw)
         return {
             "doc": str(data.get("doc") or raw or "文本资源生成失败"),
             "quiz": str(data.get("quiz") or "练习题生成失败"),

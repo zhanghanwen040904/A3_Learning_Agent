@@ -1,6 +1,7 @@
 import json
-from typing import Any, Dict
+from typing import Dict
 
+from ai.json_utils import extract_json_object
 from ai.spark_api import spark_chat
 from .base_agent import XunfeiAgentSpec
 
@@ -47,10 +48,5 @@ JSON字段必须完全一致：
         return self._parse_profile(raw)
 
     def _parse_profile(self, raw: str) -> Dict[str, str]:
-        try:
-            start = raw.find("{")
-            end = raw.rfind("}") + 1
-            data = json.loads(raw[start:end]) if start >= 0 and end > start else {}
-        except Exception:
-            data = {}
+        data = extract_json_object(raw)
         return {field: str(data.get(field) or "待进一步观察") for field in PROFILE_FIELDS}

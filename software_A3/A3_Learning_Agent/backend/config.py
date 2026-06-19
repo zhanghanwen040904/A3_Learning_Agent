@@ -34,8 +34,8 @@ class Config:
     XFYUN_APP_ID: str = os.getenv("XFYUN_APP_ID", "")
     XFYUN_API_KEY: str = os.getenv("XFYUN_API_KEY", "")
     XFYUN_API_SECRET: str = os.getenv("XFYUN_API_SECRET", "")
-    XFYUN_SPARK_URL: str = os.getenv("XFYUN_SPARK_URL", "wss://spark-api.xf-yun.com/v3.5/chat")
-    XFYUN_SPARK_DOMAIN: str = os.getenv("XFYUN_SPARK_DOMAIN", "generalv3.5")
+    XFYUN_SPARK_URL: str = os.getenv("XFYUN_SPARK_URL", "wss://spark-api.xf-yun.com/x2")
+    XFYUN_SPARK_DOMAIN: str = os.getenv("XFYUN_SPARK_DOMAIN", "spark-x")
 
     SEEDANCE_API_KEY: str = os.getenv("SEEDANCE_API_KEY", "")
     SEEDANCE_API_URL: str = os.getenv("SEEDANCE_API_URL", "")

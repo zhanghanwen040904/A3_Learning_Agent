@@ -10,10 +10,14 @@
           </div>
         </div>
         <el-menu router :default-active="$route.path" class="menu">
+          <el-menu-item index="/architecture">多智能体架构</el-menu-item>
           <el-menu-item index="/profile">对话式画像</el-menu-item>
           <el-menu-item index="/resources">学习资源</el-menu-item>
           <el-menu-item index="/path">学习路径</el-menu-item>
           <el-menu-item index="/chat">智能答疑</el-menu-item>
+          <el-menu-item index="/evaluation">学习评估</el-menu-item>
+          <el-menu-item index="/knowledge">知识库管理</el-menu-item>
+          <el-menu-item index="/system">系统状态</el-menu-item>
         </el-menu>
         <div class="sidebar-footer">
           <div class="user-pill">

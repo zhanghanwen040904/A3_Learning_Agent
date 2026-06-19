@@ -54,4 +54,21 @@ export const chatApi = {
   answer: (data) => http.post("/chat/answer", data),
 };
 
+export const knowledgeApi = {
+  status: () => http.get("/knowledge/status"),
+  rebuild: (data = { force: true }) => http.post("/knowledge/rebuild", data),
+  search: (data) => http.post("/knowledge/search", data),
+};
+
+export const evaluationApi = {
+  submit: (data) => http.post("/evaluation/submit", data),
+  summary: () => http.get("/evaluation/summary"),
+  event: (data) => http.post("/evaluation/event", data),
+};
+
+export const systemApi = {
+  status: () => http.get("/system/status"),
+  testAi: (data = {}) => http.post("/system/test-ai", data),
+};
+
 export default http;

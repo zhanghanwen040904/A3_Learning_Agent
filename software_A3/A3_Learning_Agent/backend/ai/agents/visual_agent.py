@@ -1,6 +1,6 @@
-import json
 from typing import Dict
 
+from ai.json_utils import extract_json_object
 from ai.spark_api import spark_chat
 from .base_agent import XunfeiAgentSpec
 
@@ -37,12 +37,7 @@ class VisualAgent:
         return self._parse(raw)
 
     def _parse(self, raw: str) -> Dict[str, str]:
-        try:
-            start = raw.find("{")
-            end = raw.rfind("}") + 1
-            data = json.loads(raw[start:end]) if start >= 0 and end > start else {}
-        except Exception:
-            data = {}
+        data = extract_json_object(raw)
         return {
             "mindmap": str(data.get("mindmap") or "# 知识点思维导图\n- 生成失败，请检查讯飞星火配置"),
             "code": str(data.get("code") or "print('代码案例生成失败，请检查讯飞星火配置')"),
