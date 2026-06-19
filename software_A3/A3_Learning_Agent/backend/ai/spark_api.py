@@ -220,19 +220,34 @@ def see_dance_generate(text: str) -> str:
         return json.dumps(_standard_error("讯飞SeeDance调用失败", str(exc)), ensure_ascii=False)
 
 
+def _local_content_audit(text: str) -> bool:
+    blocked_terms = [
+        "违法犯罪",
+        "暴力恐怖",
+        "色情",
+        "赌博",
+        "毒品",
+        "诈骗",
+        "自杀",
+        "仇恨",
+    ]
+    lowered = str(text).lower()
+    return bool(text and text.strip()) and not any(term in lowered for term in blocked_terms)
+
+
 def content_audit(text: str) -> bool:
     """同步调用讯飞内容审核接口。
 
-    功能：审核输入文本是否安全合规。
+    功能：审核输入文本是否安全合规；未配置真实审核接口时使用本地基础审核兜底，避免正常课程文本被误拦截。
     输入：text，需要审核的文本。
-    输出：通过返回 True；未通过、配置缺失或调用失败返回 False。
+    输出：通过返回 True；明确违规或真实审核不通过返回 False。
     """
     if not text or not text.strip():
         return False
     if config.MOCK_AI:
-        return True
+        return _local_content_audit(text)
     if not config.CONTENT_AUDIT_API_URL or not config.CONTENT_AUDIT_API_KEY:
-        return False
+        return _local_content_audit(text)
 
     def _call() -> bool:
         import requests
@@ -256,4 +271,4 @@ def content_audit(text: str) -> bool:
     try:
         return bool(_retry_call(_call))
     except Exception:
-        return False
+        return _local_content_audit(text)

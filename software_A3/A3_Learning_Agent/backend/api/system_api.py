@@ -55,8 +55,9 @@ def status():
             },
             "content_audit": {
                 "configured": bool(config.CONTENT_AUDIT_API_KEY and config.CONTENT_AUDIT_API_URL),
+                "fallback_enabled": not bool(config.CONTENT_AUDIT_API_KEY and config.CONTENT_AUDIT_API_URL),
                 "api_key": _mask(config.CONTENT_AUDIT_API_KEY),
-                "url": config.CONTENT_AUDIT_API_URL or "未配置",
+                "url": config.CONTENT_AUDIT_API_URL or "未配置，使用本地基础审核兜底",
             },
         }
         return success(
