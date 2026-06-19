@@ -1,19 +1,12 @@
-from .base_agent import XunfeiAgentSpec
-from .text_agent import TextAgent
+from .resource_base import StructuredResourceAgent
 
 
-class QuizAgent:
-    def __init__(self):
-        self.role = "分层练习设计师"
-        self.goal = "根据画像和教材设计基础、提升、应用三个层次练习。"
-        self.agent = XunfeiAgentSpec(
-            role=self.role,
-            goal=self.goal,
-            tools=["spark_chat", "retrieve_knowledge"],
-            input_schema="学生画像 + 教材原文",
-            output_schema="分层练习题Markdown",
-        )
-        self.text_agent = TextAgent()
-
-    def generate(self, profile, knowledge_text: str) -> str:
-        return self.text_agent.generate(profile, knowledge_text).get("quiz", "练习题生成失败")
+class QuizAgent(StructuredResourceAgent):
+    resource_type = "quiz"
+    role = "分层多题型练习设计师"
+    goal = "针对学生短板设计可诊断、可反馈的分层练习"
+    default_title = "个性化分层练习题"
+    requirements = """
+必须包含基础、提升、应用三个层次，并覆盖选择题、判断题、简答题和应用/编程题中的至少三种。
+每题必须标注难度、知识点、标准答案和解析；干扰项应针对学生常见误区设计。
+""".strip()

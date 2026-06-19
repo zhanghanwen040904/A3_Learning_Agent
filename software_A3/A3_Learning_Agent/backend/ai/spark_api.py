@@ -19,6 +19,143 @@ def _mock_spark_response(prompt: str) -> str:
     输入：prompt，智能体提示词。
     输出：可被业务模块解析的模拟文本。
     """
+    topic = "监督学习与无监督学习"
+    for candidate in ["反向传播", "梯度下降", "神经网络", "聚类", "知识表示", "搜索算法", "自然语言处理", "计算机视觉"]:
+        if candidate in prompt:
+            topic = candidate
+            break
+    major = "软件工程" if "软件工程" in prompt else "计算机相关专业"
+    personalization = f"针对{major}学生在“{topic}”方面的薄弱点，并结合其案例、图解和代码偏好进行设计。"
+
+    if "[RESOURCE:DOC]" in prompt:
+        content = f"""# {topic}个性化课程讲解
+
+## 学习目标
+理解{topic}的核心概念、基本过程与适用边界，能够结合{major}场景解释其作用。
+
+## 前置知识
+建议先掌握函数、基本概率概念和Python基础。遇到公式时先关注输入、处理过程和输出，再理解符号细节。
+
+## 核心讲解
+{topic}不是孤立术语，而是人工智能系统完成学习或推理的重要环节。学习时可以把它拆成“数据或状态从哪里来、系统进行什么计算、结果怎样被评价、下一步如何调整”四个问题。课程教材中的定义用于划定概念边界，案例用于建立直觉，代码实验则用于验证过程。
+
+## 专业案例
+在{major}项目中，可以把一次模型训练看成可测试的软件流水线：输入数据经过处理与计算得到输出，再利用评价结果定位问题并调整参数。这种视角能把抽象算法和工程中的日志、测试、迭代联系起来。
+
+## 易错点
+1. 只记结论而忽略输入输出条件；2. 把训练过程和推理过程混为一谈；3. 只看最终指标而不检查数据和中间步骤。
+
+## 三问自测
+1. 请用一句话说明{topic}解决什么问题。2. 它的输入和输出分别是什么？3. 如果结果不理想，应优先检查哪些环节？
+
+## 总结
+先建立流程直觉，再结合教材定义、图解和代码逐层验证，是掌握{topic}更稳妥的路径。"""
+        return json.dumps({"title": f"{topic}递进式课程讲解", "content": content, "knowledge_points": [topic], "personalization": personalization, "format": "markdown"}, ensure_ascii=False)
+    if "[RESOURCE:QUIZ]" in prompt:
+        content = f"""# {topic}分层多题型练习
+
+## 基础层
+1. **判断题｜基础｜知识点：{topic}**：学习过程只需要关注最终结果，不必理解中间计算。（错误）\n解析：中间过程决定结果是否可信，也是定位错误的关键。
+2. **选择题｜基础｜知识点：概念边界**：学习{topic}时最合理的第一步是？A.死记公式 B.明确输入输出 C.忽略条件 D.只看代码。\n答案：B。解析：输入、处理、输出构成理解算法的主线。
+
+## 提升层
+3. **简答题｜提升｜知识点：流程理解**：请用“输入—计算—评价—调整”描述{topic}。\n参考答案：应分别说明信息来源、核心计算、评价依据以及根据评价进行的更新，并指出各环节之间的依赖关系。
+4. **纠错题｜提升｜知识点：常见误区**：某同学认为训练指标越高，模型在任何场景都越可靠。指出错误。\n解析：还需考虑数据划分、过拟合、场景变化和指标选择。
+
+## 应用层
+5. **工程应用题｜应用｜知识点：实验设计**：为一个{major}课程项目设计验证{topic}的最小实验。\n参考答案：固定数据与随机种子，记录输入、中间结果和评价指标，只改变一个关键参数，对比结果并解释变化原因。"""
+        return json.dumps({"title": f"{topic}三级诊断练习", "content": content, "knowledge_points": [topic, "概念边界", "实验设计"], "personalization": personalization, "format": "markdown"}, ensure_ascii=False)
+    if "[RESOURCE:READING]" in prompt:
+        content = f"""# 从课程概念到前沿应用：{topic}
+
+## 为什么推荐
+这份导读针对学生当前对{topic}理解不稳的问题，先巩固课程定义，再连接{major}中的工程实践，避免直接阅读前沿材料时被术语淹没。
+
+## 阅读路线
+第一部分回到课程教材，标出定义、输入输出和基本步骤；第二部分寻找一个小型案例，观察每一步的数据变化；第三部分阅读工程实践中的模型调试、可解释性或可靠性材料，比较理论假设与真实系统约束。
+
+## 前沿连接
+当前人工智能工程越来越重视可靠性、可解释性、数据质量和资源效率。理解{topic}时，不仅要问“效果是否更好”，还要问“为什么有效、在什么条件下失效、怎样复现实验”。
+
+## 阅读问题
+1. 教材定义包含哪些必要条件？2. 工程案例中哪些因素不在简化公式里？3. 如果数据或场景发生变化，结论是否仍成立？
+
+## 进一步探索
+建议从课程知识库的对应章节开始，再检索高校课程公开讲义或权威框架文档。对无法核验的文章和链接只作为线索，不作为事实依据。"""
+        return json.dumps({"title": f"{topic}课程到前沿导读", "content": content, "knowledge_points": [topic, "可靠性", "工程实践"], "personalization": personalization, "format": "markdown"}, ensure_ascii=False)
+    if "[RESOURCE:MINDMAP]" in prompt:
+        content = f"""mindmap
+  root(({topic}))
+    概念
+      解决的问题
+      输入与输出
+      适用条件
+    原理
+      信息流动
+      核心计算
+      评价依据
+    步骤
+      准备数据
+      执行计算
+      评价结果
+      调整优化
+    {major}案例
+      最小可运行实验
+      日志与测试
+      结果解释
+    易错点
+      混淆训练与推理
+      忽略数据条件
+      只看单一指标"""
+        return json.dumps({"title": f"{topic}知识结构图", "content": content, "knowledge_points": [topic], "personalization": personalization, "format": "mermaid"}, ensure_ascii=False)
+    if "[RESOURCE:CODE]" in prompt:
+        content = f'''# {topic}最小可验证实验
+
+## 学习目标
+通过可重复的数值实验观察参数更新和误差变化，把抽象过程转化为可检查的工程步骤。
+
+## 环境与依赖
+Python 3.10+，仅依赖 numpy。运行：`pip install numpy`。
+
+```python
+import numpy as np
+
+np.random.seed(42)
+x = np.array([1.0, 2.0, 3.0, 4.0])
+y = 2.0 * x + 1.0
+w, b, learning_rate = 0.0, 0.0, 0.01
+
+for epoch in range(201):
+    prediction = w * x + b
+    error = prediction - y
+    loss = np.mean(error ** 2)
+    grad_w = 2 * np.mean(error * x)
+    grad_b = 2 * np.mean(error)
+    w -= learning_rate * grad_w
+    b -= learning_rate * grad_b
+    if epoch % 50 == 0:
+        print(epoch, round(float(loss), 6), round(float(w), 4), round(float(b), 4))
+```
+
+## 预期结果
+损失逐步下降，参数接近 w=2、b=1。固定随机种子便于复现实验。
+
+## 修改任务
+分别把学习率改为0.001和0.1，记录收敛速度；增加噪声后观察结果；为每轮训练增加断言或日志。
+
+## 常见错误
+学习率过大会震荡，数组形状不一致会造成错误广播，只看最终损失会遗漏训练过程异常。'''
+        return json.dumps({"title": f"{topic}Python实操", "content": content, "knowledge_points": [topic, "参数更新", "损失函数"], "personalization": personalization, "format": "markdown_code"}, ensure_ascii=False)
+    if "[RESOURCE:VIDEO]" in prompt:
+        script = f"今天用一分钟理解{topic}。先看输入和目标，再观察系统如何计算、评价并调整。把它想成一次有日志、有测试的{major}流水线：每一步都能检查，每次修改都有依据。最后请暂停视频，用一句话复述输入、处理和输出。"
+        storyboard = [
+            {"time": "0-10s", "visual": f"标题与{topic}流程总览", "narration": f"一分钟理解{topic}", "subtitle": "先看完整流程"},
+            {"time": "10-25s", "visual": "输入、计算、输出依次点亮", "narration": "从输入出发，跟踪核心计算直到得到输出", "subtitle": "输入 → 计算 → 输出"},
+            {"time": "25-42s", "visual": f"{major}项目中的日志和测试面板", "narration": "用评价指标检查结果，并根据误差调整", "subtitle": "评价 → 调整"},
+            {"time": "42-60s", "visual": "自测卡片与思维导图", "narration": "请复述流程，并指出一个最容易出错的环节", "subtitle": "暂停并完成自测"},
+        ]
+        return json.dumps({"title": f"一分钟理解{topic}", "script": script, "storyboard": storyboard, "knowledge_points": [topic], "personalization": personalization}, ensure_ascii=False)
+
     if "学习路径" in prompt or "学习规划师" in prompt:
         return "# 个性化学习路径\n\n## 第1阶段：概念澄清\n- 学习目标：区分监督学习、无监督学习、分类、回归和聚类\n- 推荐资源：课程讲解文档、知识点思维导图\n- 练习方式：完成基础概念判断题\n- 评估指标：能够准确说出有标签数据与无标签数据的区别\n\n## 第2阶段：案例理解\n- 学习目标：通过鸢尾花分类案例理解监督学习完整流程\n- 推荐资源：代码实操案例、分难度练习题\n- 练习方式：运行并修改决策树分类代码\n- 评估指标：能够解释训练集、测试集、准确率的含义\n\n## 第3阶段：拓展应用\n- 学习目标：理解聚类、降维等无监督学习任务的应用边界\n- 推荐资源：拓展阅读材料、智能答疑\n- 练习方式：对比分类任务和聚类任务的输入输出差异\n- 评估指标：能够根据问题场景选择合适的学习方法\n\n## 动态优化建议\n每完成一个阶段后记录错题和疑问，系统将根据练习结果更新画像并调整后续资源推送。"
     if '"doc"' in prompt and '"quiz"' in prompt and '"reading"' in prompt:
@@ -38,13 +175,30 @@ def _mock_spark_response(prompt: str) -> str:
             },
             ensure_ascii=False,
         )
+    if all(key in prompt for key in ["major", "target_course", "knowledge_level", "study_style", "weak_points", "preferred_resource"]):
+        return json.dumps(
+            {
+                "major": major,
+                "target_course": "人工智能导论",
+                "knowledge_level": "人工智能导论基础中等，已了解基础概念，但机器学习体系化掌握还不够稳",
+                "study_style": "偏好案例驱动、图解说明与代码实操结合的学习方式",
+                "weak_points": topic,
+                "study_goal": f"在计划周期内掌握 {topic}，并能完成基础代码实验",
+                "study_time_prefer": "晚上学习效率较高，适合安排 60 分钟以内的阶段任务",
+                "course_progress": "已完成概论部分，正在进入机器学习基础章节",
+                "challenge_scene": f"看到 {topic} 的公式、流程图和代码时容易对不上号",
+                "preferred_resource": "更喜欢图解、分层练习、代码实验和短视频讲解",
+                "profile_summary": f"{major}学生，在 {topic} 方面需要通过图解与代码结合的方式巩固理解",
+            },
+            ensure_ascii=False,
+        )
     if "knowledge_level" in prompt and "study_style" in prompt and "weak_points" in prompt:
         return json.dumps(
             {
                 "knowledge_level": "人工智能导论基础中等，已了解基础概念，但机器学习体系化掌握不足",
                 "study_style": "偏好案例驱动、图解说明与代码实操结合的学习方式",
-                "weak_points": "监督学习、无监督学习、模型评估指标、算法应用边界",
-                "study_goal": "两周内掌握机器学习核心概念，并能完成基础代码实验",
+                "weak_points": topic,
+                "study_goal": f"在计划周期内掌握{topic}，并能完成基础代码实验",
                 "study_time_prefer": "晚上学习效率较高，适合安排60分钟以内的阶段任务",
                 "course_progress": "已完成人工智能概论，正在进入机器学习基础章节",
             },
@@ -220,19 +374,34 @@ def see_dance_generate(text: str) -> str:
         return json.dumps(_standard_error("讯飞SeeDance调用失败", str(exc)), ensure_ascii=False)
 
 
+def _local_content_audit(text: str) -> bool:
+    blocked_terms = [
+        "违法犯罪",
+        "暴力恐怖",
+        "色情",
+        "赌博",
+        "毒品",
+        "诈骗",
+        "自杀",
+        "仇恨",
+    ]
+    lowered = str(text).lower()
+    return bool(text and text.strip()) and not any(term in lowered for term in blocked_terms)
+
+
 def content_audit(text: str) -> bool:
     """同步调用讯飞内容审核接口。
 
-    功能：审核输入文本是否安全合规。
+    功能：审核输入文本是否安全合规；未配置真实审核接口时使用本地基础审核兜底，避免正常课程文本被误拦截。
     输入：text，需要审核的文本。
-    输出：通过返回 True；未通过、配置缺失或调用失败返回 False。
+    输出：通过返回 True；明确违规或真实审核不通过返回 False。
     """
     if not text or not text.strip():
         return False
     if config.MOCK_AI:
-        return True
+        return _local_content_audit(text)
     if not config.CONTENT_AUDIT_API_URL or not config.CONTENT_AUDIT_API_KEY:
-        return False
+        return _local_content_audit(text)
 
     def _call() -> bool:
         import requests
@@ -256,4 +425,4 @@ def content_audit(text: str) -> bool:
     try:
         return bool(_retry_call(_call))
     except Exception:
-        return False
+        return _local_content_audit(text)

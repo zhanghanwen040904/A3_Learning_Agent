@@ -19,10 +19,10 @@ class PathAgent:
         )
 
     def generate(self, profile: Dict[str, Any], mastery_summary: str = "") -> str:
-        query = str(profile.get("weak_points") or profile.get("study_goal") or "人工智能导论")
+        query = str(profile.get("weak_points") or profile.get("study_goal") or "软件工程")
         knowledge = retrieve_knowledge(query, top_k=3)
         prompt = f"""
-你是人工智能导论课程学习规划师。请基于学生画像、学习评估和教材原文生成个性化学习路径。
+你是软件工程课程学习规划师。请基于学生画像、学习评估和软件工程教材原文生成个性化学习路径。
 要求包含阶段目标、推荐资源、练习任务、评估指标和动态调整建议。
 学生画像：{json.dumps(profile, ensure_ascii=False, default=str)}
 学习评估：{mastery_summary or '暂无评估数据'}

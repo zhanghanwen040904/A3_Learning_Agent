@@ -48,7 +48,7 @@
             </el-descriptions-item>
             <el-descriptions-item label="内容审核">
               <el-tag :type="status.ai?.content_audit?.configured ? 'success' : 'warning'">
-                {{ status.ai?.content_audit?.configured ? '已配置' : '未配置' }}
+                {{ status.ai?.content_audit?.configured ? '已配置' : '本地兜底' }}
               </el-tag>
             </el-descriptions-item>
           </el-descriptions>

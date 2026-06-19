@@ -1,0 +1,3704 @@
+{
+  "source_file": "C:\\Users\\ASUS\\Desktop\\新建文件夹 (2)\\第8章 维护.pdf",
+  "course": "软件工程",
+  "max_chars": 800,
+  "overlap": 100,
+  "outline_nodes": [
+    {
+      "node_id": "node_0d3cc5018578",
+      "parent_id": null,
+      "title": "软件工程",
+      "level": 0,
+      "chapter_id": "chapter_0d3cc5018578",
+      "start_page": 1,
+      "path": [
+        "软件工程"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_575130b8ef72",
+      "parent_id": "node_0d3cc5018578",
+      "title": "八、维护",
+      "level": 2,
+      "chapter_id": "chapter_0d3cc5018578",
+      "start_page": 1,
+      "path": [
+        "软件工程",
+        "八、维护"
+      ],
+      "paragraph_count": 1
+    },
+    {
+      "node_id": "node_cac8b1683f83",
+      "parent_id": "node_0d3cc5018578",
+      "title": "软件维护",
+      "level": 2,
+      "chapter_id": "chapter_0d3cc5018578",
+      "start_page": 2,
+      "path": [
+        "软件工程",
+        "软件维护"
+      ],
+      "paragraph_count": 4
+    },
+    {
+      "node_id": "node_8882e440e8cd",
+      "parent_id": "node_0d3cc5018578",
+      "title": "8.1 软件维护的定义",
+      "level": 2,
+      "chapter_id": "chapter_0d3cc5018578",
+      "start_page": 3,
+      "path": [
+        "软件工程",
+        "8.1 软件维护的定义"
+      ],
+      "paragraph_count": 22
+    },
+    {
+      "node_id": "node_f878ad9e370b",
+      "parent_id": "node_0d3cc5018578",
+      "title": "软件维护的类型",
+      "level": 2,
+      "chapter_id": "chapter_0d3cc5018578",
+      "start_page": 9,
+      "path": [
+        "软件工程",
+        "软件维护的类型"
+      ],
+      "paragraph_count": 6
+    },
+    {
+      "node_id": "node_48603df28a04",
+      "parent_id": "node_0d3cc5018578",
+      "title": "8.2 软件维护的特点",
+      "level": 2,
+      "chapter_id": "chapter_0d3cc5018578",
+      "start_page": 11,
+      "path": [
+        "软件工程",
+        "8.2 软件维护的特点"
+      ],
+      "paragraph_count": 1
+    },
+    {
+      "node_id": "node_8ccafa86710e",
+      "parent_id": "node_48603df28a04",
+      "title": "8.2.1 结构化维护与非结构化维护差别巨大",
+      "level": 3,
+      "chapter_id": "chapter_0d3cc5018578",
+      "start_page": 12,
+      "path": [
+        "软件工程",
+        "8.2 软件维护的特点",
+        "8.2.1 结构化维护与非结构化维护差别巨大"
+      ],
+      "paragraph_count": 4
+    },
+    {
+      "node_id": "node_92c1eccee541",
+      "parent_id": "node_48603df28a04",
+      "title": "8.2.2 维护的代价高昂",
+      "level": 3,
+      "chapter_id": "chapter_0d3cc5018578",
+      "start_page": 13,
+      "path": [
+        "软件工程",
+        "8.2 软件维护的特点",
+        "8.2.2 维护的代价高昂"
+      ],
+      "paragraph_count": 6
+    },
+    {
+      "node_id": "node_01f61475b24b",
+      "parent_id": "node_0d3cc5018578",
+      "title": "软件维护的副作用",
+      "level": 2,
+      "chapter_id": "chapter_0d3cc5018578",
+      "start_page": 16,
+      "path": [
+        "软件工程",
+        "软件维护的副作用"
+      ],
+      "paragraph_count": 7
+    },
+    {
+      "node_id": "node_41373ddf8e4b",
+      "parent_id": "node_01f61475b24b",
+      "title": "8.2.3 维护的问题很多",
+      "level": 3,
+      "chapter_id": "chapter_0d3cc5018578",
+      "start_page": 17,
+      "path": [
+        "软件工程",
+        "软件维护的副作用",
+        "8.2.3 维护的问题很多"
+      ],
+      "paragraph_count": 3
+    },
+    {
+      "node_id": "node_6ae511afa51a",
+      "parent_id": "node_01f61475b24b",
+      "title": "8.2.3 维护的问题很多",
+      "level": 3,
+      "chapter_id": "chapter_0d3cc5018578",
+      "start_page": 18,
+      "path": [
+        "软件工程",
+        "软件维护的副作用",
+        "8.2.3 维护的问题很多"
+      ],
+      "paragraph_count": 4
+    },
+    {
+      "node_id": "node_73fcafb6fe52",
+      "parent_id": "node_0d3cc5018578",
+      "title": "8.3 软件维护过程",
+      "level": 2,
+      "chapter_id": "chapter_0d3cc5018578",
+      "start_page": 19,
+      "path": [
+        "软件工程",
+        "8.3 软件维护过程"
+      ],
+      "paragraph_count": 2
+    },
+    {
+      "node_id": "node_5080f9c3625d",
+      "parent_id": "node_0d3cc5018578",
+      "title": "8.4 软件的可维护性",
+      "level": 2,
+      "chapter_id": "chapter_0d3cc5018578",
+      "start_page": 20,
+      "path": [
+        "软件工程",
+        "8.4 软件的可维护性"
+      ],
+      "paragraph_count": 2
+    },
+    {
+      "node_id": "node_6476560aa1ea",
+      "parent_id": "node_5080f9c3625d",
+      "title": "8.4.1 决定软件可维护性的因素",
+      "level": 3,
+      "chapter_id": "chapter_0d3cc5018578",
+      "start_page": 21,
+      "path": [
+        "软件工程",
+        "8.4 软件的可维护性",
+        "8.4.1 决定软件可维护性的因素"
+      ],
+      "paragraph_count": 12
+    },
+    {
+      "node_id": "node_d45574315031",
+      "parent_id": "node_0d3cc5018578",
+      "title": "5. 可重用性",
+      "level": 2,
+      "chapter_id": "chapter_0d3cc5018578",
+      "start_page": 26,
+      "path": [
+        "软件工程",
+        "5. 可重用性"
+      ],
+      "paragraph_count": 2
+    },
+    {
+      "node_id": "node_242379342269",
+      "parent_id": "node_d45574315031",
+      "title": "8.4.2 文档",
+      "level": 3,
+      "chapter_id": "chapter_0d3cc5018578",
+      "start_page": 27,
+      "path": [
+        "软件工程",
+        "5. 可重用性",
+        "8.4.2 文档"
+      ],
+      "paragraph_count": 5
+    },
+    {
+      "node_id": "node_723244260c00",
+      "parent_id": "node_d45574315031",
+      "title": "8.4.3 可维护性复审",
+      "level": 3,
+      "chapter_id": "chapter_0d3cc5018578",
+      "start_page": 29,
+      "path": [
+        "软件工程",
+        "5. 可重用性",
+        "8.4.3 可维护性复审"
+      ],
+      "paragraph_count": 1
+    },
+    {
+      "node_id": "node_c96eb0cbd878",
+      "parent_id": "node_d45574315031",
+      "title": "8.4.3 可维护性复审",
+      "level": 3,
+      "chapter_id": "chapter_0d3cc5018578",
+      "start_page": 30,
+      "path": [
+        "软件工程",
+        "5. 可重用性",
+        "8.4.3 可维护性复审"
+      ],
+      "paragraph_count": 1
+    },
+    {
+      "node_id": "node_fe25732db459",
+      "parent_id": "node_d45574315031",
+      "title": "8.4.3 可维护性复审",
+      "level": 3,
+      "chapter_id": "chapter_0d3cc5018578",
+      "start_page": 31,
+      "path": [
+        "软件工程",
+        "5. 可重用性",
+        "8.4.3 可维护性复审"
+      ],
+      "paragraph_count": 1
+    },
+    {
+      "node_id": "node_0b64328226c4",
+      "parent_id": "node_d45574315031",
+      "title": "8.4.3 可维护性复审",
+      "level": 3,
+      "chapter_id": "chapter_0d3cc5018578",
+      "start_page": 32,
+      "path": [
+        "软件工程",
+        "5. 可重用性",
+        "8.4.3 可维护性复审"
+      ],
+      "paragraph_count": 1
+    },
+    {
+      "node_id": "node_53938c3fc7ea",
+      "parent_id": "node_0d3cc5018578",
+      "title": "8.5 预防性维护",
+      "level": 2,
+      "chapter_id": "chapter_0d3cc5018578",
+      "start_page": 33,
+      "path": [
+        "软件工程",
+        "8.5 预防性维护"
+      ],
+      "paragraph_count": 8
+    },
+    {
+      "node_id": "node_cf95fc2aa2ce",
+      "parent_id": "node_0d3cc5018578",
+      "title": "2. 文档重构",
+      "level": 2,
+      "chapter_id": "chapter_0d3cc5018578",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "2. 文档重构"
+      ],
+      "paragraph_count": 5
+    },
+    {
+      "node_id": "node_d98279e47b97",
+      "parent_id": "node_0d3cc5018578",
+      "title": "3. 逆向工程",
+      "level": 2,
+      "chapter_id": "chapter_0d3cc5018578",
+      "start_page": 38,
+      "path": [
+        "软件工程",
+        "3. 逆向工程"
+      ],
+      "paragraph_count": 7
+    },
+    {
+      "node_id": "node_3c843d7ec050",
+      "parent_id": "node_0d3cc5018578",
+      "title": "• 逆向工程的过程从源代码重构开始，将无结构的源代码转换为结构化的源 代码，提高了源代码的易读性。",
+      "level": 2,
+      "chapter_id": "chapter_0d3cc5018578",
+      "start_page": 38,
+      "path": [
+        "软件工程",
+        "• 逆向工程的过程从源代码重构开始，将无结构的源代码转换为结构化的源 代码，提高了源代码的易读性。"
+      ],
+      "paragraph_count": 22
+    }
+  ],
+  "knowledge_chunks": [
+    {
+      "chunk_id": "merged_8503cd6788b6",
+      "node_id": "node_cac8b1683f83",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "o 软件维护是指软件系统交付使用以后，就进入了维护阶\n\n段。是软件生命周期的最后一个阶段，其任务是保证软 件在一个相当长的时期能够正常运行。 o 大型软件的维护成本高达开发成本的4倍左右。 o 国外许多软件开发组织把60%以上的人力用于维护已有\n\n的软件。 o 软件工程的目的\n\nn 提高软件的可维护性 n 减少软件维护的工作量 n 降低软件系统的总成本\n\n维护是软件生命周期的最后一个阶段，持续时间最长、代价最大的一个阶段。维护包含4类维护活动。决定软件可维护性的基本因素与软件生命周期每个阶段的工作密切相关，因此每个阶段都必须充分考虑可维护性问题。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "软件维护",
+        "section_path": [
+          "软件工程",
+          "软件维护"
+        ],
+        "section_level": 2,
+        "start_page": 2,
+        "pages": [
+          2,
+          38,
+          39,
+          40,
+          41,
+          42
+        ],
+        "chunk_index": 1,
+        "chunk_method": "merged",
+        "knowledge_point": "软件维护",
+        "prerequisite_node_ids": [
+          "chunk_4335fbdef5f1"
+        ],
+        "next_node_ids": [
+          "chunk_5262c52b69c4"
+        ],
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_8d9f988240d1",
+          "chunk_3bc95ee5988b"
+        ]
+      }
+    },
+    {
+      "chunk_id": "chunk_4335fbdef5f1",
+      "node_id": "node_8882e440e8cd",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "软件维护就是在软件交付之后，为了改正错误或满足新的需要而修改软件的过程。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.1 软件维护的定义",
+        "section_path": [
+          "软件工程",
+          "8.1 软件维护的定义"
+        ],
+        "section_level": 2,
+        "start_page": 3,
+        "pages": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "软件维护的定义",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [
+          "chunk_40b723ca6b4e",
+          "chunk_8f331ce31f07"
+        ],
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_f8569f184841",
+          "chunk_1f3624e42234"
+        ],
+        "knowledge_type": "concept",
+        "tags": [
+          "软件维护",
+          "定义",
+          "交付后"
+        ],
+        "parent_rule_chunk_id": "merged_b14997f669e4"
+      }
+    },
+    {
+      "chunk_id": "chunk_40b723ca6b4e",
+      "node_id": "node_8882e440e8cd",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "软件维护的原因包括：在运行中发现在测试阶段未能发现的软件错误和设计缺陷；设计需要改进，以增强软件的功能，提高软件的性能；能适应特定的硬件、软件、外部设备和通信设备等的工作环境，或是要求适应已变动的数据或文件；为使运行软件的应用范围得到必要的扩充。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.1 软件维护的定义",
+        "section_path": [
+          "软件工程",
+          "8.1 软件维护的定义"
+        ],
+        "section_level": 2,
+        "start_page": 3,
+        "pages": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "软件维护的原因",
+        "prerequisite_node_ids": [
+          "chunk_4335fbdef5f1"
+        ],
+        "next_node_ids": [
+          "chunk_8f331ce31f07"
+        ],
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_f8569f184841",
+          "chunk_1f3624e42234"
+        ],
+        "knowledge_type": "concept",
+        "tags": [
+          "软件维护",
+          "原因",
+          "错误",
+          "改进",
+          "环境适应"
+        ],
+        "parent_rule_chunk_id": "merged_b14997f669e4"
+      }
+    },
+    {
+      "chunk_id": "chunk_8f331ce31f07",
+      "node_id": "node_8882e440e8cd",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "按照不同的维护目的，维护工作可分成4类：完善性维护（Perfective Maintenance）、改正性维护（Corrective Maintenance）、适应性维护（Adaptive Maintenance）、预防性维护（Preventive Maintenance）。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.1 软件维护的定义",
+        "section_path": [
+          "软件工程",
+          "8.1 软件维护的定义"
+        ],
+        "section_level": 2,
+        "start_page": 3,
+        "pages": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "软件维护的四种类型",
+        "prerequisite_node_ids": [
+          "chunk_4335fbdef5f1",
+          "chunk_40b723ca6b4e"
+        ],
+        "next_node_ids": [
+          "chunk_21c6f9d2184d",
+          "chunk_66df8afc84c1"
+        ],
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_f8569f184841",
+          "chunk_1f3624e42234"
+        ],
+        "knowledge_type": "comparison",
+        "tags": [
+          "软件维护",
+          "类型",
+          "完善性维护",
+          "改正性维护",
+          "适应性维护",
+          "预防性维护"
+        ],
+        "parent_rule_chunk_id": "merged_b14997f669e4"
+      }
+    },
+    {
+      "chunk_id": "merged_8ca53c039f38",
+      "node_id": "node_8882e440e8cd",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "当一个软件系统投入使用和成功地运行时，用户会根据业务发展的实际需要，提出增加新功能、修改已有功能以及性能的改进要求等，这类维护称为完善性维护。\n\n完善性维护是为了进一步改善软件的可靠性和易维护性，或者为软件将来运行和维护打下更好的基础而对软件进行的修改。该类维护工作需要采用先进的软件工程方法，对需要修改的软件或部分进行设计、编码和测试。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.1 软件维护的定义",
+        "section_path": [
+          "软件工程",
+          "8.1 软件维护的定义"
+        ],
+        "section_level": 2,
+        "start_page": 3,
+        "pages": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "chunk_index": 1,
+        "chunk_method": "merged",
+        "knowledge_point": "完善性维护",
+        "prerequisite_node_ids": [
+          "chunk_66df8afc84c1"
+        ],
+        "next_node_ids": [
+          "chunk_8d42ba727273"
+        ],
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_5b10adb76727",
+          "chunk_66d3ba244eed"
+        ],
+        "knowledge_type": "concept",
+        "tags": [
+          "完善性维护",
+          "新功能",
+          "性能改进"
+        ],
+        "parent_rule_chunk_id": "merged_b14997f669e4"
+      }
+    },
+    {
+      "chunk_id": "chunk_8d42ba727273",
+      "node_id": "node_8882e440e8cd",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "软件测试不可能找出一个软件系统中所有潜伏的错误，所以当软件在特定情况下运行时，这些潜伏的错误可能会暴露出来。对在测试阶段未能发现的，在软件投入使用后才逐渐暴露出来的错误进行测试、诊断、定位、纠错、验证、修改及回归测试过程，称为改正性维护。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.1 软件维护的定义",
+        "section_path": [
+          "软件工程",
+          "8.1 软件维护的定义"
+        ],
+        "section_level": 2,
+        "start_page": 3,
+        "pages": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "改正性维护",
+        "prerequisite_node_ids": [
+          "merged_8ca53c039f38"
+        ],
+        "next_node_ids": [
+          "chunk_4e577af1ef5d"
+        ],
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_f8569f184841",
+          "chunk_1f3624e42234"
+        ],
+        "knowledge_type": "concept",
+        "tags": [
+          "改正性维护",
+          "错误修复",
+          "回归测试"
+        ],
+        "parent_rule_chunk_id": "merged_b14997f669e4"
+      }
+    },
+    {
+      "chunk_id": "chunk_4e577af1ef5d",
+      "node_id": "node_8882e440e8cd",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "计算机的软、硬件环境，数据环境在不断的变化，使运行的软件能适应运行环境或者数据的变动而修改软件的过程称为适应性维护。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.1 软件维护的定义",
+        "section_path": [
+          "软件工程",
+          "8.1 软件维护的定义"
+        ],
+        "section_level": 2,
+        "start_page": 3,
+        "pages": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "适应性维护",
+        "prerequisite_node_ids": [
+          "chunk_8d42ba727273"
+        ],
+        "next_node_ids": [],
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_f8569f184841",
+          "chunk_1f3624e42234"
+        ],
+        "knowledge_type": "concept",
+        "tags": [
+          "适应性维护",
+          "环境变化",
+          "数据变动"
+        ],
+        "parent_rule_chunk_id": "merged_b14997f669e4"
+      }
+    },
+    {
+      "chunk_id": "chunk_21c6f9d2184d",
+      "node_id": "node_f878ad9e370b",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "按照不同的维护目的，软件维护工作可分成四类：完善性维护（Perfective Maintenance）、改正性维护（Corrective Maintenance）、适应性维护（Adaptive Maintenance）和预防性维护（Preventive Maintenance）。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "软件维护的类型",
+        "section_path": [
+          "软件工程",
+          "软件维护的类型"
+        ],
+        "section_level": 2,
+        "start_page": 9,
+        "pages": [
+          9,
+          10
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "软件维护的类型",
+        "prerequisite_node_ids": [
+          "chunk_8f331ce31f07"
+        ],
+        "next_node_ids": [
+          "chunk_66df8afc84c1"
+        ],
+        "knowledge_type": "concept",
+        "tags": [
+          "软件维护",
+          "维护类型",
+          "完善性维护",
+          "改正性维护",
+          "适应性维护",
+          "预防性维护"
+        ],
+        "parent_rule_chunk_id": "chunk_686e5fcbc168",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_66df8afc84c1",
+      "node_id": "node_f878ad9e370b",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "在全部维护活动中，完善性维护占50%～66%，是占比最大的一类（一半以上）；改正性维护占17%～21%；适应性维护占18%～25%；其他维护活动只占4%左右。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "软件维护的类型",
+        "section_path": [
+          "软件工程",
+          "软件维护的类型"
+        ],
+        "section_level": 2,
+        "start_page": 9,
+        "pages": [
+          9,
+          10
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "软件维护活动比重分布",
+        "prerequisite_node_ids": [
+          "chunk_8f331ce31f07",
+          "chunk_21c6f9d2184d"
+        ],
+        "next_node_ids": [
+          "merged_8ca53c039f38"
+        ],
+        "knowledge_type": "comparison",
+        "tags": [
+          "维护比重",
+          "完善性维护",
+          "改正性维护",
+          "适应性维护",
+          "统计数据"
+        ],
+        "parent_rule_chunk_id": "chunk_686e5fcbc168",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_5262c52b69c4",
+      "node_id": "node_48603df28a04",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "o 8.2.1 结构化维护与非结构化维护差别巨大 o 8.2.2 维护的代价高昂 o 8.2.3 维护的问题很多",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.2 软件维护的特点",
+        "section_path": [
+          "软件工程",
+          "8.2 软件维护的特点"
+        ],
+        "section_level": 2,
+        "start_page": 11,
+        "pages": [
+          11
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "8.2 软件维护的特点",
+        "prerequisite_node_ids": [
+          "merged_8503cd6788b6"
+        ],
+        "next_node_ids": [],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_8b55c7fabbd8",
+      "node_id": "node_8ccafa86710e",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "o 非结构化维护 — 缺乏必要的文档说明，文档\n\n缺少或者不一致，难于确定数据结构、系统接 口等特性，这样的维护工作令人生畏，事倍功 半。 o 结构化维护 — 指软件开发过程是按照软件工\n\n程方法进行的，开发各阶段的文档齐全，软件 的维护过程，有一整套完整的方案、技术、审 定过程及文档。 o 可以看到，维护工作的难度及工作量的大小，\n\n明显与前期的开发工作密切相关。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.2.1 结构化维护与非结构化维护差别巨大",
+        "section_path": [
+          "软件工程",
+          "8.2 软件维护的特点",
+          "8.2.1 结构化维护与非结构化维护差别巨大"
+        ],
+        "section_level": 3,
+        "start_page": 12,
+        "pages": [
+          12
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "8.2.1 结构化维护与非结构化维护差别巨大",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_908e45b3eeb1",
+      "node_id": "node_92c1eccee541",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "有形的代价指软件维护中投入的人力物力。数据显示，1970年用于维护已有软件的费用只占软件总预算的35%～40%，1980年上升为40%～60%，1990年上升为70%～80%，表明软件维护代价极高。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.2.2 维护的代价高昂",
+        "section_path": [
+          "软件工程",
+          "8.2 软件维护的特点",
+          "8.2.2 维护的代价高昂"
+        ],
+        "section_level": 3,
+        "start_page": 13,
+        "pages": [
+          13,
+          14,
+          15,
+          16
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "软件维护的有形代价",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [],
+        "knowledge_type": "concept",
+        "tags": [
+          "有形代价",
+          "维护费用",
+          "人力物力"
+        ],
+        "parent_rule_chunk_id": "chunk_b892cd2858bb",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_1c1f2f7785fb",
+      "node_id": "node_92c1eccee541",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "无形的代价包括：当改错或修改要求不能及时满足时引起用户不满；维护改动引入潜伏错误从而降低软件质量；将软件工程师调去从事维护工作导致开发过程混乱（即机会成本）；以及维护旧程序时生产率大幅度下降。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.2.2 维护的代价高昂",
+        "section_path": [
+          "软件工程",
+          "8.2 软件维护的特点",
+          "8.2.2 维护的代价高昂"
+        ],
+        "section_level": 3,
+        "start_page": 13,
+        "pages": [
+          13,
+          14,
+          15,
+          16
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "软件维护的无形代价",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [],
+        "knowledge_type": "concept",
+        "tags": [
+          "无形代价",
+          "用户不满",
+          "机会成本",
+          "生产率下降"
+        ],
+        "parent_rule_chunk_id": "chunk_b892cd2858bb",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "merged_cc741fef8ee5",
+      "node_id": "node_92c1eccee541",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "对代码的修改最容易发生副作用，修改会使程序混乱、结构不清晰、可读性变差，而且会产生连锁反应。代码的副作用可通过回归测试发现。\n\n代码的 副作用\n\n数据结构是程序的骨架，在维护阶段一旦 修改了数据结构，软件设计与数据可能就 不再吻合，错误随即出现。容易产生数据 副作用的修改包括：局部常量与全局常量 的再定义、记录与文件格式的改变、增减 数据结构的容量、修改全局数据等\n\n数据副 作用\n\n三种类型\n\n副作用\n\n文档的 副作用\n\n对软件的任何修改都应在相应的技术文 档中反映出来，如果设计文档不能与软 件当前的状况对应，则会比没有文档更 糟。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.2.2 维护的代价高昂",
+        "section_path": [
+          "软件工程",
+          "8.2 软件维护的特点",
+          "8.2.2 维护的代价高昂"
+        ],
+        "section_level": 3,
+        "start_page": 13,
+        "pages": [
+          13,
+          14,
+          15,
+          16
+        ],
+        "chunk_index": 1,
+        "chunk_method": "merged",
+        "knowledge_point": "软件维护的副作用",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [],
+        "knowledge_type": "concept",
+        "tags": [
+          "副作用",
+          "代码修改",
+          "回归测试"
+        ],
+        "parent_rule_chunk_id": "chunk_b892cd2858bb",
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_399adf540b3d",
+          "chunk_b06ab2b4971b"
+        ]
+      }
+    },
+    {
+      "chunk_id": "merged_56a0c8aff259",
+      "node_id": "node_41373ddf8e4b",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "，而且困难程 度随着软件配置成分的减少而迅速增加。\n\n，或者文 档资料显著不足。认识到软件必须有文档仅仅是 第一步，容易理解的并且和程序代码完全一致的 文档才真正有价值。\n\n太累了！受不了啦！ 几万行程序怎么改 哦？？？\n\no当要求对软件进行维护时，\n\n。\n\n。 除非使用强调模块独立原理的设计方法学，否则 修改软件既困难又容易发生差错。\n\n。形成这种观 念很大程度上是因为维护工作经常遭受挫折。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.2.3 维护的问题很多",
+        "section_path": [
+          "软件工程",
+          "软件维护的副作用",
+          "8.2.3 维护的问题很多"
+        ],
+        "section_level": 3,
+        "start_page": 17,
+        "pages": [
+          17,
+          18
+        ],
+        "chunk_index": 1,
+        "chunk_method": "merged",
+        "knowledge_point": "8.2.3 维护的问题很多",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [],
+        "images": [
+          {
+            "image_id": "第8章 维护_p018_i05",
+            "page": 18,
+            "file_name": "page_018_img_05.jpeg",
+            "path": "images/第8章 维护/page_018_img_05.jpeg",
+            "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_018_img_05.jpeg",
+            "width": 1653,
+            "height": 94,
+            "file_size": 41019,
+            "ext": "jpeg",
+            "xref": 117,
+            "rule_class": "vision_candidate",
+            "llm_checked": true,
+            "is_knowledge_image": true,
+            "image_type": "other",
+            "caption": "图片展示了关于软件维护问题的核心观点：绝大多数软件在设计时没有考虑将来的修改。",
+            "related_chunk_ids": [
+              "merged_56a0c8aff259"
+            ],
+            "confidence": 0.95,
+            "reject_reason": ""
+          }
+        ],
+        "merged_from_chunk_ids": [
+          "chunk_47bce81e8972",
+          "chunk_5b377be41f4e"
+        ]
+      }
+    },
+    {
+      "chunk_id": "chunk_fbcc4041dbf9",
+      "node_id": "node_73fcafb6fe52",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "§维护过程本质上是修改和压缩了的软件定义和 开发过程，而且事实上远在提出一项维护要求之 前，与软件维护有关的工作已经开始了。\n\n§首先，必须建立一个维护组织，随后必须确定报告 和评价的过程，而且必须为每个维护要求规定一个标 准化的事件序列。 §此外，还应该建立一个适用于维护活动的记录保管 过程，并且规定复审标准。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.3 软件维护过程",
+        "section_path": [
+          "软件工程",
+          "8.3 软件维护过程"
+        ],
+        "section_level": 2,
+        "start_page": 19,
+        "pages": [
+          19
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "8.3 软件维护过程",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_bd9bdc330f8f",
+      "node_id": "node_5080f9c3625d",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "§可维护性定性定义为：维护人员理解、改正、 改动或改进整个软件的难易程度。\n\n§在前面的章节中曾经多次强调，提高可维护 性是支配软件工程方法学所有步骤的关键目 标。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.4 软件的可维护性",
+        "section_path": [
+          "软件工程",
+          "8.4 软件的可维护性"
+        ],
+        "section_level": 2,
+        "start_page": 20,
+        "pages": [
+          20
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "8.4 软件的可维护性",
+        "prerequisite_node_ids": [
+          "chunk_99b312f3895f"
+        ],
+        "next_node_ids": [
+          "chunk_c7892b5ffd46",
+          "chunk_f756b1db55fb"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_99b312f3895f",
+      "node_id": "node_6476560aa1ea",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "维护就是在软件交付使用后进行的修改，修改之前必须理解待修改的对象，修改之后应该进行必要的测试，以保证所做的修改是正确的。如果是改正性维护，还必须预先进行调试以确定错误的具体位置。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.4.1 决定软件可维护性的因素",
+        "section_path": [
+          "软件工程",
+          "8.4 软件的可维护性",
+          "8.4.1 决定软件可维护性的因素"
+        ],
+        "section_level": 3,
+        "start_page": 21,
+        "pages": [
+          21,
+          22,
+          23,
+          24,
+          25
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "软件维护的定义与流程",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [
+          "chunk_bd9bdc330f8f"
+        ],
+        "knowledge_type": "concept",
+        "tags": [
+          "软件维护",
+          "修改",
+          "测试",
+          "调试"
+        ],
+        "parent_rule_chunk_id": "chunk_86d11b94a537",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_c7892b5ffd46",
+      "node_id": "node_6476560aa1ea",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "软件可理解性表现为外来读者理解软件的结构、功能、接口和内部处理过程的难易程度。模块化、详细的设计文档、结构化设计、程序内部的文档和良好的高级程序设计语言等等，都对提高软件的可理解性有重要贡献。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.4.1 决定软件可维护性的因素",
+        "section_path": [
+          "软件工程",
+          "8.4 软件的可维护性",
+          "8.4.1 决定软件可维护性的因素"
+        ],
+        "section_level": 3,
+        "start_page": 21,
+        "pages": [
+          21,
+          22,
+          23,
+          24,
+          25
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "软件可理解性",
+        "prerequisite_node_ids": [
+          "chunk_bd9bdc330f8f"
+        ],
+        "next_node_ids": [],
+        "knowledge_type": "quality",
+        "tags": [
+          "可理解性",
+          "模块化",
+          "设计文档",
+          "结构化设计"
+        ],
+        "parent_rule_chunk_id": "chunk_86d11b94a537",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_f756b1db55fb",
+      "node_id": "node_6476560aa1ea",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "可测试性代表一个软件容易被测试的程度。良好的文档对诊断和测试是至关重要的。维护人员应该能够得到在开发阶段用过的测试方案，以便进行回归测试。对于程序模块来说，可以用程序复杂度来度量它的可测试性。模块的环形复杂度越大，可执行的路径就越多，因此，全面测试它的难度就越高。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.4.1 决定软件可维护性的因素",
+        "section_path": [
+          "软件工程",
+          "8.4 软件的可维护性",
+          "8.4.1 决定软件可维护性的因素"
+        ],
+        "section_level": 3,
+        "start_page": 21,
+        "pages": [
+          21,
+          22,
+          23,
+          24,
+          25
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "软件可测试性",
+        "prerequisite_node_ids": [
+          "chunk_bd9bdc330f8f"
+        ],
+        "next_node_ids": [],
+        "knowledge_type": "quality",
+        "tags": [
+          "可测试性",
+          "回归测试",
+          "程序复杂度",
+          "环形复杂度"
+        ],
+        "parent_rule_chunk_id": "chunk_86d11b94a537",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_1fc751f7fbbb",
+      "node_id": "node_6476560aa1ea",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "可修改性反映了在用户需求改变或软件环境发生变化时，对软件系统进行相应修改的容易程度。维护时，要修改源代码和文档，可能会带入新的错误。软件容易修改的程度和软件设计原理和启发规则直接有关。耦合、内聚、信息隐藏、局部化、控制域与作用域的关系等等，都影响软件的可修改性。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.4.1 决定软件可维护性的因素",
+        "section_path": [
+          "软件工程",
+          "8.4 软件的可维护性",
+          "8.4.1 决定软件可维护性的因素"
+        ],
+        "section_level": 3,
+        "start_page": 21,
+        "pages": [
+          21,
+          22,
+          23,
+          24,
+          25
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "软件可修改性",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [
+          "chunk_95b274e1f0e6"
+        ],
+        "knowledge_type": "quality",
+        "tags": [
+          "可修改性",
+          "耦合",
+          "内聚",
+          "信息隐藏",
+          "局部化"
+        ],
+        "parent_rule_chunk_id": "chunk_86d11b94a537",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_f6751b14340e",
+      "node_id": "node_6476560aa1ea",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "软件可移植性指的是，把程序从一种计算环境（硬件配置和操作系统）转移到另一种计算环境的难易程度。把与硬件、操作系统以及其他外部设备有关的程序代码集中放到特定的程序模块中，可以把因环境变化而必须修改的程序局限在少数程序模块中，从而降低修改的难度。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.4.1 决定软件可维护性的因素",
+        "section_path": [
+          "软件工程",
+          "8.4 软件的可维护性",
+          "8.4.1 决定软件可维护性的因素"
+        ],
+        "section_level": 3,
+        "start_page": 21,
+        "pages": [
+          21,
+          22,
+          23,
+          24,
+          25
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "软件可移植性",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [
+          "chunk_95b274e1f0e6"
+        ],
+        "knowledge_type": "quality",
+        "tags": [
+          "可移植性",
+          "计算环境",
+          "硬件配置",
+          "操作系统"
+        ],
+        "parent_rule_chunk_id": "chunk_86d11b94a537",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_6ce0bedc4cd6",
+      "node_id": "node_d45574315031",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "§所谓重用（reuse）是指同一事物不做修改或稍 加改动就在不同环境中多次重复使用。 §大量使用可重用的软件构件来开发软件，可以 从下述两个方面提高软件的可维护性：\n\n(1) 通常，可重用的软件构件在开发时经过很严格的 测试，可靠性比较高，且在每次重用过程中都会发现 并清除一些错误，随着时间推移，这样的构件将变成 实质上无错误的。 （2）很容易修改可重用的软件构件使之再次应用在新 环境中，因此，软件中使用的可重用构件越多，适应 性和完善性维护也就越容易。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "5. 可重用性",
+        "section_path": [
+          "软件工程",
+          "5. 可重用性"
+        ],
+        "section_level": 2,
+        "start_page": 26,
+        "pages": [
+          26
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "5. 可重用性",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [
+          "chunk_95b274e1f0e6"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_9493ff29a0d6",
+      "node_id": "node_242379342269",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "§文档是影响软件可维护性的决定因素。 §由于软件在使用过程中会受多次修改，所以文 档比程序代码更重要。 §开发人员在各个阶段中以文档作为前阶段工作 成果的体现和后阶段工作的依据。 §软件系统的文档可以分为用户文档和系统文档 两类。\n\n文档分类\n\no 用户文档：主要描述系统功能和使用方法，\n\n并不关心这些功能是怎样实现的，它是软件 开发人员为用户了解、使用、维护软件提供 的详细的资料； o 系统文档：描述系统设计、实现和测试等各\n\n方面的内容。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.4.2 文档",
+        "section_path": [
+          "软件工程",
+          "5. 可重用性",
+          "8.4.2 文档"
+        ],
+        "section_level": 3,
+        "start_page": 27,
+        "pages": [
+          27,
+          28
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "8.4.2 文档",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [
+          "chunk_95b274e1f0e6"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_95b274e1f0e6",
+      "node_id": "node_723244260c00",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "在软件工程过程的每一个阶段都应该考虑并努力提高软件的可维护性，在每个阶段结束前的技术审查和管理复审中，应该着重对可维护性进行复审。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.4.3 可维护性复审",
+        "section_path": [
+          "软件工程",
+          "5. 可重用性",
+          "8.4.3 可维护性复审"
+        ],
+        "section_level": 3,
+        "start_page": 29,
+        "pages": [
+          29,
+          30,
+          31,
+          32
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "可维护性复审的贯穿原则",
+        "prerequisite_node_ids": [
+          "chunk_1fc751f7fbbb",
+          "chunk_f6751b14340e"
+        ],
+        "next_node_ids": [
+          "chunk_f9a67db68ffc",
+          "chunk_07a1707b05a8"
+        ],
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_5e4e43d53ab2",
+          "chunk_c114435681c5",
+          "chunk_b5993a93ee05",
+          "chunk_fc7c76e13804"
+        ],
+        "knowledge_type": "process_model",
+        "tags": [
+          "可维护性",
+          "复审",
+          "全过程"
+        ],
+        "parent_rule_chunk_id": "merged_804f48e916e8"
+      }
+    },
+    {
+      "chunk_id": "chunk_f9a67db68ffc",
+      "node_id": "node_723244260c00",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "在需求分析阶段的复审过程中，应该对将来要改进的部分和可能会修改的部分加以注意并指明；应该讨论软件的可移植性问题，并且考虑可能影响软件维护的系统界面。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.4.3 可维护性复审",
+        "section_path": [
+          "软件工程",
+          "5. 可重用性",
+          "8.4.3 可维护性复审"
+        ],
+        "section_level": 3,
+        "start_page": 29,
+        "pages": [
+          29,
+          30,
+          31,
+          32
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "需求分析阶段的可维护性复审重点",
+        "prerequisite_node_ids": [
+          "chunk_95b274e1f0e6"
+        ],
+        "next_node_ids": [
+          "chunk_07a1707b05a8"
+        ],
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_5e4e43d53ab2",
+          "chunk_c114435681c5",
+          "chunk_b5993a93ee05",
+          "chunk_fc7c76e13804"
+        ],
+        "knowledge_type": "phase",
+        "tags": [
+          "需求分析",
+          "可移植性",
+          "系统界面"
+        ],
+        "parent_rule_chunk_id": "merged_804f48e916e8"
+      }
+    },
+    {
+      "chunk_id": "chunk_07a1707b05a8",
+      "node_id": "node_723244260c00",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "在正式的和非正式的设计复审期间，应该从容易修改、模块化和功能独立的目标出发，评价软件的结构和过程；设计中应该对将来可能修改的部分预作准备。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.4.3 可维护性复审",
+        "section_path": [
+          "软件工程",
+          "5. 可重用性",
+          "8.4.3 可维护性复审"
+        ],
+        "section_level": 3,
+        "start_page": 29,
+        "pages": [
+          29,
+          30,
+          31,
+          32
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "设计阶段的可维护性复审标准",
+        "prerequisite_node_ids": [
+          "chunk_95b274e1f0e6",
+          "chunk_f9a67db68ffc"
+        ],
+        "next_node_ids": [
+          "chunk_8c248fa16c48"
+        ],
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_5e4e43d53ab2",
+          "chunk_c114435681c5",
+          "chunk_b5993a93ee05",
+          "chunk_fc7c76e13804"
+        ],
+        "knowledge_type": "phase",
+        "tags": [
+          "设计复审",
+          "模块化",
+          "功能独立"
+        ],
+        "parent_rule_chunk_id": "merged_804f48e916e8"
+      }
+    },
+    {
+      "chunk_id": "chunk_8c248fa16c48",
+      "node_id": "node_723244260c00",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "代码复审应该强调编码风格和内部说明文档这两个影响可维护性的因素。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.4.3 可维护性复审",
+        "section_path": [
+          "软件工程",
+          "5. 可重用性",
+          "8.4.3 可维护性复审"
+        ],
+        "section_level": 3,
+        "start_page": 29,
+        "pages": [
+          29,
+          30,
+          31,
+          32
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "代码复审的关键因素",
+        "prerequisite_node_ids": [
+          "chunk_07a1707b05a8"
+        ],
+        "next_node_ids": [
+          "chunk_ea0e16d303bf"
+        ],
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_5e4e43d53ab2",
+          "chunk_c114435681c5",
+          "chunk_b5993a93ee05",
+          "chunk_fc7c76e13804"
+        ],
+        "knowledge_type": "method",
+        "tags": [
+          "代码复审",
+          "编码风格",
+          "内部文档"
+        ],
+        "parent_rule_chunk_id": "merged_804f48e916e8"
+      }
+    },
+    {
+      "chunk_id": "chunk_ea0e16d303bf",
+      "node_id": "node_723244260c00",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "在测试结束时进行最正式的可维护性复审，这个复审称为配置复审。配置复审的目的是保证软件配置的所有成分是完整的、一致的和可理解的，而且为了便于修改和管理已经编目归档了。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.4.3 可维护性复审",
+        "section_path": [
+          "软件工程",
+          "5. 可重用性",
+          "8.4.3 可维护性复审"
+        ],
+        "section_level": 3,
+        "start_page": 29,
+        "pages": [
+          29,
+          30,
+          31,
+          32
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "配置复审（最正式的可维护性复审）",
+        "prerequisite_node_ids": [
+          "chunk_8c248fa16c48"
+        ],
+        "next_node_ids": [
+          "chunk_4934ee706fbf"
+        ],
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_5e4e43d53ab2",
+          "chunk_c114435681c5",
+          "chunk_b5993a93ee05",
+          "chunk_fc7c76e13804"
+        ],
+        "knowledge_type": "phase",
+        "tags": [
+          "配置复审",
+          "完整性",
+          "一致性",
+          "可理解性"
+        ],
+        "parent_rule_chunk_id": "merged_804f48e916e8"
+      }
+    },
+    {
+      "chunk_id": "chunk_4934ee706fbf",
+      "node_id": "node_723244260c00",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "维护应该针对整个软件配置，不应该只修改源程序代码。当对源程序代码的修改没有反映在设计文档或用户手册中时，就会产生严重的后果。每当对数据、软件结构、模块过程或任何其他有关的软件特点做了改动时，必须立即修改相应的技术文档。不能准确反映软件当前状态的设计文档可能比完全没有文档更坏。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.4.3 可维护性复审",
+        "section_path": [
+          "软件工程",
+          "5. 可重用性",
+          "8.4.3 可维护性复审"
+        ],
+        "section_level": 3,
+        "start_page": 29,
+        "pages": [
+          29,
+          30,
+          31,
+          32
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "维护工作的整体性与文档同步要求",
+        "prerequisite_node_ids": [
+          "chunk_ea0e16d303bf",
+          "chunk_9493ff29a0d6"
+        ],
+        "next_node_ids": [],
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_5e4e43d53ab2",
+          "chunk_c114435681c5",
+          "chunk_b5993a93ee05",
+          "chunk_fc7c76e13804"
+        ],
+        "knowledge_type": "method",
+        "tags": [
+          "维护",
+          "软件配置",
+          "文档同步",
+          "文档准确性"
+        ],
+        "parent_rule_chunk_id": "merged_804f48e916e8"
+      }
+    },
+    {
+      "chunk_id": "chunk_c04b5456f182",
+      "node_id": "node_723244260c00",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "用户通常根据描述软件特点和使用方法的用户文档来使用、评价软件。如果对软件的可执行部分的修改没有及时反映在用户文档中，则必然会使用户因为受挫折而产生不满。如果在软件再次交付使用之前，对软件配置进行严格的复审，则可大大减少文档的问题。事实上，某些维护要求可能并不需要修改软件设计或源程序代码，只是表明用户文档不清楚或不准确，因此只需要对文档做必要的维护。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.4.3 可维护性复审",
+        "section_path": [
+          "软件工程",
+          "5. 可重用性",
+          "8.4.3 可维护性复审"
+        ],
+        "section_level": 3,
+        "start_page": 29,
+        "pages": [
+          29,
+          30,
+          31,
+          32
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "用户文档维护的重要性",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [],
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_5e4e43d53ab2",
+          "chunk_c114435681c5",
+          "chunk_b5993a93ee05",
+          "chunk_fc7c76e13804"
+        ],
+        "knowledge_type": "quality",
+        "tags": [
+          "用户文档",
+          "用户体验",
+          "文档维护"
+        ],
+        "parent_rule_chunk_id": "merged_804f48e916e8"
+      }
+    },
+    {
+      "chunk_id": "chunk_cd47ae2b96aa",
+      "node_id": "node_53938c3fc7ea",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "预防性维护是指把今天的方法学应用到昨天的系统上，以支持明天的需求。它看似是在已有程序版本上重新开发大型程序，实则并非浪费。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.5 预防性维护",
+        "section_path": [
+          "软件工程",
+          "8.5 预防性维护"
+        ],
+        "section_level": 2,
+        "start_page": 33,
+        "pages": [
+          33,
+          34
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "预防性维护的含义",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [
+          "chunk_971bf59589e4"
+        ],
+        "knowledge_type": "concept",
+        "tags": [
+          "预防性维护",
+          "定义",
+          "软件维护"
+        ],
+        "parent_rule_chunk_id": "chunk_d6bc5923b0d9",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_971bf59589e4",
+      "node_id": "node_53938c3fc7ea",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "维护一行代码的代价可能是最初开发该行源代码代价的14-40倍。通过重新设计软件体系结构使用现代设计概念，对将来的维护有很大帮助。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.5 预防性维护",
+        "section_path": [
+          "软件工程",
+          "8.5 预防性维护"
+        ],
+        "section_level": 2,
+        "start_page": 33,
+        "pages": [
+          33,
+          34
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "预防性维护的必要性",
+        "prerequisite_node_ids": [
+          "chunk_cd47ae2b96aa"
+        ],
+        "next_node_ids": [
+          "chunk_0e5c24a6614e"
+        ],
+        "knowledge_type": "comparison",
+        "tags": [
+          "维护成本",
+          "必要性",
+          "经济效益"
+        ],
+        "parent_rule_chunk_id": "chunk_d6bc5923b0d9",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_0e5c24a6614e",
+      "node_id": "node_53938c3fc7ea",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "现有的程序版本可作为软件原型使用，开发生产率可大大高于平均水平。用户具有较多使用该软件的经验，因此能够很容易地搞清楚新的变更需求和变更的范围。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.5 预防性维护",
+        "section_path": [
+          "软件工程",
+          "8.5 预防性维护"
+        ],
+        "section_level": 2,
+        "start_page": 33,
+        "pages": [
+          33,
+          34
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "预防性维护的优势",
+        "prerequisite_node_ids": [
+          "chunk_971bf59589e4"
+        ],
+        "next_node_ids": [
+          "chunk_fadd62829078"
+        ],
+        "knowledge_type": "comparison",
+        "tags": [
+          "开发生产率",
+          "用户需求",
+          "优势"
+        ],
+        "parent_rule_chunk_id": "chunk_d6bc5923b0d9",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_fadd62829078",
+      "node_id": "node_53938c3fc7ea",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "在预防性维护过程中，利用逆向工程和再工程工具可以使一部分工作自动化。同时，在完成预防性维护的过程中可以建立起完整的软件配置。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "8.5 预防性维护",
+        "section_path": [
+          "软件工程",
+          "8.5 预防性维护"
+        ],
+        "section_level": 2,
+        "start_page": 33,
+        "pages": [
+          33,
+          34
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "预防性维护的方法与工具",
+        "prerequisite_node_ids": [
+          "chunk_0e5c24a6614e"
+        ],
+        "next_node_ids": [
+          "chunk_b5559fc31c7a"
+        ],
+        "knowledge_type": "method",
+        "tags": [
+          "逆向工程",
+          "再工程",
+          "工具",
+          "软件配置"
+        ],
+        "parent_rule_chunk_id": "chunk_d6bc5923b0d9",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_511714d47c7e",
+      "node_id": "node_cf95fc2aa2ce",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "o 老程序固有的特点是缺乏文档\n\nn 建立文档非常耗费时间，如果程序相对稳定，\n\n而且可能不会再经历什么变化，保持现状 n 为了便于今后的维护，必须更新文档。不一下\n\n子重建系统的全部文档，只针对系统中正在修 改的部分建立完整文档，逐步建立 n 如果应用系统是完成业务工作的关键，而且必\n\n须重构全部文档，则仍然应该设法把文档工作 减少到必需的最小量",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "2. 文档重构",
+        "section_path": [
+          "软件工程",
+          "2. 文档重构"
+        ],
+        "section_level": 2,
+        "start_page": 37,
+        "pages": [
+          37
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "2. 文档重构",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_2bc0183fab26",
+      "node_id": "node_d98279e47b97",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "软件的逆向工程是分析程序，力图在比源代码更高抽象层次上建立程序表 示的过程；是一个设计恢复的过程。使用逆向工程工具可以从已经存在的软件 中提取数据结构、体系结构和程序设计结构。 的过程如图所示。\n\n无结构的\n\n结构化的\n\n初始规格 最终规格\n\n源代码\n\n源代码\n\n的过程",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "3. 逆向工程",
+        "section_path": [
+          "软件工程",
+          "3. 逆向工程"
+        ],
+        "section_level": 2,
+        "start_page": 38,
+        "pages": [
+          38
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "3. 逆向工程",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_b5559fc31c7a",
+      "node_id": "node_3c843d7ec050",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "逆向工程的过程从源代码重构开始，将无结构的源代码转换为结构化的源代码，提高了源代码的易读性。其核心内容包括处理抽取、界面抽取和数据抽取。使用逆向工程工具可以从已存在程序中抽取数据结构、体系结构和程序设计信息。出于法律约束的原因，公司一般只对自己的软件作逆向工程。它可用于软件维护的任何活动，也可用于重构原系统，以改善它的综合质量。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "• 逆向工程的过程从源代码重构开始，将无结构的源代码转换为结构化的源 代码，提高了源代码的易读性。",
+        "section_path": [
+          "软件工程",
+          "• 逆向工程的过程从源代码重构开始，将无结构的源代码转换为结构化的源 代码，提高了源代码的易读性。"
+        ],
+        "section_level": 2,
+        "start_page": 38,
+        "pages": [
+          38,
+          39,
+          40,
+          41,
+          42
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "逆向工程",
+        "prerequisite_node_ids": [
+          "chunk_fadd62829078"
+        ],
+        "next_node_ids": [
+          "chunk_7a957c930f66"
+        ],
+        "knowledge_type": "process_model",
+        "tags": [
+          "逆向工程",
+          "源代码重构",
+          "数据抽取",
+          "体系结构抽取"
+        ],
+        "parent_rule_chunk_id": "chunk_4b5aba2e8a41",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_38cce3572f29",
+      "node_id": "node_3c843d7ec050",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "代码重构并不修改软件体系结构，而是关注模块的细节，其目标是生成可提供功能相同，而质量更高的程序。需要重构的模块通常难以理解、测试和维护。流程包括：首先用重构工具分析代码，标注出需要重构的部分；然后重构有问题的代码；复审和测试重构后的代码（保证没有引入异常），更新代码文档。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "• 逆向工程的过程从源代码重构开始，将无结构的源代码转换为结构化的源 代码，提高了源代码的易读性。",
+        "section_path": [
+          "软件工程",
+          "• 逆向工程的过程从源代码重构开始，将无结构的源代码转换为结构化的源 代码，提高了源代码的易读性。"
+        ],
+        "section_level": 2,
+        "start_page": 38,
+        "pages": [
+          38,
+          39,
+          40,
+          41,
+          42
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "代码重构",
+        "prerequisite_node_ids": [
+          "chunk_7a957c930f66"
+        ],
+        "next_node_ids": [],
+        "knowledge_type": "method",
+        "tags": [
+          "代码重构",
+          "模块细节",
+          "功能相同",
+          "质量提升"
+        ],
+        "parent_rule_chunk_id": "chunk_4b5aba2e8a41",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_7a957c930f66",
+      "node_id": "node_3c843d7ec050",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "重构发生在较低的抽象层次上，是一种全局的再工程活动。当数据结构较差时，应该对数据进行再工程。数据重构通常以逆向工程活动开始，分解当前使用的数据体系结构；必要时定义数据模型，标识数据对象和属性；从软件质量的角度复审现存的数据结构。对数据的修改必然会导致体系结构或代码层的改变。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "• 逆向工程的过程从源代码重构开始，将无结构的源代码转换为结构化的源 代码，提高了源代码的易读性。",
+        "section_path": [
+          "软件工程",
+          "• 逆向工程的过程从源代码重构开始，将无结构的源代码转换为结构化的源 代码，提高了源代码的易读性。"
+        ],
+        "section_level": 2,
+        "start_page": 38,
+        "pages": [
+          38,
+          39,
+          40,
+          41,
+          42
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "重构",
+        "prerequisite_node_ids": [
+          "chunk_b5559fc31c7a"
+        ],
+        "next_node_ids": [
+          "chunk_38cce3572f29"
+        ],
+        "knowledge_type": "process_model",
+        "tags": [
+          "重构",
+          "再工程",
+          "数据重构",
+          "数据体系结构"
+        ],
+        "parent_rule_chunk_id": "chunk_4b5aba2e8a41",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_56ce5f75cbe5",
+      "node_id": "node_3c843d7ec050",
+      "chapter_id": "chapter_0d3cc5018578",
+      "content_text": "正向工程也称为革新或改造，不仅从现有程序中恢复设计信息，而且使用该信息去改变或重构现有系统，以提高其整体质量。它不仅重新实现了现有系统的功能，而且加入了新功能并提高了整体性能。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "• 逆向工程的过程从源代码重构开始，将无结构的源代码转换为结构化的源 代码，提高了源代码的易读性。",
+        "section_path": [
+          "软件工程",
+          "• 逆向工程的过程从源代码重构开始，将无结构的源代码转换为结构化的源 代码，提高了源代码的易读性。"
+        ],
+        "section_level": 2,
+        "start_page": 38,
+        "pages": [
+          38,
+          39,
+          40,
+          41,
+          42
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "正向工程",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [],
+        "knowledge_type": "process_model",
+        "tags": [
+          "正向工程",
+          "革新",
+          "改造",
+          "系统重构"
+        ],
+        "parent_rule_chunk_id": "chunk_4b5aba2e8a41",
+        "images": []
+      }
+    }
+  ],
+  "stats": {
+    "outline_node_count": 24,
+    "chunk_count": 41,
+    "min_chunk_chars": 32,
+    "max_chunk_chars": 276,
+    "avg_chunk_chars": 122.66,
+    "embedded_chunk_count": 0
+  },
+  "stage": "semantic_slice",
+  "source_pdf_json": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\pdf_json\\第8章 维护_knowledge.json",
+  "images": [
+    {
+      "image_id": "第8章 维护_p018_i05",
+      "page": 18,
+      "file_name": "page_018_img_05.jpeg",
+      "path": "images/第8章 维护/page_018_img_05.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_018_img_05.jpeg",
+      "width": 1653,
+      "height": 94,
+      "file_size": 41019,
+      "ext": "jpeg",
+      "xref": 117,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "other",
+      "caption": "图片展示了关于软件维护问题的核心观点：绝大多数软件在设计时没有考虑将来的修改。",
+      "related_chunk_ids": [
+        "merged_56a0c8aff259"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    }
+  ],
+  "rejected_images": [
+    {
+      "image_id": "第8章 维护_p001_i01",
+      "page": 1,
+      "file_name": "page_001_img_01.jpeg",
+      "path": "images/第8章 维护/page_001_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_001_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT模板背景页，仅包含学校Logo和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含校徽、学院名称及装饰线条，无任何软件工程相关的知识图表或正文内容。"
+    },
+    {
+      "image_id": "第8章 维护_p002_i01",
+      "page": 2,
+      "file_name": "page_002_img_01.jpeg",
+      "path": "images/第8章 维护/page_002_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_002_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT模板背景页，仅包含学校Logo和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含校徽和装饰元素，缺乏实质性的软件工程知识内容（如流程图、图表或代码）。"
+    },
+    {
+      "image_id": "第8章 维护_p003_i01",
+      "page": 3,
+      "file_name": "page_003_img_01.jpeg",
+      "path": "images/第8章 维护/page_003_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_003_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院Logo及装饰性背景元素，无具体教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含学校Logo和装饰图案，缺乏实质性的软件工程知识图表或内容。"
+    },
+    {
+      "image_id": "第8章 维护_p004_i01",
+      "page": 4,
+      "file_name": "page_004_img_01.jpeg",
+      "path": "images/第8章 维护/page_004_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_004_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院名称及装饰性背景，无具体教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含学校Logo和装饰元素，无实质性的软件工程知识内容。"
+    },
+    {
+      "image_id": "第8章 维护_p005_i01",
+      "page": 5,
+      "file_name": "page_005_img_01.jpeg",
+      "path": "images/第8章 维护/page_005_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_005_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板背景页，包含学校 Logo 和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo 和装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第8章 维护_p006_i01",
+      "page": 6,
+      "file_name": "page_006_img_01.jpeg",
+      "path": "images/第8章 维护/page_006_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_006_img_01.jpeg",
+      "width": 1275,
+      "height": 967,
+      "file_size": 39709,
+      "ext": "jpeg",
+      "xref": 30,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "一个黄色的空白对话气泡图形，无实际教学内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT装饰性背景元素（空白对话框），不包含任何软件工程知识点、图表或代码信息。"
+    },
+    {
+      "image_id": "第8章 维护_p006_i02",
+      "page": 6,
+      "file_name": "page_006_img_02.jpeg",
+      "path": "images/第8章 维护/page_006_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_006_img_02.jpeg",
+      "width": 1006,
+      "height": 70,
+      "file_size": 22009,
+      "ext": "jpeg",
+      "xref": 37,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p006_i03",
+      "page": 6,
+      "file_name": "page_006_img_03.jpeg",
+      "path": "images/第8章 维护/page_006_img_03.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_006_img_03.jpeg",
+      "width": 1125,
+      "height": 70,
+      "file_size": 23050,
+      "ext": "jpeg",
+      "xref": 39,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p006_i04",
+      "page": 6,
+      "file_name": "page_006_img_04.jpeg",
+      "path": "images/第8章 维护/page_006_img_04.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_006_img_04.jpeg",
+      "width": 704,
+      "height": 69,
+      "file_size": 16207,
+      "ext": "jpeg",
+      "xref": 41,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p006_i05",
+      "page": 6,
+      "file_name": "page_006_img_05.jpeg",
+      "path": "images/第8章 维护/page_006_img_05.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_006_img_05.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院名称及装饰性背景，无具体教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，属于PPT模板，不包含任何软件工程相关的知识图表或内容。"
+    },
+    {
+      "image_id": "第8章 维护_p007_i01",
+      "page": 7,
+      "file_name": "page_007_img_01.jpeg",
+      "path": "images/第8章 维护/page_007_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_007_img_01.jpeg",
+      "width": 1464,
+      "height": 722,
+      "file_size": 39058,
+      "ext": "jpeg",
+      "xref": 45,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "一个黄色的空白对话气泡图形，无实际知识内容",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT装饰性图形（空白对话气泡），不包含任何软件工程知识点、图表或文本信息。"
+    },
+    {
+      "image_id": "第8章 维护_p007_i02",
+      "page": 7,
+      "file_name": "page_007_img_02.jpeg",
+      "path": "images/第8章 维护/page_007_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_007_img_02.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，属于PPT模板，不包含任何软件工程相关的知识图表或正文内容。"
+    },
+    {
+      "image_id": "第8章 维护_p008_i01",
+      "page": 8,
+      "file_name": "page_008_img_01.jpeg",
+      "path": "images/第8章 维护/page_008_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_008_img_01.jpeg",
+      "width": 1345,
+      "height": 488,
+      "file_size": 26664,
+      "ext": "jpeg",
+      "xref": 49,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "一个黄色的空白对话气泡图形，无具体知识内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT装饰性图形（空白对话框），不包含任何软件工程知识点、图表或代码信息。"
+    },
+    {
+      "image_id": "第8章 维护_p008_i02",
+      "page": 8,
+      "file_name": "page_008_img_02.jpeg",
+      "path": "images/第8章 维护/page_008_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_008_img_02.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含学校Logo和装饰元素，无软件工程知识点内容。"
+    },
+    {
+      "image_id": "第8章 维护_p009_i01",
+      "page": 9,
+      "file_name": "page_009_img_01.jpeg",
+      "path": "images/第8章 维护/page_009_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_009_img_01.jpeg",
+      "width": 1342,
+      "height": 587,
+      "file_size": 31564,
+      "ext": "jpeg",
+      "xref": 53,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "一个黄色的空白对话气泡图形，属于PPT装饰元素，不包含任何软件工程知识点。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为空白装饰图形，无教学知识内容。"
+    },
+    {
+      "image_id": "第8章 维护_p009_i02",
+      "page": 9,
+      "file_name": "page_009_img_02.jpeg",
+      "path": "images/第8章 维护/page_009_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_009_img_02.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo和装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第8章 维护_p010_i01",
+      "page": 10,
+      "file_name": "page_010_img_01.jpeg",
+      "path": "images/第8章 维护/page_010_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_010_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院名称及装饰性背景，无具体教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，属于PPT模板，不包含任何软件工程相关的知识图表、流程图或文本内容。"
+    },
+    {
+      "image_id": "第8章 维护_p011_i01",
+      "page": 11,
+      "file_name": "page_011_img_01.jpeg",
+      "path": "images/第8章 维护/page_011_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_011_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板页，仅包含学校 Logo 和装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo 和装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第8章 维护_p012_i01",
+      "page": 12,
+      "file_name": "page_012_img_01.jpeg",
+      "path": "images/第8章 维护/page_012_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_012_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "一张仅包含北京信息科技大学校徽和计算机学院标识的空白PPT背景页，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含学校Logo和装饰性图形，缺乏任何软件工程相关的知识图表、代码或正文内容。"
+    },
+    {
+      "image_id": "第8章 维护_p013_i01",
+      "page": 13,
+      "file_name": "page_013_img_01.jpeg",
+      "path": "images/第8章 维护/page_013_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_013_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT模板背景页，仅包含学校Logo、学院标识及装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片为纯装饰性背景，包含页眉页脚和Logo，无实质知识内容。"
+    },
+    {
+      "image_id": "第8章 维护_p014_i01",
+      "page": 14,
+      "file_name": "page_014_img_01.jpeg",
+      "path": "images/第8章 维护/page_014_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_014_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板背景页，仅包含学校 Logo 和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片为 PPT 模板背景，仅包含页眉页脚和装饰元素，无正文知识内容。"
+    },
+    {
+      "image_id": "第8章 维护_p015_i01",
+      "page": 15,
+      "file_name": "page_015_img_01.jpeg",
+      "path": "images/第8章 维护/page_015_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_015_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景元素，无具体教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板页，包含学校Logo和装饰背景，缺乏实质性的软件工程知识图表或内容。"
+    },
+    {
+      "image_id": "第8章 维护_p016_i01",
+      "page": 16,
+      "file_name": "page_016_img_01.jpeg",
+      "path": "images/第8章 维护/page_016_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_016_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo及装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第8章 维护_p017_i01",
+      "page": 17,
+      "file_name": "page_017_img_01.jpeg",
+      "path": "images/第8章 维护/page_017_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_017_img_01.jpeg",
+      "width": 107,
+      "height": 98,
+      "file_size": 3995,
+      "ext": "jpeg",
+      "xref": 101,
+      "rule_class": "small_decoration_likely",
+      "is_knowledge_image": false,
+      "reject_reason": "small_decoration_likely",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p017_i02",
+      "page": 17,
+      "file_name": "page_017_img_02.jpeg",
+      "path": "images/第8章 维护/page_017_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_017_img_02.jpeg",
+      "width": 58,
+      "height": 34,
+      "file_size": 1090,
+      "ext": "jpeg",
+      "xref": 103,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p017_i03",
+      "page": 17,
+      "file_name": "page_017_img_03.jpeg",
+      "path": "images/第8章 维护/page_017_img_03.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_017_img_03.jpeg",
+      "width": 32,
+      "height": 32,
+      "file_size": 916,
+      "ext": "jpeg",
+      "xref": 105,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p017_i04",
+      "page": 17,
+      "file_name": "page_017_img_04.jpeg",
+      "path": "images/第8章 维护/page_017_img_04.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_017_img_04.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景，无具体教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，属于PPT模板，不包含任何软件工程相关的流程图、概念图或知识点内容。"
+    },
+    {
+      "image_id": "第8章 维护_p017_i05",
+      "page": 17,
+      "file_name": "page_017_img_05.jpeg",
+      "path": "images/第8章 维护/page_017_img_05.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_017_img_05.jpeg",
+      "width": 76,
+      "height": 76,
+      "file_size": 1908,
+      "ext": "jpeg",
+      "xref": 91,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p017_i06",
+      "page": 17,
+      "file_name": "page_017_img_06.jpeg",
+      "path": "images/第8章 维护/page_017_img_06.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_017_img_06.jpeg",
+      "width": 1222,
+      "height": 93,
+      "file_size": 24556,
+      "ext": "jpeg",
+      "xref": 93,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "一张包含艺术字“理解别人写的程序通常非常困难”的装饰性图片，无具体图表或代码信息。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为强调观点的装饰性文字，不具备流程图、ER图、数据流图、结构图、表格、算法图、测试流程图、模型图、界面示例或代码/伪代码示例等教学知识图特征。"
+    },
+    {
+      "image_id": "第8章 维护_p017_i07",
+      "page": 17,
+      "file_name": "page_017_img_07.jpeg",
+      "path": "images/第8章 维护/page_017_img_07.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_017_img_07.jpeg",
+      "width": 1219,
+      "height": 19,
+      "file_size": 3608,
+      "ext": "jpeg",
+      "xref": 95,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p017_i08",
+      "page": 17,
+      "file_name": "page_017_img_08.jpeg",
+      "path": "images/第8章 维护/page_017_img_08.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_017_img_08.jpeg",
+      "width": 1392,
+      "height": 94,
+      "file_size": 27527,
+      "ext": "jpeg",
+      "xref": 97,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 页面标题装饰图，仅包含艺术字文本，无图表或知识逻辑结构。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为 PPT 标题装饰，不包含流程图、ER 图、数据流图、结构图、表格、算法图、测试流程图、模型图、界面示例或代码等具有教学价值的知识内容。"
+    },
+    {
+      "image_id": "第8章 维护_p017_i09",
+      "page": 17,
+      "file_name": "page_017_img_09.jpeg",
+      "path": "images/第8章 维护/page_017_img_09.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_017_img_09.jpeg",
+      "width": 1391,
+      "height": 19,
+      "file_size": 3729,
+      "ext": "jpeg",
+      "xref": 99,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p018_i01",
+      "page": 18,
+      "file_name": "page_018_img_01.jpeg",
+      "path": "images/第8章 维护/page_018_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_018_img_01.jpeg",
+      "width": 690,
+      "height": 93,
+      "file_size": 12876,
+      "ext": "jpeg",
+      "xref": 109,
+      "rule_class": "uncertain_or_decoration",
+      "is_knowledge_image": false,
+      "reject_reason": "uncertain_or_decoration",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p018_i02",
+      "page": 18,
+      "file_name": "page_018_img_02.jpeg",
+      "path": "images/第8章 维护/page_018_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_018_img_02.jpeg",
+      "width": 702,
+      "height": 19,
+      "file_size": 2480,
+      "ext": "jpeg",
+      "xref": 111,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p018_i03",
+      "page": 18,
+      "file_name": "page_018_img_03.jpeg",
+      "path": "images/第8章 维护/page_018_img_03.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_018_img_03.jpeg",
+      "width": 878,
+      "height": 94,
+      "file_size": 17745,
+      "ext": "jpeg",
+      "xref": 113,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "包含艺术字效果的装饰性文本图片，内容为“员给我们仔细说明软件”，无具体软件工程知识点信息。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为装饰性文本或标题，不包含流程图、ER图、数据流图、结构图、表格、算法图、测试流程图、模型图、界面示例或代码等具有教学价值的知识内容。"
+    },
+    {
+      "image_id": "第8章 维护_p018_i04",
+      "page": 18,
+      "file_name": "page_018_img_04.jpeg",
+      "path": "images/第8章 维护/page_018_img_04.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_018_img_04.jpeg",
+      "width": 875,
+      "height": 19,
+      "file_size": 2377,
+      "ext": "jpeg",
+      "xref": 115,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p018_i06",
+      "page": 18,
+      "file_name": "page_018_img_06.jpeg",
+      "path": "images/第8章 维护/page_018_img_06.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_018_img_06.jpeg",
+      "width": 1649,
+      "height": 19,
+      "file_size": 6936,
+      "ext": "jpeg",
+      "xref": 119,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p018_i07",
+      "page": 18,
+      "file_name": "page_018_img_07.jpeg",
+      "path": "images/第8章 维护/page_018_img_07.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_018_img_07.jpeg",
+      "width": 1219,
+      "height": 94,
+      "file_size": 26818,
+      "ext": "jpeg",
+      "xref": 121,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "一张仅包含标题文字“软件维护不是一项吸引人的工作”的装饰性图片，无图表、数据或具体知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为标题装饰，不包含流程图、ER图、数据流图、结构图、表格、算法图、测试流程图、模型图、界面示例或代码等具有教学价值的知识内容。"
+    },
+    {
+      "image_id": "第8章 维护_p018_i08",
+      "page": 18,
+      "file_name": "page_018_img_08.jpeg",
+      "path": "images/第8章 维护/page_018_img_08.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_018_img_08.jpeg",
+      "width": 1219,
+      "height": 19,
+      "file_size": 5586,
+      "ext": "jpeg",
+      "xref": 123,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p018_i09",
+      "page": 18,
+      "file_name": "page_018_img_09.jpeg",
+      "path": "images/第8章 维护/page_018_img_09.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_018_img_09.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT模板背景页，仅包含学校Logo和装饰性渐变条，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含校徽、学院名称及装饰性图形，缺乏任何软件工程相关的知识图表或正文内容。"
+    },
+    {
+      "image_id": "第8章 维护_p018_i10",
+      "page": 18,
+      "file_name": "page_018_img_10.jpeg",
+      "path": "images/第8章 维护/page_018_img_10.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_018_img_10.jpeg",
+      "width": 76,
+      "height": 76,
+      "file_size": 1908,
+      "ext": "jpeg",
+      "xref": 91,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p019_i01",
+      "page": 19,
+      "file_name": "page_019_img_01.jpeg",
+      "path": "images/第8章 维护/page_019_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_019_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板页，包含学校Logo和装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第8章 维护_p020_i01",
+      "page": 20,
+      "file_name": "page_020_img_01.jpeg",
+      "path": "images/第8章 维护/page_020_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_020_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo及装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第8章 维护_p021_i01",
+      "page": 21,
+      "file_name": "page_021_img_01.jpeg",
+      "path": "images/第8章 维护/page_021_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_021_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板页，仅包含学校 Logo 和装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚（Logo）和空白背景，属于 PPT 模板装饰，不包含任何软件工程知识点、图表或代码。"
+    },
+    {
+      "image_id": "第8章 维护_p022_i01",
+      "page": 22,
+      "file_name": "page_022_img_01.jpeg",
+      "path": "images/第8章 维护/page_022_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_022_img_01.jpeg",
+      "width": 39,
+      "height": 39,
+      "file_size": 991,
+      "ext": "jpeg",
+      "xref": 133,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p022_i02",
+      "page": 22,
+      "file_name": "page_022_img_02.jpeg",
+      "path": "images/第8章 维护/page_022_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_022_img_02.jpeg",
+      "width": 1347,
+      "height": 94,
+      "file_size": 24371,
+      "ext": "jpeg",
+      "xref": 135,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "一张包含装饰性艺术字标语的图片，内容为“在软件维护之前，首先要把它读懂！”，属于PPT过渡页或强调性装饰，不包含具体的软件工程知识点图表。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片内容为装饰性标语，非流程图、ER图、数据流图、结构图、表格、算法图、测试流程图、模型图、界面示例或代码示例等具有教学价值的知识图。"
+    },
+    {
+      "image_id": "第8章 维护_p022_i03",
+      "page": 22,
+      "file_name": "page_022_img_03.jpeg",
+      "path": "images/第8章 维护/page_022_img_03.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_022_img_03.jpeg",
+      "width": 1391,
+      "height": 19,
+      "file_size": 4117,
+      "ext": "jpeg",
+      "xref": 137,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p022_i04",
+      "page": 22,
+      "file_name": "page_022_img_04.jpeg",
+      "path": "images/第8章 维护/page_022_img_04.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_022_img_04.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含学校Logo和装饰元素，不包含任何软件工程相关的知识图表、流程图或正文内容。"
+    },
+    {
+      "image_id": "第8章 维护_p023_i01",
+      "page": 23,
+      "file_name": "page_023_img_01.jpeg",
+      "path": "images/第8章 维护/page_023_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_023_img_01.jpeg",
+      "width": 1468,
+      "height": 94,
+      "file_size": 26546,
+      "ext": "jpeg",
+      "xref": 141,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "图片仅包含装饰性艺术字标题“软件结构、可用的测试工具和调试工具”，无具体知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "仅为PPT章节标题或装饰性文字，不包含流程图、ER图、表格、算法图等具有教学价值的知识图示。"
+    },
+    {
+      "image_id": "第8章 维护_p023_i02",
+      "page": 23,
+      "file_name": "page_023_img_02.jpeg",
+      "path": "images/第8章 维护/page_023_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_023_img_02.jpeg",
+      "width": 1477,
+      "height": 19,
+      "file_size": 4098,
+      "ext": "jpeg",
+      "xref": 143,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p023_i03",
+      "page": 23,
+      "file_name": "page_023_img_03.jpeg",
+      "path": "images/第8章 维护/page_023_img_03.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_023_img_03.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含学校Logo和装饰元素，无实质性的软件工程知识内容。"
+    },
+    {
+      "image_id": "第8章 维护_p024_i01",
+      "page": 24,
+      "file_name": "page_024_img_01.jpeg",
+      "path": "images/第8章 维护/page_024_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_024_img_01.jpeg",
+      "width": 1205,
+      "height": 100,
+      "file_size": 23880,
+      "ext": "jpeg",
+      "xref": 147,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "图片仅包含装饰性的艺术字体文本，内容为“可修改性好的程序，修改时带”，属于PPT装饰元素，不包含图表、模型或代码等实质性知识内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为装饰性文字，无教学知识价值"
+    },
+    {
+      "image_id": "第8章 维护_p024_i02",
+      "page": 24,
+      "file_name": "page_024_img_02.jpeg",
+      "path": "images/第8章 维护/page_024_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_024_img_02.jpeg",
+      "width": 1212,
+      "height": 19,
+      "file_size": 3688,
+      "ext": "jpeg",
+      "xref": 149,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p024_i03",
+      "page": 24,
+      "file_name": "page_024_img_03.jpeg",
+      "path": "images/第8章 维护/page_024_img_03.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_024_img_03.jpeg",
+      "width": 843,
+      "height": 100,
+      "file_size": 16776,
+      "ext": "jpeg",
+      "xref": 151,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "包含装饰性艺术字“入错误的概率也很小”的文本图片，无教学图表或代码内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为装饰性文本，不包含流程图、ER图、数据流图、结构图、表格、算法图、测试流程图、模型图、界面示例或代码/伪代码等知识内容。"
+    },
+    {
+      "image_id": "第8章 维护_p024_i04",
+      "page": 24,
+      "file_name": "page_024_img_04.jpeg",
+      "path": "images/第8章 维护/page_024_img_04.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_024_img_04.jpeg",
+      "width": 844,
+      "height": 19,
+      "file_size": 2760,
+      "ext": "jpeg",
+      "xref": 153,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p024_i05",
+      "page": 24,
+      "file_name": "page_024_img_05.jpeg",
+      "path": "images/第8章 维护/page_024_img_05.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_024_img_05.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院名称及装饰性背景，无具体教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，属于PPT模板，不包含任何软件工程相关的流程图、模型图或知识点内容。"
+    },
+    {
+      "image_id": "第8章 维护_p025_i01",
+      "page": 25,
+      "file_name": "page_025_img_01.jpeg",
+      "path": "images/第8章 维护/page_025_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_025_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT模板背景页，仅包含学校Logo和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含校徽、学院标识及装饰元素，缺乏任何软件工程相关的图表、代码或正文知识内容。"
+    },
+    {
+      "image_id": "第8章 维护_p026_i01",
+      "page": 26,
+      "file_name": "page_026_img_01.jpeg",
+      "path": "images/第8章 维护/page_026_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_026_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板背景页，仅包含校徽、学院名称及装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含学校Logo和装饰元素，无正文知识内容。"
+    },
+    {
+      "image_id": "第8章 维护_p027_i01",
+      "page": 27,
+      "file_name": "page_027_img_01.jpeg",
+      "path": "images/第8章 维护/page_027_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_027_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板背景页，包含校徽、学院名称及装饰性渐变图形，无具体教学内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含学校Logo和装饰元素，无软件工程知识点内容。"
+    },
+    {
+      "image_id": "第8章 维护_p028_i01",
+      "page": 28,
+      "file_name": "page_028_img_01.jpeg",
+      "path": "images/第8章 维护/page_028_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_028_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板背景页，仅包含学校 Logo 和装饰性渐变图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片为纯背景装饰页，不包含任何流程图、图表、代码或文本知识内容。"
+    },
+    {
+      "image_id": "第8章 维护_p029_i01",
+      "page": 29,
+      "file_name": "page_029_img_01.jpeg",
+      "path": "images/第8章 维护/page_029_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_029_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景元素，无具体教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板页，包含学校Logo和装饰背景，无实质性的软件工程知识图表或内容。"
+    },
+    {
+      "image_id": "第8章 维护_p030_i01",
+      "page": 30,
+      "file_name": "page_030_img_01.jpeg",
+      "path": "images/第8章 维护/page_030_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_030_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景元素，无具体教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板页，包含学校Logo和装饰背景，缺乏实质性的软件工程知识点、图表或代码内容。"
+    },
+    {
+      "image_id": "第8章 维护_p031_i01",
+      "page": 31,
+      "file_name": "page_031_img_01.jpeg",
+      "path": "images/第8章 维护/page_031_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_031_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT模板页，仅包含学校Logo、学院名称及装饰性背景元素，无软件工程知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板页，包含校徽和页脚装饰，没有实质性的教学知识内容（如流程图、图表或代码）。"
+    },
+    {
+      "image_id": "第8章 维护_p032_i01",
+      "page": 32,
+      "file_name": "page_032_img_01.jpeg",
+      "path": "images/第8章 维护/page_032_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_032_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景元素，无具体教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板页，包含学校Logo和装饰背景，无实质性的软件工程知识图表或内容。"
+    },
+    {
+      "image_id": "第8章 维护_p033_i01",
+      "page": 33,
+      "file_name": "page_033_img_01.jpeg",
+      "path": "images/第8章 维护/page_033_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_033_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板背景页，包含校徽、学院名称及装饰性图形，无具体教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含学校Logo和装饰元素，无软件工程相关的流程图、模型图或知识点内容。"
+    },
+    {
+      "image_id": "第8章 维护_p034_i01",
+      "page": 34,
+      "file_name": "page_034_img_01.jpeg",
+      "path": "images/第8章 维护/page_034_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_034_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板背景页，仅包含学校 Logo 和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为 PPT 模板背景，包含页眉页脚和装饰元素，无实质性的软件工程知识内容。"
+    },
+    {
+      "image_id": "第8章 维护_p035_i01",
+      "page": 35,
+      "file_name": "page_035_img_01.jpeg",
+      "path": "images/第8章 维护/page_035_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_035_img_01.jpeg",
+      "width": 1028,
+      "height": 665,
+      "file_size": 64262,
+      "ext": "jpeg",
+      "xref": 177,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "diagram",
+      "caption": "软件维护过程中的重构循环模型图，展示了库存目录分析、文档重构、逆向工程、代码重构、数据重构和正向工程六个步骤的闭环流程。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "llm_rejected_or_low_confidence"
+    },
+    {
+      "image_id": "第8章 维护_p035_i02",
+      "page": 35,
+      "file_name": "page_035_img_02.jpeg",
+      "path": "images/第8章 维护/page_035_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_035_img_02.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "一张包含北京信息科技大学校徽和计算机学院标识的PPT空白模板页，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，属于PPT模板，不包含任何软件工程相关的知识图表或正文内容。"
+    },
+    {
+      "image_id": "第8章 维护_p036_i01",
+      "page": 36,
+      "file_name": "page_036_img_01.jpeg",
+      "path": "images/第8章 维护/page_036_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_036_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT模板背景，包含学校Logo和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo及空白背景，属于PPT模板装饰元素，不具备软件工程课程的教学知识价值。"
+    },
+    {
+      "image_id": "第8章 维护_p037_i01",
+      "page": 37,
+      "file_name": "page_037_img_01.jpeg",
+      "path": "images/第8章 维护/page_037_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_037_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景元素，无具体教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板页，包含学校Logo和装饰背景，缺乏具体的软件工程知识图表或正文内容。"
+    },
+    {
+      "image_id": "第8章 维护_p038_i01",
+      "page": 38,
+      "file_name": "page_038_img_01.jpeg",
+      "path": "images/第8章 维护/page_038_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_038_img_01.jpeg",
+      "width": 254,
+      "height": 69,
+      "file_size": 4689,
+      "ext": "jpeg",
+      "xref": 184,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p038_i02",
+      "page": 38,
+      "file_name": "page_038_img_02.jpeg",
+      "path": "images/第8章 维护/page_038_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_038_img_02.jpeg",
+      "width": 186,
+      "height": 137,
+      "file_size": 2837,
+      "ext": "jpeg",
+      "xref": 186,
+      "rule_class": "small_decoration_likely",
+      "is_knowledge_image": false,
+      "reject_reason": "small_decoration_likely",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p038_i03",
+      "page": 38,
+      "file_name": "page_038_img_03.jpeg",
+      "path": "images/第8章 维护/page_038_img_03.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_038_img_03.jpeg",
+      "width": 93,
+      "height": 51,
+      "file_size": 1925,
+      "ext": "jpeg",
+      "xref": 188,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p038_i04",
+      "page": 38,
+      "file_name": "page_038_img_04.jpeg",
+      "path": "images/第8章 维护/page_038_img_04.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_038_img_04.jpeg",
+      "width": 450,
+      "height": 174,
+      "file_size": 5215,
+      "ext": "jpeg",
+      "xref": 190,
+      "rule_class": "uncertain_or_decoration",
+      "is_knowledge_image": false,
+      "reject_reason": "uncertain_or_decoration",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p038_i05",
+      "page": 38,
+      "file_name": "page_038_img_05.jpeg",
+      "path": "images/第8章 维护/page_038_img_05.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_038_img_05.jpeg",
+      "width": 94,
+      "height": 51,
+      "file_size": 1999,
+      "ext": "jpeg",
+      "xref": 192,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p038_i06",
+      "page": 38,
+      "file_name": "page_038_img_06.jpeg",
+      "path": "images/第8章 维护/page_038_img_06.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_038_img_06.jpeg",
+      "width": 394,
+      "height": 51,
+      "file_size": 5419,
+      "ext": "jpeg",
+      "xref": 194,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p038_i07",
+      "page": 38,
+      "file_name": "page_038_img_07.jpeg",
+      "path": "images/第8章 维护/page_038_img_07.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_038_img_07.jpeg",
+      "width": 265,
+      "height": 173,
+      "file_size": 3664,
+      "ext": "jpeg",
+      "xref": 196,
+      "rule_class": "small_decoration_likely",
+      "is_knowledge_image": false,
+      "reject_reason": "small_decoration_likely",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p038_i08",
+      "page": 38,
+      "file_name": "page_038_img_08.jpeg",
+      "path": "images/第8章 维护/page_038_img_08.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_038_img_08.jpeg",
+      "width": 222,
+      "height": 52,
+      "file_size": 3845,
+      "ext": "jpeg",
+      "xref": 198,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p038_i09",
+      "page": 38,
+      "file_name": "page_038_img_09.jpeg",
+      "path": "images/第8章 维护/page_038_img_09.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_038_img_09.jpeg",
+      "width": 180,
+      "height": 51,
+      "file_size": 2781,
+      "ext": "jpeg",
+      "xref": 200,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p038_i10",
+      "page": 38,
+      "file_name": "page_038_img_10.jpeg",
+      "path": "images/第8章 维护/page_038_img_10.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_038_img_10.jpeg",
+      "width": 28,
+      "height": 28,
+      "file_size": 775,
+      "ext": "jpeg",
+      "xref": 207,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p038_i11",
+      "page": 38,
+      "file_name": "page_038_img_11.jpeg",
+      "path": "images/第8章 维护/page_038_img_11.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_038_img_11.jpeg",
+      "width": 132,
+      "height": 69,
+      "file_size": 3055,
+      "ext": "jpeg",
+      "xref": 209,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p038_i12",
+      "page": 38,
+      "file_name": "page_038_img_12.jpeg",
+      "path": "images/第8章 维护/page_038_img_12.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_038_img_12.jpeg",
+      "width": 23,
+      "height": 30,
+      "file_size": 643,
+      "ext": "jpeg",
+      "xref": 211,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第8章 维护_p038_i13",
+      "page": 38,
+      "file_name": "page_038_img_13.jpeg",
+      "path": "images/第8章 维护/page_038_img_13.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_038_img_13.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板页，包含学校Logo和装饰背景，无实质性的软件工程知识图表或内容。"
+    },
+    {
+      "image_id": "第8章 维护_p039_i01",
+      "page": 39,
+      "file_name": "page_039_img_01.jpeg",
+      "path": "images/第8章 维护/page_039_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_039_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板背景页，仅包含学校 Logo 和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为 PPT 模板背景，包含页眉页脚和装饰元素，无正文知识内容。"
+    },
+    {
+      "image_id": "第8章 维护_p040_i01",
+      "page": 40,
+      "file_name": "page_040_img_01.jpeg",
+      "path": "images/第8章 维护/page_040_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_040_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板背景页，仅包含学校 Logo 和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片为纯背景页，仅包含页眉页脚和装饰元素，不包含任何流程图、概念图或代码等教学知识内容。"
+    },
+    {
+      "image_id": "第8章 维护_p041_i01",
+      "page": 41,
+      "file_name": "page_041_img_01.jpeg",
+      "path": "images/第8章 维护/page_041_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_041_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT模板背景页，仅包含学校Logo和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含校徽和装饰元素，缺乏任何软件工程相关的知识图表、流程图或正文内容。"
+    },
+    {
+      "image_id": "第8章 维护_p042_i01",
+      "page": 42,
+      "file_name": "page_042_img_01.jpeg",
+      "path": "images/第8章 维护/page_042_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第8章 维护\\page_042_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院标识及装饰性背景元素，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、学院标识和装饰性背景，属于PPT模板页，不包含任何软件工程相关的流程图、概念图或代码示例等知识性内容。"
+    }
+  ],
+  "cleaning": {
+    "filtered_non_knowledge_count": 3,
+    "filtered_non_knowledge_samples": [
+      {
+        "chunk_id": "chunk_c906a05bbd43",
+        "title": "八、维护",
+        "reason": "toc_or_fragment",
+        "pages": [
+          1
+        ],
+        "text_preview": "o 8.1 软件维护的定义 o 8.2 软件维护的特点 o 8.3 软件维护过程 o 8.4 软件的可维护性 o 8.5 预防性维护 o 8.6 软件再工程过程"
+      },
+      {
+        "chunk_id": "chunk_6a69212fdd6e",
+        "title": "测试与预防性维护的关系",
+        "reason": "exercise_or_admin_title",
+        "pages": [
+          29,
+          30,
+          31,
+          32
+        ],
+        "text_preview": "每个测试步骤都可以暗示在软件正式交付使用前，程序中可能需要做预防性维护的部分。"
+      },
+      {
+        "chunk_id": "chunk_d99939635e8d",
+        "title": "预防性维护",
+        "reason": "toc_or_fragment",
+        "pages": [
+          38,
+          39,
+          40,
+          41,
+          42
+        ],
+        "text_preview": "预防性维护实质上就是软件再工程。"
+      }
+    ],
+    "merged_duplicate_group_count": 6,
+    "merged_duplicate_samples": [
+      {
+        "title": "8.1 软件维护的定义",
+        "merged_count": 2,
+        "merged_chunk_id": "merged_b14997f669e4"
+      },
+      {
+        "title": "8.2.3 维护的问题很多",
+        "merged_count": 2,
+        "merged_chunk_id": "merged_56a0c8aff259"
+      },
+      {
+        "title": "8.4.3 可维护性复审",
+        "merged_count": 4,
+        "merged_chunk_id": "merged_804f48e916e8"
+      },
+      {
+        "title": "软件维护",
+        "merged_count": 2,
+        "merged_chunk_id": "merged_8503cd6788b6"
+      },
+      {
+        "title": "完善性维护",
+        "merged_count": 2,
+        "merged_chunk_id": "merged_8ca53c039f38"
+      },
+      {
+        "title": "软件维护的副作用",
+        "merged_count": 2,
+        "merged_chunk_id": "merged_cc741fef8ee5"
+      }
+    ],
+    "rule_relation_fallback_edges_added": 0,
+    "rejected_image_count": 87
+  },
+  "llm": {
+    "used_boundaries": true,
+    "generated_relations": true,
+    "used_image_filter": true,
+    "model": "xopqwen35v35b",
+    "base_url": "https://maas-api.cn-huabei-1.xf-yun.com/v2"
+  }
+}

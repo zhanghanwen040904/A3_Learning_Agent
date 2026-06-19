@@ -8,6 +8,7 @@ from ai.spark_api import content_audit, spark_chat
 from db import mysql_db
 from utils import fail, success
 from utils.auth_decorator import login_required
+from utils.profile_session import resolve_profile_session
 
 path_bp = Blueprint("path", __name__)
 safety_agent = SafetyAgent()
@@ -19,7 +20,11 @@ def generate_learning_path():
     try:
         payload = request.get_json(silent=True) or {}
         user_id = request.user_id
-        profile = payload.get("profile") or mysql_db.query_one("SELECT * FROM student_profile WHERE user_id=%s", (user_id,))
+        session = resolve_profile_session(user_id, payload, create_if_missing=False)
+        if not session:
+            return fail("未找到画像会话，无法生成学习路径", 404)
+        session_id = session["id"]
+        profile = payload.get("profile") or mysql_db.query_one("SELECT * FROM student_profile WHERE user_id=%s AND profile_session_id=%s", (user_id, session_id))
         if not profile:
             return fail("未找到学生画像，无法生成学习路径", 404)
 
@@ -27,11 +32,11 @@ def generate_learning_path():
         if not content_audit(profile_text):
             return fail("画像内容未通过讯飞内容审核", 403)
 
-        query = str(profile.get("weak_points") or profile.get("study_goal") or "人工智能导论")
+        query = str(profile.get("weak_points") or profile.get("study_goal") or "软件工程")
         knowledge = retrieve_knowledge(query, top_k=3)
         sources = retrieve_knowledge_items(query, top_k=3)
         prompt = f"""
-你是人工智能导论课程学习规划师。请基于学生画像和教材原文，生成个性化阶梯式学习路径。
+你是软件工程课程学习规划师。请基于学生画像和软件工程教材原文，生成个性化阶梯式学习路径。
 要求：
 1. 只基于教材原文和画像，不编造课程知识；
 2. 明确学习顺序、每一步目标、推荐资源类型、练习方式和评估指标；
@@ -46,8 +51,8 @@ def generate_learning_path():
             return fail("生成的学习路径未通过讯飞内容审核", 403)
 
         safety = safety_agent.review(path_content, sources)
-        path_id = mysql_db.insert("study_path", {"user_id": user_id, "path_content": path_content, "status": "active"})
-        return success({"id": path_id, "user_id": user_id, "path_content": path_content, "status": "active", "sources": sources, "safety": safety}, "学习路径生成成功")
+        path_id = mysql_db.insert("study_path", {"user_id": user_id, "profile_session_id": session_id, "path_content": path_content, "status": "active"})
+        return success({"id": path_id, "user_id": user_id, "profile_session_id": session_id, "path_content": path_content, "status": "active", "sources": sources, "safety": safety}, "学习路径生成成功")
     except Exception as exc:
         return fail("学习路径生成失败", 500, {"error": str(exc)})
 
@@ -56,7 +61,10 @@ def generate_learning_path():
 @login_required
 def list_my_paths():
     try:
-        paths = mysql_db.query_all("SELECT * FROM study_path WHERE user_id=%s ORDER BY create_time DESC", (request.user_id,))
+        session = resolve_profile_session(request.user_id, create_if_missing=False)
+        if not session:
+            return success([], "暂无画像会话学习路径")
+        paths = mysql_db.query_all("SELECT * FROM study_path WHERE user_id=%s AND profile_session_id=%s ORDER BY create_time DESC", (request.user_id, session["id"]))
         return success(paths, "查询成功")
     except Exception as exc:
         return fail("学习路径查询失败", 500, {"error": str(exc)})

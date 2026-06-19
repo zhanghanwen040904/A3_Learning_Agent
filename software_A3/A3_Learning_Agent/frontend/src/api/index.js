@@ -1,6 +1,30 @@
 import axios from "axios";
 import router from "../router";
 
+export const ACTIVE_PROFILE_SESSION_KEY = "a3_active_profile_session_id";
+
+export function activeProfileSessionId() {
+  return localStorage.getItem(ACTIVE_PROFILE_SESSION_KEY) || "";
+}
+
+export function setActiveProfileSessionId(id) {
+  if (id) {
+    localStorage.setItem(ACTIVE_PROFILE_SESSION_KEY, String(id));
+  } else {
+    localStorage.removeItem(ACTIVE_PROFILE_SESSION_KEY);
+  }
+}
+
+function withProfileSession(data = {}) {
+  const sessionId = activeProfileSessionId();
+  return sessionId ? { ...data, profile_session_id: Number(sessionId) } : data;
+}
+
+function profileSessionParams(params = {}) {
+  const sessionId = activeProfileSessionId();
+  return sessionId ? { ...params, profile_session_id: sessionId } : params;
+}
+
 const http = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api",
   timeout: 120000,
@@ -21,6 +45,7 @@ http.interceptors.response.use(
     if (error.response?.status === 401 || data?.code === 401) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+      localStorage.removeItem(ACTIVE_PROFILE_SESSION_KEY);
       if (router.currentRoute.value.path !== "/auth") {
         router.push("/auth");
       }
@@ -35,23 +60,31 @@ export const authApi = {
 };
 
 export const profileApi = {
-  create: (data) => http.post("/profile/create", data),
-  update: (data) => http.post("/profile/update", data),
-  get: () => http.get("/profile/"),
+  sessions: () => http.get("/profile/sessions"),
+  createSession: (data = {}) => http.post("/profile/sessions", data),
+  activateSession: (id) => http.post(`/profile/sessions/${id}/activate`),
+  resetSession: (id) => http.post(`/profile/sessions/${id}/reset`),
+  chat: (data) => http.post("/profile/chat", withProfileSession(data)),
+  create: (data) => http.post("/profile/create", withProfileSession(data)),
+  update: (data) => http.post("/profile/update", withProfileSession(data)),
+  get: () => http.get("/profile/", { params: profileSessionParams() }),
+  getConversation: () => http.get("/profile/conversation", { params: profileSessionParams() }),
+  saveConversation: (data) => http.post("/profile/conversation", withProfileSession(data)),
+  clearConversation: () => http.delete("/profile/conversation", { params: profileSessionParams() }),
 };
 
 export const resourceApi = {
-  generate: (data = {}) => http.post("/resource/generate", data),
-  list: () => http.get("/resource/"),
+  generate: (data = {}) => http.post("/resource/generate", withProfileSession(data)),
+  list: () => http.get("/resource/", { params: profileSessionParams() }),
 };
 
 export const pathApi = {
-  generate: (data = {}) => http.post("/path/generate", data),
-  list: () => http.get("/path/"),
+  generate: (data = {}) => http.post("/path/generate", withProfileSession(data)),
+  list: () => http.get("/path/", { params: profileSessionParams() }),
 };
 
 export const chatApi = {
-  answer: (data) => http.post("/chat/answer", data),
+  answer: (data) => http.post("/chat/answer", withProfileSession(data)),
 };
 
 export const knowledgeApi = {

@@ -1,5 +1,6 @@
 from typing import List
 
+from ai.spark_api import content_audit
 from .base_agent import XunfeiAgentSpec
 
 
@@ -17,6 +18,18 @@ class SafetyAgent:
 
     def review(self, content: str, sources: List[dict]) -> dict:
         source_names = sorted({item.get("source", "unknown") for item in sources})
+        problems = []
         if not sources:
-            return {"passed": True, "risk": "缺少课程知识库依据，内容仅作通用参考", "sources": []}
-        return {"passed": True, "risk": "已基于课程知识库片段生成，并附带引用来源", "sources": source_names}
+            problems.append("缺少课程知识库依据")
+        if not content_audit(content):
+            problems.append("内容安全审核未通过")
+        passed = not problems
+        return {
+            "passed": passed,
+            "risk": "未发现明显风险" if passed else "；".join(problems),
+            "sources": source_names,
+            "checks": {
+                "has_course_sources": bool(sources),
+                "content_audit_passed": content_audit(content),
+            },
+        }

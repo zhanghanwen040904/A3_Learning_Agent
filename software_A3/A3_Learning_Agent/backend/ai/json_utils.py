@@ -7,7 +7,8 @@ def extract_json_object(raw: str) -> Dict[str, Any]:
     if not raw:
         return {}
     text = str(raw).strip()
-    fenced = re.search(r"```(?:json)?\s*([\s\S]*?)\s*```", text, flags=re.IGNORECASE)
+    # 仅在整个模型输出被代码围栏包裹时剥离围栏；资源JSON的content内部可能合法包含Python代码块。
+    fenced = re.fullmatch(r"```(?:json)?\s*([\s\S]*?)\s*```", text, flags=re.IGNORECASE)
     if fenced:
         text = fenced.group(1).strip()
     start = text.find("{")

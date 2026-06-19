@@ -8,7 +8,7 @@ from .base_agent import XunfeiAgentSpec
 class RetrieveAgent:
     """课程检索智能体。
 
-    功能：根据学生画像中的薄弱点，检索《人工智能导论》课程知识库原文片段。
+    功能：根据学生画像中的薄弱点，检索《软件工程》课程知识库原文片段。
     输入：学生画像 JSON 字典。
     输出：检索到的教材原文文本。
     """

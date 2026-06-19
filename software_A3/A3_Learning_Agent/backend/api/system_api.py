@@ -36,6 +36,9 @@ def status():
             {"name": "mastery_record", "label": "掌握度表", "count": _table_count("mastery_record"), "usage": "保存知识点掌握度，用于更新画像和路径"},
             {"name": "learning_event", "label": "学习行为表", "count": _table_count("learning_event"), "usage": "保存答疑、练习、资源访问等学习行为"},
             {"name": "resource_feedback", "label": "资源反馈表", "count": _table_count("resource_feedback"), "usage": "保存学生对资源的评分和反馈"},
+            {"name": "generation_batch", "label": "资源生成批次表", "count": _table_count("generation_batch"), "usage": "保存画像快照、资源计划、trace ID和批次状态"},
+            {"name": "agent_execution", "label": "智能体执行轨迹表", "count": _table_count("agent_execution"), "usage": "保存各智能体状态、评分、返工次数和耗时"},
+            {"name": "resource_source", "label": "资源来源关联表", "count": _table_count("resource_source"), "usage": "保存每项资源对应的RAG教材片段"},
         ]
         ai_status = {
             "mock_ai": config.MOCK_AI,
@@ -55,8 +58,9 @@ def status():
             },
             "content_audit": {
                 "configured": bool(config.CONTENT_AUDIT_API_KEY and config.CONTENT_AUDIT_API_URL),
+                "fallback_enabled": not bool(config.CONTENT_AUDIT_API_KEY and config.CONTENT_AUDIT_API_URL),
                 "api_key": _mask(config.CONTENT_AUDIT_API_KEY),
-                "url": config.CONTENT_AUDIT_API_URL or "未配置",
+                "url": config.CONTENT_AUDIT_API_URL or "未配置，使用本地基础审核兜底",
             },
         }
         return success(

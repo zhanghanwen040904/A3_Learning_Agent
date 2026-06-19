@@ -1,6 +1,8 @@
-from flask import Blueprint, request
+from pathlib import Path
 
-from ai.rag import build_vector_db, rag_status, retrieve_knowledge_items
+from flask import Blueprint, request, send_file
+
+from ai.rag import build_vector_db, generated_kb_dir, rag_status, retrieve_knowledge_items
 from utils import fail, require_fields, success
 from utils.auth_decorator import login_required
 
@@ -39,3 +41,24 @@ def search():
         return success({"items": items}, "检索成功")
     except Exception as exc:
         return fail("知识库检索失败", 500, {"error": str(exc)})
+
+
+@knowledge_bp.get("/image")
+def image():
+    raw_path = request.args.get("path", "").strip()
+    if not raw_path:
+        return fail("缺少图片路径", 400)
+    try:
+        image_root = (generated_kb_dir() / "images").resolve()
+        path = Path(raw_path)
+        if not path.is_absolute():
+            path = image_root / raw_path
+        image_path = path.resolve()
+        if image_root not in image_path.parents and image_path != image_root:
+            return fail("图片路径不在知识库图片目录内", 403)
+        if not image_path.exists() or image_path.suffix.lower() not in {".png", ".jpg", ".jpeg", ".webp", ".gif"}:
+            return fail("图片不存在或格式不支持", 404)
+        return send_file(str(image_path))
+    except Exception as exc:
+        return fail("图片读取失败", 500, {"error": str(exc)})
+

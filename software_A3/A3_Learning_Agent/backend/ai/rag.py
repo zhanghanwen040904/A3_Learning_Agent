@@ -24,12 +24,16 @@ except Exception:
 
 from config import config
 
-_COLLECTION_NAME = "ai_intro_course"
+_COLLECTION_NAME = "software_engineering_course"
 _embedding_model = None
 _chroma_client = None
 _collection = None
 _fallback_chunks: List[dict] = []
 _last_build_result = {"status": "not_built", "chunks": 0, "message": "知识库尚未构建"}
+
+
+def generated_kb_dir() -> Path:
+    return Path(config.RAG_SOURCE_DIR).parent
 
 
 def clean_text(text: str) -> str:
