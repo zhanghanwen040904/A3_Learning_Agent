@@ -1,0 +1,3417 @@
+{
+  "stage": "knowledge_tree",
+  "source_file": "C:\\Users\\ASUS\\Desktop\\新建文件夹 (2)\\第6章 详细设计.pdf",
+  "course": "软件工程",
+  "outline_nodes": [
+    {
+      "node_id": "node_0d3cc5018578",
+      "parent_id": null,
+      "title": "软件工程",
+      "level": 0,
+      "chapter_id": "chapter_0d3cc5018578",
+      "start_page": 1,
+      "path": [
+        "软件工程"
+      ],
+      "paragraph_count": 1,
+      "chunk_count": 0
+    },
+    {
+      "node_id": "node_4b3e9caf96ee",
+      "parent_id": "node_0d3cc5018578",
+      "title": "第六章 详细设计",
+      "level": 1,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 1,
+      "path": [
+        "软件工程",
+        "第六章 详细设计"
+      ],
+      "paragraph_count": 1,
+      "chunk_count": 0
+    },
+    {
+      "node_id": "node_8a926f0fd079",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "详细设计概述",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 3,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "详细设计概述"
+      ],
+      "paragraph_count": 33,
+      "chunk_count": 5
+    },
+    {
+      "node_id": "node_99144d8cce5a",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "详细设计的参与者",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 8,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "详细设计的参与者"
+      ],
+      "paragraph_count": 5,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_05e235c388c2",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "学习目标",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 10,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "学习目标"
+      ],
+      "paragraph_count": 2,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_7fd43f5738c3",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "6.1 结构程序设计",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 11,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "6.1 结构程序设计"
+      ],
+      "paragraph_count": 3,
+      "chunk_count": 3
+    },
+    {
+      "node_id": "node_01613ea9e5ea",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "“结构化”起源：对GOTO的认识",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 12,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "“结构化”起源：对GOTO的认识"
+      ],
+      "paragraph_count": 6,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_7f64ec28add4",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "1. 自顶向下,逐步求精",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 16,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "1. 自顶向下,逐步求精"
+      ],
+      "paragraph_count": 8,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_c0e732d28454",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "2.有限制的使用GOTO语句",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 21,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "2.有限制的使用GOTO语句"
+      ],
+      "paragraph_count": 13,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_f248514164c2",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "举例",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 22,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "举例"
+      ],
+      "paragraph_count": 6,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_64186552b376",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "o 顺序结构，先执行A再执行B o IF_THEN_ELSE型选择（分支）结构 o DO_WHILE型循环结构：",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 25,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "o 顺序结构，先执行A再执行B o IF_THEN_ELSE型选择（分支）结构 o DO_WHILE型循环结构："
+      ],
+      "paragraph_count": 15,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_53df639a6ca7",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "DO_CASE型多分支结构和DO_UNTIL型循环 结构。",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 26,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "DO_CASE型多分支结构和DO_UNTIL型循环 结构。"
+      ],
+      "paragraph_count": 12,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_b43fa97b5675",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "6.2 人机界面设计",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 28,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "6.2 人机界面设计"
+      ],
+      "paragraph_count": 8,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_4cdbec5cd96f",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "菜单",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 30,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "菜单"
+      ],
+      "paragraph_count": 6,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_4dbf25f3dc26",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "图像",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 31,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "图像"
+      ],
+      "paragraph_count": 2,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_7684d033ef7e",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "对话框",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 32,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "对话框"
+      ],
+      "paragraph_count": 5,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_9267515417a7",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "窗口",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 33,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "窗口"
+      ],
+      "paragraph_count": 6,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_86799aaf5018",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "下图描述了一个包括多个部件的窗口",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 34,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "下图描述了一个包括多个部件的窗口"
+      ],
+      "paragraph_count": 17,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_7dc33080463d",
+      "parent_id": "node_86799aaf5018",
+      "title": "6.2.1 设计问题",
+      "level": 3,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 40,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "下图描述了一个包括多个部件的窗口",
+        "6.2.1 设计问题"
+      ],
+      "paragraph_count": 10,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_507c06eba056",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "具体设计帮助设施时，需要确定",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 43,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "具体设计帮助设施时，需要确定"
+      ],
+      "paragraph_count": 14,
+      "chunk_count": 0
+    },
+    {
+      "node_id": "node_7cc9f24d695a",
+      "parent_id": "node_507c06eba056",
+      "title": "6.2.2 设计过程",
+      "level": 3,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 46,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "具体设计帮助设施时，需要确定",
+        "6.2.2 设计过程"
+      ],
+      "paragraph_count": 10,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_1f8ecee39f3a",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "评估标准",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 50,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "评估标准"
+      ],
+      "paragraph_count": 5,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_b5f41597c6cd",
+      "parent_id": "node_1f8ecee39f3a",
+      "title": "6.2.3 人机界面设计指南",
+      "level": 3,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 51,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "评估标准",
+        "6.2.3 人机界面设计指南"
+      ],
+      "paragraph_count": 2,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_84eb6e1bf7c6",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "一般交互指南",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 52,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "一般交互指南"
+      ],
+      "paragraph_count": 2,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_abcb7bdfe6c8",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "信息显示指南",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 53,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "信息显示指南"
+      ],
+      "paragraph_count": 4,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_3b8a289eea06",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "信息显示界面设计",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 55,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "信息显示界面设计"
+      ],
+      "paragraph_count": 5,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_61fd20eacfca",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "数据输入指南",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 57,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "数据输入指南"
+      ],
+      "paragraph_count": 3,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_3408e67dbbd2",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "数据输入界面设计",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 58,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "数据输入界面设计"
+      ],
+      "paragraph_count": 22,
+      "chunk_count": 2
+    },
+    {
+      "node_id": "node_c85801ddeb26",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "根据调研资料直接设计某些表，满足第三范式",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 63,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "根据调研资料直接设计某些表，满足第三范式"
+      ],
+      "paragraph_count": 7,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_e36d500e39a0",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "6.3 过程设计的工具",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 65,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "6.3 过程设计的工具"
+      ],
+      "paragraph_count": 4,
+      "chunk_count": 0
+    },
+    {
+      "node_id": "node_5d9d9ae14e44",
+      "parent_id": "node_e36d500e39a0",
+      "title": "6.3.1 程序流程图（Program Flow Chart）",
+      "level": 3,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 66,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "6.3 过程设计的工具",
+        "6.3.1 程序流程图（Program Flow Chart）"
+      ],
+      "paragraph_count": 1,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_3843138235c9",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "五种基本控制结构",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 67,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "五种基本控制结构"
+      ],
+      "paragraph_count": 6,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_1a9ef5cfe411",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "将下面给出的伪码转换为流程图",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 72,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "将下面给出的伪码转换为流程图"
+      ],
+      "paragraph_count": 27,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_498cfb2f2b46",
+      "parent_id": "node_1a9ef5cfe411",
+      "title": "6.3.2 盒图（N-S图）",
+      "level": 3,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 75,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "将下面给出的伪码转换为流程图",
+        "6.3.2 盒图（N-S图）"
+      ],
+      "paragraph_count": 8,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_db26b96d7df5",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "五种基本控制结构",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 76,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "五种基本控制结构"
+      ],
+      "paragraph_count": 27,
+      "chunk_count": 0
+    },
+    {
+      "node_id": "node_7e0274b2c4a9",
+      "parent_id": "node_db26b96d7df5",
+      "title": "6.3.3 PAD图",
+      "level": 3,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 79,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "五种基本控制结构",
+        "6.3.3 PAD图"
+      ],
+      "paragraph_count": 4,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_ca4b0de86b63",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "上分支为真",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 80,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "上分支为真"
+      ],
+      "paragraph_count": 21,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_c3b99a7cc7f1",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "使用PAD图提供的def功能逐步求精",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 82,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "使用PAD图提供的def功能逐步求精"
+      ],
+      "paragraph_count": 13,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_9a413abec0ee",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "举例：将下列伪代码转换成PAD表示",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 83,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "举例：将下列伪代码转换成PAD表示"
+      ],
+      "paragraph_count": 11,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_d38aa003a6cc",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "判定表的组成",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 89,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "判定表的组成"
+      ],
+      "paragraph_count": 7,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_7d118b09b751",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "o 问题描述：“…某公司规定，对于大于70马",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 91,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "o 问题描述：“…某公司规定，对于大于70马"
+      ],
+      "paragraph_count": 9,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_8b5a5484ba70",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "o 缺点：",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 93,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "o 缺点："
+      ],
+      "paragraph_count": 1,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_58c7ecd58501",
+      "parent_id": "node_8b5a5484ba70",
+      "title": "6.3.5 判定树",
+      "level": 3,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 94,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "o 缺点：",
+        "6.3.5 判定树"
+      ],
+      "paragraph_count": 7,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_3bc1776c1449",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "判定树",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 100,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "判定树"
+      ],
+      "paragraph_count": 8,
+      "chunk_count": 0
+    },
+    {
+      "node_id": "node_2c99d887b47b",
+      "parent_id": "node_3bc1776c1449",
+      "title": "6.3.6 过程设计语言",
+      "level": 3,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 101,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "判定树",
+        "6.3.6 过程设计语言"
+      ],
+      "paragraph_count": 5,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_0a3092dcff82",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "过程设计的工具",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 102,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "过程设计的工具"
+      ],
+      "paragraph_count": 7,
+      "chunk_count": 6
+    },
+    {
+      "node_id": "node_d1ccb38dd285",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "PDL语言",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 105,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "PDL语言"
+      ],
+      "paragraph_count": 6,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_887d543c62ba",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "各种工具的比较",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 106,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "各种工具的比较"
+      ],
+      "paragraph_count": 15,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_3ef52f440302",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "6.5 程序复杂性定量度量",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 107,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "6.5 程序复杂性定量度量"
+      ],
+      "paragraph_count": 3,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_d3eaeed72bcc",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "定量度量程序复杂性的价值",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 108,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "定量度量程序复杂性的价值"
+      ],
+      "paragraph_count": 1,
+      "chunk_count": 0
+    },
+    {
+      "node_id": "node_072c869af8a2",
+      "parent_id": "node_d3eaeed72bcc",
+      "title": "(1) 把程序的复杂程度乘以适当常数即可估",
+      "level": 3,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 108,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "定量度量程序复杂性的价值",
+        "(1) 把程序的复杂程度乘以适当常数即可估"
+      ],
+      "paragraph_count": 1,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_43e425c92ae3",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "程序复杂性含义",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 109,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "程序复杂性含义"
+      ],
+      "paragraph_count": 4,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_43af4cdac5b2",
+      "parent_id": "node_43e425c92ae3",
+      "title": "5.5.1 McCabe方法",
+      "level": 3,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 110,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "程序复杂性含义",
+        "5.5.1 McCabe方法"
+      ],
+      "paragraph_count": 3,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_b94d0e938b25",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "流图",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 111,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "流图"
+      ],
+      "paragraph_count": 4,
+      "chunk_count": 4
+    },
+    {
+      "node_id": "node_ea0d7ec53173",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "顺序结构的结点可以合并",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 116,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "顺序结构的结点可以合并"
+      ],
+      "paragraph_count": 13,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_b33c1014f999",
+      "parent_id": "node_ea0d7ec53173",
+      "title": "(2) 流图G的环形复杂度",
+      "level": 3,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 118,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "顺序结构的结点可以合并",
+        "(2) 流图G的环形复杂度"
+      ],
+      "paragraph_count": 3,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_35bd81a254f9",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "o 根据程序流程图计算",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 120,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "o 根据程序流程图计算"
+      ],
+      "paragraph_count": 10,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_5ce94e514d79",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "环形复杂度计算的例子",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 121,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "环形复杂度计算的例子"
+      ],
+      "paragraph_count": 8,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_a9c074d5aca3",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "即:11-9+2=4",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 122,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "即:11-9+2=4"
+      ],
+      "paragraph_count": 13,
+      "chunk_count": 0
+    },
+    {
+      "node_id": "node_8800b2b6e349",
+      "parent_id": "node_a9c074d5aca3",
+      "title": "5.5.2 Halstead方法",
+      "level": 3,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 127,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "即:11-9+2=4",
+        "5.5.2 Halstead方法"
+      ],
+      "paragraph_count": 3,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_69992b802e10",
+      "parent_id": "node_4b3e9caf96ee",
+      "title": "程序的潜在错误",
+      "level": 2,
+      "chapter_id": "chapter_8ae0e395a4ac",
+      "start_page": 130,
+      "path": [
+        "软件工程",
+        "第六章 详细设计",
+        "程序的潜在错误"
+      ],
+      "paragraph_count": 7,
+      "chunk_count": 1
+    }
+  ],
+  "knowledge_points": [
+    {
+      "chunk_id": "chunk_6c1e74d078b0",
+      "parent_node_id": "node_8a926f0fd079",
+      "title": "详细设计的根本目标",
+      "pages": [
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 135,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_a8b29301c799",
+      "parent_node_id": "node_8a926f0fd079",
+      "title": "详细设计的定义与性质",
+      "pages": [
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 155,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_99b1f2df22e4",
+      "parent_node_id": "node_8a926f0fd079",
+      "title": "详细设计的基本任务",
+      "pages": [
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 129,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_4d222f461239",
+      "parent_node_id": "node_8a926f0fd079",
+      "title": "详细设计的主要内容",
+      "pages": [
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 55,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_014ca72e5f2f",
+      "parent_node_id": "node_8a926f0fd079",
+      "title": "详细设计的过程",
+      "pages": [
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 73,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_a1ad27f88fad",
+      "parent_node_id": "node_99144d8cce5a",
+      "title": "详细设计的参与者",
+      "pages": [
+        8
+      ],
+      "method": "rule",
+      "char_count": 204,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_0b4cc3562c5c",
+      "parent_node_id": "node_05e235c388c2",
+      "title": "学习目标",
+      "pages": [
+        10
+      ],
+      "method": "rule",
+      "char_count": 92,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_e021c3ea1894",
+      "parent_node_id": "node_7fd43f5738c3",
+      "title": "结构程序设计定义",
+      "pages": [
+        11,
+        13,
+        14,
+        15
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 149,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_59cbc97b7e34",
+      "parent_node_id": "node_7fd43f5738c3",
+      "title": "结构程序设计要点",
+      "pages": [
+        11,
+        13,
+        14,
+        15
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 96,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_136221a1c393",
+      "parent_node_id": "node_7fd43f5738c3",
+      "title": "自顶向下逐步求精方法",
+      "pages": [
+        11,
+        13,
+        14,
+        15
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 62,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_a8eaf630112b",
+      "parent_node_id": "node_01613ea9e5ea",
+      "title": "“结构化”起源：对GOTO的认识",
+      "pages": [
+        12
+      ],
+      "method": "rule",
+      "char_count": 322,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_0f23767b91fd",
+      "parent_node_id": "node_7f64ec28add4",
+      "title": "1. 自顶向下,逐步求精",
+      "pages": [
+        16,
+        17,
+        20
+      ],
+      "method": "rule",
+      "char_count": 210,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_3e63e15e373e",
+      "parent_node_id": "node_c0e732d28454",
+      "title": "2.有限制的使用GOTO语句",
+      "pages": [
+        21
+      ],
+      "method": "rule",
+      "char_count": 230,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_9a80e74f9638",
+      "parent_node_id": "node_f248514164c2",
+      "title": "单入口单出口原则",
+      "pages": [
+        22,
+        23,
+        24
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 74,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_33f2b25e5a1e",
+      "parent_node_id": "node_64186552b376",
+      "title": "o 顺序结构，先执行A再执行B o IF_THEN_ELSE型选择（分支）结构 o DO_WHILE型循环结构：",
+      "pages": [
+        25
+      ],
+      "method": "rule",
+      "char_count": 78,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_4ffb14680446",
+      "parent_node_id": "node_53df639a6ca7",
+      "title": "DO_CASE型多分支结构和DO_UNTIL型循环 结构。",
+      "pages": [
+        26,
+        27
+      ],
+      "method": "rule",
+      "char_count": 201,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_cfbdf9724f30",
+      "parent_node_id": "node_b43fa97b5675",
+      "title": "6.2 人机界面设计",
+      "pages": [
+        28,
+        29
+      ],
+      "method": "rule",
+      "char_count": 226,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_c70692fd3757",
+      "parent_node_id": "node_4cdbec5cd96f",
+      "title": "菜单",
+      "pages": [
+        30
+      ],
+      "method": "rule",
+      "char_count": 79,
+      "images": [
+        {
+          "image_id": "第6章 详细设计_p030_i05",
+          "page": 30,
+          "file_name": "page_030_img_05.jpeg",
+          "path": "images/第6章 详细设计/page_030_img_05.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_030_img_05.jpeg",
+          "width": 571,
+          "height": 250,
+          "file_size": 38006,
+          "ext": "jpeg",
+          "xref": 547,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "screenshot",
+          "caption": "CAIPrepare软件界面截图，展示了包含菜单、工具栏及课程目录树的用户界面布局。",
+          "related_chunk_ids": [
+            "chunk_c70692fd3757"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        },
+        {
+          "image_id": "第6章 详细设计_p030_i06",
+          "page": 30,
+          "file_name": "page_030_img_06.jpeg",
+          "path": "images/第6章 详细设计/page_030_img_06.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_030_img_06.jpeg",
+          "width": 476,
+          "height": 923,
+          "file_size": 34858,
+          "ext": "jpeg",
+          "xref": 548,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "screenshot",
+          "caption": "Windows操作系统开始菜单界面的截图，展示了最近添加、字母索引及固定程序列表的布局。",
+          "related_chunk_ids": [
+            "chunk_c70692fd3757"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        }
+      ]
+    },
+    {
+      "chunk_id": "chunk_b1105e02aabd",
+      "parent_node_id": "node_4dbf25f3dc26",
+      "title": "图像",
+      "pages": [
+        31
+      ],
+      "method": "rule",
+      "char_count": 65,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_203699ecbbdf",
+      "parent_node_id": "node_7684d033ef7e",
+      "title": "对话框",
+      "pages": [
+        32
+      ],
+      "method": "rule",
+      "char_count": 128,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_1814e8f0c754",
+      "parent_node_id": "node_9267515417a7",
+      "title": "窗口",
+      "pages": [
+        33
+      ],
+      "method": "rule",
+      "char_count": 182,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_e1ea5d6358e8",
+      "parent_node_id": "node_86799aaf5018",
+      "title": "下图描述了一个包括多个部件的窗口",
+      "pages": [
+        34,
+        35,
+        36,
+        37,
+        38,
+        39
+      ],
+      "method": "rule",
+      "char_count": 265,
+      "images": [
+        {
+          "image_id": "第6章 详细设计_p034_i02",
+          "page": 34,
+          "file_name": "page_034_img_02.jpeg",
+          "path": "images/第6章 详细设计/page_034_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_034_img_02.jpeg",
+          "width": 368,
+          "height": 281,
+          "file_size": 33019,
+          "ext": "jpeg",
+          "xref": 564,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "screenshot",
+          "caption": "一个包含菜单区、图标区、滚动区、对话框等组件的图形用户界面（GUI）窗口结构示例图。",
+          "related_chunk_ids": [
+            "chunk_e1ea5d6358e8"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        },
+        {
+          "image_id": "第6章 详细设计_p034_i03",
+          "page": 34,
+          "file_name": "page_034_img_03.jpeg",
+          "path": "images/第6章 详细设计/page_034_img_03.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_034_img_03.jpeg",
+          "width": 1024,
+          "height": 768,
+          "file_size": 152608,
+          "ext": "jpeg",
+          "xref": 565,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "screenshot",
+          "caption": "Adobe Photoshop 软件界面截图，展示了包含菜单栏、工具栏、工作区及面板的窗口布局结构。",
+          "related_chunk_ids": [
+            "chunk_e1ea5d6358e8"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        },
+        {
+          "image_id": "第6章 详细设计_p035_i05",
+          "page": 35,
+          "file_name": "page_035_img_05.jpeg",
+          "path": "images/第6章 详细设计/page_035_img_05.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_035_img_05.jpeg",
+          "width": 1206,
+          "height": 764,
+          "file_size": 54764,
+          "ext": "jpeg",
+          "xref": 574,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "diagram",
+          "caption": "图书馆系统功能结构图，展示了系统顶层模块及其下属功能（如借书、还书、打印报表等）的层级关系。",
+          "related_chunk_ids": [
+            "chunk_e1ea5d6358e8"
+          ],
+          "confidence": 0.9,
+          "reject_reason": ""
+        },
+        {
+          "image_id": "第6章 详细设计_p037_i02",
+          "page": 37,
+          "file_name": "page_037_img_02.jpeg",
+          "path": "images/第6章 详细设计/page_037_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_037_img_02.jpeg",
+          "width": 681,
+          "height": 297,
+          "file_size": 41725,
+          "ext": "jpeg",
+          "xref": 580,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "screenshot",
+          "caption": "展示了一个软件系统的多层次菜单界面示例，包含文件、编辑等下拉菜单及工具栏按钮。",
+          "related_chunk_ids": [
+            "chunk_e1ea5d6358e8"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        },
+        {
+          "image_id": "第6章 详细设计_p039_i02",
+          "page": 39,
+          "file_name": "page_039_img_02.jpeg",
+          "path": "images/第6章 详细设计/page_039_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_039_img_02.jpeg",
+          "width": 583,
+          "height": 424,
+          "file_size": 48392,
+          "ext": "jpeg",
+          "xref": 585,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "screenshot",
+          "caption": "微星图书馆管理系统增强版的界面示例，展示了包含采购、编目、入藏等功能的菜单结构。",
+          "related_chunk_ids": [
+            "chunk_e1ea5d6358e8"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        }
+      ]
+    },
+    {
+      "chunk_id": "chunk_843d4bece004",
+      "parent_node_id": "node_7dc33080463d",
+      "title": "6.2.1 设计问题",
+      "pages": [
+        40,
+        41,
+        42
+      ],
+      "method": "rule",
+      "char_count": 259,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_831f65c6fffc",
+      "parent_node_id": "node_7cc9f24d695a",
+      "title": "6.2.2 设计过程",
+      "pages": [
+        46,
+        47,
+        48,
+        49
+      ],
+      "method": "rule",
+      "char_count": 250,
+      "images": [
+        {
+          "image_id": "第6章 详细设计_p047_i02",
+          "page": 47,
+          "file_name": "page_047_img_02.jpeg",
+          "path": "images/第6章 详细设计/page_047_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_047_img_02.jpeg",
+          "width": 1557,
+          "height": 944,
+          "file_size": 135050,
+          "ext": "jpeg",
+          "xref": 602,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "screenshot",
+          "caption": "Axure RP原型设计工具界面截图，展示了电商APP界面的组件层级结构与属性面板。",
+          "related_chunk_ids": [
+            "chunk_831f65c6fffc"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        },
+        {
+          "image_id": "第6章 详细设计_p048_i02",
+          "page": 48,
+          "file_name": "page_048_img_02.jpeg",
+          "path": "images/第6章 详细设计/page_048_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_048_img_02.jpeg",
+          "width": 1920,
+          "height": 1078,
+          "file_size": 136975,
+          "ext": "jpeg",
+          "xref": 605,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "screenshot",
+          "caption": "展示使用原型设计工具（Modao）进行移动端用户界面交互设计的操作界面示例。",
+          "related_chunk_ids": [
+            "chunk_831f65c6fffc"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        }
+      ]
+    },
+    {
+      "chunk_id": "chunk_d361d918d113",
+      "parent_node_id": "node_1f8ecee39f3a",
+      "title": "评估标准",
+      "pages": [
+        50
+      ],
+      "method": "rule",
+      "char_count": 188,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_cdbd797c3478",
+      "parent_node_id": "node_b5f41597c6cd",
+      "title": "6.2.3 人机界面设计指南",
+      "pages": [
+        51
+      ],
+      "method": "rule",
+      "char_count": 87,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_d4895a3364fa",
+      "parent_node_id": "node_84eb6e1bf7c6",
+      "title": "一般交互指南",
+      "pages": [
+        52
+      ],
+      "method": "rule",
+      "char_count": 197,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_210d11c66392",
+      "parent_node_id": "node_abcb7bdfe6c8",
+      "title": "信息显示指南",
+      "pages": [
+        53,
+        54
+      ],
+      "method": "rule",
+      "char_count": 250,
+      "images": [
+        {
+          "image_id": "第6章 详细设计_p054_i02",
+          "page": 54,
+          "file_name": "page_054_img_02.jpeg",
+          "path": "images/第6章 详细设计/page_054_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_054_img_02.jpeg",
+          "width": 800,
+          "height": 600,
+          "file_size": 95227,
+          "ext": "jpeg",
+          "xref": 619,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "screenshot",
+          "caption": "继电器测试系统数据管理界面的截图，展示了参数选择、数据显示表格及操作按钮等用户界面元素。",
+          "related_chunk_ids": [
+            "chunk_210d11c66392"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        }
+      ]
+    },
+    {
+      "chunk_id": "chunk_76b8b0dbd48c",
+      "parent_node_id": "node_3b8a289eea06",
+      "title": "信息显示界面设计",
+      "pages": [
+        55,
+        56
+      ],
+      "method": "rule",
+      "char_count": 146,
+      "images": [
+        {
+          "image_id": "第6章 详细设计_p056_i02",
+          "page": 56,
+          "file_name": "page_056_img_02.jpeg",
+          "path": "images/第6章 详细设计/page_056_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_056_img_02.jpeg",
+          "width": 800,
+          "height": 600,
+          "file_size": 114187,
+          "ext": "jpeg",
+          "xref": 624,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "screenshot",
+          "caption": "JHX-3F继电器时间电压关系曲线分析的软件界面截图，展示了触点吸合与释放时间的波形图及数据。",
+          "related_chunk_ids": [
+            "chunk_76b8b0dbd48c"
+          ],
+          "confidence": 0.8,
+          "reject_reason": ""
+        }
+      ]
+    },
+    {
+      "chunk_id": "chunk_4a499c4fa85a",
+      "parent_node_id": "node_61fd20eacfca",
+      "title": "数据输入指南",
+      "pages": [
+        57
+      ],
+      "method": "rule",
+      "char_count": 166,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_c5a9b8237ef0",
+      "parent_node_id": "node_3408e67dbbd2",
+      "title": "数据输入界面设计原则",
+      "pages": [
+        58,
+        59,
+        60,
+        61,
+        62,
+        63
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 151,
+      "images": [
+        {
+          "image_id": "第6章 详细设计_p059_i02",
+          "page": 59,
+          "file_name": "page_059_img_02.jpeg",
+          "path": "images/第6章 详细设计/page_059_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_059_img_02.jpeg",
+          "width": 800,
+          "height": 600,
+          "file_size": 75560,
+          "ext": "jpeg",
+          "xref": 631,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "screenshot",
+          "caption": "JHX-3R继电器测试系统的主界面设计示例，展示了数据输入控件、功能按钮布局及状态显示区域。",
+          "related_chunk_ids": [
+            "chunk_c5a9b8237ef0",
+            "chunk_712272d12909"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        }
+      ]
+    },
+    {
+      "chunk_id": "chunk_712272d12909",
+      "parent_node_id": "node_3408e67dbbd2",
+      "title": "数据输入界面设计流程",
+      "pages": [
+        58,
+        59,
+        60,
+        61,
+        62,
+        63
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 76,
+      "images": [
+        {
+          "image_id": "第6章 详细设计_p059_i02",
+          "page": 59,
+          "file_name": "page_059_img_02.jpeg",
+          "path": "images/第6章 详细设计/page_059_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_059_img_02.jpeg",
+          "width": 800,
+          "height": 600,
+          "file_size": 75560,
+          "ext": "jpeg",
+          "xref": 631,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "screenshot",
+          "caption": "JHX-3R继电器测试系统的主界面设计示例，展示了数据输入控件、功能按钮布局及状态显示区域。",
+          "related_chunk_ids": [
+            "chunk_c5a9b8237ef0",
+            "chunk_712272d12909"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        }
+      ]
+    },
+    {
+      "chunk_id": "chunk_d42d388ea3ee",
+      "parent_node_id": "node_c85801ddeb26",
+      "title": "根据调研资料直接设计某些表，满足第三范式",
+      "pages": [
+        64
+      ],
+      "method": "rule",
+      "char_count": 215,
+      "images": [
+        {
+          "image_id": "第6章 详细设计_p064_i02",
+          "page": 64,
+          "file_name": "page_064_img_02.jpeg",
+          "path": "images/第6章 详细设计/page_064_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_064_img_02.jpeg",
+          "width": 458,
+          "height": 382,
+          "file_size": 32772,
+          "ext": "jpeg",
+          "xref": 686,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "screenshot",
+          "caption": "借书证办理系统的用户界面设计示例，展示了基本信息输入表单及功能按钮布局。",
+          "related_chunk_ids": [
+            "chunk_d42d388ea3ee"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        }
+      ]
+    },
+    {
+      "chunk_id": "chunk_b09480452003",
+      "parent_node_id": "node_5d9d9ae14e44",
+      "title": "6.3.1 程序流程图（Program Flow Chart）",
+      "pages": [
+        66
+      ],
+      "method": "rule",
+      "char_count": 51,
+      "images": [
+        {
+          "image_id": "第6章 详细设计_p066_i02",
+          "page": 66,
+          "file_name": "page_066_img_02.jpeg",
+          "path": "images/第6章 详细设计/page_066_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_066_img_02.jpeg",
+          "width": 607,
+          "height": 259,
+          "file_size": 15535,
+          "ext": "jpeg",
+          "xref": 692,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "diagram",
+          "caption": "程序流程图（Program Flow Chart）中使用的各种标准符号及其含义示意图。",
+          "related_chunk_ids": [
+            "chunk_b09480452003"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        }
+      ]
+    },
+    {
+      "chunk_id": "merged_d65ef92febc6",
+      "parent_node_id": "node_3843138235c9",
+      "title": "五种基本控制结构",
+      "pages": [
+        67,
+        68,
+        69,
+        71,
+        76,
+        77,
+        78
+      ],
+      "method": "merged",
+      "char_count": 241,
+      "images": [
+        {
+          "image_id": "第6章 详细设计_p067_i05",
+          "page": 67,
+          "file_name": "page_067_img_05.jpeg",
+          "path": "images/第6章 详细设计/page_067_img_05.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_067_img_05.jpeg",
+          "width": 437,
+          "height": 337,
+          "file_size": 13330,
+          "ext": "jpeg",
+          "xref": 698,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "flowchart",
+          "caption": "多分支选择结构（Case语句）的程序流程图",
+          "related_chunk_ids": [
+            "merged_d65ef92febc6"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        },
+        {
+          "image_id": "第6章 详细设计_p068_i02",
+          "page": 68,
+          "file_name": "page_068_img_02.jpeg",
+          "path": "images/第6章 详细设计/page_068_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_068_img_02.jpeg",
+          "width": 432,
+          "height": 354,
+          "file_size": 26232,
+          "ext": "jpeg",
+          "xref": 701,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "diagram",
+          "caption": "展示了while型和until型循环结构的盒图（N-S图）表示法。",
+          "related_chunk_ids": [
+            "merged_d65ef92febc6"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        },
+        {
+          "image_id": "第6章 详细设计_p068_i03",
+          "page": 68,
+          "file_name": "page_068_img_03.jpeg",
+          "path": "images/第6章 详细设计/page_068_img_03.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_068_img_03.jpeg",
+          "width": 312,
+          "height": 285,
+          "file_size": 14571,
+          "ext": "jpeg",
+          "xref": 702,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "diagram",
+          "caption": "程序流程图中盒图（N-S图）的嵌套定义形式，展示了数据、处理步骤及注解的结构。",
+          "related_chunk_ids": [
+            "merged_d65ef92febc6"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        },
+        {
+          "image_id": "第6章 详细设计_p069_i02",
+          "page": 69,
+          "file_name": "page_069_img_02.jpeg",
+          "path": "images/第6章 详细设计/page_069_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_069_img_02.jpeg",
+          "width": 728,
+          "height": 259,
+          "file_size": 17428,
+          "ext": "jpeg",
+          "xref": 705,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "diagram",
+          "caption": "展示了三种多分支选择结构的流程图符号表示法，包括条件值判断和Case结构。",
+          "related_chunk_ids": [
+            "merged_d65ef92febc6"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        },
+        {
+          "image_id": "第6章 详细设计_p077_i02",
+          "page": 77,
+          "file_name": "page_077_img_02.jpeg",
+          "path": "images/第6章 详细设计/page_077_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_077_img_02.jpeg",
+          "width": 792,
+          "height": 278,
+          "file_size": 26884,
+          "ext": "jpeg",
+          "xref": 741,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "diagram",
+          "caption": "盒图（N-S图）的嵌套定义形式及循环结构示例",
+          "related_chunk_ids": [
+            "merged_d65ef92febc6"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        },
+        {
+          "image_id": "第6章 详细设计_p078_i02",
+          "page": 78,
+          "file_name": "page_078_img_02.jpeg",
+          "path": "images/第6章 详细设计/page_078_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_078_img_02.jpeg",
+          "width": 560,
+          "height": 337,
+          "file_size": 26847,
+          "ext": "jpeg",
+          "xref": 744,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "diagram",
+          "caption": "一张展示复杂嵌套控制结构的盒图（N-S图），包含顺序、选择（Case）和循环（DO-WHILE, DO-UNTIL）结构。",
+          "related_chunk_ids": [
+            "merged_d65ef92febc6"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        }
+      ]
+    },
+    {
+      "chunk_id": "chunk_107e6c332847",
+      "parent_node_id": "node_1a9ef5cfe411",
+      "title": "程序流程图",
+      "pages": [
+        72,
+        73,
+        74
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 129,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_47dfc662f92a",
+      "parent_node_id": "node_498cfb2f2b46",
+      "title": "6.3.2 盒图（N-S图）",
+      "pages": [
+        75
+      ],
+      "method": "rule",
+      "char_count": 192,
+      "images": []
+    },
+    {
+      "chunk_id": "merged_68c9c061a499",
+      "parent_node_id": "node_7e0274b2c4a9",
+      "title": "PAD图",
+      "pages": [
+        79,
+        84
+      ],
+      "method": "merged",
+      "char_count": 270,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_152a2bc09cfd",
+      "parent_node_id": "node_ca4b0de86b63",
+      "title": "上分支为真",
+      "pages": [
+        80
+      ],
+      "method": "rule",
+      "char_count": 148,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_f89613b9f371",
+      "parent_node_id": "node_c3b99a7cc7f1",
+      "title": "使用PAD图提供的def功能逐步求精",
+      "pages": [
+        82
+      ],
+      "method": "rule",
+      "char_count": 71,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_a9af57404e19",
+      "parent_node_id": "node_9a413abec0ee",
+      "title": "举例：将下列伪代码转换成PAD表示",
+      "pages": [
+        83
+      ],
+      "method": "rule",
+      "char_count": 151,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_6c682b1348bd",
+      "parent_node_id": "node_d38aa003a6cc",
+      "title": "判定表的组成",
+      "pages": [
+        89,
+        90,
+        91
+      ],
+      "method": "rule",
+      "char_count": 133,
+      "images": [
+        {
+          "image_id": "第6章 详细设计_p090_i02",
+          "page": 90,
+          "file_name": "page_090_img_02.jpeg",
+          "path": "images/第6章 详细设计/page_090_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_090_img_02.jpeg",
+          "width": 656,
+          "height": 356,
+          "file_size": 43522,
+          "ext": "jpeg",
+          "xref": 771,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "table",
+          "caption": "判定表示例，展示了发货单金额和赊欠情况作为条件，以及不发出批准书、发出批准书等作为操作条目的逻辑组合。",
+          "related_chunk_ids": [
+            "chunk_6c682b1348bd"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        }
+      ]
+    },
+    {
+      "chunk_id": "chunk_891d32e52bb0",
+      "parent_node_id": "node_7d118b09b751",
+      "title": "o 问题描述：“…某公司规定，对于大于70马",
+      "pages": [
+        91,
+        92,
+        93
+      ],
+      "method": "rule",
+      "char_count": 352,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_a66508f316b2",
+      "parent_node_id": "node_8b5a5484ba70",
+      "title": "o 缺点：",
+      "pages": [
+        93
+      ],
+      "method": "rule",
+      "char_count": 33,
+      "images": []
+    },
+    {
+      "chunk_id": "merged_55665b424401",
+      "parent_node_id": "node_58c7ecd58501",
+      "title": "判定树",
+      "pages": [
+        94,
+        95,
+        100
+      ],
+      "method": "merged",
+      "char_count": 296,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_ad10c27594a1",
+      "parent_node_id": "node_2c99d887b47b",
+      "title": "6.3.6 过程设计语言",
+      "pages": [
+        101
+      ],
+      "method": "rule",
+      "char_count": 199,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_2c39e3cab441",
+      "parent_node_id": "node_0a3092dcff82",
+      "title": "PDL程序的数据说明结构",
+      "pages": [
+        102,
+        103,
+        104
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 105,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_ad7d69c68c97",
+      "parent_node_id": "node_0a3092dcff82",
+      "title": "PDL程序的子程序结构",
+      "pages": [
+        102,
+        103,
+        104
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 62,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_a55cbb7a8049",
+      "parent_node_id": "node_0a3092dcff82",
+      "title": "PDL程序的分程序结构",
+      "pages": [
+        102,
+        103,
+        104
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 41,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_144441bd6741",
+      "parent_node_id": "node_0a3092dcff82",
+      "title": "PDL的选择型内部结构",
+      "pages": [
+        102,
+        103,
+        104
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 84,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_ced421b23a63",
+      "parent_node_id": "node_0a3092dcff82",
+      "title": "PDL的循环型内部结构",
+      "pages": [
+        102,
+        103,
+        104
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 95,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_e384a9d6418d",
+      "parent_node_id": "node_0a3092dcff82",
+      "title": "PDL的CASE型内部结构",
+      "pages": [
+        102,
+        103,
+        104
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 88,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_b2041a0bd047",
+      "parent_node_id": "node_d1ccb38dd285",
+      "title": "PDL语言",
+      "pages": [
+        105
+      ],
+      "method": "rule",
+      "char_count": 180,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_e131e785d409",
+      "parent_node_id": "node_887d543c62ba",
+      "title": "各种工具的比较",
+      "pages": [
+        106
+      ],
+      "method": "rule",
+      "char_count": 210,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_d202f29cf121",
+      "parent_node_id": "node_3ef52f440302",
+      "title": "6.5 程序复杂性定量度量",
+      "pages": [
+        107
+      ],
+      "method": "rule",
+      "char_count": 93,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_efd295e5c5ff",
+      "parent_node_id": "node_072c869af8a2",
+      "title": "(1) 把程序的复杂程度乘以适当常数即可估",
+      "pages": [
+        108
+      ],
+      "method": "rule",
+      "char_count": 25,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_3ee4f5901af9",
+      "parent_node_id": "node_43e425c92ae3",
+      "title": "程序复杂性含义",
+      "pages": [
+        109
+      ],
+      "method": "rule",
+      "char_count": 113,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_c4d332bc5ecb",
+      "parent_node_id": "node_43af4cdac5b2",
+      "title": "5.5.1 McCabe方法",
+      "pages": [
+        110
+      ],
+      "method": "rule",
+      "char_count": 106,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_d89c64bf3028",
+      "parent_node_id": "node_b94d0e938b25",
+      "title": "流图定义与特点",
+      "pages": [
+        111,
+        112,
+        113,
+        114
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 67,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_88055ddada21",
+      "parent_node_id": "node_b94d0e938b25",
+      "title": "流图符号与映射规则",
+      "pages": [
+        111,
+        112,
+        113,
+        114
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 147,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_a600c6d0209d",
+      "parent_node_id": "node_b94d0e938b25",
+      "title": "流图区域计算",
+      "pages": [
+        111,
+        112,
+        113,
+        114
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 40,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_1506320e77f5",
+      "parent_node_id": "node_b94d0e938b25",
+      "title": "复合条件处理",
+      "pages": [
+        111,
+        112,
+        113,
+        114
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 53,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_935ba3b50656",
+      "parent_node_id": "node_ea0d7ec53173",
+      "title": "顺序结构的结点可以合并",
+      "pages": [
+        116,
+        117,
+        118
+      ],
+      "method": "rule",
+      "char_count": 197,
+      "images": [
+        {
+          "image_id": "第6章 详细设计_p117_i02",
+          "page": 117,
+          "file_name": "page_117_img_02.jpeg",
+          "path": "images/第6章 详细设计/page_117_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_117_img_02.jpeg",
+          "width": 959,
+          "height": 1330,
+          "file_size": 81932,
+          "ext": "jpeg",
+          "xref": 847,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "flowchart",
+          "caption": "程序控制流图及其对应的环形复杂度计算区域划分示意图",
+          "related_chunk_ids": [
+            "chunk_935ba3b50656"
+          ],
+          "confidence": 0.98,
+          "reject_reason": ""
+        },
+        {
+          "image_id": "第6章 详细设计_p118_i02",
+          "page": 118,
+          "file_name": "page_118_img_02.jpeg",
+          "path": "images/第6章 详细设计/page_118_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_118_img_02.jpeg",
+          "width": 1225,
+          "height": 1196,
+          "file_size": 113469,
+          "ext": "jpeg",
+          "xref": 850,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "flowchart",
+          "caption": "展示了一个排序过程（sort）的PDL伪代码及其对应的控制流图（流图），用于说明程序逻辑结构。",
+          "related_chunk_ids": [
+            "chunk_935ba3b50656",
+            "merged_155118506a52"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        }
+      ]
+    },
+    {
+      "chunk_id": "merged_155118506a52",
+      "parent_node_id": "node_b33c1014f999",
+      "title": "(2) 流图G的环形复杂度",
+      "pages": [
+        118,
+        119
+      ],
+      "method": "merged",
+      "char_count": 193,
+      "images": [
+        {
+          "image_id": "第6章 详细设计_p118_i02",
+          "page": 118,
+          "file_name": "page_118_img_02.jpeg",
+          "path": "images/第6章 详细设计/page_118_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_118_img_02.jpeg",
+          "width": 1225,
+          "height": 1196,
+          "file_size": 113469,
+          "ext": "jpeg",
+          "xref": 850,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "flowchart",
+          "caption": "展示了一个排序过程（sort）的PDL伪代码及其对应的控制流图（流图），用于说明程序逻辑结构。",
+          "related_chunk_ids": [
+            "chunk_935ba3b50656",
+            "merged_155118506a52"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        }
+      ]
+    },
+    {
+      "chunk_id": "chunk_838b46e248e3",
+      "parent_node_id": "node_35bd81a254f9",
+      "title": "o 根据程序流程图计算",
+      "pages": [
+        120,
+        121
+      ],
+      "method": "rule",
+      "char_count": 69,
+      "images": [
+        {
+          "image_id": "第6章 详细设计_p121_i02",
+          "page": 121,
+          "file_name": "page_121_img_02.jpeg",
+          "path": "images/第6章 详细设计/page_121_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_121_img_02.jpeg",
+          "width": 586,
+          "height": 538,
+          "file_size": 27122,
+          "ext": "jpeg",
+          "xref": 858,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "flowchart",
+          "caption": "一张包含多个判定节点和循环结构的程序流程图，用于说明程序控制流。",
+          "related_chunk_ids": [
+            "chunk_838b46e248e3",
+            "chunk_36f0fc52a82e"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        }
+      ]
+    },
+    {
+      "chunk_id": "chunk_36f0fc52a82e",
+      "parent_node_id": "node_5ce94e514d79",
+      "title": "环形复杂度计算的例子",
+      "pages": [
+        121,
+        122
+      ],
+      "method": "rule",
+      "char_count": 42,
+      "images": [
+        {
+          "image_id": "第6章 详细设计_p121_i02",
+          "page": 121,
+          "file_name": "page_121_img_02.jpeg",
+          "path": "images/第6章 详细设计/page_121_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_121_img_02.jpeg",
+          "width": 586,
+          "height": 538,
+          "file_size": 27122,
+          "ext": "jpeg",
+          "xref": 858,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "flowchart",
+          "caption": "一张包含多个判定节点和循环结构的程序流程图，用于说明程序控制流。",
+          "related_chunk_ids": [
+            "chunk_838b46e248e3",
+            "chunk_36f0fc52a82e"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        }
+      ]
+    },
+    {
+      "chunk_id": "merged_c3d8458d8f60",
+      "parent_node_id": "node_8800b2b6e349",
+      "title": "Halstead方法",
+      "pages": [
+        127,
+        128,
+        129
+      ],
+      "method": "merged",
+      "char_count": 292,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_e2256dcfd05e",
+      "parent_node_id": "node_69992b802e10",
+      "title": "程序的潜在错误",
+      "pages": [
+        130,
+        131
+      ],
+      "method": "rule",
+      "char_count": 347,
+      "images": []
+    }
+  ],
+  "relations": [
+    {
+      "source": "chunk_6c1e74d078b0",
+      "target": "chunk_a8b29301c799",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_a8b29301c799",
+      "target": "chunk_99b1f2df22e4",
+      "type": "next"
+    },
+    {
+      "source": "chunk_a8b29301c799",
+      "target": "chunk_99b1f2df22e4",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_99b1f2df22e4",
+      "target": "chunk_4d222f461239",
+      "type": "next"
+    },
+    {
+      "source": "chunk_99b1f2df22e4",
+      "target": "chunk_4d222f461239",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_4d222f461239",
+      "target": "chunk_014ca72e5f2f",
+      "type": "next"
+    },
+    {
+      "source": "chunk_4d222f461239",
+      "target": "chunk_014ca72e5f2f",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_014ca72e5f2f",
+      "target": "chunk_a1ad27f88fad",
+      "type": "next"
+    },
+    {
+      "source": "chunk_014ca72e5f2f",
+      "target": "chunk_a1ad27f88fad",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_a1ad27f88fad",
+      "target": "chunk_0b4cc3562c5c",
+      "type": "next"
+    },
+    {
+      "source": "chunk_a1ad27f88fad",
+      "target": "chunk_0b4cc3562c5c",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_0b4cc3562c5c",
+      "target": "chunk_e021c3ea1894",
+      "type": "next"
+    },
+    {
+      "source": "chunk_0b4cc3562c5c",
+      "target": "chunk_e021c3ea1894",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_e021c3ea1894",
+      "target": "chunk_59cbc97b7e34",
+      "type": "next"
+    },
+    {
+      "source": "chunk_e021c3ea1894",
+      "target": "chunk_59cbc97b7e34",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_59cbc97b7e34",
+      "target": "chunk_136221a1c393",
+      "type": "next"
+    },
+    {
+      "source": "chunk_a8eaf630112b",
+      "target": "chunk_0f23767b91fd",
+      "type": "next"
+    },
+    {
+      "source": "chunk_a8eaf630112b",
+      "target": "chunk_0f23767b91fd",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_0f23767b91fd",
+      "target": "chunk_3e63e15e373e",
+      "type": "next"
+    },
+    {
+      "source": "chunk_0f23767b91fd",
+      "target": "chunk_3e63e15e373e",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_3e63e15e373e",
+      "target": "chunk_9a80e74f9638",
+      "type": "next"
+    },
+    {
+      "source": "chunk_3e63e15e373e",
+      "target": "chunk_9a80e74f9638",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_9a80e74f9638",
+      "target": "chunk_33f2b25e5a1e",
+      "type": "next"
+    },
+    {
+      "source": "chunk_9a80e74f9638",
+      "target": "chunk_33f2b25e5a1e",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_33f2b25e5a1e",
+      "target": "chunk_4ffb14680446",
+      "type": "next"
+    },
+    {
+      "source": "chunk_33f2b25e5a1e",
+      "target": "chunk_4ffb14680446",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_4ffb14680446",
+      "target": "chunk_cfbdf9724f30",
+      "type": "next"
+    },
+    {
+      "source": "chunk_4ffb14680446",
+      "target": "chunk_cfbdf9724f30",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_cfbdf9724f30",
+      "target": "chunk_c70692fd3757",
+      "type": "next"
+    },
+    {
+      "source": "chunk_cfbdf9724f30",
+      "target": "chunk_c70692fd3757",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_c70692fd3757",
+      "target": "chunk_b1105e02aabd",
+      "type": "next"
+    },
+    {
+      "source": "chunk_c70692fd3757",
+      "target": "chunk_b1105e02aabd",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_b1105e02aabd",
+      "target": "chunk_203699ecbbdf",
+      "type": "next"
+    },
+    {
+      "source": "chunk_b1105e02aabd",
+      "target": "chunk_203699ecbbdf",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_1814e8f0c754",
+      "target": "chunk_e1ea5d6358e8",
+      "type": "next"
+    },
+    {
+      "source": "chunk_1814e8f0c754",
+      "target": "chunk_e1ea5d6358e8",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_e1ea5d6358e8",
+      "target": "chunk_843d4bece004",
+      "type": "next"
+    },
+    {
+      "source": "chunk_e1ea5d6358e8",
+      "target": "chunk_843d4bece004",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_843d4bece004",
+      "target": "chunk_831f65c6fffc",
+      "type": "next"
+    },
+    {
+      "source": "chunk_843d4bece004",
+      "target": "chunk_831f65c6fffc",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_831f65c6fffc",
+      "target": "chunk_d361d918d113",
+      "type": "next"
+    },
+    {
+      "source": "chunk_831f65c6fffc",
+      "target": "chunk_d361d918d113",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_d361d918d113",
+      "target": "chunk_cdbd797c3478",
+      "type": "next"
+    },
+    {
+      "source": "chunk_d361d918d113",
+      "target": "chunk_cdbd797c3478",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_cdbd797c3478",
+      "target": "chunk_d4895a3364fa",
+      "type": "next"
+    },
+    {
+      "source": "chunk_cdbd797c3478",
+      "target": "chunk_d4895a3364fa",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_d4895a3364fa",
+      "target": "chunk_210d11c66392",
+      "type": "next"
+    },
+    {
+      "source": "chunk_d4895a3364fa",
+      "target": "chunk_210d11c66392",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_210d11c66392",
+      "target": "chunk_76b8b0dbd48c",
+      "type": "next"
+    },
+    {
+      "source": "chunk_210d11c66392",
+      "target": "chunk_76b8b0dbd48c",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_76b8b0dbd48c",
+      "target": "chunk_4a499c4fa85a",
+      "type": "next"
+    },
+    {
+      "source": "chunk_76b8b0dbd48c",
+      "target": "chunk_4a499c4fa85a",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_c5a9b8237ef0",
+      "target": "chunk_712272d12909",
+      "type": "next"
+    },
+    {
+      "source": "chunk_c5a9b8237ef0",
+      "target": "chunk_712272d12909",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_b09480452003",
+      "target": "chunk_107e6c332847",
+      "type": "next"
+    },
+    {
+      "source": "chunk_b09480452003",
+      "target": "chunk_107e6c332847",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_107e6c332847",
+      "target": "chunk_47dfc662f92a",
+      "type": "next"
+    },
+    {
+      "source": "chunk_107e6c332847",
+      "target": "chunk_47dfc662f92a",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_47dfc662f92a",
+      "target": "merged_68c9c061a499",
+      "type": "next"
+    },
+    {
+      "source": "chunk_47dfc662f92a",
+      "target": "merged_68c9c061a499",
+      "type": "prerequisite"
+    },
+    {
+      "source": "merged_68c9c061a499",
+      "target": "chunk_152a2bc09cfd",
+      "type": "next"
+    },
+    {
+      "source": "merged_68c9c061a499",
+      "target": "chunk_152a2bc09cfd",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_152a2bc09cfd",
+      "target": "chunk_f89613b9f371",
+      "type": "next"
+    },
+    {
+      "source": "chunk_152a2bc09cfd",
+      "target": "chunk_f89613b9f371",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_6c682b1348bd",
+      "target": "chunk_891d32e52bb0",
+      "type": "next"
+    },
+    {
+      "source": "chunk_6c682b1348bd",
+      "target": "chunk_891d32e52bb0",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_891d32e52bb0",
+      "target": "chunk_a66508f316b2",
+      "type": "next"
+    },
+    {
+      "source": "chunk_891d32e52bb0",
+      "target": "chunk_a66508f316b2",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_a66508f316b2",
+      "target": "merged_55665b424401",
+      "type": "next"
+    },
+    {
+      "source": "chunk_a66508f316b2",
+      "target": "merged_55665b424401",
+      "type": "prerequisite"
+    },
+    {
+      "source": "merged_55665b424401",
+      "target": "chunk_ad10c27594a1",
+      "type": "next"
+    },
+    {
+      "source": "merged_55665b424401",
+      "target": "chunk_ad10c27594a1",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_ad10c27594a1",
+      "target": "chunk_2c39e3cab441",
+      "type": "next"
+    },
+    {
+      "source": "chunk_ad10c27594a1",
+      "target": "chunk_2c39e3cab441",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_2c39e3cab441",
+      "target": "chunk_ad7d69c68c97",
+      "type": "next"
+    },
+    {
+      "source": "chunk_2c39e3cab441",
+      "target": "chunk_ad7d69c68c97",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_ad7d69c68c97",
+      "target": "chunk_a55cbb7a8049",
+      "type": "next"
+    },
+    {
+      "source": "chunk_ad7d69c68c97",
+      "target": "chunk_a55cbb7a8049",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_a55cbb7a8049",
+      "target": "chunk_144441bd6741",
+      "type": "next"
+    },
+    {
+      "source": "chunk_a55cbb7a8049",
+      "target": "chunk_144441bd6741",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_d202f29cf121",
+      "target": "chunk_3ee4f5901af9",
+      "type": "next"
+    },
+    {
+      "source": "chunk_d202f29cf121",
+      "target": "chunk_3ee4f5901af9",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_3ee4f5901af9",
+      "target": "chunk_c4d332bc5ecb",
+      "type": "next"
+    },
+    {
+      "source": "chunk_3ee4f5901af9",
+      "target": "chunk_c4d332bc5ecb",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_c4d332bc5ecb",
+      "target": "chunk_d89c64bf3028",
+      "type": "next"
+    },
+    {
+      "source": "chunk_c4d332bc5ecb",
+      "target": "chunk_d89c64bf3028",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_d89c64bf3028",
+      "target": "chunk_88055ddada21",
+      "type": "next"
+    },
+    {
+      "source": "chunk_d89c64bf3028",
+      "target": "chunk_88055ddada21",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_a600c6d0209d",
+      "target": "chunk_935ba3b50656",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_935ba3b50656",
+      "target": "merged_155118506a52",
+      "type": "next"
+    },
+    {
+      "source": "chunk_935ba3b50656",
+      "target": "merged_155118506a52",
+      "type": "prerequisite"
+    },
+    {
+      "source": "merged_155118506a52",
+      "target": "chunk_e2256dcfd05e",
+      "type": "next"
+    },
+    {
+      "source": "merged_c3d8458d8f60",
+      "target": "chunk_e2256dcfd05e",
+      "type": "next"
+    },
+    {
+      "source": "merged_c3d8458d8f60",
+      "target": "chunk_e2256dcfd05e",
+      "type": "prerequisite"
+    }
+  ],
+  "stats": {
+    "outline_node_count": 61,
+    "knowledge_point_count": 68,
+    "relation_count": 94
+  },
+  "source_pdf_json": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\pdf_json\\第6章 详细设计_knowledge.json",
+  "source_semantic_json": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\semantic_json\\第6章 详细设计_semantic.json",
+  "images": [
+    {
+      "image_id": "第6章 详细设计_p030_i05",
+      "page": 30,
+      "file_name": "page_030_img_05.jpeg",
+      "path": "images/第6章 详细设计/page_030_img_05.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_030_img_05.jpeg",
+      "width": 571,
+      "height": 250,
+      "file_size": 38006,
+      "ext": "jpeg",
+      "xref": 547,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "screenshot",
+      "caption": "CAIPrepare软件界面截图，展示了包含菜单、工具栏及课程目录树的用户界面布局。",
+      "related_chunk_ids": [
+        "chunk_c70692fd3757"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第6章 详细设计_p030_i06",
+      "page": 30,
+      "file_name": "page_030_img_06.jpeg",
+      "path": "images/第6章 详细设计/page_030_img_06.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_030_img_06.jpeg",
+      "width": 476,
+      "height": 923,
+      "file_size": 34858,
+      "ext": "jpeg",
+      "xref": 548,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "screenshot",
+      "caption": "Windows操作系统开始菜单界面的截图，展示了最近添加、字母索引及固定程序列表的布局。",
+      "related_chunk_ids": [
+        "chunk_c70692fd3757"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第6章 详细设计_p034_i02",
+      "page": 34,
+      "file_name": "page_034_img_02.jpeg",
+      "path": "images/第6章 详细设计/page_034_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_034_img_02.jpeg",
+      "width": 368,
+      "height": 281,
+      "file_size": 33019,
+      "ext": "jpeg",
+      "xref": 564,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "screenshot",
+      "caption": "一个包含菜单区、图标区、滚动区、对话框等组件的图形用户界面（GUI）窗口结构示例图。",
+      "related_chunk_ids": [
+        "chunk_e1ea5d6358e8"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第6章 详细设计_p034_i03",
+      "page": 34,
+      "file_name": "page_034_img_03.jpeg",
+      "path": "images/第6章 详细设计/page_034_img_03.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_034_img_03.jpeg",
+      "width": 1024,
+      "height": 768,
+      "file_size": 152608,
+      "ext": "jpeg",
+      "xref": 565,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "screenshot",
+      "caption": "Adobe Photoshop 软件界面截图，展示了包含菜单栏、工具栏、工作区及面板的窗口布局结构。",
+      "related_chunk_ids": [
+        "chunk_e1ea5d6358e8"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第6章 详细设计_p035_i05",
+      "page": 35,
+      "file_name": "page_035_img_05.jpeg",
+      "path": "images/第6章 详细设计/page_035_img_05.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_035_img_05.jpeg",
+      "width": 1206,
+      "height": 764,
+      "file_size": 54764,
+      "ext": "jpeg",
+      "xref": 574,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "diagram",
+      "caption": "图书馆系统功能结构图，展示了系统顶层模块及其下属功能（如借书、还书、打印报表等）的层级关系。",
+      "related_chunk_ids": [
+        "chunk_e1ea5d6358e8"
+      ],
+      "confidence": 0.9,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第6章 详细设计_p037_i02",
+      "page": 37,
+      "file_name": "page_037_img_02.jpeg",
+      "path": "images/第6章 详细设计/page_037_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_037_img_02.jpeg",
+      "width": 681,
+      "height": 297,
+      "file_size": 41725,
+      "ext": "jpeg",
+      "xref": 580,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "screenshot",
+      "caption": "展示了一个软件系统的多层次菜单界面示例，包含文件、编辑等下拉菜单及工具栏按钮。",
+      "related_chunk_ids": [
+        "chunk_e1ea5d6358e8"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第6章 详细设计_p039_i02",
+      "page": 39,
+      "file_name": "page_039_img_02.jpeg",
+      "path": "images/第6章 详细设计/page_039_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_039_img_02.jpeg",
+      "width": 583,
+      "height": 424,
+      "file_size": 48392,
+      "ext": "jpeg",
+      "xref": 585,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "screenshot",
+      "caption": "微星图书馆管理系统增强版的界面示例，展示了包含采购、编目、入藏等功能的菜单结构。",
+      "related_chunk_ids": [
+        "chunk_e1ea5d6358e8"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第6章 详细设计_p047_i02",
+      "page": 47,
+      "file_name": "page_047_img_02.jpeg",
+      "path": "images/第6章 详细设计/page_047_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_047_img_02.jpeg",
+      "width": 1557,
+      "height": 944,
+      "file_size": 135050,
+      "ext": "jpeg",
+      "xref": 602,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "screenshot",
+      "caption": "Axure RP原型设计工具界面截图，展示了电商APP界面的组件层级结构与属性面板。",
+      "related_chunk_ids": [
+        "chunk_831f65c6fffc"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第6章 详细设计_p048_i02",
+      "page": 48,
+      "file_name": "page_048_img_02.jpeg",
+      "path": "images/第6章 详细设计/page_048_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_048_img_02.jpeg",
+      "width": 1920,
+      "height": 1078,
+      "file_size": 136975,
+      "ext": "jpeg",
+      "xref": 605,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "screenshot",
+      "caption": "展示使用原型设计工具（Modao）进行移动端用户界面交互设计的操作界面示例。",
+      "related_chunk_ids": [
+        "chunk_831f65c6fffc"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第6章 详细设计_p054_i02",
+      "page": 54,
+      "file_name": "page_054_img_02.jpeg",
+      "path": "images/第6章 详细设计/page_054_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_054_img_02.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 95227,
+      "ext": "jpeg",
+      "xref": 619,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "screenshot",
+      "caption": "继电器测试系统数据管理界面的截图，展示了参数选择、数据显示表格及操作按钮等用户界面元素。",
+      "related_chunk_ids": [
+        "chunk_210d11c66392"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第6章 详细设计_p056_i02",
+      "page": 56,
+      "file_name": "page_056_img_02.jpeg",
+      "path": "images/第6章 详细设计/page_056_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_056_img_02.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 114187,
+      "ext": "jpeg",
+      "xref": 624,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "screenshot",
+      "caption": "JHX-3F继电器时间电压关系曲线分析的软件界面截图，展示了触点吸合与释放时间的波形图及数据。",
+      "related_chunk_ids": [
+        "chunk_76b8b0dbd48c"
+      ],
+      "confidence": 0.8,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第6章 详细设计_p059_i02",
+      "page": 59,
+      "file_name": "page_059_img_02.jpeg",
+      "path": "images/第6章 详细设计/page_059_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_059_img_02.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 75560,
+      "ext": "jpeg",
+      "xref": 631,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "screenshot",
+      "caption": "JHX-3R继电器测试系统的主界面设计示例，展示了数据输入控件、功能按钮布局及状态显示区域。",
+      "related_chunk_ids": [
+        "chunk_c5a9b8237ef0",
+        "chunk_712272d12909"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第6章 详细设计_p064_i02",
+      "page": 64,
+      "file_name": "page_064_img_02.jpeg",
+      "path": "images/第6章 详细设计/page_064_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_064_img_02.jpeg",
+      "width": 458,
+      "height": 382,
+      "file_size": 32772,
+      "ext": "jpeg",
+      "xref": 686,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "screenshot",
+      "caption": "借书证办理系统的用户界面设计示例，展示了基本信息输入表单及功能按钮布局。",
+      "related_chunk_ids": [
+        "chunk_d42d388ea3ee"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第6章 详细设计_p066_i02",
+      "page": 66,
+      "file_name": "page_066_img_02.jpeg",
+      "path": "images/第6章 详细设计/page_066_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_066_img_02.jpeg",
+      "width": 607,
+      "height": 259,
+      "file_size": 15535,
+      "ext": "jpeg",
+      "xref": 692,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "diagram",
+      "caption": "程序流程图（Program Flow Chart）中使用的各种标准符号及其含义示意图。",
+      "related_chunk_ids": [
+        "chunk_b09480452003"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第6章 详细设计_p067_i05",
+      "page": 67,
+      "file_name": "page_067_img_05.jpeg",
+      "path": "images/第6章 详细设计/page_067_img_05.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_067_img_05.jpeg",
+      "width": 437,
+      "height": 337,
+      "file_size": 13330,
+      "ext": "jpeg",
+      "xref": 698,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "flowchart",
+      "caption": "多分支选择结构（Case语句）的程序流程图",
+      "related_chunk_ids": [
+        "merged_d65ef92febc6"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第6章 详细设计_p068_i02",
+      "page": 68,
+      "file_name": "page_068_img_02.jpeg",
+      "path": "images/第6章 详细设计/page_068_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_068_img_02.jpeg",
+      "width": 432,
+      "height": 354,
+      "file_size": 26232,
+      "ext": "jpeg",
+      "xref": 701,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "diagram",
+      "caption": "展示了while型和until型循环结构的盒图（N-S图）表示法。",
+      "related_chunk_ids": [
+        "merged_d65ef92febc6"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第6章 详细设计_p068_i03",
+      "page": 68,
+      "file_name": "page_068_img_03.jpeg",
+      "path": "images/第6章 详细设计/page_068_img_03.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_068_img_03.jpeg",
+      "width": 312,
+      "height": 285,
+      "file_size": 14571,
+      "ext": "jpeg",
+      "xref": 702,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "diagram",
+      "caption": "程序流程图中盒图（N-S图）的嵌套定义形式，展示了数据、处理步骤及注解的结构。",
+      "related_chunk_ids": [
+        "merged_d65ef92febc6"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第6章 详细设计_p069_i02",
+      "page": 69,
+      "file_name": "page_069_img_02.jpeg",
+      "path": "images/第6章 详细设计/page_069_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_069_img_02.jpeg",
+      "width": 728,
+      "height": 259,
+      "file_size": 17428,
+      "ext": "jpeg",
+      "xref": 705,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "diagram",
+      "caption": "展示了三种多分支选择结构的流程图符号表示法，包括条件值判断和Case结构。",
+      "related_chunk_ids": [
+        "merged_d65ef92febc6"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第6章 详细设计_p077_i02",
+      "page": 77,
+      "file_name": "page_077_img_02.jpeg",
+      "path": "images/第6章 详细设计/page_077_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_077_img_02.jpeg",
+      "width": 792,
+      "height": 278,
+      "file_size": 26884,
+      "ext": "jpeg",
+      "xref": 741,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "diagram",
+      "caption": "盒图（N-S图）的嵌套定义形式及循环结构示例",
+      "related_chunk_ids": [
+        "merged_d65ef92febc6"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第6章 详细设计_p078_i02",
+      "page": 78,
+      "file_name": "page_078_img_02.jpeg",
+      "path": "images/第6章 详细设计/page_078_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_078_img_02.jpeg",
+      "width": 560,
+      "height": 337,
+      "file_size": 26847,
+      "ext": "jpeg",
+      "xref": 744,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "diagram",
+      "caption": "一张展示复杂嵌套控制结构的盒图（N-S图），包含顺序、选择（Case）和循环（DO-WHILE, DO-UNTIL）结构。",
+      "related_chunk_ids": [
+        "merged_d65ef92febc6"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第6章 详细设计_p090_i02",
+      "page": 90,
+      "file_name": "page_090_img_02.jpeg",
+      "path": "images/第6章 详细设计/page_090_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_090_img_02.jpeg",
+      "width": 656,
+      "height": 356,
+      "file_size": 43522,
+      "ext": "jpeg",
+      "xref": 771,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "table",
+      "caption": "判定表示例，展示了发货单金额和赊欠情况作为条件，以及不发出批准书、发出批准书等作为操作条目的逻辑组合。",
+      "related_chunk_ids": [
+        "chunk_6c682b1348bd"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第6章 详细设计_p117_i02",
+      "page": 117,
+      "file_name": "page_117_img_02.jpeg",
+      "path": "images/第6章 详细设计/page_117_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_117_img_02.jpeg",
+      "width": 959,
+      "height": 1330,
+      "file_size": 81932,
+      "ext": "jpeg",
+      "xref": 847,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "flowchart",
+      "caption": "程序控制流图及其对应的环形复杂度计算区域划分示意图",
+      "related_chunk_ids": [
+        "chunk_935ba3b50656"
+      ],
+      "confidence": 0.98,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第6章 详细设计_p118_i02",
+      "page": 118,
+      "file_name": "page_118_img_02.jpeg",
+      "path": "images/第6章 详细设计/page_118_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_118_img_02.jpeg",
+      "width": 1225,
+      "height": 1196,
+      "file_size": 113469,
+      "ext": "jpeg",
+      "xref": 850,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "flowchart",
+      "caption": "展示了一个排序过程（sort）的PDL伪代码及其对应的控制流图（流图），用于说明程序逻辑结构。",
+      "related_chunk_ids": [
+        "chunk_935ba3b50656",
+        "merged_155118506a52"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第6章 详细设计_p121_i02",
+      "page": 121,
+      "file_name": "page_121_img_02.jpeg",
+      "path": "images/第6章 详细设计/page_121_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第6章 详细设计\\page_121_img_02.jpeg",
+      "width": 586,
+      "height": 538,
+      "file_size": 27122,
+      "ext": "jpeg",
+      "xref": 858,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "flowchart",
+      "caption": "一张包含多个判定节点和循环结构的程序流程图，用于说明程序控制流。",
+      "related_chunk_ids": [
+        "chunk_838b46e248e3",
+        "chunk_36f0fc52a82e"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    }
+  ],
+  "rejected_image_count": 462,
+  "image_filter": {
+    "used_llm": true,
+    "model": "xopqwen35v35b"
+  }
+}
