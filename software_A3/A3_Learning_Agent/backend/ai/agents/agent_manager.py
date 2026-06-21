@@ -1,10 +1,11 @@
+import json
 import time
 import uuid
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from typing import Any, Dict, Optional
 
-from ai.rag import format_knowledge_items, retrieve_knowledge_items
+from ai.rag import build_resource_context, retrieve_knowledge_items
 from ai.spark_api import content_audit
 from .code_agent import CodeAgent
 from .document_agent import DocumentAgent
@@ -19,7 +20,7 @@ from .video_agent import VideoAgent
 
 
 class AgentManager:
-    """执行画像、检索、规划、并行生成、质检和安全复核的资源协作流水线。"""
+    """Multi-agent resource generation pipeline backed by the local software-engineering KB."""
 
     PROFILE_FIELDS = [
         "knowledge_level",
@@ -64,7 +65,7 @@ class AgentManager:
         else:
             profile = self.profile_agent.analyze(dialogue_text)
         return {
-            "major": request_data.get("major") or stored_profile.get("major") or "计算机相关专业",
+            "major": request_data.get("major") or stored_profile.get("major") or "软件工程/计算机相关专业",
             "course": request_data.get("course") or stored_profile.get("target_course") or "软件工程",
             **profile,
             "challenge_scene": stored_profile.get("challenge_scene") or profile.get("challenge_scene"),
@@ -73,6 +74,16 @@ class AgentManager:
             "current_need": request_data.get("learning_need") or dialogue_text or profile.get("study_goal"),
             "preferred_resource_types": request_data.get("preferred_resource_types") or ["doc", "quiz", "reading", "mindmap", "code", "video"],
         }
+
+    def _build_query(self, dialogue_text: str, context: Dict[str, Any]) -> str:
+        parts = [
+            context.get("weak_points"),
+            context.get("study_goal"),
+            context.get("course_progress"),
+            context.get("current_need"),
+            dialogue_text,
+        ]
+        return " ".join(str(part) for part in parts if part).strip() or "软件工程 学习资源"
 
     def run_pipeline(
         self,
@@ -87,6 +98,7 @@ class AgentManager:
             "profile": {},
             "plan": {},
             "knowledge": "",
+            "knowledge_context": {},
             "sources": [],
             "resources": {},
             "resource_list": [],
@@ -119,31 +131,34 @@ class AgentManager:
         trace("ProfileAgent", "completed", "已读取结构化画像并合并本次学习需求", int((time.perf_counter() - start) * 1000))
 
         start = time.perf_counter()
-        query = " ".join(str(context.get(key) or "") for key in ("weak_points", "study_goal", "course_progress", "current_need"))
-        sources = retrieve_knowledge_items(query, top_k=5)
+        query = self._build_query(dialogue_text, context)
+        knowledge_context = build_resource_context(query, top_k=6)
+        sources = retrieve_knowledge_items(query, top_k=6)
+        result["knowledge_context"] = knowledge_context
         result["sources"] = sources
-        result["knowledge"] = format_knowledge_items(sources)
-        trace("RetrieveAgent", "completed" if sources else "failed", f"召回 {len(sources)} 个课程知识片段", int((time.perf_counter() - start) * 1000))
+        result["knowledge"] = json.dumps(knowledge_context, ensure_ascii=False, indent=2)
+        trace("RetrieveAgent", "completed" if sources else "warning", f"召回 {len(sources)} 个本地知识库片段", int((time.perf_counter() - start) * 1000))
 
         start = time.perf_counter()
         plan = self.planner_agent.plan(context, sources)
         result["plan"] = plan
         trace("PlannerAgent", "completed", "已规划六类互补资源的主题、难度和目标", int((time.perf_counter() - start) * 1000))
-        task_plans = {item["resource_type"]: item for item in plan["resource_tasks"]}
+        task_plans = {item["resource_type"]: item for item in plan.get("resource_tasks", [])}
 
         def generate_one(resource_type: str) -> Dict[str, Any]:
             agent = self.resource_agents[resource_type]
             started = time.perf_counter()
-            resource = agent.generate(context, result["knowledge"], task_plans[resource_type])
+            task_plan = task_plans.get(resource_type, {"resource_type": resource_type, "goal": context.get("current_need")})
+            resource = agent.generate(context, result["knowledge"], task_plan)
             quality = self.quality_agent.evaluate(resource, context, sources)
             retries = 0
-            if not quality["passed"]:
+            if not quality.get("passed"):
                 retries = 1
-                feedback = "；".join(quality["problems"]) or "请提升准确性、个性化和完整性"
-                resource = agent.generate(context, result["knowledge"], task_plans[resource_type], feedback=feedback)
+                feedback = "；".join(quality.get("problems") or []) or "请提升准确性、清晰度和个性化程度"
+                resource = agent.generate(context, result["knowledge"], task_plan, feedback=feedback)
                 quality = self.quality_agent.evaluate(resource, context, sources)
             resource["quality"] = quality
-            resource["quality_score"] = quality["total"]
+            resource["quality_score"] = quality.get("total", 0)
             resource["retry_count"] = retries
             resource["sources"] = [
                 {
@@ -170,10 +185,10 @@ class AgentManager:
                     result["resources"][resource_type] = resource
                     trace(
                         agent_name,
-                        "completed" if resource["quality"]["passed"] else "warning",
-                        f"{resource['title']} 生成完成，质量评分 {resource['quality_score']}",
-                        resource["duration_ms"],
-                        resource["retry_count"],
+                        "completed" if resource.get("quality", {}).get("passed") else "warning",
+                        f"{resource.get('title', resource_type)} 生成完成，质量评分 {resource.get('quality_score', 0)}",
+                        resource.get("duration_ms", 0),
+                        resource.get("retry_count", 0),
                     )
                 except Exception as exc:
                     result["errors"].append(f"{agent_name} 失败：{exc}")
@@ -184,12 +199,12 @@ class AgentManager:
         result["safety"] = self.safety_agent.review(all_content, sources)
         trace(
             "SafetyAgent",
-            "completed" if result["safety"]["passed"] else "failed",
-            result["safety"]["risk"],
+            "completed" if result["safety"].get("passed") else "failed",
+            result["safety"].get("risk", ""),
         )
-        if not result["safety"]["passed"]:
-            result["errors"].append(result["safety"]["risk"])
-        trace("PackagerAgent", "completed", f"已汇总 {len(result['resource_list'])} 类资源并生成可审计结果包")
+        if not result["safety"].get("passed"):
+            result["errors"].append(result["safety"].get("risk", "内容安全复核未通过"))
+        trace("PackagerAgent", "completed", f"已汇总 {len(result['resource_list'])} 类资源")
         return result
 
 

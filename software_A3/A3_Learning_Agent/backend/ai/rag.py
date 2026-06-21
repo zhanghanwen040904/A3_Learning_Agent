@@ -245,12 +245,93 @@ def retrieve_knowledge_items(query: str, top_k: int = 3) -> List[dict]:
 
 def format_knowledge_items(items: List[dict]) -> str:
     if not items:
-        return "未检索到课程知识库内容，请先向 rag_data/source_docs 添加《人工智能导论》教材资料。"
+        return "未检索到课程知识库内容，请检查 rag_data/source_docs 中的软件工程课程资料。"
     return "\n\n".join(f"【教材来源：{item['source']}｜片段{item['chunk_index']}｜模式：{item.get('retrieval_mode', 'unknown')}】\n{item['content']}" for item in items)
 
 
 def retrieve_knowledge(query: str, top_k: int = 3) -> str:
     return format_knowledge_items(retrieve_knowledge_items(query, top_k=top_k))
+
+
+def _extract_image_lines(content: str, limit: int = 8) -> List[dict]:
+    images = []
+    for line in str(content).splitlines():
+        if "jpeg" not in line.lower() and "png" not in line.lower() and "jpg" not in line.lower():
+            continue
+        caption = line.strip()
+        path_match = re.search(r"([A-Za-z]:\\[^\s，,；;）)]+?\.(?:png|jpg|jpeg))", caption, flags=re.IGNORECASE)
+        images.append({"caption": caption, "path": path_match.group(1) if path_match else ""})
+        if len(images) >= limit:
+            break
+    return images
+
+
+def _student_context_text(content: str) -> str:
+    lines = []
+    for raw_line in str(content).splitlines():
+        line = raw_line.strip()
+        if not line:
+            continue
+        if "retrieval_mode" in line or "chunk_id" in line or "score" in line:
+            continue
+        lines.append(line)
+    return "\n".join(lines)
+
+
+def _merge_images(*groups: List[dict], limit: int = 12) -> List[dict]:
+    merged = []
+    seen = set()
+    for group in groups:
+        for image in group or []:
+            path = str(image.get("path") or "").strip()
+            caption = str(image.get("caption") or "").strip()
+            key = path or caption
+            if not key or key in seen:
+                continue
+            seen.add(key)
+            merged.append(image)
+            if len(merged) >= limit:
+                return merged
+    return merged
+
+
+def build_resource_context(query: str, top_k: int = 6) -> dict:
+    items = retrieve_knowledge_items(query, top_k=top_k)
+    chunks = []
+    images = []
+    for item in items:
+        metadata = item.get("metadata") or {}
+        source = str(item.get("source") or metadata.get("source") or "")
+        inline_images = _extract_image_lines(item.get("content", ""))
+        images.extend(inline_images)
+        chunks.append(
+            {
+                "title": metadata.get("title", ""),
+                "source": source,
+                "section_path": metadata.get("section_path", ""),
+                "pages": metadata.get("pages", ""),
+                "chunk_id": str(metadata.get("chunk_id") or ""),
+                "content": _student_context_text(str(item.get("content") or ""))[:1200],
+                "images": inline_images,
+            }
+        )
+
+    return {
+        "query": query,
+        "knowledge_base_dir": str(generated_kb_dir()),
+        "retrieved_chunks": chunks,
+        "knowledge_tree": {},
+        "images": _merge_images(images, limit=12),
+        "generation_rules": [
+            "只能依据 retrieved_chunks、knowledge_tree 和 images 生成学习资源。",
+            "优先围绕 query 对应的核心知识点，不要把多个无关章节硬拼在一起。",
+            "只要 images 非空，必须在资源内容中输出“配图建议：caption（path）”。",
+            "输出给学生时隐藏 chunk_id、score、retrieval_mode、JSON 字段名等内部信息。",
+            "讲解要短、清楚、可读，避免直接罗列大量来源路径。",
+            "允许整理、改写、举例，但不得编造教材不存在的事实、页码、图片路径。",
+            "当知识库覆盖不足时，需要明确说明未覆盖。",
+        ],
+    }
 
 
 def rag_status() -> dict:

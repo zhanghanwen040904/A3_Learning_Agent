@@ -244,7 +244,8 @@ async function generate() {
     const res = await resourceApi.generate({ ...requestForm });
     if (res.code !== 200) {
       displayMode.value = resources.value.length ? "history" : "empty";
-      return ElMessage.error(res.msg || "资源生成失败");
+      const detail = res.data?.error ? `：${res.data.error}` : "";
+      return ElMessage.error(`${res.msg || "资源生成失败"}${detail}`);
     }
     resources.value = res.data.resource_list || [];
     trace.value = res.data.trace || [];

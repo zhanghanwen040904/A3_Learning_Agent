@@ -18,18 +18,17 @@ def generate_resources():
     try:
         payload = request.get_json(silent=True) or {}
         user_id = request.user_id
-        session = resolve_profile_session(user_id, payload, create_if_missing=True)
+        session = resolve_profile_session(user_id, payload, create_if_missing=False)
         if not session:
-            return fail("画像会话不存在", 404)
+            return fail("请先新建画像对话并生成画像", 404)
         session_id = session["id"]
         profile = mysql_db.query_one("SELECT * FROM student_profile WHERE user_id=%s AND profile_session_id=%s", (user_id, session_id))
         if not profile and not payload.get("dialogue"):
-            return fail("未找到学生画像，请先创建画像或传入dialogue", 404)
+            return fail("当前画像为空，请先生成学生画像，再生成学习资源", 404)
 
         dialogue = str(payload.get("dialogue") or payload.get("learning_need") or "")
-        if not content_audit(str(dialogue)):
-            if dialogue:
-                return fail("资源生成输入未通过讯飞内容审核", 403)
+        if dialogue and not content_audit(dialogue):
+            return fail("资源生成输入未通过内容审核", 403)
 
         result = agent_manager.run_pipeline(dialogue, stored_profile=profile, request_data=payload)
         batch_id = mysql_db.insert(
@@ -103,6 +102,7 @@ def generate_resources():
         mysql_db.execute("UPDATE generation_batch SET finish_time=NOW() WHERE id=%s", (batch_id,))
         result["resource_list"] = saved_resources or result.get("resource_list", [])
         result["batch_id"] = batch_id
+        result["profile_session_id"] = session_id
         return success(result, "资源生成成功")
     except Exception as exc:
         return fail("资源生成失败", 500, {"error": str(exc)})
@@ -115,6 +115,12 @@ def list_my_resources():
         session = resolve_profile_session(request.user_id, create_if_missing=False)
         if not session:
             return success([], "暂无画像会话资源")
+        profile = mysql_db.query_one(
+            "SELECT id FROM student_profile WHERE user_id=%s AND profile_session_id=%s",
+            (request.user_id, session["id"]),
+        )
+        if not profile:
+            return success([], "当前画像为空，暂无学习资源")
         resources = mysql_db.query_all(
             """
             SELECT sr.*

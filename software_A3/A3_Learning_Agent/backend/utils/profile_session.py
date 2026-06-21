@@ -1,9 +1,11 @@
+from typing import Optional
+
 from flask import request
 
 from db import mysql_db
 
 
-def profile_session_id_from_payload(payload: dict | None = None):
+def profile_session_id_from_payload(payload: Optional[dict] = None):
     payload = payload or {}
     raw = payload.get("profile_session_id") or request.args.get("profile_session_id")
     if raw in (None, "", "null", "undefined"):
@@ -23,7 +25,7 @@ def set_active_profile_session(user_id: int, session_id: int) -> None:
     mysql_db.update("profile_session", {"is_active": 1}, "id=%s AND user_id=%s", (session_id, user_id))
 
 
-def create_profile_session(user_id: int, title: str | None = None, activate: bool = True) -> dict:
+def create_profile_session(user_id: int, title: Optional[str] = None, activate: bool = True) -> dict:
     existing_count = mysql_db.query_one("SELECT COUNT(*) AS total FROM profile_session WHERE user_id=%s", (user_id,)) or {}
     default_title = title or f"画像对话 {int(existing_count.get('total') or 0) + 1}"
     if activate:
@@ -46,7 +48,7 @@ def active_profile_session(user_id: int, create_if_missing: bool = False):
     return None
 
 
-def resolve_profile_session(user_id: int, payload: dict | None = None, create_if_missing: bool = False):
+def resolve_profile_session(user_id: int, payload: Optional[dict] = None, create_if_missing: bool = False):
     session_id = profile_session_id_from_payload(payload)
     if session_id is not None:
         if not session_belongs_to_user(user_id, session_id):

@@ -1,6 +1,6 @@
 import json
 import re
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from ai.json_utils import extract_json_object
 from ai.spark_api import spark_chat
@@ -88,7 +88,7 @@ JSON 字段必须完全一致：
         data = extract_json_object(raw)
         return {field: str(data.get(field) or DEFAULT_VALUE) for field in PROFILE_FIELDS}
 
-    def chat_extract(self, messages: List[Dict[str, str]], current_profile: Dict[str, Any] | None = None) -> Dict[str, Any]:
+    def chat_extract(self, messages: List[Dict[str, str]], current_profile: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """基于完整多轮对话，调用大模型动态抽取画像并生成下一轮追问。"""
         current_profile = current_profile or {}
         parsed_from_messages = self._extract_from_dialogue(self._messages_to_dialogue(messages))
@@ -256,7 +256,7 @@ JSON 字段必须完全一致：
         result["profile_summary"] = self._build_summary(result)
         return result
 
-    def _extract_by_aliases(self, text: str, aliases: list[str]) -> str:
+    def _extract_by_aliases(self, text: str, aliases: List[str]) -> str:
         for alias in aliases:
             match = re.search(rf"{re.escape(alias)}[：:\s]+(.+)", text)
             if match:
