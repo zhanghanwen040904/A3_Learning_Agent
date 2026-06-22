@@ -85,6 +85,9 @@ export const pathApi = {
 
 export const chatApi = {
   answer: (data) => http.post("/chat/answer", withProfileSession(data)),
+  history: () => http.get("/chat/history", { params: profileSessionParams() }),
+  saveHistory: (data) => http.post("/chat/history", withProfileSession(data)),
+  clearHistory: () => http.delete("/chat/history", { params: profileSessionParams() }),
 };
 
 export const knowledgeApi = {

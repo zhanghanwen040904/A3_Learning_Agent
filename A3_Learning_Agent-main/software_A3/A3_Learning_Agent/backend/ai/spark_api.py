@@ -267,6 +267,21 @@ def _is_http_chat_url() -> bool:
     return str(config.XFYUN_SPARK_URL or "").lower().startswith(("http://", "https://"))
 
 
+def _is_agent_chat_url() -> bool:
+    return "/agent/" in str(config.XFYUN_SPARK_URL or "").lower()
+
+
+def _extract_http_error(response) -> str:
+    text = ""
+    try:
+        text = response.text
+    except Exception:
+        pass
+    if len(text) > 1200:
+        text = text[:1200] + "...(已截断)"
+    return f"HTTP {response.status_code}: {text or response.reason}"
+
+
 def _call_spark_http(prompt: str) -> str:
     """Call Spark HTTP chat/completions compatible API.
 
@@ -276,7 +291,8 @@ def _call_spark_http(prompt: str) -> str:
     import requests
 
     payload = {
-        "model": config.XFYUN_SPARK_DOMAIN or "Spark-X2-Flash",
+        "model": config.XFYUN_SPARK_DOMAIN or "spark-x",
+        "user": "a3_learning_agent",
         "messages": [{"role": "user", "content": prompt}],
         "temperature": 0.5,
         "max_tokens": 4096,
@@ -291,7 +307,8 @@ def _call_spark_http(prompt: str) -> str:
         json=payload,
         timeout=config.AI_TIMEOUT,
     )
-    response.raise_for_status()
+    if response.status_code >= 400:
+        raise RuntimeError(_extract_http_error(response))
     data = response.json()
 
     if isinstance(data.get("choices"), list) and data["choices"]:

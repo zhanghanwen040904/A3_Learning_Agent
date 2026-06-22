@@ -51,8 +51,21 @@ const loading = ref(false);
 const progress = ref(0);
 const paths = ref([]);
 
+function normalizeMarkdown(text) {
+  let source = String(text || "").trim();
+  const fenced = source.match(/^```(?:markdown|md|text)?\s*([\s\S]*?)\s*```$/i);
+  if (fenced) source = fenced[1].trim();
+  source = source.replace(/^\s*```(?:markdown|md|text|json)?\s*$/gim, "").replace(/^\s*```\s*$/gm, "");
+  source = source
+    .split("\n")
+    .map((line) => (line.startsWith("    ") && !line.startsWith("        ") ? line.slice(4) : line))
+    .join("\n");
+  source = source.replace(/^\s*[-*]\s*\*\*(目标|学习任务|推荐资源|练习方式|评估指标)\*\*\s*[:：]/gm, "**$1：**");
+  return source.trim();
+}
+
 function renderMarkdown(text) {
-  return md.render(String(text || ""));
+  return md.render(normalizeMarkdown(text));
 }
 
 async function loadPaths() {
@@ -102,13 +115,57 @@ onMounted(loadPaths);
   margin-top: 22px;
 }
 .markdown-body {
+  padding: 4px 2px 8px;
   line-height: 1.75;
+  color: #0f172a;
+}
+.markdown-body :deep(h1) {
+  margin: 0 0 18px;
+  padding: 18px 20px;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
+  color: #1d4ed8;
+  font-size: 24px;
+}
+.markdown-body :deep(h2) {
+  margin: 24px 0 12px;
+  padding: 12px 16px;
+  border-left: 5px solid #3b82f6;
+  border-radius: 8px;
+  background: #f8fbff;
+  color: #0f3a78;
+  font-size: 20px;
+}
+.markdown-body :deep(h3) {
+  margin: 16px 0 10px;
+  color: #1e40af;
+  font-size: 17px;
+}
+.markdown-body :deep(p) {
+  margin: 8px 0;
+}
+.markdown-body :deep(strong) {
+  display: inline-block;
+  margin: 8px 0 4px;
+  color: #1d4ed8;
+}
+.markdown-body :deep(ul),
+.markdown-body :deep(ol) {
+  margin: 6px 0 12px;
+  padding-left: 22px;
+}
+.markdown-body :deep(li) {
+  margin: 6px 0;
+  line-height: 1.8;
 }
 .markdown-body :deep(pre) {
   overflow: auto;
   padding: 16px;
-  border-radius: 12px;
-  background: #0f172a;
-  color: #e2e8f0;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  background: #f8fbff;
+  color: #0f172a;
+  white-space: pre-wrap;
 }
 </style>
