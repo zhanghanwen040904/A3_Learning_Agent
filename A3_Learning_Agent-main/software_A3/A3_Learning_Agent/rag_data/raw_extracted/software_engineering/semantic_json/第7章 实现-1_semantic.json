@@ -1,0 +1,4861 @@
+{
+  "source_file": "C:\\Users\\ASUS\\Desktop\\新建文件夹 (2)\\第7章 实现-1.pdf",
+  "course": "软件工程",
+  "max_chars": 800,
+  "overlap": 100,
+  "outline_nodes": [
+    {
+      "node_id": "node_0d3cc5018578",
+      "parent_id": null,
+      "title": "软件工程",
+      "level": 0,
+      "chapter_id": "chapter_0d3cc5018578",
+      "start_page": 1,
+      "path": [
+        "软件工程"
+      ],
+      "paragraph_count": 1
+    },
+    {
+      "node_id": "node_413a6193cc1e",
+      "parent_id": "node_0d3cc5018578",
+      "title": "第七章 实 现（一）",
+      "level": 1,
+      "chapter_id": "chapter_79a98d1fad0b",
+      "start_page": 1,
+      "path": [
+        "软件工程",
+        "第七章 实 现（一）"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_c00d0b92c7c9",
+      "parent_id": "node_413a6193cc1e",
+      "title": "软件生命周期",
+      "level": 2,
+      "chapter_id": "chapter_79a98d1fad0b",
+      "start_page": 2,
+      "path": [
+        "软件工程",
+        "第七章 实 现（一）",
+        "软件生命周期"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_4a4ca511c2b6",
+      "parent_id": "node_413a6193cc1e",
+      "title": "软件生命周期",
+      "level": 2,
+      "chapter_id": "chapter_79a98d1fad0b",
+      "start_page": 2,
+      "path": [
+        "软件工程",
+        "第七章 实 现（一）",
+        "软件生命周期"
+      ],
+      "paragraph_count": 16
+    },
+    {
+      "node_id": "node_c0d81d8d90e6",
+      "parent_id": "node_413a6193cc1e",
+      "title": "测试",
+      "level": 2,
+      "chapter_id": "chapter_79a98d1fad0b",
+      "start_page": 5,
+      "path": [
+        "软件工程",
+        "第七章 实 现（一）",
+        "测试"
+      ],
+      "paragraph_count": 21
+    },
+    {
+      "node_id": "node_540b3a814c9d",
+      "parent_id": "node_413a6193cc1e",
+      "title": "7.1 编码",
+      "level": 2,
+      "chapter_id": "chapter_79a98d1fad0b",
+      "start_page": 10,
+      "path": [
+        "软件工程",
+        "第七章 实 现（一）",
+        "7.1 编码"
+      ],
+      "paragraph_count": 9
+    },
+    {
+      "node_id": "node_8abcb441693d",
+      "parent_id": "node_413a6193cc1e",
+      "title": "编码总体要求",
+      "level": 2,
+      "chapter_id": "chapter_79a98d1fad0b",
+      "start_page": 13,
+      "path": [
+        "软件工程",
+        "第七章 实 现（一）",
+        "编码总体要求"
+      ],
+      "paragraph_count": 5
+    },
+    {
+      "node_id": "node_6fbbc3264644",
+      "parent_id": "node_8abcb441693d",
+      "title": "7.1.1 选择程序设计语言",
+      "level": 3,
+      "chapter_id": "chapter_79a98d1fad0b",
+      "start_page": 14,
+      "path": [
+        "软件工程",
+        "第七章 实 现（一）",
+        "编码总体要求",
+        "7.1.1 选择程序设计语言"
+      ],
+      "paragraph_count": 5
+    },
+    {
+      "node_id": "node_188c980ab4ab",
+      "parent_id": "node_413a6193cc1e",
+      "title": "汇编语言和高级语言",
+      "level": 2,
+      "chapter_id": "chapter_79a98d1fad0b",
+      "start_page": 16,
+      "path": [
+        "软件工程",
+        "第七章 实 现（一）",
+        "汇编语言和高级语言"
+      ],
+      "paragraph_count": 28
+    },
+    {
+      "node_id": "node_d53b5e3417ba",
+      "parent_id": "node_188c980ab4ab",
+      "title": "7.1.2 编码风格",
+      "level": 3,
+      "chapter_id": "chapter_79a98d1fad0b",
+      "start_page": 23,
+      "path": [
+        "软件工程",
+        "第七章 实 现（一）",
+        "汇编语言和高级语言",
+        "7.1.2 编码风格"
+      ],
+      "paragraph_count": 27
+    },
+    {
+      "node_id": "node_22b0102c770d",
+      "parent_id": "node_413a6193cc1e",
+      "title": "通用规则",
+      "level": 2,
+      "chapter_id": "chapter_79a98d1fad0b",
+      "start_page": 30,
+      "path": [
+        "软件工程",
+        "第七章 实 现（一）",
+        "通用规则"
+      ],
+      "paragraph_count": 12
+    },
+    {
+      "node_id": "node_c6b304a74396",
+      "parent_id": "node_413a6193cc1e",
+      "title": "序言性注解",
+      "level": 2,
+      "chapter_id": "chapter_79a98d1fad0b",
+      "start_page": 33,
+      "path": [
+        "软件工程",
+        "第七章 实 现（一）",
+        "序言性注解"
+      ],
+      "paragraph_count": 8
+    },
+    {
+      "node_id": "node_f040128f788a",
+      "parent_id": "node_413a6193cc1e",
+      "title": "序言性注解举例",
+      "level": 2,
+      "chapter_id": "chapter_79a98d1fad0b",
+      "start_page": 36,
+      "path": [
+        "软件工程",
+        "第七章 实 现（一）",
+        "序言性注解举例"
+      ],
+      "paragraph_count": 37
+    },
+    {
+      "node_id": "node_88e46c28704d",
+      "parent_id": "node_413a6193cc1e",
+      "title": "按类型说明变量",
+      "level": 2,
+      "chapter_id": "chapter_79a98d1fad0b",
+      "start_page": 45,
+      "path": [
+        "软件工程",
+        "第七章 实 现（一）",
+        "按类型说明变量"
+      ],
+      "paragraph_count": 15
+    },
+    {
+      "node_id": "node_693191984f5e",
+      "parent_id": "node_413a6193cc1e",
+      "title": "3. 语句构造",
+      "level": 2,
+      "chapter_id": "chapter_79a98d1fad0b",
+      "start_page": 48,
+      "path": [
+        "软件工程",
+        "第七章 实 现（一）",
+        "3. 语句构造"
+      ],
+      "paragraph_count": 44
+    },
+    {
+      "node_id": "node_10cdc6d351e6",
+      "parent_id": "node_413a6193cc1e",
+      "title": "输入和输出",
+      "level": 2,
+      "chapter_id": "chapter_79a98d1fad0b",
+      "start_page": 60,
+      "path": [
+        "软件工程",
+        "第七章 实 现（一）",
+        "输入和输出"
+      ],
+      "paragraph_count": 4
+    },
+    {
+      "node_id": "node_d64ea09e3a9c",
+      "parent_id": "node_413a6193cc1e",
+      "title": "5. 效率",
+      "level": 2,
+      "chapter_id": "chapter_79a98d1fad0b",
+      "start_page": 61,
+      "path": [
+        "软件工程",
+        "第七章 实 现（一）",
+        "5. 效率"
+      ],
+      "paragraph_count": 6
+    },
+    {
+      "node_id": "node_d8993766b87e",
+      "parent_id": "node_d64ea09e3a9c",
+      "title": "（1）程序运行时间",
+      "level": 3,
+      "chapter_id": "chapter_79a98d1fad0b",
+      "start_page": 63,
+      "path": [
+        "软件工程",
+        "第七章 实 现（一）",
+        "5. 效率",
+        "（1）程序运行时间"
+      ],
+      "paragraph_count": 4
+    },
+    {
+      "node_id": "node_b31d108dfb3b",
+      "parent_id": "node_413a6193cc1e",
+      "title": "用于提高运行效率的原则",
+      "level": 2,
+      "chapter_id": "chapter_79a98d1fad0b",
+      "start_page": 64,
+      "path": [
+        "软件工程",
+        "第七章 实 现（一）",
+        "用于提高运行效率的原则"
+      ],
+      "paragraph_count": 4
+    },
+    {
+      "node_id": "node_63d83b67858e",
+      "parent_id": "node_b31d108dfb3b",
+      "title": "（2）存储器效率",
+      "level": 3,
+      "chapter_id": "chapter_79a98d1fad0b",
+      "start_page": 65,
+      "path": [
+        "软件工程",
+        "第七章 实 现（一）",
+        "用于提高运行效率的原则",
+        "（2）存储器效率"
+      ],
+      "paragraph_count": 4
+    },
+    {
+      "node_id": "node_412a33d5e53d",
+      "parent_id": "node_b31d108dfb3b",
+      "title": "（3）输入输出的效率",
+      "level": 3,
+      "chapter_id": "chapter_79a98d1fad0b",
+      "start_page": 66,
+      "path": [
+        "软件工程",
+        "第七章 实 现（一）",
+        "用于提高运行效率的原则",
+        "（3）输入输出的效率"
+      ],
+      "paragraph_count": 13
+    }
+  ],
+  "knowledge_chunks": [
+    {
+      "chunk_id": "chunk_c2b4972f53d5",
+      "node_id": "node_4a4ca511c2b6",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "软件定义 软件开发 软件 维护\n\n问题 定义\n\n可行 性研\n\n需求 分析\n\n总体 设计\n\n详细 设计\n\n编码 测试 维护\n\n究\n\n实现\n\no 通常把编码和测试统称为实现。 o 编码：把软件设计结果翻译成用某种程序设\n\n计语言书写的程序。 o 测试：在软件投入生产性运行之前，尽可能\n\n多地发现软件中的错误。\n\n编码\n\no 软件的详细设计完成，完成了软件的过程性\n\n描述，进入软件编码阶段。 n 是对设计的进一步具体化。 n 在软件生命期中，程序经常需要被人阅读和理\n\n解，如何提高程序的可读性（Readability）？ 使程序“简单”和“清晰”，具有良好的可靠 性、可维护性，这是非常重要的。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "软件生命周期",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "软件生命周期"
+        ],
+        "section_level": 2,
+        "start_page": 2,
+        "pages": [
+          2,
+          3,
+          4
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "软件生命周期",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [
+          "chunk_c3e3d9582596"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_c3e3d9582596",
+      "node_id": "node_540b3a814c9d",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "o 7.1.1 选择程序设计语言 o 7.1.2 编码风格\n\nn 程序内部的文档 n 数据说明 n 语句构造 n 输入输出 n 效率\n\n软件编码\n\np 软件编码是设计的继续，会影响软件\n\n质量和可维护性。 p 软件编码需要\n\np 正确地理解用户需求和软件设计思想 p 正确地根据设计模型进行程序设计 p 正确地而高效率地编写和测试源代码\n\n软件编码\n\no 把 “翻译”为某种程序设计 语言书写的程序。 o 程序员要仔细阅读设计文档。 o 它是对设计的进一步具体和细化（实现）。 o 程序设计语言也会对程序的可靠性、可测试\n\n性、可维护性产生影响。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "7.1 编码",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "7.1 编码"
+        ],
+        "section_level": 2,
+        "start_page": 10,
+        "pages": [
+          10,
+          11,
+          12
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "7.1 编码",
+        "prerequisite_node_ids": [
+          "chunk_c2b4972f53d5"
+        ],
+        "next_node_ids": [
+          "chunk_73182210afae",
+          "chunk_d2dd25e0d0cc"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_73182210afae",
+      "node_id": "node_8abcb441693d",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "o 我们对编码的总体要求：正确可靠，简明清晰，且\n\n有较高的效率。 n 源代码越清楚和简明，就越便于验证源代码和模\n\n块规格说明的一致性，越容易对它进行测试和维 护。 n 清晰和效率却常常会有矛盾,清晰性好的程序一\n\n般效率较低，而要求效率高的程序往往清晰度不 太好。 n 对于大多数模块，编码时应该把简明清晰放在第\n\n一位。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "编码总体要求",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "编码总体要求"
+        ],
+        "section_level": 2,
+        "start_page": 13,
+        "pages": [
+          13
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "编码总体要求",
+        "prerequisite_node_ids": [
+          "chunk_c3e3d9582596"
+        ],
+        "next_node_ids": [],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_d2dd25e0d0cc",
+      "node_id": "node_6fbbc3264644",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "o 程序设计语言是人和计算机通信的最基本的\n\n工具，其不同特点必然会影响 n 人的思维和解题方式 n 人和计算机通信的方式和质量 n 其他人阅读和理解程序的难易程度 o 编码之前的一项重要工作：\n\nn 就是选择一种适当的程序设计语言。\n\n适宜的程序设计语言\n\no 能使根据设计去完成编码时困难最少 o 可以减少需要的程序测试量 o 可以得出更加容易阅读和维护的程序",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "7.1.1 选择程序设计语言",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "编码总体要求",
+          "7.1.1 选择程序设计语言"
+        ],
+        "section_level": 3,
+        "start_page": 14,
+        "pages": [
+          14,
+          15
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "7.1.1 选择程序设计语言",
+        "prerequisite_node_ids": [
+          "chunk_c3e3d9582596"
+        ],
+        "next_node_ids": [
+          "chunk_06248171bc37",
+          "chunk_c3c8b31c3675"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_06248171bc37",
+      "node_id": "node_188c980ab4ab",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "使用高级语言写程序生产率更高，程序员相同时间内可以写出的高级语言语句数和汇编语言指令数大致相同，但高级语言的语句和汇编语言的指令通常是一对多的关系。用高级语言写的程序容易阅读，容易测试，容易调试，容易维护。除很特殊的应用领域外，一般都采用高级语言。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "汇编语言和高级语言",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "汇编语言和高级语言"
+        ],
+        "section_level": 2,
+        "start_page": 16,
+        "pages": [
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "高级语言与汇编语言的比较",
+        "prerequisite_node_ids": [
+          "chunk_d2dd25e0d0cc"
+        ],
+        "next_node_ids": [
+          "chunk_c3c8b31c3675"
+        ],
+        "knowledge_type": "comparison",
+        "tags": [
+          "高级语言",
+          "汇编语言",
+          "生产率",
+          "可维护性"
+        ],
+        "parent_rule_chunk_id": "chunk_836bd065400e",
+        "images": [
+          {
+            "image_id": "第7章 实现-1_p020_i02",
+            "page": 20,
+            "file_name": "page_020_img_02.jpeg",
+            "path": "images/第7章 实现-1/page_020_img_02.jpeg",
+            "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_020_img_02.jpeg",
+            "width": 640,
+            "height": 297,
+            "file_size": 29653,
+            "ext": "jpeg",
+            "xref": 74,
+            "rule_class": "vision_candidate",
+            "llm_checked": true,
+            "is_knowledge_image": true,
+            "image_type": "diagram",
+            "caption": "TIOBE 编程语言社区指数趋势图，展示了从2002年到2020年多种主流编程语言流行度的变化。",
+            "related_chunk_ids": [
+              "chunk_06248171bc37",
+              "chunk_c3c8b31c3675",
+              "chunk_c4faeeefe536"
+            ],
+            "confidence": 0.95,
+            "reject_reason": ""
+          },
+          {
+            "image_id": "第7章 实现-1_p021_i02",
+            "page": 21,
+            "file_name": "page_021_img_02.jpeg",
+            "path": "images/第7章 实现-1/page_021_img_02.jpeg",
+            "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_021_img_02.jpeg",
+            "width": 1080,
+            "height": 875,
+            "file_size": 75891,
+            "ext": "jpeg",
+            "xref": 77,
+            "rule_class": "vision_candidate",
+            "llm_checked": true,
+            "is_knowledge_image": true,
+            "image_type": "table",
+            "caption": "2020年12月与2019年12月编程语言流行度排名对比表",
+            "related_chunk_ids": [
+              "chunk_06248171bc37",
+              "chunk_c3c8b31c3675",
+              "chunk_c4faeeefe536"
+            ],
+            "confidence": 0.95,
+            "reject_reason": ""
+          }
+        ]
+      }
+    },
+    {
+      "chunk_id": "chunk_c3c8b31c3675",
+      "node_id": "node_188c980ab4ab",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "选择高级程序设计语言的理想标准包括：为了使程序容易测试和维护以减少软件的总成本，所选用的语言应该有理想的模块化机制和可读性好的控制结构和数据结构；为了便于调试和提高软件可靠性，语言特点应该使编译程序能够尽可能多地发现程序中的错误；为了降低软件开发成本和维护成本，应该有良好的独立编译机制。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "汇编语言和高级语言",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "汇编语言和高级语言"
+        ],
+        "section_level": 2,
+        "start_page": 16,
+        "pages": [
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "选择高级程序设计语言的理想标准",
+        "prerequisite_node_ids": [
+          "chunk_d2dd25e0d0cc",
+          "chunk_06248171bc37"
+        ],
+        "next_node_ids": [
+          "chunk_c4faeeefe536"
+        ],
+        "knowledge_type": "method",
+        "tags": [
+          "语言选择",
+          "理想标准",
+          "模块化",
+          "可测试性",
+          "独立编译"
+        ],
+        "parent_rule_chunk_id": "chunk_836bd065400e",
+        "images": [
+          {
+            "image_id": "第7章 实现-1_p020_i02",
+            "page": 20,
+            "file_name": "page_020_img_02.jpeg",
+            "path": "images/第7章 实现-1/page_020_img_02.jpeg",
+            "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_020_img_02.jpeg",
+            "width": 640,
+            "height": 297,
+            "file_size": 29653,
+            "ext": "jpeg",
+            "xref": 74,
+            "rule_class": "vision_candidate",
+            "llm_checked": true,
+            "is_knowledge_image": true,
+            "image_type": "diagram",
+            "caption": "TIOBE 编程语言社区指数趋势图，展示了从2002年到2020年多种主流编程语言流行度的变化。",
+            "related_chunk_ids": [
+              "chunk_06248171bc37",
+              "chunk_c3c8b31c3675",
+              "chunk_c4faeeefe536"
+            ],
+            "confidence": 0.95,
+            "reject_reason": ""
+          },
+          {
+            "image_id": "第7章 实现-1_p021_i02",
+            "page": 21,
+            "file_name": "page_021_img_02.jpeg",
+            "path": "images/第7章 实现-1/page_021_img_02.jpeg",
+            "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_021_img_02.jpeg",
+            "width": 1080,
+            "height": 875,
+            "file_size": 75891,
+            "ext": "jpeg",
+            "xref": 77,
+            "rule_class": "vision_candidate",
+            "llm_checked": true,
+            "is_knowledge_image": true,
+            "image_type": "table",
+            "caption": "2020年12月与2019年12月编程语言流行度排名对比表",
+            "related_chunk_ids": [
+              "chunk_06248171bc37",
+              "chunk_c3c8b31c3675",
+              "chunk_c4faeeefe536"
+            ],
+            "confidence": 0.95,
+            "reject_reason": ""
+          }
+        ]
+      }
+    },
+    {
+      "chunk_id": "chunk_c4faeeefe536",
+      "node_id": "node_188c980ab4ab",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "选用高级语言的实用标准包括：系统用户的要求，选择用户熟悉的语言；可以使用的编译程序，目标系统的运行环境中可提供的编译程序往往限制了所选用语言的范围；可以得到的软件工具，某种语言是否有支持程序开发的软件工具可以利用；工程规模，如果工程规模很庞大，现有的语言又不完全适用，那么需要设计并实现一种供这个工程项目专用的程序设计语言；程序员的知识，尽量选择一种已经为程序员所熟悉的语言；软件可移植性要求，如果目标系统将在几台不同的计算机上运行，或者预期的使用寿命很长，那么选择一种标准化程度高、程序可移植性好的语言就是很重要的；软件的应用领域，选择语言时应该充分考虑目标系统的应用范围。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "汇编语言和高级语言",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "汇编语言和高级语言"
+        ],
+        "section_level": 2,
+        "start_page": 16,
+        "pages": [
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "选用高级语言的实用标准",
+        "prerequisite_node_ids": [
+          "chunk_c3c8b31c3675"
+        ],
+        "next_node_ids": [
+          "chunk_b8bdf44e443e"
+        ],
+        "knowledge_type": "method",
+        "tags": [
+          "语言选择",
+          "实用标准",
+          "可移植性",
+          "工程规模",
+          "软件工具"
+        ],
+        "parent_rule_chunk_id": "chunk_836bd065400e",
+        "images": [
+          {
+            "image_id": "第7章 实现-1_p020_i02",
+            "page": 20,
+            "file_name": "page_020_img_02.jpeg",
+            "path": "images/第7章 实现-1/page_020_img_02.jpeg",
+            "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_020_img_02.jpeg",
+            "width": 640,
+            "height": 297,
+            "file_size": 29653,
+            "ext": "jpeg",
+            "xref": 74,
+            "rule_class": "vision_candidate",
+            "llm_checked": true,
+            "is_knowledge_image": true,
+            "image_type": "diagram",
+            "caption": "TIOBE 编程语言社区指数趋势图，展示了从2002年到2020年多种主流编程语言流行度的变化。",
+            "related_chunk_ids": [
+              "chunk_06248171bc37",
+              "chunk_c3c8b31c3675",
+              "chunk_c4faeeefe536"
+            ],
+            "confidence": 0.95,
+            "reject_reason": ""
+          },
+          {
+            "image_id": "第7章 实现-1_p021_i02",
+            "page": 21,
+            "file_name": "page_021_img_02.jpeg",
+            "path": "images/第7章 实现-1/page_021_img_02.jpeg",
+            "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_021_img_02.jpeg",
+            "width": 1080,
+            "height": 875,
+            "file_size": 75891,
+            "ext": "jpeg",
+            "xref": 77,
+            "rule_class": "vision_candidate",
+            "llm_checked": true,
+            "is_knowledge_image": true,
+            "image_type": "table",
+            "caption": "2020年12月与2019年12月编程语言流行度排名对比表",
+            "related_chunk_ids": [
+              "chunk_06248171bc37",
+              "chunk_c3c8b31c3675",
+              "chunk_c4faeeefe536"
+            ],
+            "confidence": 0.95,
+            "reject_reason": ""
+          }
+        ]
+      }
+    },
+    {
+      "chunk_id": "chunk_b8bdf44e443e",
+      "node_id": "node_188c980ab4ab",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "为了保证代码的质量，程序员必须深刻地理解、熟练地掌握并正确地运用程序设计语言的特性。所编写的源程序应具有良好的结构性和良好的程序设计风格。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "汇编语言和高级语言",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "汇编语言和高级语言"
+        ],
+        "section_level": 2,
+        "start_page": 16,
+        "pages": [
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "对程序员的要求",
+        "prerequisite_node_ids": [
+          "chunk_c4faeeefe536"
+        ],
+        "next_node_ids": [
+          "chunk_645d926a1121"
+        ],
+        "knowledge_type": "quality",
+        "tags": [
+          "程序员",
+          "代码质量",
+          "程序设计风格",
+          "语言特性"
+        ],
+        "parent_rule_chunk_id": "chunk_836bd065400e",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_645d926a1121",
+      "node_id": "node_d53b5e3417ba",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "程序实际上也是一种供人阅读的文章，编码风格又称程序设计风格。从20世纪70年代以来，编码的目标从强调效率转变为强调清晰。与此相应，编码的风格从追求“聪明”和“技巧”，变为提倡“简明”和“直接”。判断程序质量的高低主要看代码的可读性（简明清晰、易读易懂）。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "7.1.2 编码风格",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "汇编语言和高级语言",
+          "7.1.2 编码风格"
+        ],
+        "section_level": 3,
+        "start_page": 23,
+        "pages": [
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "编码风格的定义与演变",
+        "prerequisite_node_ids": [
+          "chunk_b8bdf44e443e"
+        ],
+        "next_node_ids": [
+          "chunk_ebc16408fefb"
+        ],
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_5e3fc80c7247",
+          "chunk_2743daf81d13"
+        ],
+        "knowledge_type": "concept",
+        "tags": [
+          "编码风格",
+          "程序设计风格",
+          "可读性",
+          "编程目标"
+        ],
+        "parent_rule_chunk_id": "merged_c22e035c9aa6"
+      }
+    },
+    {
+      "chunk_id": "chunk_ebc16408fefb",
+      "node_id": "node_d53b5e3417ba",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "编码规范对于程序员而言尤为重要，原因包括：一个软件的生命周期中，80%的花费在于维护；几乎没有任何一个软件，在其整个生命周期中，均由最初的开发人员来维护；编码规范可以改善软件的可读性，可以让程序员尽快而彻底地理解新的代码。为了执行规范，每个软件开发人员必须一致遵守编码规范。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "7.1.2 编码风格",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "汇编语言和高级语言",
+          "7.1.2 编码风格"
+        ],
+        "section_level": 3,
+        "start_page": 23,
+        "pages": [
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "编码规范的重要性",
+        "prerequisite_node_ids": [
+          "chunk_645d926a1121"
+        ],
+        "next_node_ids": [],
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_5e3fc80c7247",
+          "chunk_2743daf81d13"
+        ],
+        "knowledge_type": "concept",
+        "tags": [
+          "编码规范",
+          "软件维护",
+          "可读性",
+          "团队协作"
+        ],
+        "parent_rule_chunk_id": "merged_c22e035c9aa6"
+      }
+    },
+    {
+      "chunk_id": "chunk_a9e7eddbc1d2",
+      "node_id": "node_d53b5e3417ba",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "良好的编码风格能在一定程度上弥补语言存在的缺点。如果不注意风格，即使使用了高级语言也很难写出高质量的程序。当多个程序员合作编写一个大的程序时，尤其需要强调良好的和一致的风格，以利于相互通信，减少因不协调而引起的问题。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "7.1.2 编码风格",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "汇编语言和高级语言",
+          "7.1.2 编码风格"
+        ],
+        "section_level": 3,
+        "start_page": 23,
+        "pages": [
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "编码风格与程序质量的关系",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [
+          "chunk_eb1d5477d944"
+        ],
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_5e3fc80c7247",
+          "chunk_2743daf81d13"
+        ],
+        "knowledge_type": "concept",
+        "tags": [
+          "程序质量",
+          "语言缺点",
+          "团队协作",
+          "一致性"
+        ],
+        "parent_rule_chunk_id": "merged_c22e035c9aa6"
+      }
+    },
+    {
+      "chunk_id": "chunk_eb1d5477d944",
+      "node_id": "node_d53b5e3417ba",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "编码应该遵循的规则包括：程序内部的文档、数据说明、语句构造、输入输出、效率。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "7.1.2 编码风格",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "汇编语言和高级语言",
+          "7.1.2 编码风格"
+        ],
+        "section_level": 3,
+        "start_page": 23,
+        "pages": [
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "编码应遵循的规则",
+        "prerequisite_node_ids": [
+          "chunk_a9e7eddbc1d2"
+        ],
+        "next_node_ids": [
+          "chunk_f1e759a566fb",
+          "chunk_dc48b2ca48ab"
+        ],
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_5e3fc80c7247",
+          "chunk_2743daf81d13"
+        ],
+        "knowledge_type": "method",
+        "tags": [
+          "编码规则",
+          "程序文档",
+          "数据说明",
+          "语句构造"
+        ],
+        "parent_rule_chunk_id": "merged_c22e035c9aa6"
+      }
+    },
+    {
+      "chunk_id": "chunk_f1e759a566fb",
+      "node_id": "node_d53b5e3417ba",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "程序内部的文档包括：恰当的标识符、适当的注解和程序的视觉组织等。具体要求包括：含义鲜明的名字，缩写规则一致；正确的注解；程序清单的布局对于程序的可读性也有很大影响，应该利用适当的阶梯形式使程序的层次结构清晰明显。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "7.1.2 编码风格",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "汇编语言和高级语言",
+          "7.1.2 编码风格"
+        ],
+        "section_level": 3,
+        "start_page": 23,
+        "pages": [
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "程序内部文档的构成",
+        "prerequisite_node_ids": [
+          "chunk_eb1d5477d944"
+        ],
+        "next_node_ids": [
+          "chunk_603a107c543f",
+          "chunk_c4054c439e90"
+        ],
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_5e3fc80c7247",
+          "chunk_2743daf81d13"
+        ],
+        "knowledge_type": "method",
+        "tags": [
+          "内部文档",
+          "标识符",
+          "注解",
+          "视觉组织",
+          "程序布局"
+        ],
+        "parent_rule_chunk_id": "merged_c22e035c9aa6"
+      }
+    },
+    {
+      "chunk_id": "chunk_603a107c543f",
+      "node_id": "node_d53b5e3417ba",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "标识符即符号名，包括模块名、变量名、常量名、标号名、子程序名、数据区名以及缓冲区名等。这些名字应能反映它所代表的实际东西，应有一定实际意义。例如，表示次数的量用Times，表示总量的用Total，表示平均值的用Average，表示和的量用Sum等。名字不是越长越好，应当选择精炼的意义明确的名字。必要时可使用缩写名字，但这时要注意缩写规则要一致，并且要给每一个名字加注释。同时，在一个程序中，一个变量只应用于一种用途。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "7.1.2 编码风格",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "汇编语言和高级语言",
+          "7.1.2 编码风格"
+        ],
+        "section_level": 3,
+        "start_page": 23,
+        "pages": [
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "标识符命名原则",
+        "prerequisite_node_ids": [
+          "chunk_f1e759a566fb"
+        ],
+        "next_node_ids": [
+          "chunk_16f9eca646e2"
+        ],
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_5e3fc80c7247",
+          "chunk_2743daf81d13"
+        ],
+        "knowledge_type": "method",
+        "tags": [
+          "标识符",
+          "命名规范",
+          "变量命名",
+          "缩写规则"
+        ],
+        "parent_rule_chunk_id": "merged_c22e035c9aa6"
+      }
+    },
+    {
+      "chunk_id": "chunk_16f9eca646e2",
+      "node_id": "node_22b0102c770d",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "标识符的命名应当直观，可以望文知义，长度符合最小长度下的最大信息。变量名应当使用“名词”或“形容词+名词”。函数名应当使用“动词”或者“动词+名词”。类和接口名首字母要大写。常量名全大写，在单词间用单下划线分隔。变量名和参数名第一个单词首字母小写，而后面的单词首字母大写。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "通用规则",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "通用规则"
+        ],
+        "section_level": 2,
+        "start_page": 30,
+        "pages": [
+          30,
+          31,
+          32
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "标识符命名规范",
+        "prerequisite_node_ids": [
+          "chunk_603a107c543f"
+        ],
+        "next_node_ids": [],
+        "knowledge_type": "method",
+        "tags": [
+          "标识符",
+          "命名规范",
+          "变量",
+          "函数",
+          "类",
+          "常量"
+        ],
+        "parent_rule_chunk_id": "chunk_2a1bb5e1da95",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_c4054c439e90",
+      "node_id": "node_22b0102c770d",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "夹在程序中的注解是程序员与日后的程序读者之间通信的重要手段。正确的注解非常有助于对程序的理解。应该用空格或空行清楚区分注解和程序。注解内容一定要正确。一些正规的程序文本中，注释行的数量占到整个源程序的1／3到1／2，甚至更多。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "通用规则",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "通用规则"
+        ],
+        "section_level": 2,
+        "start_page": 30,
+        "pages": [
+          30,
+          31,
+          32
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "程序注解的作用与要求",
+        "prerequisite_node_ids": [
+          "chunk_f1e759a566fb"
+        ],
+        "next_node_ids": [
+          "chunk_43d73f9f2fc9",
+          "chunk_09b7f111add9"
+        ],
+        "knowledge_type": "concept",
+        "tags": [
+          "注解",
+          "注释",
+          "程序理解",
+          "沟通"
+        ],
+        "parent_rule_chunk_id": "chunk_2a1bb5e1da95",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_43d73f9f2fc9",
+      "node_id": "node_22b0102c770d",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "序言性注解通常置于每个程序模块的开头部分，它应当简要描述模块的功能、主要算法、接口特点、重要数据集开发简史，对于理解程序本身具有引导作用。有些软件开发部门对序言性注释做了明确而严格的规定，要求程序编制者逐项列出。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "通用规则",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "通用规则"
+        ],
+        "section_level": 2,
+        "start_page": 30,
+        "pages": [
+          30,
+          31,
+          32
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "序言性注解的定义与内容",
+        "prerequisite_node_ids": [
+          "chunk_c4054c439e90"
+        ],
+        "next_node_ids": [
+          "chunk_45043ef41f9e"
+        ],
+        "knowledge_type": "concept",
+        "tags": [
+          "序言性注解",
+          "模块说明",
+          "算法",
+          "接口"
+        ],
+        "parent_rule_chunk_id": "chunk_2a1bb5e1da95",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_45043ef41f9e",
+      "node_id": "node_c6b304a74396",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "序言性注解是软件模块文档的重要组成部分，主要包含以下内容：程序标题；有关本模块功能和目的的说明；主要算法；接口说明（包括调用形式、参数描述、子程序清单）；有关数据的描述（重要的变量及其用途、约束或限制条件以及其他有关信息）；模块位置（在哪一个源文件中，或隶属于哪一个软件包）；开发简史（模块设计者、复审者、复审日期、修改日期及有关说明等）。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "序言性注解",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "序言性注解"
+        ],
+        "section_level": 2,
+        "start_page": 33,
+        "pages": [
+          33,
+          34,
+          35
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "序言性注解",
+        "prerequisite_node_ids": [
+          "chunk_43d73f9f2fc9"
+        ],
+        "next_node_ids": [],
+        "knowledge_type": "concept",
+        "tags": [
+          "序言性注解",
+          "模块文档",
+          "程序头注释"
+        ],
+        "parent_rule_chunk_id": "chunk_3eac0db70e6d",
+        "images": [
+          {
+            "image_id": "第7章 实现-1_p034_i01",
+            "page": 34,
+            "file_name": "page_034_img_01.jpeg",
+            "path": "images/第7章 实现-1/page_034_img_01.jpeg",
+            "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_034_img_01.jpeg",
+            "width": 683,
+            "height": 495,
+            "file_size": 100802,
+            "ext": "jpeg",
+            "xref": 109,
+            "rule_class": "vision_candidate",
+            "llm_checked": true,
+            "is_knowledge_image": true,
+            "image_type": "code",
+            "caption": "展示了一个名为ReadFromColumn的函数代码示例，包含详细的参数说明、返回值定义及关于数据类型转换（如Bit类型与布尔值）的逻辑解释。",
+            "related_chunk_ids": [
+              "chunk_45043ef41f9e"
+            ],
+            "confidence": 0.95,
+            "reject_reason": ""
+          }
+        ]
+      }
+    },
+    {
+      "chunk_id": "chunk_09b7f111add9",
+      "node_id": "node_f040128f788a",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "功能性注解是插在程序中间与程序代码有关的注解，主要解释包含这段代码的必要性，描述其后的语句或程序段是在做什么工作，或是执行了下面的语句会怎么样。编写要点包括：不要把每条语句翻译成自然语言，应该利用注解提供一些额外的信息；描述一段程序，而不是每一个语句；用缩进和空行使程序与注释容易区别；注释要正确。例如，将'ADD AMOUNT TO TOTAL'改为'ADD MONTHLY-SALES TO ANNUAL-TOTAL'能更好地表达意图。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "序言性注解举例",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "序言性注解举例"
+        ],
+        "section_level": 2,
+        "start_page": 36,
+        "pages": [
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "功能性注解",
+        "prerequisite_node_ids": [
+          "chunk_c4054c439e90"
+        ],
+        "next_node_ids": [],
+        "images": [
+          {
+            "image_id": "第7章 实现-1_p039_i01",
+            "page": 39,
+            "file_name": "page_039_img_01.jpeg",
+            "path": "images/第7章 实现-1/page_039_img_01.jpeg",
+            "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_039_img_01.jpeg",
+            "width": 613,
+            "height": 369,
+            "file_size": 44077,
+            "ext": "jpeg",
+            "xref": 120,
+            "rule_class": "vision_candidate",
+            "llm_checked": true,
+            "is_knowledge_image": true,
+            "image_type": "code",
+            "caption": "一段包含详细注释的C++代码示例，展示了如何计算客户区矩形大小并减去滚动条宽度。",
+            "related_chunk_ids": [
+              "chunk_09b7f111add9"
+            ],
+            "confidence": 0.95,
+            "reject_reason": ""
+          }
+        ],
+        "merged_from_chunk_ids": [
+          "chunk_9d6d1595d577",
+          "chunk_baadb481117f"
+        ],
+        "knowledge_type": "method",
+        "tags": [
+          "功能性注解",
+          "代码注释",
+          "程序维护"
+        ],
+        "parent_rule_chunk_id": "merged_bbdf3326c592"
+      }
+    },
+    {
+      "chunk_id": "chunk_dc48b2ca48ab",
+      "node_id": "node_f040128f788a",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "视觉组织是指恰当地利用空格来突出运算的优先性，避免发生运算的错误。具体方法包括：在表达式中适当添加空格以明确逻辑结构（如将(A＜－17) AND NOT (B＜＝49) OR C写成(A＜－17) AND NOT(B＜＝49) OR C）；程序段之间可用空行隔开。这有助于提高代码的可读性，可参见相关语言编码规范。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "序言性注解举例",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "序言性注解举例"
+        ],
+        "section_level": 2,
+        "start_page": 36,
+        "pages": [
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "视觉组织",
+        "prerequisite_node_ids": [
+          "chunk_eb1d5477d944"
+        ],
+        "next_node_ids": [],
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_9d6d1595d577",
+          "chunk_baadb481117f"
+        ],
+        "knowledge_type": "method",
+        "tags": [
+          "视觉组织",
+          "代码格式",
+          "可读性"
+        ],
+        "parent_rule_chunk_id": "merged_bbdf3326c592"
+      }
+    },
+    {
+      "chunk_id": "chunk_5b62df26ccff",
+      "node_id": "node_f040128f788a",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "移行也叫向右缩格，指程序中的各行不必都在左端对齐，而是根据逻辑层次进行阶梯式排列。对于选择语句和循环语句，应把其中的程序段语句向右做阶梯式移行，使程序的逻辑结构更加清晰。虽然移行不会影响编译，但会显著影响程序的清晰程度。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "序言性注解举例",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "序言性注解举例"
+        ],
+        "section_level": 2,
+        "start_page": 36,
+        "pages": [
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "移行（向右缩格）",
+        "prerequisite_node_ids": [
+          "chunk_9c76d8a9958c"
+        ],
+        "next_node_ids": [
+          "chunk_79006a4cd619"
+        ],
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_9d6d1595d577",
+          "chunk_baadb481117f"
+        ],
+        "knowledge_type": "method",
+        "tags": [
+          "移行",
+          "代码缩进",
+          "逻辑结构"
+        ],
+        "parent_rule_chunk_id": "merged_bbdf3326c592"
+      }
+    },
+    {
+      "chunk_id": "chunk_9c76d8a9958c",
+      "node_id": "node_f040128f788a",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "在设计阶段已确定数据结构的组织和复杂程度，编写程序时需注意数据说明的风格，使其更易于理解和维护。必须注意以下几点：数据说明的次序应当标准化；说明语句中变量安排有序化；使用注释说明复杂数据结构。数据说明次序规范化有利于查找、测试、排错和维护，虽不影响编译，但出于阅读和维护需要最好使其固定。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "序言性注解举例",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "序言性注解举例"
+        ],
+        "section_level": 2,
+        "start_page": 36,
+        "pages": [
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "数据说明风格",
+        "prerequisite_node_ids": [
+          "chunk_54bb6c56900c"
+        ],
+        "next_node_ids": [
+          "chunk_14e124ffe9bc"
+        ],
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_9d6d1595d577",
+          "chunk_baadb481117f"
+        ],
+        "knowledge_type": "method",
+        "tags": [
+          "数据说明",
+          "代码规范",
+          "变量管理"
+        ],
+        "parent_rule_chunk_id": "merged_bbdf3326c592"
+      }
+    },
+    {
+      "chunk_id": "chunk_14e124ffe9bc",
+      "node_id": "node_88e46c28704d",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "程序中数据说明应遵循特定次序：①常量说明，②简单变量类型说明，③数组说明，④公用数据块说明，⑤所有的文件说明。在类型说明中可进一步要求按整型量、实型量、字符量、逻辑量的顺序排列。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "按类型说明变量",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "按类型说明变量"
+        ],
+        "section_level": 2,
+        "start_page": 45,
+        "pages": [
+          45,
+          46,
+          47
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "程序中数据说明次序规范",
+        "prerequisite_node_ids": [
+          "chunk_9c76d8a9958c"
+        ],
+        "next_node_ids": [
+          "chunk_8b2f43f708d8"
+        ],
+        "knowledge_type": "method",
+        "tags": [
+          "数据说明",
+          "代码规范",
+          "变量声明"
+        ],
+        "parent_rule_chunk_id": "chunk_2fc26f2227d5",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_8b2f43f708d8",
+      "node_id": "node_88e46c28704d",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "当多个变量名在一个说明语句中说明时，应当对这些变量按字母的顺序排列。例如，将 int size, length, width, cost, price 写成 int cost, length, price, size, width。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "按类型说明变量",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "按类型说明变量"
+        ],
+        "section_level": 2,
+        "start_page": 45,
+        "pages": [
+          45,
+          46,
+          47
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "说明语句中变量安排有序化",
+        "prerequisite_node_ids": [
+          "chunk_14e124ffe9bc"
+        ],
+        "next_node_ids": [
+          "chunk_54bb6c56900c"
+        ],
+        "knowledge_type": "method",
+        "tags": [
+          "变量命名",
+          "代码规范",
+          "有序化"
+        ],
+        "parent_rule_chunk_id": "chunk_2fc26f2227d5",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_54bb6c56900c",
+      "node_id": "node_88e46c28704d",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "如果设计了一个复杂的数据结构，应当使用注释来说明用程序实现这个数据结构的方法和特点。例如，对链表结构和用户自定义的数据类型，都应当在注释中做必要的补充说明。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "按类型说明变量",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "按类型说明变量"
+        ],
+        "section_level": 2,
+        "start_page": 45,
+        "pages": [
+          45,
+          46,
+          47
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "复杂数据结构注释说明",
+        "prerequisite_node_ids": [
+          "chunk_8b2f43f708d8"
+        ],
+        "next_node_ids": [
+          "chunk_14e124ffe9bc"
+        ],
+        "knowledge_type": "method",
+        "tags": [
+          "注释",
+          "数据结构",
+          "文档化"
+        ],
+        "parent_rule_chunk_id": "chunk_2fc26f2227d5",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_faa46687af2c",
+      "node_id": "node_693191984f5e",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "语句构造是编码阶段的任务，力求简单、直接。核心原则是清晰性第一，效率第二。不应为了片面追求效率或节省空间而使语句复杂化，程序编写首先应当考虑清晰性，不要刻意追求技巧性。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "3. 语句构造",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "3. 语句构造"
+        ],
+        "section_level": 2,
+        "start_page": 48,
+        "pages": [
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "语句构造的基本原则",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [],
+        "images": [
+          {
+            "image_id": "第7章 实现-1_p057_i02",
+            "page": 57,
+            "file_name": "page_057_img_02.jpeg",
+            "path": "images/第7章 实现-1/page_057_img_02.jpeg",
+            "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_057_img_02.jpeg",
+            "width": 384,
+            "height": 260,
+            "file_size": 17217,
+            "ext": "jpeg",
+            "xref": 234,
+            "rule_class": "vision_candidate",
+            "llm_checked": true,
+            "is_knowledge_image": true,
+            "image_type": "flowchart",
+            "caption": "一个用于比较三个变量X、Y、Z并找出最小值（SMALL）的算法流程图。",
+            "related_chunk_ids": [
+              "chunk_426fb003b96b",
+              "chunk_faa46687af2c"
+            ],
+            "confidence": 0.95,
+            "reject_reason": ""
+          },
+          {
+            "image_id": "第7章 实现-1_p057_i21",
+            "page": 57,
+            "file_name": "page_057_img_21.jpeg",
+            "path": "images/第7章 实现-1/page_057_img_21.jpeg",
+            "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_057_img_21.jpeg",
+            "width": 785,
+            "height": 105,
+            "file_size": 15978,
+            "ext": "jpeg",
+            "xref": 271,
+            "rule_class": "vision_candidate",
+            "llm_checked": true,
+            "is_knowledge_image": true,
+            "image_type": "concept_map",
+            "caption": "图片展示了软件工程编码原则中的核心概念：'可读性，则不必用'，强调在代码编写中应优先考虑清晰性和可读性，而非过度追求紧凑或效率。",
+            "related_chunk_ids": [
+              "chunk_faa46687af2c",
+              "chunk_0846dc626fb4"
+            ],
+            "confidence": 0.95,
+            "reject_reason": ""
+          }
+        ],
+        "merged_from_chunk_ids": [
+          "chunk_da0255192194",
+          "chunk_95e14cc4c820"
+        ],
+        "knowledge_type": "method",
+        "tags": [
+          "语句构造",
+          "清晰性",
+          "编码原则"
+        ],
+        "parent_rule_chunk_id": "merged_17dc9ebc0714"
+      }
+    },
+    {
+      "chunk_id": "chunk_79006a4cd619",
+      "node_id": "node_693191984f5e",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "尽管绝大多数程序语言允许在一行内写多个语句，但这种方式会使程序可读性变差，因而不取。应当在一行内只写一条语句，并采取适当的移行格式，使程序的逻辑和功能变得更加明确。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "3. 语句构造",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "3. 语句构造"
+        ],
+        "section_level": 2,
+        "start_page": 48,
+        "pages": [
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "避免多语句同行的编码规范",
+        "prerequisite_node_ids": [
+          "chunk_5b62df26ccff"
+        ],
+        "next_node_ids": [
+          "chunk_426fb003b96b"
+        ],
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_da0255192194",
+          "chunk_95e14cc4c820"
+        ],
+        "knowledge_type": "method",
+        "tags": [
+          "代码规范",
+          "可读性",
+          "一行一语句"
+        ],
+        "parent_rule_chunk_id": "merged_17dc9ebc0714"
+      }
+    },
+    {
+      "chunk_id": "chunk_426fb003b96b",
+      "node_id": "node_693191984f5e",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "编码时应尽量避免使用复杂的条件，尽量减少使用“非”条件，避免大量使用循环嵌套和条件嵌套。例如，将复杂的嵌套 if 结构改为清晰的顺序结构，或将否定逻辑（如 !(char<'0' || char>'9')）改写为肯定逻辑（如 char>='0' && char<='9'），不要让读者绕弯子想。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "3. 语句构造",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "3. 语句构造"
+        ],
+        "section_level": 2,
+        "start_page": 48,
+        "pages": [
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "简化条件逻辑的编码技巧",
+        "prerequisite_node_ids": [
+          "chunk_79006a4cd619"
+        ],
+        "next_node_ids": [
+          "chunk_0846dc626fb4"
+        ],
+        "images": [
+          {
+            "image_id": "第7章 实现-1_p057_i02",
+            "page": 57,
+            "file_name": "page_057_img_02.jpeg",
+            "path": "images/第7章 实现-1/page_057_img_02.jpeg",
+            "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_057_img_02.jpeg",
+            "width": 384,
+            "height": 260,
+            "file_size": 17217,
+            "ext": "jpeg",
+            "xref": 234,
+            "rule_class": "vision_candidate",
+            "llm_checked": true,
+            "is_knowledge_image": true,
+            "image_type": "flowchart",
+            "caption": "一个用于比较三个变量X、Y、Z并找出最小值（SMALL）的算法流程图。",
+            "related_chunk_ids": [
+              "chunk_426fb003b96b",
+              "chunk_faa46687af2c"
+            ],
+            "confidence": 0.95,
+            "reject_reason": ""
+          }
+        ],
+        "merged_from_chunk_ids": [
+          "chunk_da0255192194",
+          "chunk_95e14cc4c820"
+        ],
+        "knowledge_type": "method",
+        "tags": [
+          "条件逻辑",
+          "代码简化",
+          "可读性"
+        ],
+        "parent_rule_chunk_id": "merged_17dc9ebc0714"
+      }
+    },
+    {
+      "chunk_id": "chunk_0846dc626fb4",
+      "node_id": "node_693191984f5e",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "程序编写应遵循“清晰第一，效率第二”的原则。虽然清晰性有时需要付出性能的代价（如交换变量内容时，清晰写法比紧凑写法多占用一个工作单元），但首先要保证程序正确或实现了指定的功能，然后才要求提高速度。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "3. 语句构造",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "3. 语句构造"
+        ],
+        "section_level": 2,
+        "start_page": 48,
+        "pages": [
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "清晰性与效率的权衡策略",
+        "prerequisite_node_ids": [
+          "chunk_426fb003b96b"
+        ],
+        "next_node_ids": [
+          "chunk_2e0b6e75b84a"
+        ],
+        "images": [
+          {
+            "image_id": "第7章 实现-1_p057_i21",
+            "page": 57,
+            "file_name": "page_057_img_21.jpeg",
+            "path": "images/第7章 实现-1/page_057_img_21.jpeg",
+            "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_057_img_21.jpeg",
+            "width": 785,
+            "height": 105,
+            "file_size": 15978,
+            "ext": "jpeg",
+            "xref": 271,
+            "rule_class": "vision_candidate",
+            "llm_checked": true,
+            "is_knowledge_image": true,
+            "image_type": "concept_map",
+            "caption": "图片展示了软件工程编码原则中的核心概念：'可读性，则不必用'，强调在代码编写中应优先考虑清晰性和可读性，而非过度追求紧凑或效率。",
+            "related_chunk_ids": [
+              "chunk_faa46687af2c",
+              "chunk_0846dc626fb4"
+            ],
+            "confidence": 0.95,
+            "reject_reason": ""
+          }
+        ],
+        "merged_from_chunk_ids": [
+          "chunk_da0255192194",
+          "chunk_95e14cc4c820"
+        ],
+        "knowledge_type": "comparison",
+        "tags": [
+          "清晰性",
+          "效率",
+          "权衡",
+          "正确性"
+        ],
+        "parent_rule_chunk_id": "merged_17dc9ebc0714"
+      }
+    },
+    {
+      "chunk_id": "chunk_2e0b6e75b84a",
+      "node_id": "node_693191984f5e",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "在编码过程中，应尽可能使用库函数（API函数）。例如，寻找最小值时，直接使用库函数或清晰的逻辑结构，而不是编写过于紧凑但难以理解的代码，以确保程序的可维护性和正确性。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "3. 语句构造",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "3. 语句构造"
+        ],
+        "section_level": 2,
+        "start_page": 48,
+        "pages": [
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "库函数（API）的使用原则",
+        "prerequisite_node_ids": [
+          "chunk_0846dc626fb4"
+        ],
+        "next_node_ids": [],
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_da0255192194",
+          "chunk_95e14cc4c820"
+        ],
+        "knowledge_type": "method",
+        "tags": [
+          "库函数",
+          "API",
+          "代码复用"
+        ],
+        "parent_rule_chunk_id": "merged_17dc9ebc0714"
+      }
+    },
+    {
+      "chunk_id": "chunk_068870bf71b2",
+      "node_id": "node_693191984f5e",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "输入和输出信息直接关联用户使用，其方式和格式应尽可能方便用户，避免因设计不当给用户带来麻烦。输入输出的风格应在需求分析阶段和设计阶段基本确定，系统能否被用户接受往往取决于此。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "3. 语句构造",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "3. 语句构造"
+        ],
+        "section_level": 2,
+        "start_page": 48,
+        "pages": [
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "输入输出的设计原则",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [
+          "chunk_5f7d6451b0b3"
+        ],
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_da0255192194",
+          "chunk_95e14cc4c820"
+        ],
+        "knowledge_type": "method",
+        "tags": [
+          "输入输出",
+          "用户体验",
+          "设计原则"
+        ],
+        "parent_rule_chunk_id": "merged_17dc9ebc0714"
+      }
+    },
+    {
+      "chunk_id": "chunk_5f7d6451b0b3",
+      "node_id": "node_693191984f5e",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "无论是批处理还是交互式输入输出，在设计和编码时都应遵循以下原则：对所有输入数据都要进行检验，识别错误输入以保证数据有效性；检查输入项的各种重要组合的合法性，必要时报告输入状态信息；使输入的步骤和操作尽可能简单，并保持简单的输入格式。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "3. 语句构造",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "3. 语句构造"
+        ],
+        "section_level": 2,
+        "start_page": 48,
+        "pages": [
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "输入数据检验与处理规范",
+        "prerequisite_node_ids": [
+          "chunk_068870bf71b2"
+        ],
+        "next_node_ids": [
+          "chunk_a5997a5550ec"
+        ],
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_da0255192194",
+          "chunk_95e14cc4c820"
+        ],
+        "knowledge_type": "method",
+        "tags": [
+          "数据检验",
+          "输入验证",
+          "错误处理"
+        ],
+        "parent_rule_chunk_id": "merged_17dc9ebc0714"
+      }
+    },
+    {
+      "chunk_id": "chunk_a5997a5550ec",
+      "node_id": "node_10cdc6d351e6",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "n 输入一批数据时，最好使用输入结束标志，不\n\n要由用户指定输入数据数目； n 在交互式输入输出时，要在屏幕上明确提示交\n\n互输入的请求，详细说明可用的选择、取值范 围或边界数值。 n 当程序设计语言对格式有严格要求时，应保持\n\n输入格式一致； n 设计良好的输出报表； n 给所有的输出数据加标志，并设计输出格式。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "输入和输出",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "输入和输出"
+        ],
+        "section_level": 2,
+        "start_page": 60,
+        "pages": [
+          60
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "输入和输出",
+        "prerequisite_node_ids": [
+          "chunk_5f7d6451b0b3"
+        ],
+        "next_node_ids": [],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_1a9cc9f8a3a1",
+      "node_id": "node_d64ea09e3a9c",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "o 效率主要指处理机时间和存储器容量 o 讨论效率需要牢记的3条原则\n\nn 首先，效率是性能要求，因此应该在需求分析\n\n阶段确定效率方面的要求。 n 其次，效率是靠好设计来提高的。 n 第三，程序的效率和程序的简单程度是一致的，\n\n不要牺牲程序的清晰性和可读性来不必要地提 高效率\n\n分3方面讨论效率问题\n\no 程序的运行时间 o 存储器效率 o 输入输出的效率",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "5. 效率",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "5. 效率"
+        ],
+        "section_level": 2,
+        "start_page": 61,
+        "pages": [
+          61,
+          62
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "5. 效率",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [
+          "chunk_27149e54c8a5"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_27149e54c8a5",
+      "node_id": "node_d8993766b87e",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "o 源程序的效率\n\nn 直接由详细设计阶段确定的算法的效率决定 n 写程序的风格也能对程序的执行速度和存储器\n\n要求产生影响 n 在效率是决定性因素的应用领域，尽量使用有\n\n良好优化特性的编译程序，以自动生成高效目 标代码",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "（1）程序运行时间",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "5. 效率",
+          "（1）程序运行时间"
+        ],
+        "section_level": 3,
+        "start_page": 63,
+        "pages": [
+          63
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "（1）程序运行时间",
+        "prerequisite_node_ids": [
+          "chunk_1a9cc9f8a3a1"
+        ],
+        "next_node_ids": [
+          "chunk_823677c1f8fd"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_823677c1f8fd",
+      "node_id": "node_b31d108dfb3b",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "o 写程序前先简化算术和逻辑表达式； o 仔细研究嵌套的循环，以确定是否有语句可以\n\n往外移，尽可能减少循环体和内循环中语句个 数； o 尽量避免使用多维数组、指针和其它复杂数据\n\n结构； o 尽可能使用执行时间短的算术运算； o 不要混合使用不同的数据类型，尽量保证同一\n\n表达式中的数据类型保持一致； o 尽量采用整型算术表达式和布尔表达式。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "用于提高运行效率的原则",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "用于提高运行效率的原则"
+        ],
+        "section_level": 2,
+        "start_page": 64,
+        "pages": [
+          64
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "用于提高运行效率的原则",
+        "prerequisite_node_ids": [
+          "chunk_27149e54c8a5"
+        ],
+        "next_node_ids": [
+          "chunk_e641fb059529"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_e641fb059529",
+      "node_id": "node_63d83b67858e",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "o 对于变动频繁的数据最好采用动态存储； o 根据需要采用存储单元共享等节约空间的技\n\n术； o 选用紧缩存储器特性的编译程序，必要时可\n\n采用汇编语言； o 采用结构化程序设计，将程序划分为合适大\n\n小的模块。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "（2）存储器效率",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "用于提高运行效率的原则",
+          "（2）存储器效率"
+        ],
+        "section_level": 3,
+        "start_page": 65,
+        "pages": [
+          65
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "（2）存储器效率",
+        "prerequisite_node_ids": [
+          "chunk_823677c1f8fd"
+        ],
+        "next_node_ids": [],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_8bd5cf22bcbc",
+      "node_id": "node_412a33d5e53d",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "用户为了给计算机提供输入信息或为了理解计算机输出的信息，所需花费的脑力劳动是经济的，则人和计算机之间的通信效率高。简单清晰是提高人机通讯效率的关键。如输入输出很难被人理解，将降低效率。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "（3）输入输出的效率",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "用于提高运行效率的原则",
+          "（3）输入输出的效率"
+        ],
+        "section_level": 3,
+        "start_page": 66,
+        "pages": [
+          66,
+          67,
+          68
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "人机通信效率的定义与关键",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [
+          "chunk_e3d968f37751"
+        ],
+        "knowledge_type": "concept",
+        "tags": [
+          "人机通信",
+          "效率",
+          "简单清晰"
+        ],
+        "parent_rule_chunk_id": "chunk_16543dcfe424",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_e3d968f37751",
+      "node_id": "node_412a33d5e53d",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "提高输入输出效率的简单原则包括：所有输入输出都应该有缓冲，以减少用于通信的额外开销；对二级存储器（如磁盘），应该选用最简单的访问方法；二级存储器的输入输出应该以信息组为单位进行；如果“超高效的”输入输出难以被人理解，则不应采用这种方法。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "（3）输入输出的效率",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "用于提高运行效率的原则",
+          "（3）输入输出的效率"
+        ],
+        "section_level": 3,
+        "start_page": 66,
+        "pages": [
+          66,
+          67,
+          68
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "提高输入输出效率的原则",
+        "prerequisite_node_ids": [
+          "chunk_8bd5cf22bcbc"
+        ],
+        "next_node_ids": [],
+        "knowledge_type": "method",
+        "tags": [
+          "输入输出",
+          "缓冲",
+          "访问方法",
+          "信息组"
+        ],
+        "parent_rule_chunk_id": "chunk_16543dcfe424",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_9849dff9747f",
+      "node_id": "node_412a33d5e53d",
+      "chapter_id": "chapter_79a98d1fad0b",
+      "content_text": "为了高效低成本地生产出高度可靠的程序代码，人们研究出一类特殊的程序，使用它们能减轻人的劳动，提高编码效率和可靠性。主要包括集成开发环境（如Eclipse，IDEA，VS.Net等）和代码管理工具（如Github、CVS等）。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "（3）输入输出的效率",
+        "section_path": [
+          "软件工程",
+          "第七章 实 现（一）",
+          "用于提高运行效率的原则",
+          "（3）输入输出的效率"
+        ],
+        "section_level": 3,
+        "start_page": 66,
+        "pages": [
+          66,
+          67,
+          68
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "编码工具的作用与分类",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [],
+        "knowledge_type": "concept",
+        "tags": [
+          "编码工具",
+          "集成开发环境",
+          "代码管理",
+          "可靠性"
+        ],
+        "parent_rule_chunk_id": "chunk_16543dcfe424",
+        "images": []
+      }
+    }
+  ],
+  "stats": {
+    "outline_node_count": 21,
+    "chunk_count": 40,
+    "min_chunk_chars": 38,
+    "max_chunk_chars": 297,
+    "avg_chunk_chars": 136.28,
+    "embedded_chunk_count": 0
+  },
+  "stage": "semantic_slice",
+  "source_pdf_json": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\pdf_json\\第7章 实现-1_knowledge.json",
+  "images": [
+    {
+      "image_id": "第7章 实现-1_p020_i02",
+      "page": 20,
+      "file_name": "page_020_img_02.jpeg",
+      "path": "images/第7章 实现-1/page_020_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_020_img_02.jpeg",
+      "width": 640,
+      "height": 297,
+      "file_size": 29653,
+      "ext": "jpeg",
+      "xref": 74,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "diagram",
+      "caption": "TIOBE 编程语言社区指数趋势图，展示了从2002年到2020年多种主流编程语言流行度的变化。",
+      "related_chunk_ids": [
+        "chunk_06248171bc37",
+        "chunk_c3c8b31c3675",
+        "chunk_c4faeeefe536"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第7章 实现-1_p021_i02",
+      "page": 21,
+      "file_name": "page_021_img_02.jpeg",
+      "path": "images/第7章 实现-1/page_021_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_021_img_02.jpeg",
+      "width": 1080,
+      "height": 875,
+      "file_size": 75891,
+      "ext": "jpeg",
+      "xref": 77,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "table",
+      "caption": "2020年12月与2019年12月编程语言流行度排名对比表",
+      "related_chunk_ids": [
+        "chunk_06248171bc37",
+        "chunk_c3c8b31c3675",
+        "chunk_c4faeeefe536"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第7章 实现-1_p034_i01",
+      "page": 34,
+      "file_name": "page_034_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_034_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_034_img_01.jpeg",
+      "width": 683,
+      "height": 495,
+      "file_size": 100802,
+      "ext": "jpeg",
+      "xref": 109,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "code",
+      "caption": "展示了一个名为ReadFromColumn的函数代码示例，包含详细的参数说明、返回值定义及关于数据类型转换（如Bit类型与布尔值）的逻辑解释。",
+      "related_chunk_ids": [
+        "chunk_45043ef41f9e"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第7章 实现-1_p039_i01",
+      "page": 39,
+      "file_name": "page_039_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_039_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_039_img_01.jpeg",
+      "width": 613,
+      "height": 369,
+      "file_size": 44077,
+      "ext": "jpeg",
+      "xref": 120,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "code",
+      "caption": "一段包含详细注释的C++代码示例，展示了如何计算客户区矩形大小并减去滚动条宽度。",
+      "related_chunk_ids": [
+        "chunk_09b7f111add9"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第7章 实现-1_p057_i02",
+      "page": 57,
+      "file_name": "page_057_img_02.jpeg",
+      "path": "images/第7章 实现-1/page_057_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_057_img_02.jpeg",
+      "width": 384,
+      "height": 260,
+      "file_size": 17217,
+      "ext": "jpeg",
+      "xref": 234,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "flowchart",
+      "caption": "一个用于比较三个变量X、Y、Z并找出最小值（SMALL）的算法流程图。",
+      "related_chunk_ids": [
+        "chunk_426fb003b96b",
+        "chunk_faa46687af2c"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第7章 实现-1_p057_i21",
+      "page": 57,
+      "file_name": "page_057_img_21.jpeg",
+      "path": "images/第7章 实现-1/page_057_img_21.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_057_img_21.jpeg",
+      "width": 785,
+      "height": 105,
+      "file_size": 15978,
+      "ext": "jpeg",
+      "xref": 271,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "concept_map",
+      "caption": "图片展示了软件工程编码原则中的核心概念：'可读性，则不必用'，强调在代码编写中应优先考虑清晰性和可读性，而非过度追求紧凑或效率。",
+      "related_chunk_ids": [
+        "chunk_faa46687af2c",
+        "chunk_0846dc626fb4"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    }
+  ],
+  "rejected_images": [
+    {
+      "image_id": "第7章 实现-1_p001_i01",
+      "page": 1,
+      "file_name": "page_001_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_001_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_001_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 20604,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT背景模板，包含校徽、学院名称及装饰性图形。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT背景模板，包含学校Logo和装饰性图形，无软件工程教学知识点内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p002_i01",
+      "page": 2,
+      "file_name": "page_002_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_002_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_002_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板背景，包含学校 Logo 和装饰性渐变条，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo 和装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p003_i01",
+      "page": 3,
+      "file_name": "page_003_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_003_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_003_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板背景页，仅包含学校 Logo 和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片为 PPT 模板背景，仅包含页眉页脚和装饰元素，无正文知识内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p004_i01",
+      "page": 4,
+      "file_name": "page_004_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_004_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_004_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板背景页，仅包含学校 Logo 和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为 PPT 模板背景，包含学校 Logo 和装饰元素，无实质性的软件工程知识内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p005_i01",
+      "page": 5,
+      "file_name": "page_005_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_005_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_005_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板背景页，包含校徽和学院标识，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，无软件工程相关的知识点内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p006_i01",
+      "page": 6,
+      "file_name": "page_006_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_006_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_006_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT模板背景页，仅包含学校Logo和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含校徽、学院名称及装饰线条，缺乏任何软件工程相关的知识图表或正文内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p007_i01",
+      "page": 7,
+      "file_name": "page_007_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_007_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_007_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板背景，包含校徽、学院名称及装饰性图形，无具体教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰背景，属于PPT模板，无软件工程教学知识点内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p008_i01",
+      "page": 8,
+      "file_name": "page_008_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_008_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_008_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板背景页，包含校徽、学院名称及装饰性图形，无具体教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，属于PPT模板，无软件工程教学知识点内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p009_i01",
+      "page": 9,
+      "file_name": "page_009_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_009_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_009_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院名称及装饰性背景元素，无具体教学内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，无软件工程相关的知识点、图表或代码内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p010_i01",
+      "page": 10,
+      "file_name": "page_010_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_010_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_010_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板页，仅包含学校 Logo 和装饰性背景，无教学知识内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo 和装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p011_i01",
+      "page": 11,
+      "file_name": "page_011_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_011_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_011_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板背景页，仅包含学校 Logo 和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo 和装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p011_i02",
+      "page": 11,
+      "file_name": "page_011_img_02.jpeg",
+      "path": "images/第7章 实现-1/page_011_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_011_img_02.jpeg",
+      "width": 99,
+      "height": 230,
+      "file_size": 5222,
+      "ext": "jpeg",
+      "xref": 46,
+      "rule_class": "small_decoration_likely",
+      "is_knowledge_image": false,
+      "reject_reason": "small_decoration_likely",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p012_i01",
+      "page": 12,
+      "file_name": "page_012_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_012_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_012_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板背景页，仅包含学校 Logo 和装饰性渐变图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为 PPT 模板背景，包含页眉页脚和装饰元素，无正文知识内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p012_i02",
+      "page": 12,
+      "file_name": "page_012_img_02.jpeg",
+      "path": "images/第7章 实现-1/page_012_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_012_img_02.jpeg",
+      "width": 659,
+      "height": 100,
+      "file_size": 13551,
+      "ext": "jpeg",
+      "xref": 54,
+      "rule_class": "uncertain_or_decoration",
+      "is_knowledge_image": false,
+      "reject_reason": "uncertain_or_decoration",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p012_i03",
+      "page": 12,
+      "file_name": "page_012_img_03.jpeg",
+      "path": "images/第7章 实现-1/page_012_img_03.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_012_img_03.jpeg",
+      "width": 660,
+      "height": 19,
+      "file_size": 2291,
+      "ext": "jpeg",
+      "xref": 56,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p013_i01",
+      "page": 13,
+      "file_name": "page_013_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_013_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_013_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT模板背景页，仅包含学校Logo和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含校徽、学院标识及装饰线条，缺乏任何软件工程相关的知识图表或正文内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p014_i01",
+      "page": 14,
+      "file_name": "page_014_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_014_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_014_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT模板背景页，仅包含学校Logo和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含校徽、学院名称及装饰线条，缺乏实质性的软件工程知识内容（如流程图、代码或图表）。"
+    },
+    {
+      "image_id": "第7章 实现-1_p015_i01",
+      "page": 15,
+      "file_name": "page_015_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_015_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_015_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT模板背景页，仅包含学校Logo和装饰性渐变条，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含校徽、学院标识及装饰元素，缺乏实质性的软件工程知识内容（如流程图、代码、图表等）。"
+    },
+    {
+      "image_id": "第7章 实现-1_p016_i01",
+      "page": 16,
+      "file_name": "page_016_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_016_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_016_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景元素，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板页，包含学校Logo和装饰背景，无实质性的软件工程知识内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p017_i01",
+      "page": 17,
+      "file_name": "page_017_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_017_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_017_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板背景页，仅包含校徽、学院名称及装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含学校Logo和装饰元素，无实质性的软件工程知识内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p018_i01",
+      "page": 18,
+      "file_name": "page_018_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_018_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_018_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院名称及装饰性背景，无具体知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，属于PPT模板，不包含任何软件工程相关的知识图表、流程图或代码示例。"
+    },
+    {
+      "image_id": "第7章 实现-1_p019_i01",
+      "page": 19,
+      "file_name": "page_019_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_019_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_019_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT模板背景页，包含学校Logo和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo及空白背景，属于PPT模板装饰元素，不包含任何软件工程知识图表或正文内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p020_i01",
+      "page": 20,
+      "file_name": "page_020_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_020_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_020_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT模板背景页，仅包含学校Logo和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含校徽、学院标识及装饰线条，缺乏实质性的软件工程知识图表或文本内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p021_i01",
+      "page": 21,
+      "file_name": "page_021_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_021_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_021_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景元素，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo及装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p022_i01",
+      "page": 22,
+      "file_name": "page_022_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_022_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_022_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板页，仅包含学校 Logo 和装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚和装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p023_i01",
+      "page": 23,
+      "file_name": "page_023_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_023_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_023_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板页，包含学校Logo和装饰背景，无实质性的软件工程知识内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p024_i01",
+      "page": 24,
+      "file_name": "page_024_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_024_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_024_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，属于PPT模板，不包含任何软件工程知识点、图表或代码示例。"
+    },
+    {
+      "image_id": "第7章 实现-1_p025_i01",
+      "page": 25,
+      "file_name": "page_025_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_025_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_025_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院名称及装饰性背景元素，无具体教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，属于PPT模板，不包含任何软件工程相关的流程图、代码示例或知识点图表。"
+    },
+    {
+      "image_id": "第7章 实现-1_p026_i01",
+      "page": 26,
+      "file_name": "page_026_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_026_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_026_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，属于PPT模板，不包含任何软件工程相关的流程图、代码示例或知识点图表。"
+    },
+    {
+      "image_id": "第7章 实现-1_p027_i01",
+      "page": 27,
+      "file_name": "page_027_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_027_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_027_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景元素，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.98,
+      "reject_reason": "图片为PPT模板页，仅包含页眉页脚和装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p028_i01",
+      "page": 28,
+      "file_name": "page_028_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_028_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_028_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，属于PPT模板，不包含任何软件工程相关的知识图表、流程图或代码示例。"
+    },
+    {
+      "image_id": "第7章 实现-1_p029_i01",
+      "page": 29,
+      "file_name": "page_029_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_029_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_029_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景元素，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板页，包含学校Logo和装饰背景，无实质性的软件工程知识图表或内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p030_i01",
+      "page": 30,
+      "file_name": "page_030_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_030_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_030_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT模板背景页，仅包含学校Logo和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含校徽、学院名称及装饰线条，缺乏实质性的软件工程知识内容（如流程图、代码示例或概念图）。"
+    },
+    {
+      "image_id": "第7章 实现-1_p031_i01",
+      "page": 31,
+      "file_name": "page_031_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_031_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_031_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景元素，无具体教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板页，包含学校Logo和装饰背景，缺乏实质性的软件工程知识内容（如流程图、代码示例或概念图）。"
+    },
+    {
+      "image_id": "第7章 实现-1_p032_i01",
+      "page": 32,
+      "file_name": "page_032_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_032_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_032_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板页，仅包含学校 Logo 和装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo 和装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p033_i01",
+      "page": 33,
+      "file_name": "page_033_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_033_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_033_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT模板页，仅包含学校Logo、学院名称及装饰性背景元素，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含校徽和装饰图案，缺乏实质性的软件工程知识内容（如流程图、代码或图表）。"
+    },
+    {
+      "image_id": "第7章 实现-1_p034_i02",
+      "page": 34,
+      "file_name": "page_034_img_02.jpeg",
+      "path": "images/第7章 实现-1/page_034_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_034_img_02.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo及装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p035_i01",
+      "page": 35,
+      "file_name": "page_035_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_035_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_035_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT模板背景页，包含学校Logo和装饰性渐变条，无正文内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo及空白背景，属于PPT模板装饰，不具备教学知识点价值。"
+    },
+    {
+      "image_id": "第7章 实现-1_p036_i01",
+      "page": 36,
+      "file_name": "page_036_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_036_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_036_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板页，仅包含学校 Logo 和装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo 和装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p037_i01",
+      "page": 37,
+      "file_name": "page_037_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_037_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_037_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板背景页，包含校徽、学院名称及装饰性图形，无具体教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含学校Logo和装饰元素，没有实质性的软件工程知识内容（如代码、图表、流程图等）。"
+    },
+    {
+      "image_id": "第7章 实现-1_p038_i01",
+      "page": 38,
+      "file_name": "page_038_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_038_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_038_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含学校Logo和装饰元素，无实质性的软件工程知识内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p039_i02",
+      "page": 39,
+      "file_name": "page_039_img_02.jpeg",
+      "path": "images/第7章 实现-1/page_039_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_039_img_02.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院名称及装饰性背景，无具体教学内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，属于PPT模板，不包含任何软件工程知识点、图表或代码示例。"
+    },
+    {
+      "image_id": "第7章 实现-1_p040_i01",
+      "page": 40,
+      "file_name": "page_040_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_040_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_040_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院名称及装饰性背景元素，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，属于PPT模板，不包含任何软件工程知识点、图表或代码示例。"
+    },
+    {
+      "image_id": "第7章 实现-1_p041_i01",
+      "page": 41,
+      "file_name": "page_041_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_041_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_041_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院名称及装饰性背景图案，无具体教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，属于PPT模板，不包含任何软件工程知识点、图表或代码示例。"
+    },
+    {
+      "image_id": "第7章 实现-1_p042_i01",
+      "page": 42,
+      "file_name": "page_042_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_042_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_042_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，属于PPT模板，不包含任何软件工程知识点、图表或代码示例。"
+    },
+    {
+      "image_id": "第7章 实现-1_p043_i01",
+      "page": 43,
+      "file_name": "page_043_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_043_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_043_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院名称及装饰性背景图案，无具体教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，属于PPT模板页面，不包含任何软件工程知识点、图表或代码示例。"
+    },
+    {
+      "image_id": "第7章 实现-1_p044_i01",
+      "page": 44,
+      "file_name": "page_044_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_044_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_044_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景元素，无具体教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含学校Logo和装饰图案，缺乏实质性的软件工程知识内容（如代码示例、图表或流程图）。"
+    },
+    {
+      "image_id": "第7章 实现-1_p045_i01",
+      "page": 45,
+      "file_name": "page_045_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_045_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_045_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT模板背景页，仅包含学校Logo和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含校徽、学院名称及装饰线条，无任何软件工程知识图表或正文内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p046_i01",
+      "page": 46,
+      "file_name": "page_046_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_046_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_046_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院名称及装饰性背景图案，无具体教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，属于PPT模板，不包含任何软件工程知识点、图表或代码示例。"
+    },
+    {
+      "image_id": "第7章 实现-1_p047_i01",
+      "page": 47,
+      "file_name": "page_047_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_047_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_047_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板页，仅包含学校 Logo 和装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo 和装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p048_i01",
+      "page": 48,
+      "file_name": "page_048_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_048_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_048_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含学校Logo和装饰元素，无软件工程知识点内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p049_i01",
+      "page": 49,
+      "file_name": "page_049_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_049_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_049_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片为PPT模板页，仅包含页眉页脚和装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p050_i01",
+      "page": 50,
+      "file_name": "page_050_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_050_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_050_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院标识及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含学校Logo和装饰元素，无软件工程知识点内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p051_i01",
+      "page": 51,
+      "file_name": "page_051_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_051_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_051_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT模板背景页，仅包含学校Logo和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含校徽、学院标识及装饰线条，缺乏任何软件工程相关的图表、代码或知识讲解内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p052_i01",
+      "page": 52,
+      "file_name": "page_052_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_052_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_052_img_01.jpeg",
+      "width": 471,
+      "height": 100,
+      "file_size": 7948,
+      "ext": "jpeg",
+      "xref": 152,
+      "rule_class": "uncertain_or_decoration",
+      "is_knowledge_image": false,
+      "reject_reason": "uncertain_or_decoration",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p052_i02",
+      "page": 52,
+      "file_name": "page_052_img_02.jpeg",
+      "path": "images/第7章 实现-1/page_052_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_052_img_02.jpeg",
+      "width": 62,
+      "height": 62,
+      "file_size": 1119,
+      "ext": "jpeg",
+      "xref": 154,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p052_i03",
+      "page": 52,
+      "file_name": "page_052_img_03.jpeg",
+      "path": "images/第7章 实现-1/page_052_img_03.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_052_img_03.jpeg",
+      "width": 202,
+      "height": 100,
+      "file_size": 3810,
+      "ext": "jpeg",
+      "xref": 156,
+      "rule_class": "small_decoration_likely",
+      "is_knowledge_image": false,
+      "reject_reason": "small_decoration_likely",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p052_i04",
+      "page": 52,
+      "file_name": "page_052_img_04.jpeg",
+      "path": "images/第7章 实现-1/page_052_img_04.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_052_img_04.jpeg",
+      "width": 34,
+      "height": 77,
+      "file_size": 1156,
+      "ext": "jpeg",
+      "xref": 158,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p052_i05",
+      "page": 52,
+      "file_name": "page_052_img_05.jpeg",
+      "path": "images/第7章 实现-1/page_052_img_05.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_052_img_05.jpeg",
+      "width": 497,
+      "height": 100,
+      "file_size": 7907,
+      "ext": "jpeg",
+      "xref": 160,
+      "rule_class": "uncertain_or_decoration",
+      "is_knowledge_image": false,
+      "reject_reason": "uncertain_or_decoration",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p052_i06",
+      "page": 52,
+      "file_name": "page_052_img_06.jpeg",
+      "path": "images/第7章 实现-1/page_052_img_06.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_052_img_06.jpeg",
+      "width": 41,
+      "height": 25,
+      "file_size": 896,
+      "ext": "jpeg",
+      "xref": 162,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p052_i07",
+      "page": 52,
+      "file_name": "page_052_img_07.jpeg",
+      "path": "images/第7章 实现-1/page_052_img_07.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_052_img_07.jpeg",
+      "width": 202,
+      "height": 100,
+      "file_size": 3951,
+      "ext": "jpeg",
+      "xref": 164,
+      "rule_class": "small_decoration_likely",
+      "is_knowledge_image": false,
+      "reject_reason": "small_decoration_likely",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p052_i08",
+      "page": 52,
+      "file_name": "page_052_img_08.jpeg",
+      "path": "images/第7章 实现-1/page_052_img_08.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_052_img_08.jpeg",
+      "width": 34,
+      "height": 77,
+      "file_size": 1160,
+      "ext": "jpeg",
+      "xref": 166,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p052_i09",
+      "page": 52,
+      "file_name": "page_052_img_09.jpeg",
+      "path": "images/第7章 实现-1/page_052_img_09.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_052_img_09.jpeg",
+      "width": 471,
+      "height": 100,
+      "file_size": 7879,
+      "ext": "jpeg",
+      "xref": 168,
+      "rule_class": "uncertain_or_decoration",
+      "is_knowledge_image": false,
+      "reject_reason": "uncertain_or_decoration",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p052_i10",
+      "page": 52,
+      "file_name": "page_052_img_10.jpeg",
+      "path": "images/第7章 实现-1/page_052_img_10.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_052_img_10.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院名称及装饰性背景元素。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚和空白背景，属于PPT模板装饰，无软件工程知识点内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p052_i11",
+      "page": 52,
+      "file_name": "page_052_img_11.jpeg",
+      "path": "images/第7章 实现-1/page_052_img_11.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_052_img_11.jpeg",
+      "width": 202,
+      "height": 100,
+      "file_size": 3785,
+      "ext": "jpeg",
+      "xref": 170,
+      "rule_class": "small_decoration_likely",
+      "is_knowledge_image": false,
+      "reject_reason": "small_decoration_likely",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p053_i01",
+      "page": 53,
+      "file_name": "page_053_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_053_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_053_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院标识及装饰性背景元素，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板页，包含学校Logo和装饰背景，无任何软件工程知识图表或正文内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p053_i02",
+      "page": 53,
+      "file_name": "page_053_img_02.jpeg",
+      "path": "images/第7章 实现-1/page_053_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_053_img_02.jpeg",
+      "width": 567,
+      "height": 107,
+      "file_size": 8164,
+      "ext": "jpeg",
+      "xref": 174,
+      "rule_class": "uncertain_or_decoration",
+      "is_knowledge_image": false,
+      "reject_reason": "uncertain_or_decoration",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p053_i03",
+      "page": 53,
+      "file_name": "page_053_img_03.jpeg",
+      "path": "images/第7章 实现-1/page_053_img_03.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_053_img_03.jpeg",
+      "width": 34,
+      "height": 77,
+      "file_size": 1134,
+      "ext": "jpeg",
+      "xref": 176,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p053_i04",
+      "page": 53,
+      "file_name": "page_053_img_04.jpeg",
+      "path": "images/第7章 实现-1/page_053_img_04.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_053_img_04.jpeg",
+      "width": 497,
+      "height": 100,
+      "file_size": 7610,
+      "ext": "jpeg",
+      "xref": 177,
+      "rule_class": "uncertain_or_decoration",
+      "is_knowledge_image": false,
+      "reject_reason": "uncertain_or_decoration",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p053_i05",
+      "page": 53,
+      "file_name": "page_053_img_05.jpeg",
+      "path": "images/第7章 实现-1/page_053_img_05.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_053_img_05.jpeg",
+      "width": 34,
+      "height": 77,
+      "file_size": 1134,
+      "ext": "jpeg",
+      "xref": 179,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p053_i06",
+      "page": 53,
+      "file_name": "page_053_img_06.jpeg",
+      "path": "images/第7章 实现-1/page_053_img_06.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_053_img_06.jpeg",
+      "width": 548,
+      "height": 107,
+      "file_size": 8344,
+      "ext": "jpeg",
+      "xref": 181,
+      "rule_class": "uncertain_or_decoration",
+      "is_knowledge_image": false,
+      "reject_reason": "uncertain_or_decoration",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p053_i07",
+      "page": 53,
+      "file_name": "page_053_img_07.jpeg",
+      "path": "images/第7章 实现-1/page_053_img_07.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_053_img_07.jpeg",
+      "width": 34,
+      "height": 77,
+      "file_size": 1143,
+      "ext": "jpeg",
+      "xref": 183,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p054_i01",
+      "page": 54,
+      "file_name": "page_054_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_054_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_054_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含学校Logo和装饰元素，无软件工程知识点内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p055_i01",
+      "page": 55,
+      "file_name": "page_055_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_055_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_055_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，属于PPT模板，不包含任何软件工程知识点、图表或代码示例。"
+    },
+    {
+      "image_id": "第7章 实现-1_p055_i02",
+      "page": 55,
+      "file_name": "page_055_img_02.jpeg",
+      "path": "images/第7章 实现-1/page_055_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_055_img_02.jpeg",
+      "width": 1886,
+      "height": 119,
+      "file_size": 38136,
+      "ext": "jpeg",
+      "xref": 188,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "包含文字“例如：数据结构里的各种排序、查找算”的装饰性标题栏，无教学图表价值。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "该图片仅为PPT中的装饰性标题或过渡页，不包含流程图、ER图、代码示例等实质性知识内容，属于装饰元素。"
+    },
+    {
+      "image_id": "第7章 实现-1_p055_i03",
+      "page": 55,
+      "file_name": "page_055_img_03.jpeg",
+      "path": "images/第7章 实现-1/page_055_img_03.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_055_img_03.jpeg",
+      "width": 1378,
+      "height": 118,
+      "file_size": 27150,
+      "ext": "jpeg",
+      "xref": 190,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "包含强调性文字的装饰性标题栏，无具体知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为装饰性文字标题，不包含流程图、代码、图表等实质性教学知识内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p056_i01",
+      "page": 56,
+      "file_name": "page_056_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_056_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_056_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT模板背景页，仅包含学校Logo和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含校徽、学院名称及装饰线条，缺乏任何软件工程相关的图表、代码或知识讲解内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p056_i02",
+      "page": 56,
+      "file_name": "page_056_img_02.jpeg",
+      "path": "images/第7章 实现-1/page_056_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_056_img_02.jpeg",
+      "width": 270,
+      "height": 117,
+      "file_size": 5920,
+      "ext": "jpeg",
+      "xref": 194,
+      "rule_class": "small_decoration_likely",
+      "is_knowledge_image": false,
+      "reject_reason": "small_decoration_likely",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p056_i03",
+      "page": 56,
+      "file_name": "page_056_img_03.jpeg",
+      "path": "images/第7章 实现-1/page_056_img_03.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_056_img_03.jpeg",
+      "width": 176,
+      "height": 92,
+      "file_size": 2650,
+      "ext": "jpeg",
+      "xref": 196,
+      "rule_class": "small_decoration_likely",
+      "is_knowledge_image": false,
+      "reject_reason": "small_decoration_likely",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p056_i04",
+      "page": 56,
+      "file_name": "page_056_img_04.jpeg",
+      "path": "images/第7章 实现-1/page_056_img_04.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_056_img_04.jpeg",
+      "width": 1315,
+      "height": 119,
+      "file_size": 24887,
+      "ext": "jpeg",
+      "xref": 198,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "包含部分文字的PPT标题或装饰性图片，不具备独立的教学知识点价值。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为包含部分文字的装饰性标题或背景，属于PPT模板元素，不包含流程图、代码、模型等核心知识内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p056_i05",
+      "page": 56,
+      "file_name": "page_056_img_05.jpeg",
+      "path": "images/第7章 实现-1/page_056_img_05.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_056_img_05.jpeg",
+      "width": 716,
+      "height": 118,
+      "file_size": 13880,
+      "ext": "jpeg",
+      "xref": 200,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "仅包含“大量可用的库。”文字的装饰性标题图片，无图表或代码等实质性知识内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为装饰性标题，不包含流程图、ER图、代码示例或算法图等具有教学价值的知识内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p056_i06",
+      "page": 56,
+      "file_name": "page_056_img_06.jpeg",
+      "path": "images/第7章 实现-1/page_056_img_06.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_056_img_06.jpeg",
+      "width": 447,
+      "height": 118,
+      "file_size": 7523,
+      "ext": "jpeg",
+      "xref": 202,
+      "rule_class": "uncertain_or_decoration",
+      "is_knowledge_image": false,
+      "reject_reason": "uncertain_or_decoration",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p056_i07",
+      "page": 56,
+      "file_name": "page_056_img_07.jpeg",
+      "path": "images/第7章 实现-1/page_056_img_07.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_056_img_07.jpeg",
+      "width": 264,
+      "height": 110,
+      "file_size": 3794,
+      "ext": "jpeg",
+      "xref": 204,
+      "rule_class": "small_decoration_likely",
+      "is_knowledge_image": false,
+      "reject_reason": "small_decoration_likely",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p056_i08",
+      "page": 56,
+      "file_name": "page_056_img_08.jpeg",
+      "path": "images/第7章 实现-1/page_056_img_08.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_056_img_08.jpeg",
+      "width": 42,
+      "height": 50,
+      "file_size": 895,
+      "ext": "jpeg",
+      "xref": 206,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p056_i09",
+      "page": 56,
+      "file_name": "page_056_img_09.jpeg",
+      "path": "images/第7章 实现-1/page_056_img_09.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_056_img_09.jpeg",
+      "width": 228,
+      "height": 92,
+      "file_size": 3060,
+      "ext": "jpeg",
+      "xref": 208,
+      "rule_class": "small_decoration_likely",
+      "is_knowledge_image": false,
+      "reject_reason": "small_decoration_likely",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p056_i10",
+      "page": 56,
+      "file_name": "page_056_img_10.jpeg",
+      "path": "images/第7章 实现-1/page_056_img_10.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_056_img_10.jpeg",
+      "width": 77,
+      "height": 110,
+      "file_size": 1727,
+      "ext": "jpeg",
+      "xref": 210,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p056_i11",
+      "page": 56,
+      "file_name": "page_056_img_11.jpeg",
+      "path": "images/第7章 实现-1/page_056_img_11.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_056_img_11.jpeg",
+      "width": 42,
+      "height": 50,
+      "file_size": 897,
+      "ext": "jpeg",
+      "xref": 212,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p056_i12",
+      "page": 56,
+      "file_name": "page_056_img_12.jpeg",
+      "path": "images/第7章 实现-1/page_056_img_12.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_056_img_12.jpeg",
+      "width": 210,
+      "height": 91,
+      "file_size": 2947,
+      "ext": "jpeg",
+      "xref": 214,
+      "rule_class": "small_decoration_likely",
+      "is_knowledge_image": false,
+      "reject_reason": "small_decoration_likely",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p056_i13",
+      "page": 56,
+      "file_name": "page_056_img_13.jpeg",
+      "path": "images/第7章 实现-1/page_056_img_13.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_056_img_13.jpeg",
+      "width": 77,
+      "height": 110,
+      "file_size": 1726,
+      "ext": "jpeg",
+      "xref": 216,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p056_i14",
+      "page": 56,
+      "file_name": "page_056_img_14.jpeg",
+      "path": "images/第7章 实现-1/page_056_img_14.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_056_img_14.jpeg",
+      "width": 42,
+      "height": 50,
+      "file_size": 892,
+      "ext": "jpeg",
+      "xref": 218,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p056_i15",
+      "page": 56,
+      "file_name": "page_056_img_15.jpeg",
+      "path": "images/第7章 实现-1/page_056_img_15.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_056_img_15.jpeg",
+      "width": 336,
+      "height": 97,
+      "file_size": 4347,
+      "ext": "jpeg",
+      "xref": 220,
+      "rule_class": "small_decoration_likely",
+      "is_knowledge_image": false,
+      "reject_reason": "small_decoration_likely",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p056_i16",
+      "page": 56,
+      "file_name": "page_056_img_16.jpeg",
+      "path": "images/第7章 实现-1/page_056_img_16.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_056_img_16.jpeg",
+      "width": 77,
+      "height": 110,
+      "file_size": 1727,
+      "ext": "jpeg",
+      "xref": 222,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p056_i17",
+      "page": 56,
+      "file_name": "page_056_img_17.jpeg",
+      "path": "images/第7章 实现-1/page_056_img_17.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_056_img_17.jpeg",
+      "width": 42,
+      "height": 50,
+      "file_size": 894,
+      "ext": "jpeg",
+      "xref": 224,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p056_i18",
+      "page": 56,
+      "file_name": "page_056_img_18.jpeg",
+      "path": "images/第7章 实现-1/page_056_img_18.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_056_img_18.jpeg",
+      "width": 335,
+      "height": 83,
+      "file_size": 4197,
+      "ext": "jpeg",
+      "xref": 226,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p056_i19",
+      "page": 56,
+      "file_name": "page_056_img_19.jpeg",
+      "path": "images/第7章 实现-1/page_056_img_19.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_056_img_19.jpeg",
+      "width": 77,
+      "height": 110,
+      "file_size": 1729,
+      "ext": "jpeg",
+      "xref": 228,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p056_i20",
+      "page": 56,
+      "file_name": "page_056_img_20.jpeg",
+      "path": "images/第7章 实现-1/page_056_img_20.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_056_img_20.jpeg",
+      "width": 118,
+      "height": 118,
+      "file_size": 2836,
+      "ext": "jpeg",
+      "xref": 230,
+      "rule_class": "small_decoration_likely",
+      "is_knowledge_image": false,
+      "reject_reason": "small_decoration_likely",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p057_i01",
+      "page": 57,
+      "file_name": "page_057_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_057_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_057_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含学校Logo和装饰元素，不包含任何软件工程知识点、图表或代码示例。"
+    },
+    {
+      "image_id": "第7章 实现-1_p057_i03",
+      "page": 57,
+      "file_name": "page_057_img_03.jpeg",
+      "path": "images/第7章 实现-1/page_057_img_03.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_057_img_03.jpeg",
+      "width": 196,
+      "height": 82,
+      "file_size": 3087,
+      "ext": "jpeg",
+      "xref": 235,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p057_i04",
+      "page": 57,
+      "file_name": "page_057_img_04.jpeg",
+      "path": "images/第7章 实现-1/page_057_img_04.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_057_img_04.jpeg",
+      "width": 49,
+      "height": 53,
+      "file_size": 1149,
+      "ext": "jpeg",
+      "xref": 237,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p057_i05",
+      "page": 57,
+      "file_name": "page_057_img_05.jpeg",
+      "path": "images/第7章 实现-1/page_057_img_05.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_057_img_05.jpeg",
+      "width": 487,
+      "height": 83,
+      "file_size": 7038,
+      "ext": "jpeg",
+      "xref": 239,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p057_i06",
+      "page": 57,
+      "file_name": "page_057_img_06.jpeg",
+      "path": "images/第7章 实现-1/page_057_img_06.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_057_img_06.jpeg",
+      "width": 171,
+      "height": 82,
+      "file_size": 2745,
+      "ext": "jpeg",
+      "xref": 241,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p057_i07",
+      "page": 57,
+      "file_name": "page_057_img_07.jpeg",
+      "path": "images/第7章 实现-1/page_057_img_07.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_057_img_07.jpeg",
+      "width": 464,
+      "height": 83,
+      "file_size": 7070,
+      "ext": "jpeg",
+      "xref": 243,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p057_i08",
+      "page": 57,
+      "file_name": "page_057_img_08.jpeg",
+      "path": "images/第7章 实现-1/page_057_img_08.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_057_img_08.jpeg",
+      "width": 264,
+      "height": 71,
+      "file_size": 4379,
+      "ext": "jpeg",
+      "xref": 245,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p057_i09",
+      "page": 57,
+      "file_name": "page_057_img_09.jpeg",
+      "path": "images/第7章 实现-1/page_057_img_09.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_057_img_09.jpeg",
+      "width": 51,
+      "height": 38,
+      "file_size": 1098,
+      "ext": "jpeg",
+      "xref": 247,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p057_i10",
+      "page": 57,
+      "file_name": "page_057_img_10.jpeg",
+      "path": "images/第7章 实现-1/page_057_img_10.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_057_img_10.jpeg",
+      "width": 58,
+      "height": 69,
+      "file_size": 1493,
+      "ext": "jpeg",
+      "xref": 249,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p057_i11",
+      "page": 57,
+      "file_name": "page_057_img_11.jpeg",
+      "path": "images/第7章 实现-1/page_057_img_11.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_057_img_11.jpeg",
+      "width": 342,
+      "height": 71,
+      "file_size": 5411,
+      "ext": "jpeg",
+      "xref": 251,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p057_i12",
+      "page": 57,
+      "file_name": "page_057_img_12.jpeg",
+      "path": "images/第7章 实现-1/page_057_img_12.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_057_img_12.jpeg",
+      "width": 331,
+      "height": 83,
+      "file_size": 4911,
+      "ext": "jpeg",
+      "xref": 253,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p057_i13",
+      "page": 57,
+      "file_name": "page_057_img_13.jpeg",
+      "path": "images/第7章 实现-1/page_057_img_13.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_057_img_13.jpeg",
+      "width": 36,
+      "height": 81,
+      "file_size": 1183,
+      "ext": "jpeg",
+      "xref": 255,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p057_i14",
+      "page": 57,
+      "file_name": "page_057_img_14.jpeg",
+      "path": "images/第7章 实现-1/page_057_img_14.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_057_img_14.jpeg",
+      "width": 342,
+      "height": 71,
+      "file_size": 5646,
+      "ext": "jpeg",
+      "xref": 257,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p057_i15",
+      "page": 57,
+      "file_name": "page_057_img_15.jpeg",
+      "path": "images/第7章 实现-1/page_057_img_15.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_057_img_15.jpeg",
+      "width": 396,
+      "height": 71,
+      "file_size": 6066,
+      "ext": "jpeg",
+      "xref": 259,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p057_i16",
+      "page": 57,
+      "file_name": "page_057_img_16.jpeg",
+      "path": "images/第7章 实现-1/page_057_img_16.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_057_img_16.jpeg",
+      "width": 61,
+      "height": 69,
+      "file_size": 1318,
+      "ext": "jpeg",
+      "xref": 261,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p057_i17",
+      "page": 57,
+      "file_name": "page_057_img_17.jpeg",
+      "path": "images/第7章 实现-1/page_057_img_17.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_057_img_17.jpeg",
+      "width": 398,
+      "height": 71,
+      "file_size": 6164,
+      "ext": "jpeg",
+      "xref": 263,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p057_i18",
+      "page": 57,
+      "file_name": "page_057_img_18.jpeg",
+      "path": "images/第7章 实现-1/page_057_img_18.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_057_img_18.jpeg",
+      "width": 64,
+      "height": 69,
+      "file_size": 1573,
+      "ext": "jpeg",
+      "xref": 265,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p057_i19",
+      "page": 57,
+      "file_name": "page_057_img_19.jpeg",
+      "path": "images/第7章 实现-1/page_057_img_19.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_057_img_19.jpeg",
+      "width": 545,
+      "height": 71,
+      "file_size": 7930,
+      "ext": "jpeg",
+      "xref": 267,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p057_i20",
+      "page": 57,
+      "file_name": "page_057_img_20.jpeg",
+      "path": "images/第7章 实现-1/page_057_img_20.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_057_img_20.jpeg",
+      "width": 1774,
+      "height": 106,
+      "file_size": 41814,
+      "ext": "jpeg",
+      "xref": 269,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 页面标题或装饰性文字条，内容为“避免不必要的转移。同时如果能保持程序”，无具体知识点图示。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为装饰性文字条，不包含流程图、代码示例、结构图等具有教学价值的知识内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p057_i22",
+      "page": 57,
+      "file_name": "page_057_img_22.jpeg",
+      "path": "images/第7章 实现-1/page_057_img_22.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_057_img_22.jpeg",
+      "width": 322,
+      "height": 83,
+      "file_size": 5446,
+      "ext": "jpeg",
+      "xref": 273,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p057_i23",
+      "page": 57,
+      "file_name": "page_057_img_23.jpeg",
+      "path": "images/第7章 实现-1/page_057_img_23.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_057_img_23.jpeg",
+      "width": 244,
+      "height": 106,
+      "file_size": 5318,
+      "ext": "jpeg",
+      "xref": 275,
+      "rule_class": "small_decoration_likely",
+      "is_knowledge_image": false,
+      "reject_reason": "small_decoration_likely",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第7章 实现-1_p058_i01",
+      "page": 58,
+      "file_name": "page_058_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_058_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_058_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院名称及装饰性背景元素，无具体教学内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，属于PPT模板，不包含任何软件工程知识点、图表或代码示例。"
+    },
+    {
+      "image_id": "第7章 实现-1_p059_i01",
+      "page": 59,
+      "file_name": "page_059_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_059_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_059_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，属于PPT模板，不包含任何软件工程相关的流程图、代码、表格或知识点讲解内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p060_i01",
+      "page": 60,
+      "file_name": "page_060_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_060_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_060_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo及装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p061_i01",
+      "page": 61,
+      "file_name": "page_061_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_061_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_061_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板背景页，仅包含学校 Logo 和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为 PPT 模板背景，包含页眉页脚和装饰元素，无正文知识内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p062_i01",
+      "page": 62,
+      "file_name": "page_062_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_062_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_062_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板背景页，仅包含学校 Logo 和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为 PPT 模板背景，包含页眉页脚和装饰元素，无正文知识内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p063_i01",
+      "page": 63,
+      "file_name": "page_063_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_063_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_063_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院名称及装饰性背景，无具体教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo及装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p064_i01",
+      "page": 64,
+      "file_name": "page_064_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_064_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_064_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板背景页，包含学校 Logo 和装饰性渐变条，无正文内容",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo 和装饰背景，无教学知识点内容"
+    },
+    {
+      "image_id": "第7章 实现-1_p065_i01",
+      "page": 65,
+      "file_name": "page_065_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_065_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_065_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含学校Logo和装饰元素，无实质性的软件工程知识内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p066_i01",
+      "page": 66,
+      "file_name": "page_066_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_066_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_066_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景元素，无具体教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板页，包含学校Logo和装饰背景，没有实质性的软件工程知识图表或内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p067_i01",
+      "page": 67,
+      "file_name": "page_067_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_067_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_067_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo及装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第7章 实现-1_p068_i01",
+      "page": 68,
+      "file_name": "page_068_img_01.jpeg",
+      "path": "images/第7章 实现-1/page_068_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第7章 实现-1\\page_068_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板背景页，仅包含学校 Logo 和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为 PPT 模板背景，包含页眉页脚和装饰元素，无实质性的软件工程知识内容。"
+    }
+  ],
+  "cleaning": {
+    "filtered_non_knowledge_count": 2,
+    "filtered_non_knowledge_samples": [
+      {
+        "chunk_id": "chunk_66b135357d89",
+        "title": "软件工程",
+        "reason": "generic_fragment",
+        "pages": [
+          1
+        ],
+        "text_preview": "高级软件工程"
+      },
+      {
+        "chunk_id": "chunk_aaaa79eeed78",
+        "title": "测试",
+        "reason": "exercise_or_admin_title",
+        "pages": [
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "text_preview": "o 在软件生命周期的每个阶段都不可能完全避免\n\n产生差错 o 力求在每个阶段结束之前通过严格的技术审查，\n\n尽可能早地发现并纠正错误 o 是保证软件质量的关键步骤，是对软件规格说\n\n明、设计和编码的最后复审 n 单元测试，通常在编写出每个模块之后，由编写者\n\n执行。编码和单元测试属于同一个阶段 n 综合测试，在单元测试后进行各种综合测试，由专\n\n门的测试人员"
+      }
+    ],
+    "merged_duplicate_group_count": 3,
+    "merged_duplicate_samples": [
+      {
+        "title": "7.1.2 编码风格",
+        "merged_count": 2,
+        "merged_chunk_id": "merged_c22e035c9aa6"
+      },
+      {
+        "title": "序言性注解举例",
+        "merged_count": 2,
+        "merged_chunk_id": "merged_bbdf3326c592"
+      },
+      {
+        "title": "3. 语句构造",
+        "merged_count": 2,
+        "merged_chunk_id": "merged_17dc9ebc0714"
+      }
+    ],
+    "rule_relation_fallback_edges_added": 0,
+    "rejected_image_count": 128
+  },
+  "llm": {
+    "used_boundaries": true,
+    "generated_relations": true,
+    "used_image_filter": true,
+    "model": "xopqwen35v35b",
+    "base_url": "https://maas-api.cn-huabei-1.xf-yun.com/v2"
+  }
+}

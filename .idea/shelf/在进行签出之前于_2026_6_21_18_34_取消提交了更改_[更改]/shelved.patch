@@ -1,0 +1,494 @@
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"ALL\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"f32b3afe-bbd8-4c29-81f8-86a629ed3837\" name=\"更改\" comment=\"\" />\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"EmbeddingIndexingInfo\">\r\n    <option name=\"cachedIndexableFilesCount\" value=\"226\" />\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"GitHubPullRequestSearchHistory\">{\r\n  &quot;lastFilter&quot;: {\r\n    &quot;state&quot;: &quot;OPEN&quot;,\r\n    &quot;assignee&quot;: &quot;xuduo20050224&quot;\r\n  }\r\n}</component>\r\n  <component name=\"GithubPullRequestsUISettings\">{\r\n  &quot;selectedUrlAndAccountId&quot;: {\r\n    &quot;url&quot;: &quot;https://github.com/xuduo20050224/test.git&quot;,\r\n    &quot;accountId&quot;: &quot;1445ed8c-cdc3-40f1-90ab-2e976d6c4818&quot;\r\n  }\r\n}</component>\r\n  <component name=\"McpProjectServerCommands\">\r\n    <commands />\r\n    <urls />\r\n  </component>\r\n  <component name=\"NextEditCompletionFeaturesState\">\r\n    <decayedCancelled>\r\n      <entry key=\"MS100\" value=\"1.4171926541409863\" />\r\n      <entry key=\"MS500\" value=\"2.445971046177106\" />\r\n      <entry key=\"S2\" value=\"2.8432511248765397\" />\r\n      <entry key=\"S5\" value=\"2.935679937011371\" />\r\n      <entry key=\"S10\" value=\"2.967563375726195\" />\r\n      <entry key=\"S30\" value=\"2.989125711162063\" />\r\n      <entry key=\"S60\" value=\"2.9945550566783536\" />\r\n      <entry key=\"M2\" value=\"2.9972755756903773\" />\r\n      <entry key=\"M5\" value=\"2.9989118573076494\" />\r\n      <entry key=\"M10\" value=\"3.0023470213800687\" />\r\n      <entry key=\"M15\" value=\"3.031851882424002\" />\r\n      <entry key=\"M30\" value=\"3.3587451164447866\" />\r\n      <entry key=\"H1\" value=\"4.198080904823581\" />\r\n      <entry key=\"H2\" value=\"5.189157719847041\" />\r\n      <entry key=\"H4\" value=\"5.959162576960596\" />\r\n      <entry key=\"D1\" value=\"6.8040375910920465\" />\r\n      <entry key=\"W1\" value=\"6.971399118401696\" />\r\n    </decayedCancelled>\r\n    <decayedSelected>\r\n      <entry key=\"MS100\" value=\"0.0\" />\r\n      <entry key=\"MS500\" value=\"0.0\" />\r\n      <entry key=\"S2\" value=\"0.0\" />\r\n      <entry key=\"S5\" value=\"0.0\" />\r\n      <entry key=\"S10\" value=\"2.3148809954323587E-190\" />\r\n      <entry key=\"S30\" value=\"6.140111011931509E-64\" />\r\n      <entry key=\"S60\" value=\"2.4779247389562725E-32\" />\r\n      <entry key=\"M2\" value=\"1.5741425408635242E-16\" />\r\n      <entry key=\"M5\" value=\"4.773287820502004E-7\" />\r\n      <entry key=\"M10\" value=\"6.908898479860596E-4\" />\r\n      <entry key=\"M15\" value=\"0.00781518399950467\" />\r\n      <entry key=\"M30\" value=\"0.08840352933850931\" />\r\n      <entry key=\"H1\" value=\"0.2973273101121208\" />\r\n      <entry key=\"H2\" value=\"0.5452772781916746\" />\r\n      <entry key=\"H4\" value=\"0.7384289256195714\" />\r\n      <entry key=\"D1\" value=\"0.9507174167484658\" />\r\n      <entry key=\"W1\" value=\"0.9928062279642439\" />\r\n    </decayedSelected>\r\n    <decayedShown>\r\n      <entry key=\"MS100\" value=\"1.3311214394629576\" />\r\n      <entry key=\"MS500\" value=\"2.404623334753583\" />\r\n      <entry key=\"S2\" value=\"2.8303994743777436\" />\r\n      <entry key=\"S5\" value=\"2.930301226288236\" />\r\n      <entry key=\"S10\" value=\"2.9648328023021593\" />\r\n      <entry key=\"S30\" value=\"2.9882062131404425\" />\r\n      <entry key=\"S60\" value=\"2.9940941349888166\" />\r\n      <entry key=\"M2\" value=\"2.9970448209727936\" />\r\n      <entry key=\"M5\" value=\"2.9988199600283156\" />\r\n      <entry key=\"M10\" value=\"3.002990192225595\" />\r\n      <entry key=\"M15\" value=\"3.0396247945657255\" />\r\n      <entry key=\"M30\" value=\"3.4470683634907\" />\r\n      <entry key=\"H1\" value=\"4.495291403778445\" />\r\n      <entry key=\"H2\" value=\"5.734331095530701\" />\r\n      <entry key=\"H4\" value=\"6.697521830156213\" />\r\n      <entry key=\"D1\" value=\"7.754740149586177\" />\r\n      <entry key=\"W1\" value=\"7.9642031318154665\" />\r\n    </decayedShown>\r\n  </component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 1,\r\n  &quot;fromUser&quot;: false\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"3FFmiDJ2rSub1RXvkhmlutJUc6U\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">{\r\n  &quot;keyToString&quot;: {\r\n    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,\r\n    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,\r\n    &quot;git-widget-placeholder&quot;: &quot;master&quot;,\r\n    &quot;last_opened_file_path&quot;: &quot;E:/知识问答&quot;,\r\n    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,\r\n    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,\r\n    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,\r\n    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,\r\n    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,\r\n    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,\r\n    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;\r\n  }\r\n}</component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-python-sdk-c59985aa861c-c2ffad84badb-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-261.24374.152\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"默认任务\">\r\n      <changelist id=\"f32b3afe-bbd8-4c29-81f8-86a629ed3837\" name=\"更改\" comment=\"\" />\r\n      <created>1781679316627</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1781679316627</updated>\r\n      <workItem from=\"1781679317678\" duration=\"6209000\" />\r\n      <workItem from=\"1781771131270\" duration=\"1317000\" />\r\n      <workItem from=\"1781772856607\" duration=\"4978000\" />\r\n      <workItem from=\"1781850779583\" duration=\"9213000\" />\r\n      <workItem from=\"1781939370717\" duration=\"10622000\" />\r\n      <workItem from=\"1782020961652\" duration=\"6247000\" />\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n</project>
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 7095c74898b1cac460597712d4f59b02c1591700)
++++ b/.idea/workspace.xml	(date 1782037941628)
+@@ -4,14 +4,245 @@
+     <option name="autoReloadType" value="ALL" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="f32b3afe-bbd8-4c29-81f8-86a629ed3837" name="更改" comment="" />
++    <list default="true" id="f32b3afe-bbd8-4c29-81f8-86a629ed3837" name="更改" comment="">
++      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/.gitignore" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/README.md" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/.env.example" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/ai/__init__.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/ai/agents/__init__.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/ai/agents/agent_manager.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/ai/agents/base_agent.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/ai/agents/code_agent.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/ai/agents/document_agent.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/ai/agents/evaluator_agent.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/ai/agents/mindmap_agent.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/ai/agents/path_agent.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/ai/agents/planner_agent.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/ai/agents/profile_agent.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/ai/agents/quality_agent.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/ai/agents/quiz_agent.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/ai/agents/reading_agent.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/ai/agents/resource_base.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/ai/agents/retrieve_agent.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/ai/agents/safety_agent.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/ai/agents/text_agent.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/ai/agents/tutor_agent.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/ai/agents/video_agent.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/ai/agents/visual_agent.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/ai/json_utils.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/ai/rag.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/ai/spark_api.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/api/__init__.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/api/auth_api.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/api/chat_api.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/api/evaluation_api.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/api/knowledge_api.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/api/path_api.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/api/profile_api.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/api/resource_api.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/api/system_api.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/app.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/config.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/db/__init__.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/db/init.sql" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/db/mysql_db.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/db/schema.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/requirements.txt" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/utils/__init__.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/utils/auth_decorator.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/backend/utils/jwt_utils.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/docs/AI工具使用说明.md" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/docs/PPT大纲.md" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/docs/开源依赖与协议说明.md" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/docs/数据库与AI模型配置说明.md" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/docs/测试说明书.md" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/docs/演示视频脚本.md" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/docs/用户使用说明书.md" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/docs/系统开发说明书.md" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/docs/部署说明.md" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/docs/需求规格说明书.md" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/frontend/.env.example" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/frontend/index.html" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/frontend/package-lock.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/frontend/package.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/frontend/src/App.vue" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/frontend/src/api/index.js" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/frontend/src/main.js" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/frontend/src/router.js" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/frontend/src/styles.css" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/frontend/src/views/ArchitectureView.vue" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/frontend/src/views/AuthView.vue" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/frontend/src/views/ChatView.vue" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/frontend/src/views/EvaluationView.vue" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/frontend/src/views/KnowledgeView.vue" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/frontend/src/views/PathView.vue" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/frontend/src/views/ProfileView.vue" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/frontend/src/views/ResourceView.vue" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/frontend/src/views/SystemStatusView.vue" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/frontend/vite.config.js" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/rag_data/source_docs/01_人工智能概述.txt" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/rag_data/source_docs/02_搜索与问题求解.txt" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/rag_data/source_docs/03_知识表示与推理.txt" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/rag_data/source_docs/04_机器学习基础.txt" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/rag_data/source_docs/05_监督学习.txt" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/rag_data/source_docs/06_无监督学习.txt" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/rag_data/source_docs/07_神经网络与深度学习.txt" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/rag_data/source_docs/08_自然语言处理.txt" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/rag_data/source_docs/09_计算机视觉.txt" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/rag_data/source_docs/10_人工智能伦理与安全.txt" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/A3_Leraning_Agent-main/提交清单.md" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/README_SEMANTIC_PIPELINE.md" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm.zip" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/batch_summary.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第1章-软件工程学概述-2/page_008_img_04.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第1章-软件工程学概述-2/page_020_img_01.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第1章-软件工程学概述-2/page_021_img_01.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第1章-软件工程学概述-2/page_024_img_01.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第1章-软件工程学概述-2/page_032_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第1章-软件工程学概述-2/page_033_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第1章-软件工程学概述-2/page_033_img_03.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第1章-软件工程学概述-2/page_034_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第1章-软件工程学概述-2/page_035_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第1章-软件工程学概述-2/page_036_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第1章-软件工程学概述-2/page_076_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第1章-软件工程学概述-2/page_082_img_03.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第1章-软件工程学概述-2/page_093_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第1章-软件工程学概述-2/page_094_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第1章-软件工程学概述-2/page_107_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第1章-软件工程学概述-2/page_108_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第1章-软件工程学概述-2/page_112_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第1章-软件工程学概述-2/page_114_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第2章-可行性研究/page_057_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第2章-可行性研究/page_060_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第2章-可行性研究/page_088_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第3章 需求分析/page_016_img_01.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第3章 需求分析/page_033_img_01.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第3章 需求分析/page_054_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第3章 需求分析/page_055_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第3章 需求分析/page_056_img_03.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第3章 需求分析/page_057_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第3章 需求分析/page_058_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第3章 需求分析/page_059_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第3章 需求分析/page_068_img_03.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第3章 需求分析/page_069_img_03.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第3章 需求分析/page_070_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第3章 需求分析/page_071_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第3章 需求分析/page_073_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第3章 需求分析/page_075_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第3章 需求分析/page_083_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第5章 总体设计-1/page_044_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第5章 总体设计-1/page_051_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第5章 总体设计-1/page_052_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第5章 总体设计-1/page_057_img_03.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第5章 总体设计-1/page_059_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第5章 总体设计-1/page_065_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第5章 总体设计-1/page_069_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第5章 总体设计-1/page_073_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第5章 总体设计-1/page_084_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第5章 总体设计-2/page_050_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第6章 详细设计/page_030_img_05.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第6章 详细设计/page_030_img_06.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第6章 详细设计/page_034_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第6章 详细设计/page_034_img_03.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第6章 详细设计/page_035_img_05.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第6章 详细设计/page_037_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第6章 详细设计/page_039_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第6章 详细设计/page_047_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第6章 详细设计/page_048_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第6章 详细设计/page_054_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第6章 详细设计/page_056_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第6章 详细设计/page_059_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第6章 详细设计/page_064_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第6章 详细设计/page_066_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第6章 详细设计/page_067_img_05.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第6章 详细设计/page_068_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第6章 详细设计/page_068_img_03.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第6章 详细设计/page_069_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第6章 详细设计/page_077_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第6章 详细设计/page_078_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第6章 详细设计/page_090_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第6章 详细设计/page_117_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第6章 详细设计/page_118_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第6章 详细设计/page_121_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第7章 实现-1/page_020_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第7章 实现-1/page_021_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第7章 实现-1/page_034_img_01.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第7章 实现-1/page_039_img_01.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第7章 实现-1/page_057_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第7章 实现-1/page_057_img_21.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第7章 实现-2/page_024_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第7章 实现-2/page_044_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第7章 实现-2/page_045_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第7章 实现-2/page_046_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第7章 实现-2/page_047_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第7章 实现-2/page_052_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第7章 实现-2/page_065_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第7章 实现-2/page_073_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第7章 实现-2/page_082_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第7章 实现-2/page_084_img_02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/images/第8章 维护/page_018_img_05.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/knowledge_tree_json/第1章-软件工程学概述-2_knowledge_tree.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/knowledge_tree_json/第1章-软件工程学概述-2_knowledge_tree.mmd" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/knowledge_tree_json/第2章-可行性研究_knowledge_tree.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/knowledge_tree_json/第2章-可行性研究_knowledge_tree.mmd" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/knowledge_tree_json/第3章 需求分析_knowledge_tree.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/knowledge_tree_json/第3章 需求分析_knowledge_tree.mmd" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/knowledge_tree_json/第5章 总体设计-1_knowledge_tree.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/knowledge_tree_json/第5章 总体设计-1_knowledge_tree.mmd" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/knowledge_tree_json/第5章 总体设计-2_knowledge_tree.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/knowledge_tree_json/第5章 总体设计-2_knowledge_tree.mmd" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/knowledge_tree_json/第6章 详细设计_knowledge_tree.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/knowledge_tree_json/第6章 详细设计_knowledge_tree.mmd" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/knowledge_tree_json/第7章 实现-1_knowledge_tree.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/knowledge_tree_json/第7章 实现-1_knowledge_tree.mmd" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/knowledge_tree_json/第7章 实现-2_knowledge_tree.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/knowledge_tree_json/第7章 实现-2_knowledge_tree.mmd" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/knowledge_tree_json/第8章 维护_knowledge_tree.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/knowledge_tree_json/第8章 维护_knowledge_tree.mmd" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/pdf_json/第1章-软件工程学概述-2_knowledge.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/pdf_json/第2章-可行性研究_knowledge.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/pdf_json/第3章 需求分析_knowledge.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/pdf_json/第5章 总体设计-1_knowledge.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/pdf_json/第5章 总体设计-2_knowledge.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/pdf_json/第6章 详细设计_knowledge.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/pdf_json/第7章 实现-1_knowledge.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/pdf_json/第7章 实现-2_knowledge.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/pdf_json/第8章 维护_knowledge.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/semantic_json/第1章-软件工程学概述-2_semantic.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/semantic_json/第2章-可行性研究_semantic.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/semantic_json/第3章 需求分析_semantic.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/semantic_json/第5章 总体设计-1_semantic.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/semantic_json/第5章 总体设计-2_semantic.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/semantic_json/第6章 详细设计_semantic.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/semantic_json/第7章 实现-1_semantic.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/semantic_json/第7章 实现-2_semantic.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_outputs_llm_vision/semantic_json/第8章 维护_semantic.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/batch_pdf_knowledge_pipeline.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/import_knowledge_to_mysql.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/ingest_pdf_to_mysql.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/pdf_to_json.py" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/rule_chunks.json" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/MY/semantic_slice_tree.py" beforeDir="false" />
++    </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+     <option name="LAST_RESOLUTION" value="IGNORE" />
+   </component>
+   <component name="EmbeddingIndexingInfo">
+-    <option name="cachedIndexableFilesCount" value="226" />
++    <option name="cachedIndexableFilesCount" value="244" />
++  </component>
++  <component name="FlaskConsoleOptions" custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform)); sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo, NoAppException&#10;for module in [&quot;main.py&quot;, &quot;wsgi.py&quot;, &quot;app.py&quot;]:&#10;    try: locals().update(ScriptInfo(app_import_path=module, create_app=None).load_app().make_shell_context()); print(&quot;\nFlask App: %s&quot; % app.import_name); break&#10;    except NoAppException: pass">
++    <envs>
++      <env key="FLASK_APP" value="app" />
++    </envs>
++    <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform)); sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo, NoAppException&#10;for module in [&quot;main.py&quot;, &quot;wsgi.py&quot;, &quot;app.py&quot;]:&#10;    try: locals().update(ScriptInfo(app_import_path=module, create_app=None).load_app().make_shell_context()); print(&quot;\nFlask App: %s&quot; % app.import_name); break&#10;    except NoAppException: pass" />
++    <option name="myEnvs">
++      <map>
++        <entry key="FLASK_APP" value="app" />
++      </map>
++    </option>
+   </component>
+   <component name="Git.Settings">
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+@@ -24,72 +255,78 @@
+ }</component>
+   <component name="GithubPullRequestsUISettings">{
+   &quot;selectedUrlAndAccountId&quot;: {
+-    &quot;url&quot;: &quot;https://github.com/xuduo20050224/test.git&quot;,
++    &quot;url&quot;: &quot;https://github.com/xuduo20050224/knowledge.git&quot;,
+     &quot;accountId&quot;: &quot;1445ed8c-cdc3-40f1-90ab-2e976d6c4818&quot;
+   }
+ }</component>
++  <component name="HighlightingSettingsPerFile">
++    <setting file="file://$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/.env" root0="FORCE_HIGHLIGHTING" />
++  </component>
+   <component name="McpProjectServerCommands">
+     <commands />
+     <urls />
+   </component>
+   <component name="NextEditCompletionFeaturesState">
+     <decayedCancelled>
+-      <entry key="MS100" value="1.4171926541409863" />
+-      <entry key="MS500" value="2.445971046177106" />
+-      <entry key="S2" value="2.8432511248765397" />
+-      <entry key="S5" value="2.935679937011371" />
+-      <entry key="S10" value="2.967563375726195" />
+-      <entry key="S30" value="2.989125711162063" />
+-      <entry key="S60" value="2.9945550566783536" />
+-      <entry key="M2" value="2.9972755756903773" />
+-      <entry key="M5" value="2.9989118573076494" />
+-      <entry key="M10" value="3.0023470213800687" />
+-      <entry key="M15" value="3.031851882424002" />
+-      <entry key="M30" value="3.3587451164447866" />
+-      <entry key="H1" value="4.198080904823581" />
+-      <entry key="H2" value="5.189157719847041" />
+-      <entry key="H4" value="5.959162576960596" />
+-      <entry key="D1" value="6.8040375910920465" />
+-      <entry key="W1" value="6.971399118401696" />
++      <entry key="MS100" value="1.6552132271832098" />
++      <entry key="MS500" value="2.109729466087644" />
++      <entry key="S2" value="3.0901540608856943" />
++      <entry key="S5" value="3.5724644616932015" />
++      <entry key="S10" value="3.7739074599145837" />
++      <entry key="S30" value="3.9217144170003793" />
++      <entry key="S60" value="3.960480724170604" />
++      <entry key="M2" value="3.982835566299354" />
++      <entry key="M5" value="4.365035424977805" />
++      <entry key="M10" value="5.927705808063278" />
++      <entry key="M15" value="7.348927190683479" />
++      <entry key="M30" value="9.985131193605689" />
++      <entry key="H1" value="12.510651446381708" />
++      <entry key="H2" value="14.625457342296459" />
++      <entry key="H4" value="16.099060624386574" />
++      <entry key="D1" value="17.64687629374273" />
++      <entry key="W1" value="17.948561942426522" />
+     </decayedCancelled>
+     <decayedSelected>
+       <entry key="MS100" value="0.0" />
+       <entry key="MS500" value="0.0" />
+       <entry key="S2" value="0.0" />
+       <entry key="S5" value="0.0" />
+-      <entry key="S10" value="2.3148809954323587E-190" />
+-      <entry key="S30" value="6.140111011931509E-64" />
+-      <entry key="S60" value="2.4779247389562725E-32" />
+-      <entry key="M2" value="1.5741425408635242E-16" />
+-      <entry key="M5" value="4.773287820502004E-7" />
+-      <entry key="M10" value="6.908898479860596E-4" />
+-      <entry key="M15" value="0.00781518399950467" />
+-      <entry key="M30" value="0.08840352933850931" />
+-      <entry key="H1" value="0.2973273101121208" />
+-      <entry key="H2" value="0.5452772781916746" />
+-      <entry key="H4" value="0.7384289256195714" />
+-      <entry key="D1" value="0.9507174167484658" />
+-      <entry key="W1" value="0.9928062279642439" />
++      <entry key="S10" value="1.3428946303458504E-233" />
++      <entry key="S30" value="2.3769167937044435E-78" />
++      <entry key="S60" value="1.5417252653130017E-39" />
++      <entry key="M2" value="3.9264809503077945E-20" />
++      <entry key="M5" value="1.728229435773943E-8" />
++      <entry key="M10" value="1.3146214039691973E-4" />
++      <entry key="M15" value="0.0025854360452871013" />
++      <entry key="M30" value="0.05084718325814225" />
++      <entry key="H1" value="0.2254932000263916" />
++      <entry key="H2" value="0.4748612429188042" />
++      <entry key="H4" value="0.689101765284928" />
++      <entry key="D1" value="0.9398255057323666" />
++      <entry key="W1" value="0.9911733211520125" />
+     </decayedSelected>
+     <decayedShown>
+-      <entry key="MS100" value="1.3311214394629576" />
+-      <entry key="MS500" value="2.404623334753583" />
+-      <entry key="S2" value="2.8303994743777436" />
+-      <entry key="S5" value="2.930301226288236" />
+-      <entry key="S10" value="2.9648328023021593" />
+-      <entry key="S30" value="2.9882062131404425" />
+-      <entry key="S60" value="2.9940941349888166" />
+-      <entry key="M2" value="2.9970448209727936" />
+-      <entry key="M5" value="2.9988199600283156" />
+-      <entry key="M10" value="3.002990192225595" />
+-      <entry key="M15" value="3.0396247945657255" />
+-      <entry key="M30" value="3.4470683634907" />
+-      <entry key="H1" value="4.495291403778445" />
+-      <entry key="H2" value="5.734331095530701" />
+-      <entry key="H4" value="6.697521830156213" />
+-      <entry key="D1" value="7.754740149586177" />
+-      <entry key="W1" value="7.9642031318154665" />
++      <entry key="MS100" value="1.605549169476054" />
++      <entry key="MS500" value="2.0964117260359307" />
++      <entry key="S2" value="3.0849609645315343" />
++      <entry key="S5" value="3.5700188600956784" />
++      <entry key="S10" value="3.7726076483817916" />
++      <entry key="S30" value="3.921262302387205" />
++      <entry key="S60" value="3.9602521949788763" />
++      <entry key="M2" value="3.9827203341310686" />
++      <entry key="M5" value="4.364969986188125" />
++      <entry key="M10" value="5.927763425375518" />
++      <entry key="M15" value="7.351435073575012" />
++      <entry key="M30" value="10.035882742350061" />
++      <entry key="H1" value="12.736024714854457" />
++      <entry key="H2" value="15.100210402331317" />
++      <entry key="H4" value="16.78808796076656" />
++      <entry key="D1" value="18.5866854599482" />
++      <entry key="W1" value="18.939732814639033" />
+     </decayedShown>
++  </component>
++  <component name="ProblemsViewState">
++    <option name="selectedTabId" value="ProjectErrors" />
+   </component>
+   <component name="ProjectColorInfo">{
+   &quot;associatedIndex&quot;: 1,
+@@ -100,26 +337,32 @@
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+   </component>
+-  <component name="PropertiesComponent">{
+-  &quot;keyToString&quot;: {
+-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+-    &quot;last_opened_file_path&quot;: &quot;E:/知识问答&quot;,
+-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
+-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
++  <component name="PropertiesComponent"><![CDATA[{
++  "keyToString": {
++    "ModuleVcsDetector.initialDetectionPerformed": "true",
++    "RunOnceActivity.MCP Project settings loaded": "true",
++    "RunOnceActivity.ShowReadmeOnStart": "true",
++    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
++    "RunOnceActivity.git.unshallow": "true",
++    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
++    "codeWithMe.voiceChat.enabledByDefault": "false",
++    "git-widget-placeholder": "master",
++    "last_opened_file_path": "E:/知识问答",
++    "node.js.detected.package.eslint": "true",
++    "node.js.detected.package.tslint": "true",
++    "node.js.selected.package.eslint": "(autodetect)",
++    "node.js.selected.package.tslint": "(autodetect)",
++    "nodejs_package_manager_path": "npm",
++    "settings.editor.selected.configurable": "vcs.Git",
++    "vue.rearranger.settings.migration": "true"
+   }
+-}</component>
++}]]></component>
++  <component name="RecentsManager">
++    <key name="MoveFile.RECENT_KEYS">
++      <recent name="E:\知识问答\A3_Learning_Agent-main\software_A3\A3_Learning_Agent\backend" />
++      <recent name="E:\知识问答\A3_Leraning_Agent-main" />
++    </key>
++  </component>
+   <component name="SharedIndexes">
+     <attachedChunks>
+       <set>
+@@ -139,11 +382,56 @@
+       <workItem from="1781772856607" duration="4978000" />
+       <workItem from="1781850779583" duration="9213000" />
+       <workItem from="1781939370717" duration="10622000" />
+-      <workItem from="1782020961652" duration="6247000" />
++      <workItem from="1782020961652" duration="10529000" />
++      <workItem from="1782032365942" duration="3238000" />
++      <workItem from="1782035626555" duration="2305000" />
+     </task>
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+     <option name="version" value="3" />
+   </component>
++  <component name="Vcs.Log.Tabs.Properties">
++    <option name="RECENT_FILTERS">
++      <map>
++        <entry key="User">
++          <value>
++            <list>
++              <RecentGroup>
++                <option name="FILTER_VALUES">
++                  <option value="*" />
++                </option>
++              </RecentGroup>
++              <RecentGroup>
++                <option name="FILTER_VALUES">
++                  <option value="zhanghanwen040904" />
++                </option>
++              </RecentGroup>
++            </list>
++          </value>
++        </entry>
++      </map>
++    </option>
++    <option name="TAB_STATES">
++      <map>
++        <entry key="MAIN">
++          <value>
++            <State>
++              <option name="FILTERS">
++                <map>
++                  <entry key="user">
++                    <value>
++                      <list>
++                        <option value="*" />
++                      </list>
++                    </value>
++                  </entry>
++                </map>
++              </option>
++            </State>
++          </value>
++        </entry>
++      </map>
++    </option>
++  </component>
+ </project>
+\ No newline at end of file

@@ -1,0 +1,2666 @@
+{
+  "stage": "knowledge_tree",
+  "source_file": "C:\\Users\\ASUS\\Desktop\\新建文件夹 (2)\\第5章 总体设计-1.pdf",
+  "course": "软件工程",
+  "outline_nodes": [
+    {
+      "node_id": "node_0d3cc5018578",
+      "parent_id": null,
+      "title": "软件工程",
+      "level": 0,
+      "chapter_id": "chapter_0d3cc5018578",
+      "start_page": 1,
+      "path": [
+        "软件工程"
+      ],
+      "paragraph_count": 1,
+      "chunk_count": 0
+    },
+    {
+      "node_id": "node_a667fd80eea0",
+      "parent_id": "node_0d3cc5018578",
+      "title": "第五章 总体设计",
+      "level": 1,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 1,
+      "path": [
+        "软件工程",
+        "第五章 总体设计"
+      ],
+      "paragraph_count": 7,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_dda8a69a2bf0",
+      "parent_id": "node_a667fd80eea0",
+      "title": "软件设计概述",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 4,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "软件设计概述"
+      ],
+      "paragraph_count": 2,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_a256fce2849a",
+      "parent_id": "node_a667fd80eea0",
+      "title": "总体设计概述",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 5,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "总体设计概述"
+      ],
+      "paragraph_count": 7,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_f96c58dbc82c",
+      "parent_id": "node_a667fd80eea0",
+      "title": "方案设计",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 7,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "方案设计"
+      ],
+      "paragraph_count": 5,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_652f98ab3473",
+      "parent_id": "node_a667fd80eea0",
+      "title": "总体设计过程",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 9,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "总体设计过程"
+      ],
+      "paragraph_count": 67,
+      "chunk_count": 10
+    },
+    {
+      "node_id": "node_590e9c16e843",
+      "parent_id": "node_a667fd80eea0",
+      "title": "5.2 设计原理",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 20,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "5.2 设计原理"
+      ],
+      "paragraph_count": 6,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_4de495fca629",
+      "parent_id": "node_a667fd80eea0",
+      "title": "5.2 设计原理",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 21,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "5.2 设计原理"
+      ],
+      "paragraph_count": 0,
+      "chunk_count": 0
+    },
+    {
+      "node_id": "node_3d58ac9c3b39",
+      "parent_id": "node_4de495fca629",
+      "title": "5.2.1 模块化",
+      "level": 3,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 22,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "5.2 设计原理",
+        "5.2.1 模块化"
+      ],
+      "paragraph_count": 5,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_344e32880568",
+      "parent_id": "node_a667fd80eea0",
+      "title": "模块化的依据",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 23,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "模块化的依据"
+      ],
+      "paragraph_count": 4,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_74a4fce764a6",
+      "parent_id": "node_a667fd80eea0",
+      "title": "模块化和软件成本",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 24,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "模块化和软件成本"
+      ],
+      "paragraph_count": 13,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_9182eab97081",
+      "parent_id": "node_74a4fce764a6",
+      "title": "5.2.2 抽象",
+      "level": 3,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 26,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "模块化和软件成本",
+        "5.2.2 抽象"
+      ],
+      "paragraph_count": 4,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_b93867e51371",
+      "parent_id": "node_a667fd80eea0",
+      "title": "抽象层次",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 27,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "抽象层次"
+      ],
+      "paragraph_count": 9,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_40f00ca48821",
+      "parent_id": "node_a667fd80eea0",
+      "title": "软件过程抽象",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 28,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "软件过程抽象"
+      ],
+      "paragraph_count": 33,
+      "chunk_count": 4
+    },
+    {
+      "node_id": "node_d16f4b50b03e",
+      "parent_id": "node_a667fd80eea0",
+      "title": "抽象层次Ⅲ.",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 34,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "抽象层次Ⅲ."
+      ],
+      "paragraph_count": 3,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_5d919d8f3c85",
+      "parent_id": "node_d16f4b50b03e",
+      "title": "5.2.3 逐步求精",
+      "level": 3,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 35,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "抽象层次Ⅲ.",
+        "5.2.3 逐步求精"
+      ],
+      "paragraph_count": 9,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_a688f04569e6",
+      "parent_id": "node_a667fd80eea0",
+      "title": "逐步求精策略",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "逐步求精策略"
+      ],
+      "paragraph_count": 9,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_3ceebbaa0bc6",
+      "parent_id": "node_a688f04569e6",
+      "title": "5.2.4 信息隐藏和局部化",
+      "level": 3,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 39,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "逐步求精策略",
+        "5.2.4 信息隐藏和局部化"
+      ],
+      "paragraph_count": 14,
+      "chunk_count": 3
+    },
+    {
+      "node_id": "node_86460f573fcc",
+      "parent_id": "node_a688f04569e6",
+      "title": "5.2.5 模块独立",
+      "level": 3,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 42,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "逐步求精策略",
+        "5.2.5 模块独立"
+      ],
+      "paragraph_count": 5,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_75ec921fc8d2",
+      "parent_id": "node_a667fd80eea0",
+      "title": "模块独立的概念",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 43,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "模块独立的概念"
+      ],
+      "paragraph_count": 3,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_6a4d80e9d2b9",
+      "parent_id": "node_a667fd80eea0",
+      "title": "1、耦合",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 44,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "1、耦合"
+      ],
+      "paragraph_count": 9,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_7d395ca6df7c",
+      "parent_id": "node_a667fd80eea0",
+      "title": "数据耦合",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 46,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "数据耦合"
+      ],
+      "paragraph_count": 10,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_6fbab2016dc5",
+      "parent_id": "node_a667fd80eea0",
+      "title": "特征耦合",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 48,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "特征耦合"
+      ],
+      "paragraph_count": 8,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_3954c16f101c",
+      "parent_id": "node_a667fd80eea0",
+      "title": "特征耦合改为数据耦合举例",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 49,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "特征耦合改为数据耦合举例"
+      ],
+      "paragraph_count": 13,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_b73f42ccdfbb",
+      "parent_id": "node_a667fd80eea0",
+      "title": "改控制耦合为数据耦合举例",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 53,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "改控制耦合为数据耦合举例"
+      ],
+      "paragraph_count": 10,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_1ca45994494b",
+      "parent_id": "node_a667fd80eea0",
+      "title": "公共耦合",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 57,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "公共耦合"
+      ],
+      "paragraph_count": 4,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_a7128782f2b3",
+      "parent_id": "node_1ca45994494b",
+      "title": "(1) 一个模块直接访问另一个模块的内部数据; (2) 一个模块不通过正常入口转到另一模块内部; (3) 两个模块有一部分程序代码重迭(只可能出现",
+      "level": 3,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 58,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "公共耦合",
+        "(1) 一个模块直接访问另一个模块的内部数据; (2) 一个模块不通过正常入口转到另一模块内部; (3) 两个模块有一部分程序代码重迭(只可能出现"
+      ],
+      "paragraph_count": 3,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_e47de54324e6",
+      "parent_id": "node_a667fd80eea0",
+      "title": "耦合小结",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 60,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "耦合小结"
+      ],
+      "paragraph_count": 8,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_26b4056b0894",
+      "parent_id": "node_a667fd80eea0",
+      "title": "五、模块独立--- 耦合",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 61,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "五、模块独立--- 耦合"
+      ],
+      "paragraph_count": 25,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_7ff370d9a2ed",
+      "parent_id": "node_a667fd80eea0",
+      "title": "模块2",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 61,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "模块2"
+      ],
+      "paragraph_count": 8,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_f26e636f1ae4",
+      "parent_id": "node_a667fd80eea0",
+      "title": "耦合设计原则",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 63,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "耦合设计原则"
+      ],
+      "paragraph_count": 6,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_505bf75d2a5f",
+      "parent_id": "node_a667fd80eea0",
+      "title": "2、内聚",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 65,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "2、内聚"
+      ],
+      "paragraph_count": 5,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_d41012174184",
+      "parent_id": "node_a667fd80eea0",
+      "title": "功能内聚 10分",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 66,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "功能内聚 10分"
+      ],
+      "paragraph_count": 8,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_29bebbefaec1",
+      "parent_id": "node_a667fd80eea0",
+      "title": "中的一部分依赖于另外一部分。因此具有较 好的内聚性。",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 67,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "中的一部分依赖于另外一部分。因此具有较 好的内聚性。"
+      ],
+      "paragraph_count": 10,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_023870e3aaa2",
+      "parent_id": "node_a667fd80eea0",
+      "title": "通信内聚例子",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 70,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "通信内聚例子"
+      ],
+      "paragraph_count": 15,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_b29681185aa9",
+      "parent_id": "node_a667fd80eea0",
+      "title": "逻辑内聚 1分",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 73,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "逻辑内聚 1分"
+      ],
+      "paragraph_count": 12,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_23b5f2a1e954",
+      "parent_id": "node_a667fd80eea0",
+      "title": "5.3 启发式规则",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 78,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "5.3 启发式规则"
+      ],
+      "paragraph_count": 2,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_ac8d5c364145",
+      "parent_id": "node_a667fd80eea0",
+      "title": "消除重复功能",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 81,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "消除重复功能"
+      ],
+      "paragraph_count": 14,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_d11f6187c8cd",
+      "parent_id": "node_a667fd80eea0",
+      "title": "2. 模块规模应该适中",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 82,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "2. 模块规模应该适中"
+      ],
+      "paragraph_count": 10,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_911f2a487499",
+      "parent_id": "node_a667fd80eea0",
+      "title": "3. 深度、宽度、扇出、扇入都应适当",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 84,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "3. 深度、宽度、扇出、扇入都应适当"
+      ],
+      "paragraph_count": 8,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_ada8077e876c",
+      "parent_id": "node_a667fd80eea0",
+      "title": "扇出和扇入",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 86,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "扇出和扇入"
+      ],
+      "paragraph_count": 22,
+      "chunk_count": 4
+    },
+    {
+      "node_id": "node_b292288f2596",
+      "parent_id": "node_a667fd80eea0",
+      "title": "避免平铺结构",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 89,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "避免平铺结构"
+      ],
+      "paragraph_count": 17,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_1765fb73871a",
+      "parent_id": "node_a667fd80eea0",
+      "title": "接或间接从属于它的模块的集合。",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 90,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "接或间接从属于它的模块的集合。"
+      ],
+      "paragraph_count": 16,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_7e39cc5e8fda",
+      "parent_id": "node_a667fd80eea0",
+      "title": "控制范围与作用范围举例",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 92,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "控制范围与作用范围举例"
+      ],
+      "paragraph_count": 38,
+      "chunk_count": 3
+    },
+    {
+      "node_id": "node_9b16f6b4e625",
+      "parent_id": "node_a667fd80eea0",
+      "title": "5.4 图形工具",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 98,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "5.4 图形工具"
+      ],
+      "paragraph_count": 5,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_a7df5ac34d2a",
+      "parent_id": "node_a667fd80eea0",
+      "title": "酒店管理信息系统的层次图",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 100,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "酒店管理信息系统的层次图"
+      ],
+      "paragraph_count": 58,
+      "chunk_count": 2
+    },
+    {
+      "node_id": "node_fd5011dacdc1",
+      "parent_id": "node_a667fd80eea0",
+      "title": "举例:说明图书馆系统功能图（H图）",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 104,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "举例:说明图书馆系统功能图（H图）"
+      ],
+      "paragraph_count": 15,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_d0ea407dafe7",
+      "parent_id": "node_a667fd80eea0",
+      "title": "举例:说明图书馆系统功能图（IPO图）",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 105,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "举例:说明图书馆系统功能图（IPO图）"
+      ],
+      "paragraph_count": 6,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_6f85edca7782",
+      "parent_id": "node_a667fd80eea0",
+      "title": "结构图",
+      "level": 2,
+      "chapter_id": "chapter_d794d1cf6f17",
+      "start_page": 106,
+      "path": [
+        "软件工程",
+        "第五章 总体设计",
+        "结构图"
+      ],
+      "paragraph_count": 18,
+      "chunk_count": 4
+    }
+  ],
+  "knowledge_points": [
+    {
+      "chunk_id": "chunk_a3dfaa5e39e8",
+      "parent_node_id": "node_a667fd80eea0",
+      "title": "第五章 总体设计",
+      "pages": [
+        2,
+        3
+      ],
+      "method": "rule",
+      "char_count": 207,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_53a40db5179f",
+      "parent_node_id": "node_dda8a69a2bf0",
+      "title": "软件设计概述",
+      "pages": [
+        4
+      ],
+      "method": "rule",
+      "char_count": 29,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_5a3a8560dd64",
+      "parent_node_id": "node_a256fce2849a",
+      "title": "总体设计概述",
+      "pages": [
+        5,
+        6
+      ],
+      "method": "rule",
+      "char_count": 226,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_449291938597",
+      "parent_node_id": "node_f96c58dbc82c",
+      "title": "方案设计",
+      "pages": [
+        7,
+        8
+      ],
+      "method": "rule",
+      "char_count": 249,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_e62f887e0b91",
+      "parent_node_id": "node_652f98ab3473",
+      "title": "总体设计过程阶段",
+      "pages": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 93,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_cbd30fa51250",
+      "parent_node_id": "node_652f98ab3473",
+      "title": "设想供选择的方案",
+      "pages": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 58,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_4934d8cb51c5",
+      "parent_node_id": "node_652f98ab3473",
+      "title": "选取合理的方案",
+      "pages": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 96,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_40be56805dc3",
+      "parent_node_id": "node_652f98ab3473",
+      "title": "推荐最佳方案",
+      "pages": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 88,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_817a9cd68fe7",
+      "parent_node_id": "node_652f98ab3473",
+      "title": "功能分解原则",
+      "pages": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 62,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_0b3e128187fb",
+      "parent_node_id": "node_652f98ab3473",
+      "title": "软件结构设计",
+      "pages": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 87,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_c9c5508552f3",
+      "parent_node_id": "node_652f98ab3473",
+      "title": "数据库设计",
+      "pages": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 47,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_c7bfdc12396a",
+      "parent_node_id": "node_652f98ab3473",
+      "title": "制定测试计划",
+      "pages": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 42,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_afa7438c627f",
+      "parent_node_id": "node_652f98ab3473",
+      "title": "总体设计文档内容",
+      "pages": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 120,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_a466fbf4aa67",
+      "parent_node_id": "node_652f98ab3473",
+      "title": "审查和复查机制",
+      "pages": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 40,
+      "images": []
+    },
+    {
+      "chunk_id": "merged_36f34ee882c2",
+      "parent_node_id": "node_590e9c16e843",
+      "title": "设计原理",
+      "pages": [
+        20,
+        75
+      ],
+      "method": "merged",
+      "char_count": 285,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_ab5df6f55e5a",
+      "parent_node_id": "node_3d58ac9c3b39",
+      "title": "5.2.1 模块化",
+      "pages": [
+        22
+      ],
+      "method": "rule",
+      "char_count": 130,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_24f2ba86240a",
+      "parent_node_id": "node_344e32880568",
+      "title": "模块化的依据",
+      "pages": [
+        23
+      ],
+      "method": "rule",
+      "char_count": 197,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_963015b47672",
+      "parent_node_id": "node_74a4fce764a6",
+      "title": "模块化和软件成本",
+      "pages": [
+        24,
+        25
+      ],
+      "method": "rule",
+      "char_count": 169,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_f63e971a206f",
+      "parent_node_id": "node_9182eab97081",
+      "title": "5.2.2 抽象",
+      "pages": [
+        26
+      ],
+      "method": "rule",
+      "char_count": 109,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_a3804f5427a2",
+      "parent_node_id": "node_b93867e51371",
+      "title": "抽象层次",
+      "pages": [
+        27
+      ],
+      "method": "rule",
+      "char_count": 164,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_c63ba24c8385",
+      "parent_node_id": "node_40f00ca48821",
+      "title": "软件工程过程的抽象层次",
+      "pages": [
+        28,
+        29,
+        30,
+        31,
+        32,
+        33
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 107,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_b778afd8e608",
+      "parent_node_id": "node_40f00ca48821",
+      "title": "软件结构抽象与模块化",
+      "pages": [
+        28,
+        29,
+        30,
+        31,
+        32,
+        33
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 116,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_76e8680c17e2",
+      "parent_node_id": "node_40f00ca48821",
+      "title": "抽象的层次与粒度",
+      "pages": [
+        28,
+        29,
+        30,
+        31,
+        32,
+        33
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 38,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_48fade92c8b3",
+      "parent_node_id": "node_40f00ca48821",
+      "title": "CAD软件的抽象层次示例",
+      "pages": [
+        28,
+        29,
+        30,
+        31,
+        32,
+        33
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 162,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_e9c862250617",
+      "parent_node_id": "node_d16f4b50b03e",
+      "title": "抽象层次Ⅲ.",
+      "pages": [
+        34
+      ],
+      "method": "rule",
+      "char_count": 268,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_71bd5439a246",
+      "parent_node_id": "node_5d919d8f3c85",
+      "title": "5.2.3 逐步求精",
+      "pages": [
+        35,
+        36
+      ],
+      "method": "rule",
+      "char_count": 318,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_ceb972f5ad08",
+      "parent_node_id": "node_a688f04569e6",
+      "title": "逐步求精策略",
+      "pages": [
+        37,
+        38
+      ],
+      "method": "rule",
+      "char_count": 225,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_f1b5795362b9",
+      "parent_node_id": "node_3ceebbaa0bc6",
+      "title": "信息隐藏原理",
+      "pages": [
+        39,
+        40,
+        41
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 133,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_80ca28396ef7",
+      "parent_node_id": "node_3ceebbaa0bc6",
+      "title": "信息隐藏的特点与优势",
+      "pages": [
+        39,
+        40,
+        41
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 90,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_7425b4309065",
+      "parent_node_id": "node_3ceebbaa0bc6",
+      "title": "信息局部化",
+      "pages": [
+        39,
+        40,
+        41
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 53,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_307d7dea743d",
+      "parent_node_id": "node_86460f573fcc",
+      "title": "5.2.5 模块独立",
+      "pages": [
+        42
+      ],
+      "method": "rule",
+      "char_count": 171,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_c64959b0a974",
+      "parent_node_id": "node_75ec921fc8d2",
+      "title": "模块独立的概念",
+      "pages": [
+        43
+      ],
+      "method": "rule",
+      "char_count": 87,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_266fba9b6ab0",
+      "parent_node_id": "node_6a4d80e9d2b9",
+      "title": "1、耦合",
+      "pages": [
+        44,
+        45
+      ],
+      "method": "rule",
+      "char_count": 216,
+      "images": [
+        {
+          "image_id": "第5章 总体设计-1_p044_i02",
+          "page": 44,
+          "file_name": "page_044_img_02.jpeg",
+          "path": "images/第5章 总体设计-1/page_044_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-1\\page_044_img_02.jpeg",
+          "width": 820,
+          "height": 143,
+          "file_size": 21697,
+          "ext": "jpeg",
+          "xref": 188,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "diagram",
+          "caption": "软件模块耦合性与独立性的关系图，展示了从低到高耦合度的七种类型（独立耦合至内容耦合）及其对应的模块独立性变化。",
+          "related_chunk_ids": [
+            "chunk_266fba9b6ab0"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        }
+      ]
+    },
+    {
+      "chunk_id": "chunk_852724f25897",
+      "parent_node_id": "node_7d395ca6df7c",
+      "title": "数据耦合",
+      "pages": [
+        46,
+        47
+      ],
+      "method": "rule",
+      "char_count": 194,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_1b7302efed21",
+      "parent_node_id": "node_6fbab2016dc5",
+      "title": "特征耦合",
+      "pages": [
+        48
+      ],
+      "method": "rule",
+      "char_count": 70,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_b19a8ddf7e03",
+      "parent_node_id": "node_3954c16f101c",
+      "title": "特征耦合改为数据耦合举例",
+      "pages": [
+        49,
+        50,
+        51,
+        52
+      ],
+      "method": "rule",
+      "char_count": 146,
+      "images": [
+        {
+          "image_id": "第5章 总体设计-1_p051_i02",
+          "page": 51,
+          "file_name": "page_051_img_02.jpeg",
+          "path": "images/第5章 总体设计-1/page_051_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-1\\page_051_img_02.jpeg",
+          "width": 2090,
+          "height": 738,
+          "file_size": 110593,
+          "ext": "jpeg",
+          "xref": 204,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "diagram",
+          "caption": "展示将特征耦合改为数据耦合的模块结构图对比示例",
+          "related_chunk_ids": [
+            "chunk_b19a8ddf7e03"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        },
+        {
+          "image_id": "第5章 总体设计-1_p052_i02",
+          "page": 52,
+          "file_name": "page_052_img_02.jpeg",
+          "path": "images/第5章 总体设计-1/page_052_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-1\\page_052_img_02.jpeg",
+          "width": 336,
+          "height": 399,
+          "file_size": 15743,
+          "ext": "jpeg",
+          "xref": 207,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "diagram",
+          "caption": "展示控制耦合（Control Coupling）的结构图，模块A通过传递控制信息Flag给模块B，从而控制模块B内部f1到fn的功能执行。",
+          "related_chunk_ids": [
+            "chunk_b19a8ddf7e03"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        }
+      ]
+    },
+    {
+      "chunk_id": "merged_15fc9429d899",
+      "parent_node_id": "node_b73f42ccdfbb",
+      "title": "改控制耦合为数据耦合举例",
+      "pages": [
+        53,
+        54,
+        55,
+        56
+      ],
+      "method": "merged",
+      "char_count": 289,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_df6c739ab763",
+      "parent_node_id": "node_1ca45994494b",
+      "title": "公共耦合",
+      "pages": [
+        57,
+        58
+      ],
+      "method": "rule",
+      "char_count": 77,
+      "images": [
+        {
+          "image_id": "第5章 总体设计-1_p057_i03",
+          "page": 57,
+          "file_name": "page_057_img_03.jpeg",
+          "path": "images/第5章 总体设计-1/page_057_img_03.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-1\\page_057_img_03.jpeg",
+          "width": 385,
+          "height": 212,
+          "file_size": 12727,
+          "ext": "jpeg",
+          "xref": 219,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "diagram",
+          "caption": "展示模块A和模块B通过公共数据区进行紧密公共耦合的结构示意图",
+          "related_chunk_ids": [
+            "chunk_df6c739ab763"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        }
+      ]
+    },
+    {
+      "chunk_id": "chunk_167b50b9b85f",
+      "parent_node_id": "node_a7128782f2b3",
+      "title": "(1) 一个模块直接访问另一个模块的内部数据; (2) 一个模块不通过正常入口转到另一模块内部; (3) 两个模块有一部分程序代码重迭(只可能出现",
+      "pages": [
+        58,
+        59
+      ],
+      "method": "rule",
+      "char_count": 50,
+      "images": [
+        {
+          "image_id": "第5章 总体设计-1_p059_i02",
+          "page": 59,
+          "file_name": "page_059_img_02.jpeg",
+          "path": "images/第5章 总体设计-1/page_059_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-1\\page_059_img_02.jpeg",
+          "width": 880,
+          "height": 170,
+          "file_size": 20145,
+          "ext": "jpeg",
+          "xref": 224,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "diagram",
+          "caption": "展示内容耦合的三种形式：进入另一模块内部、模块代码重叠以及多入口结构。",
+          "related_chunk_ids": [
+            "chunk_167b50b9b85f"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        }
+      ]
+    },
+    {
+      "chunk_id": "chunk_0fe00e920bf6",
+      "parent_node_id": "node_e47de54324e6",
+      "title": "耦合小结",
+      "pages": [
+        60
+      ],
+      "method": "rule",
+      "char_count": 142,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_7cb30be24be0",
+      "parent_node_id": "node_26b4056b0894",
+      "title": "五、模块独立--- 耦合",
+      "pages": [
+        61
+      ],
+      "method": "rule",
+      "char_count": 251,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_fe63e93db5dd",
+      "parent_node_id": "node_7ff370d9a2ed",
+      "title": "模块2",
+      "pages": [
+        61
+      ],
+      "method": "rule",
+      "char_count": 80,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_76a0408ebeb9",
+      "parent_node_id": "node_f26e636f1ae4",
+      "title": "耦合设计原则",
+      "pages": [
+        63,
+        64
+      ],
+      "method": "rule",
+      "char_count": 236,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_c3745e8611ab",
+      "parent_node_id": "node_505bf75d2a5f",
+      "title": "2、内聚",
+      "pages": [
+        65
+      ],
+      "method": "rule",
+      "char_count": 137,
+      "images": [
+        {
+          "image_id": "第5章 总体设计-1_p065_i02",
+          "page": 65,
+          "file_name": "page_065_img_02.jpeg",
+          "path": "images/第5章 总体设计-1/page_065_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-1\\page_065_img_02.jpeg",
+          "width": 912,
+          "height": 212,
+          "file_size": 30715,
+          "ext": "jpeg",
+          "xref": 247,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "diagram",
+          "caption": "展示内聚性从功能内聚到巧合内聚的等级划分，以及模块独立性从强到弱的对应关系图。",
+          "related_chunk_ids": [
+            "chunk_c3745e8611ab"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        }
+      ]
+    },
+    {
+      "chunk_id": "chunk_dcb32d3f4aae",
+      "parent_node_id": "node_d41012174184",
+      "title": "功能内聚 10分",
+      "pages": [
+        66
+      ],
+      "method": "rule",
+      "char_count": 136,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_df5e3234b567",
+      "parent_node_id": "node_29bebbefaec1",
+      "title": "中的一部分依赖于另外一部分。因此具有较 好的内聚性。",
+      "pages": [
+        67,
+        68,
+        69
+      ],
+      "method": "rule",
+      "char_count": 105,
+      "images": [
+        {
+          "image_id": "第5章 总体设计-1_p069_i02",
+          "page": 69,
+          "file_name": "page_069_img_02.jpeg",
+          "path": "images/第5章 总体设计-1/page_069_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-1\\page_069_img_02.jpeg",
+          "width": 680,
+          "height": 462,
+          "file_size": 44704,
+          "ext": "jpeg",
+          "xref": 260,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "diagram",
+          "caption": "展示了一个包含文件读取、计算、合并及文件修改的数据处理流程图。",
+          "related_chunk_ids": [
+            "chunk_df5e3234b567"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        }
+      ]
+    },
+    {
+      "chunk_id": "chunk_e9ea38d2caa5",
+      "parent_node_id": "node_023870e3aaa2",
+      "title": "通信内聚例子",
+      "pages": [
+        70,
+        71,
+        72
+      ],
+      "method": "rule",
+      "char_count": 261,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_b84a45a3e622",
+      "parent_node_id": "node_b29681185aa9",
+      "title": "逻辑内聚 1分",
+      "pages": [
+        73,
+        74
+      ],
+      "method": "rule",
+      "char_count": 318,
+      "images": [
+        {
+          "image_id": "第5章 总体设计-1_p073_i02",
+          "page": 73,
+          "file_name": "page_073_img_02.jpeg",
+          "path": "images/第5章 总体设计-1/page_073_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-1\\page_073_img_02.jpeg",
+          "width": 312,
+          "height": 414,
+          "file_size": 17779,
+          "ext": "jpeg",
+          "xref": 269,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "flowchart",
+          "caption": "逻辑内聚模块结构图，展示了调用模块通过判定参数选择执行“读一个记录”或“写一个记录”功能的流程。",
+          "related_chunk_ids": [
+            "chunk_b84a45a3e622"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        }
+      ]
+    },
+    {
+      "chunk_id": "merged_ea04e1a94d9b",
+      "parent_node_id": "node_23b5f2a1e954",
+      "title": "5.3 启发式规则",
+      "pages": [
+        78,
+        79,
+        80
+      ],
+      "method": "merged",
+      "char_count": 355,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_835cbb75a1de",
+      "parent_node_id": "node_ac8d5c364145",
+      "title": "消除重复功能",
+      "pages": [
+        81
+      ],
+      "method": "rule",
+      "char_count": 150,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_532715dbd49c",
+      "parent_node_id": "node_d11f6187c8cd",
+      "title": "2. 模块规模应该适中",
+      "pages": [
+        82,
+        83
+      ],
+      "method": "rule",
+      "char_count": 328,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_bfc93cf44866",
+      "parent_node_id": "node_911f2a487499",
+      "title": "3. 深度、宽度、扇出、扇入都应适当",
+      "pages": [
+        84,
+        85
+      ],
+      "method": "rule",
+      "char_count": 136,
+      "images": [
+        {
+          "image_id": "第5章 总体设计-1_p084_i02",
+          "page": 84,
+          "file_name": "page_084_img_02.jpeg",
+          "path": "images/第5章 总体设计-1/page_084_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-1\\page_084_img_02.jpeg",
+          "width": 920,
+          "height": 478,
+          "file_size": 46478,
+          "ext": "jpeg",
+          "xref": 307,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "diagram",
+          "caption": "展示软件结构图中深度、宽度、扇出和扇入概念的示意图",
+          "related_chunk_ids": [
+            "chunk_bfc93cf44866"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        }
+      ]
+    },
+    {
+      "chunk_id": "chunk_c5232edf692d",
+      "parent_node_id": "node_ada8077e876c",
+      "title": "扇出与扇入的定义及经验值",
+      "pages": [
+        86,
+        87,
+        88
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 150,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_3449f090057c",
+      "parent_node_id": "node_ada8077e876c",
+      "title": "优化扇出过大的方法",
+      "pages": [
+        86,
+        87,
+        88
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 62,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_1d443c1de444",
+      "parent_node_id": "node_ada8077e876c",
+      "title": "优化扇出过小的方法",
+      "pages": [
+        86,
+        87,
+        88
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 73,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_78091fbf5aab",
+      "parent_node_id": "node_ada8077e876c",
+      "title": "软件结构的扇出扇入分布规律",
+      "pages": [
+        86,
+        87,
+        88
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 68,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_41de8c79ff09",
+      "parent_node_id": "node_b292288f2596",
+      "title": "避免平铺结构",
+      "pages": [
+        89,
+        90
+      ],
+      "method": "rule",
+      "char_count": 149,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_592b11646ba9",
+      "parent_node_id": "node_1765fb73871a",
+      "title": "接或间接从属于它的模块的集合。",
+      "pages": [
+        90,
+        91
+      ],
+      "method": "rule",
+      "char_count": 289,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_49271f78a530",
+      "parent_node_id": "node_7e39cc5e8fda",
+      "title": "作用范围与控制范围原则",
+      "pages": [
+        92,
+        93,
+        94
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 126,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_ee97aa5c64cd",
+      "parent_node_id": "node_7e39cc5e8fda",
+      "title": "降低接口复杂程度",
+      "pages": [
+        92,
+        93,
+        94
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 106,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_22db9776f34b",
+      "parent_node_id": "node_7e39cc5e8fda",
+      "title": "设计单入口、单出口的模块",
+      "pages": [
+        92,
+        93,
+        94
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 56,
+      "images": []
+    },
+    {
+      "chunk_id": "merged_739acfedc658",
+      "parent_node_id": "node_9b16f6b4e625",
+      "title": "4.4 图形工具",
+      "pages": [
+        98,
+        99,
+        107,
+        108,
+        109
+      ],
+      "method": "merged",
+      "char_count": 248,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_c83b69e76057",
+      "parent_node_id": "node_a7df5ac34d2a",
+      "title": "HIPO图",
+      "pages": [
+        100,
+        101,
+        102,
+        103
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 132,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_d564c930fb43",
+      "parent_node_id": "node_a7df5ac34d2a",
+      "title": "带编号的层次图(H图)",
+      "pages": [
+        100,
+        101,
+        102,
+        103
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 187,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_970550dde787",
+      "parent_node_id": "node_fd5011dacdc1",
+      "title": "举例:说明图书馆系统功能图（H图）",
+      "pages": [
+        104
+      ],
+      "method": "rule",
+      "char_count": 93,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_96fe2bd68fd7",
+      "parent_node_id": "node_d0ea407dafe7",
+      "title": "举例:说明图书馆系统功能图（IPO图）",
+      "pages": [
+        105
+      ],
+      "method": "rule",
+      "char_count": 149,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_c2c3ddfeac32",
+      "parent_node_id": "node_6f85edca7782",
+      "title": "结构图",
+      "pages": [
+        106
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 67,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_a1f24695ed85",
+      "parent_node_id": "node_6f85edca7782",
+      "title": "结构图的构成：模块",
+      "pages": [
+        106
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 61,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_91db69ea0163",
+      "parent_node_id": "node_6f85edca7782",
+      "title": "结构图的构成：调用关系",
+      "pages": [
+        106
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 44,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_2ec5b9fa5d5d",
+      "parent_node_id": "node_6f85edca7782",
+      "title": "结构图的构成：数据传递",
+      "pages": [
+        106
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 52,
+      "images": []
+    }
+  ],
+  "relations": [
+    {
+      "source": "chunk_53a40db5179f",
+      "target": "chunk_a3dfaa5e39e8",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_a3dfaa5e39e8",
+      "target": "chunk_5a3a8560dd64",
+      "type": "next"
+    },
+    {
+      "source": "chunk_53a40db5179f",
+      "target": "chunk_a3dfaa5e39e8",
+      "type": "next"
+    },
+    {
+      "source": "chunk_a3dfaa5e39e8",
+      "target": "chunk_5a3a8560dd64",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_5a3a8560dd64",
+      "target": "chunk_449291938597",
+      "type": "next"
+    },
+    {
+      "source": "chunk_5a3a8560dd64",
+      "target": "chunk_449291938597",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_449291938597",
+      "target": "chunk_e62f887e0b91",
+      "type": "next"
+    },
+    {
+      "source": "chunk_449291938597",
+      "target": "chunk_e62f887e0b91",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_e62f887e0b91",
+      "target": "chunk_cbd30fa51250",
+      "type": "next"
+    },
+    {
+      "source": "chunk_e62f887e0b91",
+      "target": "chunk_cbd30fa51250",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_cbd30fa51250",
+      "target": "chunk_4934d8cb51c5",
+      "type": "next"
+    },
+    {
+      "source": "chunk_cbd30fa51250",
+      "target": "chunk_4934d8cb51c5",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_4934d8cb51c5",
+      "target": "chunk_40be56805dc3",
+      "type": "next"
+    },
+    {
+      "source": "chunk_4934d8cb51c5",
+      "target": "chunk_40be56805dc3",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_40be56805dc3",
+      "target": "chunk_817a9cd68fe7",
+      "type": "next"
+    },
+    {
+      "source": "chunk_40be56805dc3",
+      "target": "chunk_817a9cd68fe7",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_817a9cd68fe7",
+      "target": "chunk_0b3e128187fb",
+      "type": "next"
+    },
+    {
+      "source": "chunk_817a9cd68fe7",
+      "target": "chunk_0b3e128187fb",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_afa7438c627f",
+      "target": "chunk_c9c5508552f3",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_afa7438c627f",
+      "target": "chunk_c7bfdc12396a",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_a466fbf4aa67",
+      "target": "chunk_afa7438c627f",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_afa7438c627f",
+      "target": "chunk_c9c5508552f3",
+      "type": "next"
+    },
+    {
+      "source": "chunk_afa7438c627f",
+      "target": "chunk_c7bfdc12396a",
+      "type": "next"
+    },
+    {
+      "source": "chunk_a466fbf4aa67",
+      "target": "chunk_afa7438c627f",
+      "type": "next"
+    },
+    {
+      "source": "merged_36f34ee882c2",
+      "target": "chunk_ab5df6f55e5a",
+      "type": "next"
+    },
+    {
+      "source": "merged_36f34ee882c2",
+      "target": "chunk_ab5df6f55e5a",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_ab5df6f55e5a",
+      "target": "chunk_24f2ba86240a",
+      "type": "next"
+    },
+    {
+      "source": "chunk_ab5df6f55e5a",
+      "target": "chunk_24f2ba86240a",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_24f2ba86240a",
+      "target": "chunk_963015b47672",
+      "type": "next"
+    },
+    {
+      "source": "chunk_24f2ba86240a",
+      "target": "chunk_963015b47672",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_f63e971a206f",
+      "target": "chunk_a3804f5427a2",
+      "type": "next"
+    },
+    {
+      "source": "chunk_f63e971a206f",
+      "target": "chunk_a3804f5427a2",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_c63ba24c8385",
+      "target": "chunk_b778afd8e608",
+      "type": "next"
+    },
+    {
+      "source": "chunk_c63ba24c8385",
+      "target": "chunk_b778afd8e608",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_b778afd8e608",
+      "target": "chunk_76e8680c17e2",
+      "type": "next"
+    },
+    {
+      "source": "chunk_b778afd8e608",
+      "target": "chunk_76e8680c17e2",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_76e8680c17e2",
+      "target": "chunk_71bd5439a246",
+      "type": "next"
+    },
+    {
+      "source": "chunk_76e8680c17e2",
+      "target": "chunk_71bd5439a246",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_71bd5439a246",
+      "target": "chunk_ceb972f5ad08",
+      "type": "next"
+    },
+    {
+      "source": "chunk_71bd5439a246",
+      "target": "chunk_ceb972f5ad08",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_ceb972f5ad08",
+      "target": "chunk_f1b5795362b9",
+      "type": "next"
+    },
+    {
+      "source": "chunk_ceb972f5ad08",
+      "target": "chunk_f1b5795362b9",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_f1b5795362b9",
+      "target": "chunk_80ca28396ef7",
+      "type": "next"
+    },
+    {
+      "source": "chunk_f1b5795362b9",
+      "target": "chunk_80ca28396ef7",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_80ca28396ef7",
+      "target": "chunk_7425b4309065",
+      "type": "next"
+    },
+    {
+      "source": "chunk_80ca28396ef7",
+      "target": "chunk_7425b4309065",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_307d7dea743d",
+      "target": "chunk_c64959b0a974",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_c64959b0a974",
+      "target": "chunk_266fba9b6ab0",
+      "type": "next"
+    },
+    {
+      "source": "chunk_c64959b0a974",
+      "target": "chunk_266fba9b6ab0",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_266fba9b6ab0",
+      "target": "chunk_852724f25897",
+      "type": "next"
+    },
+    {
+      "source": "chunk_266fba9b6ab0",
+      "target": "chunk_852724f25897",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_852724f25897",
+      "target": "chunk_1b7302efed21",
+      "type": "next"
+    },
+    {
+      "source": "chunk_852724f25897",
+      "target": "chunk_1b7302efed21",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_1b7302efed21",
+      "target": "chunk_b19a8ddf7e03",
+      "type": "next"
+    },
+    {
+      "source": "chunk_1b7302efed21",
+      "target": "chunk_b19a8ddf7e03",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_b19a8ddf7e03",
+      "target": "merged_15fc9429d899",
+      "type": "next"
+    },
+    {
+      "source": "chunk_b19a8ddf7e03",
+      "target": "merged_15fc9429d899",
+      "type": "prerequisite"
+    },
+    {
+      "source": "merged_15fc9429d899",
+      "target": "chunk_df6c739ab763",
+      "type": "next"
+    },
+    {
+      "source": "merged_15fc9429d899",
+      "target": "chunk_df6c739ab763",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_df6c739ab763",
+      "target": "chunk_167b50b9b85f",
+      "type": "next"
+    },
+    {
+      "source": "chunk_df6c739ab763",
+      "target": "chunk_167b50b9b85f",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_167b50b9b85f",
+      "target": "chunk_0fe00e920bf6",
+      "type": "next"
+    },
+    {
+      "source": "chunk_167b50b9b85f",
+      "target": "chunk_0fe00e920bf6",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_7cb30be24be0",
+      "target": "chunk_fe63e93db5dd",
+      "type": "next"
+    },
+    {
+      "source": "chunk_7cb30be24be0",
+      "target": "chunk_fe63e93db5dd",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_fe63e93db5dd",
+      "target": "chunk_76a0408ebeb9",
+      "type": "next"
+    },
+    {
+      "source": "chunk_fe63e93db5dd",
+      "target": "chunk_76a0408ebeb9",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_76a0408ebeb9",
+      "target": "chunk_c3745e8611ab",
+      "type": "next"
+    },
+    {
+      "source": "chunk_76a0408ebeb9",
+      "target": "chunk_c3745e8611ab",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_c3745e8611ab",
+      "target": "chunk_dcb32d3f4aae",
+      "type": "next"
+    },
+    {
+      "source": "chunk_c3745e8611ab",
+      "target": "chunk_dcb32d3f4aae",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_dcb32d3f4aae",
+      "target": "chunk_df5e3234b567",
+      "type": "next"
+    },
+    {
+      "source": "chunk_dcb32d3f4aae",
+      "target": "chunk_df5e3234b567",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_df5e3234b567",
+      "target": "chunk_e9ea38d2caa5",
+      "type": "next"
+    },
+    {
+      "source": "chunk_df5e3234b567",
+      "target": "chunk_e9ea38d2caa5",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_e9ea38d2caa5",
+      "target": "chunk_b84a45a3e622",
+      "type": "next"
+    },
+    {
+      "source": "chunk_e9ea38d2caa5",
+      "target": "chunk_b84a45a3e622",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_b84a45a3e622",
+      "target": "merged_ea04e1a94d9b",
+      "type": "next"
+    },
+    {
+      "source": "chunk_b84a45a3e622",
+      "target": "merged_ea04e1a94d9b",
+      "type": "prerequisite"
+    },
+    {
+      "source": "merged_ea04e1a94d9b",
+      "target": "chunk_835cbb75a1de",
+      "type": "next"
+    },
+    {
+      "source": "merged_ea04e1a94d9b",
+      "target": "chunk_835cbb75a1de",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_532715dbd49c",
+      "target": "chunk_c5232edf692d",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_c5232edf692d",
+      "target": "chunk_3449f090057c",
+      "type": "next"
+    },
+    {
+      "source": "chunk_c5232edf692d",
+      "target": "chunk_1d443c1de444",
+      "type": "next"
+    },
+    {
+      "source": "chunk_c5232edf692d",
+      "target": "chunk_3449f090057c",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_c5232edf692d",
+      "target": "chunk_1d443c1de444",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_c5232edf692d",
+      "target": "chunk_78091fbf5aab",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_78091fbf5aab",
+      "target": "chunk_41de8c79ff09",
+      "type": "next"
+    },
+    {
+      "source": "chunk_78091fbf5aab",
+      "target": "chunk_41de8c79ff09",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_41de8c79ff09",
+      "target": "chunk_592b11646ba9",
+      "type": "next"
+    },
+    {
+      "source": "chunk_41de8c79ff09",
+      "target": "chunk_592b11646ba9",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_592b11646ba9",
+      "target": "chunk_49271f78a530",
+      "type": "next"
+    },
+    {
+      "source": "chunk_592b11646ba9",
+      "target": "chunk_49271f78a530",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_49271f78a530",
+      "target": "chunk_ee97aa5c64cd",
+      "type": "next"
+    },
+    {
+      "source": "chunk_49271f78a530",
+      "target": "chunk_ee97aa5c64cd",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_22db9776f34b",
+      "target": "chunk_c2c3ddfeac32",
+      "type": "next"
+    },
+    {
+      "source": "merged_739acfedc658",
+      "target": "chunk_c83b69e76057",
+      "type": "next"
+    },
+    {
+      "source": "merged_739acfedc658",
+      "target": "chunk_c2c3ddfeac32",
+      "type": "next"
+    },
+    {
+      "source": "merged_739acfedc658",
+      "target": "chunk_c83b69e76057",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_c83b69e76057",
+      "target": "chunk_d564c930fb43",
+      "type": "next"
+    },
+    {
+      "source": "chunk_c83b69e76057",
+      "target": "chunk_d564c930fb43",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_d564c930fb43",
+      "target": "chunk_970550dde787",
+      "type": "next"
+    },
+    {
+      "source": "chunk_d564c930fb43",
+      "target": "chunk_970550dde787",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_970550dde787",
+      "target": "chunk_96fe2bd68fd7",
+      "type": "next"
+    },
+    {
+      "source": "chunk_970550dde787",
+      "target": "chunk_96fe2bd68fd7",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_22db9776f34b",
+      "target": "chunk_c2c3ddfeac32",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_c2c3ddfeac32",
+      "target": "chunk_a1f24695ed85",
+      "type": "next"
+    },
+    {
+      "source": "chunk_c2c3ddfeac32",
+      "target": "chunk_91db69ea0163",
+      "type": "next"
+    },
+    {
+      "source": "chunk_c2c3ddfeac32",
+      "target": "chunk_a1f24695ed85",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_c2c3ddfeac32",
+      "target": "chunk_91db69ea0163",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_91db69ea0163",
+      "target": "chunk_2ec5b9fa5d5d",
+      "type": "next"
+    },
+    {
+      "source": "chunk_91db69ea0163",
+      "target": "chunk_2ec5b9fa5d5d",
+      "type": "prerequisite"
+    }
+  ],
+  "stats": {
+    "outline_node_count": 49,
+    "knowledge_point_count": 70,
+    "relation_count": 112
+  },
+  "source_pdf_json": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\pdf_json\\第5章 总体设计-1_knowledge.json",
+  "source_semantic_json": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\semantic_json\\第5章 总体设计-1_semantic.json",
+  "images": [
+    {
+      "image_id": "第5章 总体设计-1_p044_i02",
+      "page": 44,
+      "file_name": "page_044_img_02.jpeg",
+      "path": "images/第5章 总体设计-1/page_044_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-1\\page_044_img_02.jpeg",
+      "width": 820,
+      "height": 143,
+      "file_size": 21697,
+      "ext": "jpeg",
+      "xref": 188,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "diagram",
+      "caption": "软件模块耦合性与独立性的关系图，展示了从低到高耦合度的七种类型（独立耦合至内容耦合）及其对应的模块独立性变化。",
+      "related_chunk_ids": [
+        "chunk_266fba9b6ab0"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第5章 总体设计-1_p051_i02",
+      "page": 51,
+      "file_name": "page_051_img_02.jpeg",
+      "path": "images/第5章 总体设计-1/page_051_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-1\\page_051_img_02.jpeg",
+      "width": 2090,
+      "height": 738,
+      "file_size": 110593,
+      "ext": "jpeg",
+      "xref": 204,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "diagram",
+      "caption": "展示将特征耦合改为数据耦合的模块结构图对比示例",
+      "related_chunk_ids": [
+        "chunk_b19a8ddf7e03"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第5章 总体设计-1_p052_i02",
+      "page": 52,
+      "file_name": "page_052_img_02.jpeg",
+      "path": "images/第5章 总体设计-1/page_052_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-1\\page_052_img_02.jpeg",
+      "width": 336,
+      "height": 399,
+      "file_size": 15743,
+      "ext": "jpeg",
+      "xref": 207,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "diagram",
+      "caption": "展示控制耦合（Control Coupling）的结构图，模块A通过传递控制信息Flag给模块B，从而控制模块B内部f1到fn的功能执行。",
+      "related_chunk_ids": [
+        "chunk_b19a8ddf7e03"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第5章 总体设计-1_p057_i03",
+      "page": 57,
+      "file_name": "page_057_img_03.jpeg",
+      "path": "images/第5章 总体设计-1/page_057_img_03.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-1\\page_057_img_03.jpeg",
+      "width": 385,
+      "height": 212,
+      "file_size": 12727,
+      "ext": "jpeg",
+      "xref": 219,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "diagram",
+      "caption": "展示模块A和模块B通过公共数据区进行紧密公共耦合的结构示意图",
+      "related_chunk_ids": [
+        "chunk_df6c739ab763"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第5章 总体设计-1_p059_i02",
+      "page": 59,
+      "file_name": "page_059_img_02.jpeg",
+      "path": "images/第5章 总体设计-1/page_059_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-1\\page_059_img_02.jpeg",
+      "width": 880,
+      "height": 170,
+      "file_size": 20145,
+      "ext": "jpeg",
+      "xref": 224,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "diagram",
+      "caption": "展示内容耦合的三种形式：进入另一模块内部、模块代码重叠以及多入口结构。",
+      "related_chunk_ids": [
+        "chunk_167b50b9b85f"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第5章 总体设计-1_p065_i02",
+      "page": 65,
+      "file_name": "page_065_img_02.jpeg",
+      "path": "images/第5章 总体设计-1/page_065_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-1\\page_065_img_02.jpeg",
+      "width": 912,
+      "height": 212,
+      "file_size": 30715,
+      "ext": "jpeg",
+      "xref": 247,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "diagram",
+      "caption": "展示内聚性从功能内聚到巧合内聚的等级划分，以及模块独立性从强到弱的对应关系图。",
+      "related_chunk_ids": [
+        "chunk_c3745e8611ab"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第5章 总体设计-1_p069_i02",
+      "page": 69,
+      "file_name": "page_069_img_02.jpeg",
+      "path": "images/第5章 总体设计-1/page_069_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-1\\page_069_img_02.jpeg",
+      "width": 680,
+      "height": 462,
+      "file_size": 44704,
+      "ext": "jpeg",
+      "xref": 260,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "diagram",
+      "caption": "展示了一个包含文件读取、计算、合并及文件修改的数据处理流程图。",
+      "related_chunk_ids": [
+        "chunk_df5e3234b567"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第5章 总体设计-1_p073_i02",
+      "page": 73,
+      "file_name": "page_073_img_02.jpeg",
+      "path": "images/第5章 总体设计-1/page_073_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-1\\page_073_img_02.jpeg",
+      "width": 312,
+      "height": 414,
+      "file_size": 17779,
+      "ext": "jpeg",
+      "xref": 269,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "flowchart",
+      "caption": "逻辑内聚模块结构图，展示了调用模块通过判定参数选择执行“读一个记录”或“写一个记录”功能的流程。",
+      "related_chunk_ids": [
+        "chunk_b84a45a3e622"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第5章 总体设计-1_p084_i02",
+      "page": 84,
+      "file_name": "page_084_img_02.jpeg",
+      "path": "images/第5章 总体设计-1/page_084_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-1\\page_084_img_02.jpeg",
+      "width": 920,
+      "height": 478,
+      "file_size": 46478,
+      "ext": "jpeg",
+      "xref": 307,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "diagram",
+      "caption": "展示软件结构图中深度、宽度、扇出和扇入概念的示意图",
+      "related_chunk_ids": [
+        "chunk_bfc93cf44866"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    }
+  ],
+  "rejected_image_count": 160,
+  "image_filter": {
+    "used_llm": true,
+    "model": "xopqwen35v35b"
+  }
+}

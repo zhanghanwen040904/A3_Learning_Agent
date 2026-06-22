@@ -1,0 +1,2110 @@
+{
+  "stage": "knowledge_tree",
+  "source_file": "C:\\Users\\ASUS\\Desktop\\新建文件夹 (2)\\第2章-可行性研究.pdf",
+  "course": "软件工程",
+  "outline_nodes": [
+    {
+      "node_id": "node_0d3cc5018578",
+      "parent_id": null,
+      "title": "软件工程",
+      "level": 0,
+      "chapter_id": "chapter_0d3cc5018578",
+      "start_page": 1,
+      "path": [
+        "软件工程"
+      ],
+      "paragraph_count": 1,
+      "chunk_count": 0
+    },
+    {
+      "node_id": "node_a80a6dea9742",
+      "parent_id": "node_0d3cc5018578",
+      "title": "第二章 可行性研究",
+      "level": 1,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 1,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究"
+      ],
+      "paragraph_count": 6,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_3876b2abd04b",
+      "parent_id": "node_a80a6dea9742",
+      "title": "2.1 可行性研究的任务",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 4,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "2.1 可行性研究的任务"
+      ],
+      "paragraph_count": 6,
+      "chunk_count": 4
+    },
+    {
+      "node_id": "node_9a8912fe804c",
+      "parent_id": "node_a80a6dea9742",
+      "title": "可行性研究的任务归纳",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 11,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "可行性研究的任务归纳"
+      ],
+      "paragraph_count": 13,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_59882d699fa1",
+      "parent_id": "node_a80a6dea9742",
+      "title": "2.2 可行性研究的过程",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 13,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "2.2 可行性研究的过程"
+      ],
+      "paragraph_count": 1,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_0bb9cc195f8f",
+      "parent_id": "node_a80a6dea9742",
+      "title": "3、导出高层逻辑模型(conceptual design)",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 15,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "3、导出高层逻辑模型(conceptual design)"
+      ],
+      "paragraph_count": 8,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_7366f06408a3",
+      "parent_id": "node_a80a6dea9742",
+      "title": "5、导出和评价供选择的方案",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 16,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "5、导出和评价供选择的方案"
+      ],
+      "paragraph_count": 9,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_b36cec35c1ca",
+      "parent_id": "node_a80a6dea9742",
+      "title": "当前系统",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 20,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "当前系统"
+      ],
+      "paragraph_count": 7,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_9ee5e8cf859c",
+      "parent_id": "node_a80a6dea9742",
+      "title": "技术可行性",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 23,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "技术可行性"
+      ],
+      "paragraph_count": 11,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_07c24024d844",
+      "parent_id": "node_a80a6dea9742",
+      "title": "经济可行性",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 24,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "经济可行性"
+      ],
+      "paragraph_count": 8,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_723299f4b190",
+      "parent_id": "node_a80a6dea9742",
+      "title": "操作可行性",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 28,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "操作可行性"
+      ],
+      "paragraph_count": 9,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_762631abe632",
+      "parent_id": "node_a80a6dea9742",
+      "title": "社会可行性",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 29,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "社会可行性"
+      ],
+      "paragraph_count": 8,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_faf5b0660079",
+      "parent_id": "node_a80a6dea9742",
+      "title": "方案选择",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 30,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "方案选择"
+      ],
+      "paragraph_count": 20,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_92c6ec9f8385",
+      "parent_id": "node_a80a6dea9742",
+      "title": "可行性分析的结论",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 31,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "可行性分析的结论"
+      ],
+      "paragraph_count": 1,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_9fa1c387a103",
+      "parent_id": "node_92c6ec9f8385",
+      "title": "（4）不能进行或不必进行；例如因技术不成熟，经济上不合算或可能 产生负面的社会影响等原因，这种情况下，分析员应该建议尽早终止 项目计划，以免浪费人力、物力和财力。",
+      "level": 3,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 31,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "可行性分析的结论",
+        "（4）不能进行或不必进行；例如因技术不成熟，经济上不合算或可能 产生负面的社会影响等原因，这种情况下，分析员应该建议尽早终止 项目计划，以免浪费人力、物力和财力。"
+      ],
+      "paragraph_count": 2,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_66160a150162",
+      "parent_id": "node_a80a6dea9742",
+      "title": "可行性报告",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 32,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "可行性报告"
+      ],
+      "paragraph_count": 24,
+      "chunk_count": 2
+    },
+    {
+      "node_id": "node_4a0fc45d9b90",
+      "parent_id": "node_a80a6dea9742",
+      "title": "o 反映数据在各部分物理部件间流动的情况",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 38,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "o 反映数据在各部分物理部件间流动的情况"
+      ],
+      "paragraph_count": 7,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_b9359af636cc",
+      "parent_id": "node_a80a6dea9742",
+      "title": "2.4 数据流图",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 44,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "2.4 数据流图"
+      ],
+      "paragraph_count": 4,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_a6a1f14ad7a2",
+      "parent_id": "node_a80a6dea9742",
+      "title": "数据流图作用",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 45,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "数据流图作用"
+      ],
+      "paragraph_count": 4,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_19b2f020bb91",
+      "parent_id": "node_a80a6dea9742",
+      "title": "数据流图符号",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 46,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "数据流图符号"
+      ],
+      "paragraph_count": 12,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_7f8ddd4589ba",
+      "parent_id": "node_19b2f020bb91",
+      "title": "1.2.1 加工名",
+      "level": 3,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 47,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "数据流图符号",
+        "1.2.1 加工名"
+      ],
+      "paragraph_count": 7,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_ab5ca0463a00",
+      "parent_id": "node_a80a6dea9742",
+      "title": "还有一些辅助的图例:",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 48,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "还有一些辅助的图例:"
+      ],
+      "paragraph_count": 7,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_9403e2f38764",
+      "parent_id": "node_a80a6dea9742",
+      "title": "* C",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 48,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "* C"
+      ],
+      "paragraph_count": 15,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_811d183af696",
+      "parent_id": "node_a80a6dea9742",
+      "title": "数据流图举例-1",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 49,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "数据流图举例-1"
+      ],
+      "paragraph_count": 3,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_f096d197e75a",
+      "parent_id": "node_a80a6dea9742",
+      "title": "文件表示的约定",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 50,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "文件表示的约定"
+      ],
+      "paragraph_count": 5,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_02592af96bcc",
+      "parent_id": "node_a80a6dea9742",
+      "title": "数据源或终点",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 51,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "数据源或终点"
+      ],
+      "paragraph_count": 49,
+      "chunk_count": 3
+    },
+    {
+      "node_id": "node_3eb7987c91ff",
+      "parent_id": "node_a80a6dea9742",
+      "title": "案例-订货系统",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 62,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "案例-订货系统"
+      ],
+      "paragraph_count": 0,
+      "chunk_count": 0
+    },
+    {
+      "node_id": "node_c19d00b8ee90",
+      "parent_id": "node_3eb7987c91ff",
+      "title": "（1）确定外部实体、输入/输出数据流和处理， 画出顶层数据流图。",
+      "level": 3,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 62,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "案例-订货系统",
+        "（1）确定外部实体、输入/输出数据流和处理， 画出顶层数据流图。"
+      ],
+      "paragraph_count": 8,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_6e812676fca3",
+      "parent_id": "node_a80a6dea9742",
+      "title": "案例-订货系统",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 63,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "案例-订货系统"
+      ],
+      "paragraph_count": 0,
+      "chunk_count": 0
+    },
+    {
+      "node_id": "node_212edd94d55e",
+      "parent_id": "node_6e812676fca3",
+      "title": "（2）分解顶层数据流图",
+      "level": 3,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 63,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "案例-订货系统",
+        "（2）分解顶层数据流图"
+      ],
+      "paragraph_count": 15,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_8ab10ef2072d",
+      "parent_id": "node_a80a6dea9742",
+      "title": "案例-订货系统",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 64,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "案例-订货系统"
+      ],
+      "paragraph_count": 0,
+      "chunk_count": 0
+    },
+    {
+      "node_id": "node_dc86f8fc9c12",
+      "parent_id": "node_8ab10ef2072d",
+      "title": "（3）确定数据存储",
+      "level": 3,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 64,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "案例-订货系统",
+        "（3）确定数据存储"
+      ],
+      "paragraph_count": 10,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_dfe1fad579c2",
+      "parent_id": "node_a80a6dea9742",
+      "title": "案例-订货系统",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 65,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "案例-订货系统"
+      ],
+      "paragraph_count": 24,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_23e692d82e9d",
+      "parent_id": "node_a80a6dea9742",
+      "title": "图书销售系统",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 69,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "图书销售系统"
+      ],
+      "paragraph_count": 5,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_b0f0b9c7ae7c",
+      "parent_id": "node_a80a6dea9742",
+      "title": "n 销售子系统",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 71,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "n 销售子系统"
+      ],
+      "paragraph_count": 14,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_f70bdd6388f4",
+      "parent_id": "node_a80a6dea9742",
+      "title": "o 采购子系统",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 72,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "o 采购子系统"
+      ],
+      "paragraph_count": 9,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_a405f7bd76a6",
+      "parent_id": "node_a80a6dea9742",
+      "title": "数据字典",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 79,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "数据字典"
+      ],
+      "paragraph_count": 3,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_9bac4dc0838e",
+      "parent_id": "node_a80a6dea9742",
+      "title": "数据词典的定义方法",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 81,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "数据词典的定义方法"
+      ],
+      "paragraph_count": 6,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_f64837104d4e",
+      "parent_id": "node_a80a6dea9742",
+      "title": "定义数据的方法—符号",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 82,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "定义数据的方法—符号"
+      ],
+      "paragraph_count": 15,
+      "chunk_count": 4
+    },
+    {
+      "node_id": "node_601904ae6942",
+      "parent_id": "node_a80a6dea9742",
+      "title": "数据流的描述",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 84,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "数据流的描述"
+      ],
+      "paragraph_count": 2,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_80329912b219",
+      "parent_id": "node_a80a6dea9742",
+      "title": "数据元素的描述",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 85,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "数据元素的描述"
+      ],
+      "paragraph_count": 6,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_5b06c6538bc3",
+      "parent_id": "node_a80a6dea9742",
+      "title": "举例",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 89,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "举例"
+      ],
+      "paragraph_count": 4,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_8cb45ecec434",
+      "parent_id": "node_a80a6dea9742",
+      "title": "105.258 104.264",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 89,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "105.258 104.264"
+      ],
+      "paragraph_count": 15,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_3d246de04dc2",
+      "parent_id": "node_a80a6dea9742",
+      "title": "可以拨分机号和外线号码。分机号是从7201~7299。",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 91,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "可以拨分机号和外线号码。分机号是从7201~7299。"
+      ],
+      "paragraph_count": 1,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_c04e91d605f9",
+      "parent_id": "node_a80a6dea9742",
+      "title": "定义（即组成）。",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 91,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "定义（即组成）。"
+      ],
+      "paragraph_count": 6,
+      "chunk_count": 2
+    },
+    {
+      "node_id": "node_b02bbdd60091",
+      "parent_id": "node_a80a6dea9742",
+      "title": "成本估计",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 95,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "成本估计"
+      ],
+      "paragraph_count": 4,
+      "chunk_count": 4
+    },
+    {
+      "node_id": "node_8db68f8760da",
+      "parent_id": "node_a80a6dea9742",
+      "title": "成本/效益分析的方法",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 99,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "成本/效益分析的方法"
+      ],
+      "paragraph_count": 17,
+      "chunk_count": 2
+    },
+    {
+      "node_id": "node_1fc3c2feb8a9",
+      "parent_id": "node_a80a6dea9742",
+      "title": "纯收入",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 104,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "纯收入"
+      ],
+      "paragraph_count": 4,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_153c10adc131",
+      "parent_id": "node_a80a6dea9742",
+      "title": "投资回收率",
+      "level": 2,
+      "chapter_id": "chapter_da3f0bfe6fc8",
+      "start_page": 105,
+      "path": [
+        "软件工程",
+        "第二章 可行性研究",
+        "投资回收率"
+      ],
+      "paragraph_count": 10,
+      "chunk_count": 4
+    }
+  ],
+  "knowledge_points": [
+    {
+      "chunk_id": "chunk_d73408beb44c",
+      "parent_node_id": "node_a80a6dea9742",
+      "title": "第二章 可行性研究",
+      "pages": [
+        2,
+        3
+      ],
+      "method": "rule",
+      "char_count": 188,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_d3e3922b04e4",
+      "parent_node_id": "node_3876b2abd04b",
+      "title": "软件项目来源",
+      "pages": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 169,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_f2b70dee20cf",
+      "parent_node_id": "node_3876b2abd04b",
+      "title": "可行性研究的定义与目的",
+      "pages": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 78,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_fe1b6eb9fdb6",
+      "parent_node_id": "node_3876b2abd04b",
+      "title": "可行性研究的作用",
+      "pages": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 98,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_5e3a65324baa",
+      "parent_node_id": "node_3876b2abd04b",
+      "title": "可行性研究的重要性案例",
+      "pages": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 130,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_dac07cfb38af",
+      "parent_node_id": "node_9a8912fe804c",
+      "title": "可行性研究的任务归纳",
+      "pages": [
+        11,
+        12
+      ],
+      "method": "rule",
+      "char_count": 181,
+      "images": []
+    },
+    {
+      "chunk_id": "merged_496e55b7eee7",
+      "parent_node_id": "node_59882d699fa1",
+      "title": "2.2 可行性研究的过程",
+      "pages": [
+        13,
+        14,
+        18
+      ],
+      "method": "merged",
+      "char_count": 242,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_7b56a3e20984",
+      "parent_node_id": "node_0bb9cc195f8f",
+      "title": "3、导出高层逻辑模型(conceptual design)",
+      "pages": [
+        15
+      ],
+      "method": "rule",
+      "char_count": 56,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_23c45a634989",
+      "parent_node_id": "node_7366f06408a3",
+      "title": "5、导出和评价供选择的方案",
+      "pages": [
+        16
+      ],
+      "method": "rule",
+      "char_count": 53,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_166ffece0302",
+      "parent_node_id": "node_b36cec35c1ca",
+      "title": "当前系统",
+      "pages": [
+        20
+      ],
+      "method": "rule",
+      "char_count": 116,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_e7d9b3d07987",
+      "parent_node_id": "node_9ee5e8cf859c",
+      "title": "技术可行性",
+      "pages": [
+        23
+      ],
+      "method": "rule",
+      "char_count": 128,
+      "images": []
+    },
+    {
+      "chunk_id": "merged_a6a968998dfb",
+      "parent_node_id": "node_07c24024d844",
+      "title": "经济可行性",
+      "pages": [
+        24,
+        25,
+        26
+      ],
+      "method": "merged",
+      "char_count": 319,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_4970b45144f4",
+      "parent_node_id": "node_723299f4b190",
+      "title": "操作可行性",
+      "pages": [
+        28
+      ],
+      "method": "rule",
+      "char_count": 139,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_10e5e80c112f",
+      "parent_node_id": "node_762631abe632",
+      "title": "社会可行性",
+      "pages": [
+        29
+      ],
+      "method": "rule",
+      "char_count": 88,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_bb121558f361",
+      "parent_node_id": "node_faf5b0660079",
+      "title": "方案选择",
+      "pages": [
+        30
+      ],
+      "method": "rule",
+      "char_count": 187,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_687164473e90",
+      "parent_node_id": "node_92c6ec9f8385",
+      "title": "可行性分析的结论",
+      "pages": [
+        31
+      ],
+      "method": "rule",
+      "char_count": 18,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_72c4e3b4a071",
+      "parent_node_id": "node_9fa1c387a103",
+      "title": "（4）不能进行或不必进行；例如因技术不成熟，经济上不合算或可能 产生负面的社会影响等原因，这种情况下，分析员应该建议尽早终止 项目计划，以免浪费人力、物力和财力。",
+      "pages": [
+        31
+      ],
+      "method": "rule",
+      "char_count": 100,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_d72f35de93d4",
+      "parent_node_id": "node_66160a150162",
+      "title": "可行性报告",
+      "pages": [
+        32,
+        33,
+        34
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 44,
+      "images": []
+    },
+    {
+      "chunk_id": "merged_8e5777f691e5",
+      "parent_node_id": "node_66160a150162",
+      "title": "系统流程图",
+      "pages": [
+        32,
+        33,
+        34,
+        35,
+        36,
+        37
+      ],
+      "method": "merged",
+      "char_count": 308,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_8fc1e3872cb7",
+      "parent_node_id": "node_4a0fc45d9b90",
+      "title": "o 反映数据在各部分物理部件间流动的情况",
+      "pages": [
+        38
+      ],
+      "method": "rule",
+      "char_count": 123,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_b1389dee19f7",
+      "parent_node_id": "node_b9359af636cc",
+      "title": "2.4 数据流图",
+      "pages": [
+        44
+      ],
+      "method": "rule",
+      "char_count": 131,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_fa6718235f3a",
+      "parent_node_id": "node_a6a1f14ad7a2",
+      "title": "数据流图作用",
+      "pages": [
+        45
+      ],
+      "method": "rule",
+      "char_count": 191,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_d5e02a55cfde",
+      "parent_node_id": "node_19b2f020bb91",
+      "title": "数据流图符号",
+      "pages": [
+        46,
+        47
+      ],
+      "method": "rule",
+      "char_count": 352,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_a108f5ec2ab3",
+      "parent_node_id": "node_7f8ddd4589ba",
+      "title": "1.2.1 加工名",
+      "pages": [
+        47
+      ],
+      "method": "rule",
+      "char_count": 34,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_6018e763cb4c",
+      "parent_node_id": "node_ab5ca0463a00",
+      "title": "还有一些辅助的图例:",
+      "pages": [
+        48
+      ],
+      "method": "rule",
+      "char_count": 21,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_49fb4bd43f30",
+      "parent_node_id": "node_9403e2f38764",
+      "title": "* C",
+      "pages": [
+        48
+      ],
+      "method": "rule",
+      "char_count": 62,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_81204abc967e",
+      "parent_node_id": "node_811d183af696",
+      "title": "数据流图举例-1",
+      "pages": [
+        49
+      ],
+      "method": "rule",
+      "char_count": 74,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_fe48afc18c9e",
+      "parent_node_id": "node_f096d197e75a",
+      "title": "文件表示的约定",
+      "pages": [
+        50
+      ],
+      "method": "rule",
+      "char_count": 107,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_18333646388f",
+      "parent_node_id": "node_02592af96bcc",
+      "title": "数据流图重复源点/终点的表示方法",
+      "pages": [
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 68,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_1d807e9941b8",
+      "parent_node_id": "node_02592af96bcc",
+      "title": "数据流图的层次结构",
+      "pages": [
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 89,
+      "images": [
+        {
+          "image_id": "第2章-可行性研究_p060_i02",
+          "page": 60,
+          "file_name": "page_060_img_02.jpeg",
+          "path": "images/第2章-可行性研究/page_060_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第2章-可行性研究\\page_060_img_02.jpeg",
+          "width": 608,
+          "height": 521,
+          "file_size": 25428,
+          "ext": "jpeg",
+          "xref": 438,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "diagram",
+          "caption": "展示数据流图（DFD）的层次结构，包含顶层、1层和2层图的分解关系。",
+          "related_chunk_ids": [
+            "chunk_1d807e9941b8"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        }
+      ]
+    },
+    {
+      "chunk_id": "chunk_556d3b5d84bf",
+      "parent_node_id": "node_02592af96bcc",
+      "title": "数据流图的四种成分",
+      "pages": [
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 68,
+      "images": [
+        {
+          "image_id": "第2章-可行性研究_p057_i02",
+          "page": 57,
+          "file_name": "page_057_img_02.jpeg",
+          "path": "images/第2章-可行性研究/page_057_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第2章-可行性研究\\page_057_img_02.jpeg",
+          "width": 819,
+          "height": 544,
+          "file_size": 82165,
+          "ext": "jpeg",
+          "xref": 411,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "diagram",
+          "caption": "展示读者注册、登录及图书预订功能的详细数据流图（DFD），包含外部实体、加工处理和数据存储。",
+          "related_chunk_ids": [
+            "chunk_556d3b5d84bf"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        }
+      ]
+    },
+    {
+      "chunk_id": "chunk_9db1321bfdf8",
+      "parent_node_id": "node_c19d00b8ee90",
+      "title": "（1）确定外部实体、输入/输出数据流和处理， 画出顶层数据流图。",
+      "pages": [
+        62
+      ],
+      "method": "rule",
+      "char_count": 57,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_fa6fb82fcfa5",
+      "parent_node_id": "node_212edd94d55e",
+      "title": "（2）分解顶层数据流图",
+      "pages": [
+        63
+      ],
+      "method": "rule",
+      "char_count": 92,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_b0574c0e4cd8",
+      "parent_node_id": "node_dc86f8fc9c12",
+      "title": "（3）确定数据存储",
+      "pages": [
+        64
+      ],
+      "method": "rule",
+      "char_count": 66,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_ba6ed17cf76e",
+      "parent_node_id": "node_dfe1fad579c2",
+      "title": "案例-订货系统",
+      "pages": [
+        65,
+        66
+      ],
+      "method": "rule",
+      "char_count": 265,
+      "images": []
+    },
+    {
+      "chunk_id": "merged_ef21108d533e",
+      "parent_node_id": "node_23e692d82e9d",
+      "title": "图书销售系统",
+      "pages": [
+        69,
+        70
+      ],
+      "method": "merged",
+      "char_count": 110,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_948184064264",
+      "parent_node_id": "node_b0f0b9c7ae7c",
+      "title": "n 销售子系统",
+      "pages": [
+        71
+      ],
+      "method": "rule",
+      "char_count": 95,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_8c10784ba674",
+      "parent_node_id": "node_f70bdd6388f4",
+      "title": "o 采购子系统",
+      "pages": [
+        72
+      ],
+      "method": "rule",
+      "char_count": 59,
+      "images": []
+    },
+    {
+      "chunk_id": "merged_485f09492384",
+      "parent_node_id": "node_a405f7bd76a6",
+      "title": "数据字典",
+      "pages": [
+        79,
+        80
+      ],
+      "method": "merged",
+      "char_count": 251,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_a42011c6671d",
+      "parent_node_id": "node_9bac4dc0838e",
+      "title": "数据词典的定义方法",
+      "pages": [
+        81
+      ],
+      "method": "rule",
+      "char_count": 60,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_1f355d957fe6",
+      "parent_node_id": "node_f64837104d4e",
+      "title": "数据定义符号：组成与选择",
+      "pages": [
+        82,
+        83
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 71,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_08e89b5257bd",
+      "parent_node_id": "node_f64837104d4e",
+      "title": "数据定义符号：重复与可选",
+      "pages": [
+        82,
+        83
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 98,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_643bc3ab0ffb",
+      "parent_node_id": "node_f64837104d4e",
+      "title": "数据定义符号：基本元素与连接",
+      "pages": [
+        82,
+        83
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 75,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_1d2c89145d28",
+      "parent_node_id": "node_f64837104d4e",
+      "title": "图书卡片数据定义示例",
+      "pages": [
+        82,
+        83
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 143,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_fe6857715103",
+      "parent_node_id": "node_601904ae6942",
+      "title": "数据流的描述",
+      "pages": [
+        84
+      ],
+      "method": "rule",
+      "char_count": 172,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_750c4cc7b38f",
+      "parent_node_id": "node_80329912b219",
+      "title": "数据元素的描述",
+      "pages": [
+        85,
+        86,
+        87,
+        88
+      ],
+      "method": "rule",
+      "char_count": 181,
+      "images": [
+        {
+          "image_id": "第2章-可行性研究_p088_i02",
+          "page": 88,
+          "file_name": "page_088_img_02.jpeg",
+          "path": "images/第2章-可行性研究/page_088_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第2章-可行性研究\\page_088_img_02.jpeg",
+          "width": 580,
+          "height": 413,
+          "file_size": 54836,
+          "ext": "jpeg",
+          "xref": 599,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "diagram",
+          "caption": "数据流图中加工（处理）条目的标准模板，展示了系统名、输入、输出、加工逻辑及修改记录等结构。",
+          "related_chunk_ids": [
+            "chunk_750c4cc7b38f"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        }
+      ]
+    },
+    {
+      "chunk_id": "chunk_ea015dd97d4a",
+      "parent_node_id": "node_5b06c6538bc3",
+      "title": "举例",
+      "pages": [
+        89
+      ],
+      "method": "rule",
+      "char_count": 49,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_ea0c0bf37b52",
+      "parent_node_id": "node_8cb45ecec434",
+      "title": "105.258 104.264",
+      "pages": [
+        89,
+        90,
+        91
+      ],
+      "method": "rule",
+      "char_count": 328,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_ecacbbe71c7f",
+      "parent_node_id": "node_3d246de04dc2",
+      "title": "可以拨分机号和外线号码。分机号是从7201~7299。",
+      "pages": [
+        91
+      ],
+      "method": "rule",
+      "char_count": 141,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_33603cea211d",
+      "parent_node_id": "node_c04e91d605f9",
+      "title": "可行性研究的任务",
+      "pages": [
+        92,
+        93,
+        94
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 48,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_7b1201aa7814",
+      "parent_node_id": "node_c04e91d605f9",
+      "title": "成本/效益分析",
+      "pages": [
+        92,
+        93,
+        94
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 137,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_3ac6dd351bee",
+      "parent_node_id": "node_b02bbdd60091",
+      "title": "软件开发成本构成与估计原则",
+      "pages": [
+        95,
+        96,
+        97,
+        98
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 64,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_de159cee008c",
+      "parent_node_id": "node_b02bbdd60091",
+      "title": "代码行技术",
+      "pages": [
+        95,
+        96,
+        97,
+        98
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 112,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_32704bde12cb",
+      "parent_node_id": "node_b02bbdd60091",
+      "title": "任务分解技术",
+      "pages": [
+        95,
+        96,
+        97,
+        98
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 230,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_f846e79df95a",
+      "parent_node_id": "node_b02bbdd60091",
+      "title": "自动估计成本技术",
+      "pages": [
+        95,
+        96,
+        97,
+        98
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 78,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_899a575e8104",
+      "parent_node_id": "node_8db68f8760da",
+      "title": "成本/效益分析步骤",
+      "pages": [
+        99,
+        100,
+        101,
+        102
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 115,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_4736d57ff5cb",
+      "parent_node_id": "node_8db68f8760da",
+      "title": "货币的时间价值",
+      "pages": [
+        99,
+        100,
+        101,
+        102
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 137,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_98d7a0021546",
+      "parent_node_id": "node_1fc3c2feb8a9",
+      "title": "纯收入",
+      "pages": [
+        104
+      ],
+      "method": "rule",
+      "char_count": 201,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_855d9ce515ce",
+      "parent_node_id": "node_153c10adc131",
+      "title": "投资回收率定义",
+      "pages": [
+        105,
+        106,
+        107
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 86,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_82817c75f4d1",
+      "parent_node_id": "node_153c10adc131",
+      "title": "投资回收率计算公式",
+      "pages": [
+        105,
+        106,
+        107
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 73,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_ebe13e4f593f",
+      "parent_node_id": "node_153c10adc131",
+      "title": "成本效益分析判断方法一（现值法）",
+      "pages": [
+        105,
+        106,
+        107
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 137,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_6a0270c74744",
+      "parent_node_id": "node_153c10adc131",
+      "title": "成本效益分析判断方法二（终值法）",
+      "pages": [
+        105,
+        106,
+        107
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 109,
+      "images": []
+    }
+  ],
+  "relations": [
+    {
+      "source": "chunk_d3e3922b04e4",
+      "target": "chunk_f2b70dee20cf",
+      "type": "next"
+    },
+    {
+      "source": "chunk_d3e3922b04e4",
+      "target": "chunk_f2b70dee20cf",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_f2b70dee20cf",
+      "target": "chunk_fe1b6eb9fdb6",
+      "type": "next"
+    },
+    {
+      "source": "chunk_f2b70dee20cf",
+      "target": "chunk_fe1b6eb9fdb6",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_fe1b6eb9fdb6",
+      "target": "chunk_5e3a65324baa",
+      "type": "next"
+    },
+    {
+      "source": "chunk_fe1b6eb9fdb6",
+      "target": "chunk_5e3a65324baa",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_5e3a65324baa",
+      "target": "chunk_dac07cfb38af",
+      "type": "next"
+    },
+    {
+      "source": "chunk_5e3a65324baa",
+      "target": "chunk_dac07cfb38af",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_dac07cfb38af",
+      "target": "merged_496e55b7eee7",
+      "type": "next"
+    },
+    {
+      "source": "chunk_dac07cfb38af",
+      "target": "merged_496e55b7eee7",
+      "type": "prerequisite"
+    },
+    {
+      "source": "merged_496e55b7eee7",
+      "target": "chunk_7b56a3e20984",
+      "type": "next"
+    },
+    {
+      "source": "merged_496e55b7eee7",
+      "target": "chunk_7b56a3e20984",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_7b56a3e20984",
+      "target": "chunk_23c45a634989",
+      "type": "next"
+    },
+    {
+      "source": "chunk_7b56a3e20984",
+      "target": "chunk_23c45a634989",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_e7d9b3d07987",
+      "target": "merged_a6a968998dfb",
+      "type": "next"
+    },
+    {
+      "source": "chunk_e7d9b3d07987",
+      "target": "merged_a6a968998dfb",
+      "type": "prerequisite"
+    },
+    {
+      "source": "merged_a6a968998dfb",
+      "target": "chunk_4970b45144f4",
+      "type": "next"
+    },
+    {
+      "source": "merged_a6a968998dfb",
+      "target": "chunk_4970b45144f4",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_4970b45144f4",
+      "target": "chunk_10e5e80c112f",
+      "type": "next"
+    },
+    {
+      "source": "chunk_4970b45144f4",
+      "target": "chunk_10e5e80c112f",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_10e5e80c112f",
+      "target": "chunk_bb121558f361",
+      "type": "next"
+    },
+    {
+      "source": "chunk_10e5e80c112f",
+      "target": "chunk_bb121558f361",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_bb121558f361",
+      "target": "chunk_687164473e90",
+      "type": "next"
+    },
+    {
+      "source": "chunk_bb121558f361",
+      "target": "chunk_687164473e90",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_687164473e90",
+      "target": "chunk_72c4e3b4a071",
+      "type": "next"
+    },
+    {
+      "source": "chunk_687164473e90",
+      "target": "chunk_72c4e3b4a071",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_72c4e3b4a071",
+      "target": "chunk_d72f35de93d4",
+      "type": "next"
+    },
+    {
+      "source": "chunk_72c4e3b4a071",
+      "target": "chunk_d72f35de93d4",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_d72f35de93d4",
+      "target": "merged_8e5777f691e5",
+      "type": "next"
+    },
+    {
+      "source": "chunk_d72f35de93d4",
+      "target": "merged_8e5777f691e5",
+      "type": "prerequisite"
+    },
+    {
+      "source": "merged_8e5777f691e5",
+      "target": "chunk_8fc1e3872cb7",
+      "type": "next"
+    },
+    {
+      "source": "merged_8e5777f691e5",
+      "target": "chunk_8fc1e3872cb7",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_b1389dee19f7",
+      "target": "chunk_fa6718235f3a",
+      "type": "next"
+    },
+    {
+      "source": "chunk_b1389dee19f7",
+      "target": "chunk_d5e02a55cfde",
+      "type": "next"
+    },
+    {
+      "source": "chunk_b1389dee19f7",
+      "target": "chunk_fa6718235f3a",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_fa6718235f3a",
+      "target": "chunk_d5e02a55cfde",
+      "type": "next"
+    },
+    {
+      "source": "chunk_b1389dee19f7",
+      "target": "chunk_d5e02a55cfde",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_fa6718235f3a",
+      "target": "chunk_d5e02a55cfde",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_d5e02a55cfde",
+      "target": "chunk_a108f5ec2ab3",
+      "type": "next"
+    },
+    {
+      "source": "chunk_d5e02a55cfde",
+      "target": "chunk_81204abc967e",
+      "type": "next"
+    },
+    {
+      "source": "chunk_d5e02a55cfde",
+      "target": "chunk_a108f5ec2ab3",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_a108f5ec2ab3",
+      "target": "chunk_6018e763cb4c",
+      "type": "next"
+    },
+    {
+      "source": "chunk_a108f5ec2ab3",
+      "target": "chunk_6018e763cb4c",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_6018e763cb4c",
+      "target": "chunk_49fb4bd43f30",
+      "type": "next"
+    },
+    {
+      "source": "chunk_6018e763cb4c",
+      "target": "chunk_49fb4bd43f30",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_d5e02a55cfde",
+      "target": "chunk_81204abc967e",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_81204abc967e",
+      "target": "chunk_fe48afc18c9e",
+      "type": "next"
+    },
+    {
+      "source": "chunk_81204abc967e",
+      "target": "chunk_fe48afc18c9e",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_fe48afc18c9e",
+      "target": "chunk_18333646388f",
+      "type": "next"
+    },
+    {
+      "source": "chunk_fe48afc18c9e",
+      "target": "chunk_18333646388f",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_18333646388f",
+      "target": "chunk_1d807e9941b8",
+      "type": "next"
+    },
+    {
+      "source": "chunk_18333646388f",
+      "target": "chunk_1d807e9941b8",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_556d3b5d84bf",
+      "target": "chunk_ba6ed17cf76e",
+      "type": "next"
+    },
+    {
+      "source": "chunk_556d3b5d84bf",
+      "target": "chunk_ba6ed17cf76e",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_ba6ed17cf76e",
+      "target": "merged_ef21108d533e",
+      "type": "next"
+    },
+    {
+      "source": "chunk_ba6ed17cf76e",
+      "target": "merged_ef21108d533e",
+      "type": "prerequisite"
+    },
+    {
+      "source": "merged_ef21108d533e",
+      "target": "merged_485f09492384",
+      "type": "next"
+    },
+    {
+      "source": "merged_ef21108d533e",
+      "target": "merged_485f09492384",
+      "type": "prerequisite"
+    },
+    {
+      "source": "merged_485f09492384",
+      "target": "chunk_a42011c6671d",
+      "type": "next"
+    },
+    {
+      "source": "merged_485f09492384",
+      "target": "chunk_a42011c6671d",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_1f355d957fe6",
+      "target": "chunk_08e89b5257bd",
+      "type": "next"
+    },
+    {
+      "source": "chunk_1f355d957fe6",
+      "target": "chunk_08e89b5257bd",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_08e89b5257bd",
+      "target": "chunk_643bc3ab0ffb",
+      "type": "next"
+    },
+    {
+      "source": "chunk_08e89b5257bd",
+      "target": "chunk_643bc3ab0ffb",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_643bc3ab0ffb",
+      "target": "chunk_1d2c89145d28",
+      "type": "next"
+    },
+    {
+      "source": "chunk_643bc3ab0ffb",
+      "target": "chunk_1d2c89145d28",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_7b1201aa7814",
+      "target": "chunk_3ac6dd351bee",
+      "type": "next"
+    },
+    {
+      "source": "chunk_7b1201aa7814",
+      "target": "chunk_3ac6dd351bee",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_3ac6dd351bee",
+      "target": "chunk_de159cee008c",
+      "type": "next"
+    },
+    {
+      "source": "chunk_3ac6dd351bee",
+      "target": "chunk_32704bde12cb",
+      "type": "next"
+    },
+    {
+      "source": "chunk_3ac6dd351bee",
+      "target": "chunk_de159cee008c",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_3ac6dd351bee",
+      "target": "chunk_32704bde12cb",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_3ac6dd351bee",
+      "target": "chunk_f846e79df95a",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_7b1201aa7814",
+      "target": "chunk_899a575e8104",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_3ac6dd351bee",
+      "target": "chunk_899a575e8104",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_899a575e8104",
+      "target": "chunk_4736d57ff5cb",
+      "type": "next"
+    },
+    {
+      "source": "chunk_899a575e8104",
+      "target": "chunk_4736d57ff5cb",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_4736d57ff5cb",
+      "target": "chunk_98d7a0021546",
+      "type": "next"
+    },
+    {
+      "source": "chunk_4736d57ff5cb",
+      "target": "chunk_855d9ce515ce",
+      "type": "next"
+    },
+    {
+      "source": "chunk_4736d57ff5cb",
+      "target": "chunk_98d7a0021546",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_4736d57ff5cb",
+      "target": "chunk_855d9ce515ce",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_855d9ce515ce",
+      "target": "chunk_82817c75f4d1",
+      "type": "next"
+    },
+    {
+      "source": "chunk_855d9ce515ce",
+      "target": "chunk_82817c75f4d1",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_ebe13e4f593f",
+      "target": "chunk_6a0270c74744",
+      "type": "next"
+    },
+    {
+      "source": "chunk_ebe13e4f593f",
+      "target": "chunk_6a0270c74744",
+      "type": "prerequisite"
+    }
+  ],
+  "stats": {
+    "outline_node_count": 49,
+    "knowledge_point_count": 62,
+    "relation_count": 85
+  },
+  "source_pdf_json": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\pdf_json\\第2章-可行性研究_knowledge.json",
+  "source_semantic_json": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\semantic_json\\第2章-可行性研究_semantic.json",
+  "images": [
+    {
+      "image_id": "第2章-可行性研究_p057_i02",
+      "page": 57,
+      "file_name": "page_057_img_02.jpeg",
+      "path": "images/第2章-可行性研究/page_057_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第2章-可行性研究\\page_057_img_02.jpeg",
+      "width": 819,
+      "height": 544,
+      "file_size": 82165,
+      "ext": "jpeg",
+      "xref": 411,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "diagram",
+      "caption": "展示读者注册、登录及图书预订功能的详细数据流图（DFD），包含外部实体、加工处理和数据存储。",
+      "related_chunk_ids": [
+        "chunk_556d3b5d84bf"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第2章-可行性研究_p060_i02",
+      "page": 60,
+      "file_name": "page_060_img_02.jpeg",
+      "path": "images/第2章-可行性研究/page_060_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第2章-可行性研究\\page_060_img_02.jpeg",
+      "width": 608,
+      "height": 521,
+      "file_size": 25428,
+      "ext": "jpeg",
+      "xref": 438,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "diagram",
+      "caption": "展示数据流图（DFD）的层次结构，包含顶层、1层和2层图的分解关系。",
+      "related_chunk_ids": [
+        "chunk_1d807e9941b8"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    },
+    {
+      "image_id": "第2章-可行性研究_p088_i02",
+      "page": 88,
+      "file_name": "page_088_img_02.jpeg",
+      "path": "images/第2章-可行性研究/page_088_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第2章-可行性研究\\page_088_img_02.jpeg",
+      "width": 580,
+      "height": 413,
+      "file_size": 54836,
+      "ext": "jpeg",
+      "xref": 599,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "diagram",
+      "caption": "数据流图中加工（处理）条目的标准模板，展示了系统名、输入、输出、加工逻辑及修改记录等结构。",
+      "related_chunk_ids": [
+        "chunk_750c4cc7b38f"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    }
+  ],
+  "rejected_image_count": 299,
+  "image_filter": {
+    "used_llm": true,
+    "model": "xopqwen35v35b"
+  }
+}
