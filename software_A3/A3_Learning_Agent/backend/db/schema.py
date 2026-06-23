@@ -153,6 +153,19 @@ def ensure_extended_tables() -> None:
             KEY idx_profile_conversation_update_time (update_time)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         """,
+        """
+        CREATE TABLE IF NOT EXISTS tutor_conversation (
+            id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+            user_id BIGINT UNSIGNED NOT NULL,
+            profile_session_id BIGINT UNSIGNED NULL,
+            messages JSON NOT NULL,
+            update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY uk_tutor_conversation_user_session (user_id, profile_session_id),
+            KEY idx_tutor_conversation_user_id (user_id),
+            KEY idx_tutor_conversation_session_id (profile_session_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        """,
     ]
     for statement in statements:
         mysql_db.execute(statement)

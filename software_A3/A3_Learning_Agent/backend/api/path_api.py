@@ -1,4 +1,5 @@
 import json
+import re
 
 from flask import Blueprint, request
 
@@ -12,6 +13,18 @@ from utils.profile_session import resolve_profile_session
 
 path_bp = Blueprint("path", __name__)
 safety_agent = SafetyAgent()
+
+
+def normalize_markdown(text: str) -> str:
+    content = str(text or "").strip()
+    fenced = re.fullmatch(r"```(?:markdown|md|text)?\s*([\s\S]*?)\s*```", content, flags=re.IGNORECASE)
+    if fenced:
+        content = fenced.group(1).strip()
+    content = re.sub(r"^\s*```(?:markdown|md|text)?\s*$", "", content, flags=re.IGNORECASE | re.MULTILINE)
+    content = re.sub(r"^\s*```\s*$", "", content, flags=re.MULTILINE)
+    content = "\n".join(line[4:] if line.startswith("    ") and not line.startswith("        ") else line for line in content.splitlines())
+    content = re.sub(r"^\s*[-*]\s*\*\*(目标|学习任务|推荐资源|练习方式|评估指标)\*\*\s*[:：]", r"**\1：**", content, flags=re.MULTILINE)
+    return content.strip()
 
 
 @path_bp.post("/generate")
@@ -36,17 +49,40 @@ def generate_learning_path():
         knowledge = retrieve_knowledge(query, top_k=3)
         sources = retrieve_knowledge_items(query, top_k=3)
         prompt = f"""
-你是软件工程课程学习规划师。请基于学生画像和软件工程教材原文，生成个性化阶梯式学习路径。
-要求：
-1. 只基于教材原文和画像，不编造课程知识；
-2. 明确学习顺序、每一步目标、推荐资源类型、练习方式和评估指标；
-3. 返回Markdown格式，适合前端直接渲染；
-4. 在最后添加“参考依据”小节，列出教材来源。
-学生画像：{profile_text}
+你是软件工程课程学习规划师。请基于学生画像和教材原文生成个性化学习路径。
+
+输出要求：
+1. 只输出普通 Markdown 正文，不要代码围栏，不要 JSON，不要 ASCII 图，不要复杂表格，不要 emoji。
+2. 标题层级必须统一：一级标题用“# 个性化学习路径”，二级标题用“## 阶段一：...”，三级标题用“### 学习安排”。
+3. 每个阶段固定包含五项，且五项名称必须一致：目标、学习任务、推荐资源、练习方式、评估指标。
+4. 每个阶段写成短段落和项目符号，不要把所有内容挤在一行。
+5. 内容要清楚说明学习顺序、为什么这样学、需要用到哪些文档/题库/视频/案例。
+6. 最后添加“## 动态调整建议”和“## 参考依据”两个小节。
+7. 只能依据教材原文和学生画像，不要编造不存在的页码、图片和结论。
+
+请严格按这个模板组织：
+
+# 个性化学习路径
+
+## 阶段一：阶段名称
+### 学习安排
+**目标：** ...
+**学习任务：**
+- ...
+**推荐资源：**
+- ...
+**练习方式：**
+- ...
+**评估指标：**
+- ...
+
+学生画像：
+{profile_text}
+
 教材原文：
 {knowledge}
 """.strip()
-        path_content = spark_chat(prompt)
+        path_content = normalize_markdown(spark_chat(prompt))
         if not content_audit(path_content):
             return fail("生成的学习路径未通过讯飞内容审核", 403)
 

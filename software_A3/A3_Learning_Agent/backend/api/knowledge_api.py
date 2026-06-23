@@ -7,6 +7,59 @@ from utils import fail, require_fields, success
 from utils.auth_decorator import login_required
 
 knowledge_bp = Blueprint("knowledge", __name__)
+SUPPORTED_IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".webp", ".gif"}
+
+
+def _candidate_image_paths(raw_path: str) -> list[Path]:
+    """Resolve image paths emitted by the packaged RAG data.
+
+    The generated JSON may contain either the current relative path
+    (images/chapter/page_x.jpeg) or an old absolute path from the build
+    machine. Keep this resolver tolerant so copied projects still render
+    textbook images.
+    """
+    kb_root = generated_kb_dir().resolve()
+    image_root = kb_root / "images"
+    normalized = raw_path.strip().strip('"').strip("'").replace("\\", "/")
+    candidates: list[Path] = []
+
+    raw_candidate = Path(raw_path)
+    if raw_candidate.is_absolute():
+        candidates.append(raw_candidate)
+
+    if normalized.startswith("images/"):
+        candidates.append(kb_root / normalized)
+        candidates.append(image_root / normalized[len("images/") :])
+
+    marker = "/images/"
+    if marker in normalized:
+        relative_after_images = normalized.split(marker, 1)[1]
+        candidates.append(image_root / relative_after_images)
+
+    if not raw_candidate.is_absolute():
+        candidates.append(image_root / raw_path)
+
+    unique: list[Path] = []
+    seen = set()
+    for candidate in candidates:
+        try:
+            resolved = candidate.resolve()
+        except Exception:
+            continue
+        key = str(resolved).lower()
+        if key not in seen:
+            seen.add(key)
+            unique.append(resolved)
+    return unique
+
+
+def _resolve_image_path(raw_path: str) -> Path | None:
+    image_root = (generated_kb_dir() / "images").resolve()
+    for image_path in _candidate_image_paths(raw_path):
+        inside_image_root = image_path == image_root or image_root in image_path.parents
+        if image_path.exists() and image_path.suffix.lower() in SUPPORTED_IMAGE_SUFFIXES and inside_image_root:
+            return image_path
+    return None
 
 
 @knowledge_bp.get("/status")
@@ -49,16 +102,9 @@ def image():
     if not raw_path:
         return fail("缺少图片路径", 400)
     try:
-        image_root = (generated_kb_dir() / "images").resolve()
-        path = Path(raw_path)
-        if not path.is_absolute():
-            path = image_root / raw_path
-        image_path = path.resolve()
-        if image_root not in image_path.parents and image_path != image_root:
-            return fail("图片路径不在知识库图片目录内", 403)
-        if not image_path.exists() or image_path.suffix.lower() not in {".png", ".jpg", ".jpeg", ".webp", ".gif"}:
+        image_path = _resolve_image_path(raw_path)
+        if not image_path:
             return fail("图片不存在或格式不支持", 404)
         return send_file(str(image_path))
     except Exception as exc:
         return fail("图片读取失败", 500, {"error": str(exc)})
-
