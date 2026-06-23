@@ -19,8 +19,8 @@ class TutorAgent:
         evidence_items = retrieve_knowledge_items(question, top_k=3)
         evidence = retrieve_knowledge(question, top_k=3)
         prompt = f"""
-你是人工智能导论课程智能辅导老师。请严格基于教材原文回答学生问题。
-要求：先通俗解释，再给图解说明，最后给自测题。若教材依据不足，必须明确提示。
+你是软件工程课程智能辅导老师。请严格基于软件工程教材原文回答学生问题。
+要求：先通俗解释，再给图解说明，最后给自测题。若教材依据不足，必须明确提示“当前课程知识库依据不足”。
 学生问题：{question}
 教材原文：
 {evidence}

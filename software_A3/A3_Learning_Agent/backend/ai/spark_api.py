@@ -19,8 +19,8 @@ def _mock_spark_response(prompt: str) -> str:
     输入：prompt，智能体提示词。
     输出：可被业务模块解析的模拟文本。
     """
-    topic = "监督学习与无监督学习"
-    for candidate in ["反向传播", "梯度下降", "神经网络", "聚类", "知识表示", "搜索算法", "自然语言处理", "计算机视觉"]:
+    topic = "需求分析与软件设计"
+    for candidate in ["需求分析", "可行性研究", "总体设计", "详细设计", "编码", "软件测试", "调试", "软件维护", "项目管理", "质量保证", "敏捷开发", "DevOps"]:
         if candidate in prompt:
             topic = candidate
             break
@@ -157,21 +157,21 @@ for epoch in range(201):
         return json.dumps({"title": f"一分钟理解{topic}", "script": script, "storyboard": storyboard, "knowledge_points": [topic], "personalization": personalization}, ensure_ascii=False)
 
     if "学习路径" in prompt or "学习规划师" in prompt:
-        return "# 个性化学习路径\n\n## 第1阶段：概念澄清\n- 学习目标：区分监督学习、无监督学习、分类、回归和聚类\n- 推荐资源：课程讲解文档、知识点思维导图\n- 练习方式：完成基础概念判断题\n- 评估指标：能够准确说出有标签数据与无标签数据的区别\n\n## 第2阶段：案例理解\n- 学习目标：通过鸢尾花分类案例理解监督学习完整流程\n- 推荐资源：代码实操案例、分难度练习题\n- 练习方式：运行并修改决策树分类代码\n- 评估指标：能够解释训练集、测试集、准确率的含义\n\n## 第3阶段：拓展应用\n- 学习目标：理解聚类、降维等无监督学习任务的应用边界\n- 推荐资源：拓展阅读材料、智能答疑\n- 练习方式：对比分类任务和聚类任务的输入输出差异\n- 评估指标：能够根据问题场景选择合适的学习方法\n\n## 动态优化建议\n每完成一个阶段后记录错题和疑问，系统将根据练习结果更新画像并调整后续资源推送。"
+        return "# 个性化学习路径\n\n## 第1阶段：概念澄清\n- 学习目标：理解软件生命周期、需求分析、总体设计和详细设计之间的关系\n- 推荐资源：课程讲解文档、知识点思维导图\n- 练习方式：完成基础概念判断题和流程排序题\n- 评估指标：能够准确说明每个阶段的输入、输出和核心产物\n\n## 第2阶段：案例理解\n- 学习目标：以在线学习平台为例完成需求到设计的转化\n- 推荐资源：代码实操案例、分层练习题、拓展阅读\n- 练习方式：编写用例描述、模块划分和接口草案\n- 评估指标：能够把用户需求转化为功能模块和数据流\n\n## 第3阶段：工程实践\n- 学习目标：理解编码、测试、调试和维护如何支撑软件质量\n- 推荐资源：测试案例、代码实操、智能答疑\n- 练习方式：为一个功能设计单元测试与异常场景测试\n- 评估指标：能够设计覆盖正常流程、边界条件和异常输入的测试用例\n\n## 动态优化建议\n每完成一个阶段后记录错题和疑问，系统将根据练习结果更新画像并调整后续资源推送。"
     if '"doc"' in prompt and '"quiz"' in prompt and '"reading"' in prompt:
         return json.dumps(
             {
-                "doc": "# 课程讲解文档\n\n本节围绕监督学习与无监督学习展开。监督学习使用带标签样本训练模型，目标是学习输入到输出的映射；无监督学习处理无标签数据，目标是发现数据内部结构。\n\n## 学习重点\n- 明确标签数据与无标签数据的区别\n- 理解分类、回归、聚类的基本任务\n- 结合教材原文建立概念边界",
-                "quiz": "# 分难度练习题\n\n## 基础题\n1. 什么是监督学习？\n2. 聚类属于监督学习还是无监督学习？\n\n## 提升题\n1. 请比较分类与回归任务的输出差异。\n2. 如果一组数据没有标签，应该优先考虑哪类学习方法？",
-                "reading": "# 拓展阅读材料\n\n建议阅读机器学习章节中关于分类、回归、聚类的教材内容，并结合鸢尾花分类案例理解监督学习流程。",
+                "doc": "# 课程讲解文档\n\n本节围绕软件工程中的需求分析与软件设计展开。需求分析用于明确用户目标、业务规则和系统边界；总体设计将需求转化为系统架构、模块划分和数据流；详细设计进一步明确模块内部逻辑、接口和关键算法。\n\n## 学习重点\n- 明确需求规格说明书、总体设计说明书和详细设计说明书的区别\n- 理解从用户需求到模块设计的逐层细化过程\n- 结合教材原文建立概念边界",
+                "quiz": "# 分难度练习题\n\n## 基础题\n1. 需求分析阶段的主要输出是什么？\n2. 总体设计和详细设计有什么区别？\n\n## 提升题\n1. 请为在线学习系统写出三个核心用例。\n2. 如果需求经常变化，设计阶段应该如何降低返工风险？",
+                "reading": "# 拓展阅读材料\n\n建议阅读软件工程教材中关于需求分析、总体设计、详细设计、编码测试和维护的章节，并结合一个课程管理系统案例理解从需求到实现的完整工程流程。",
             },
             ensure_ascii=False,
         )
     if '"mindmap"' in prompt and '"code"' in prompt:
         return json.dumps(
             {
-                "mindmap": "# 机器学习基础思维导图\n- 机器学习\n  - 监督学习\n    - 分类\n    - 回归\n  - 无监督学习\n    - 聚类\n    - 降维\n  - 评价指标\n    - 准确率\n    - 召回率",
-                "code": "from sklearn.datasets import load_iris\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.tree import DecisionTreeClassifier\nfrom sklearn.metrics import accuracy_score\n\n# 加载鸢尾花数据集，用于演示监督学习中的分类任务\ndata = load_iris()\nX_train, X_test, y_train, y_test = train_test_split(data.data, data.target, test_size=0.2, random_state=42)\n\n# 使用决策树训练分类模型\nmodel = DecisionTreeClassifier(random_state=42)\nmodel.fit(X_train, y_train)\n\n# 预测并计算准确率\npred = model.predict(X_test)\nprint('accuracy:', accuracy_score(y_test, pred))",
+                "mindmap": "# 软件工程基础思维导图\n- 软件工程\n  - 需求分析\n    - 用户目标\n    - 业务规则\n    - 系统边界\n  - 总体设计\n    - 架构设计\n    - 模块划分\n  - 详细设计\n    - 接口设计\n    - 算法逻辑\n  - 测试与维护\n    - 测试用例\n    - 缺陷修复",
+                "code": "def validate_requirement(requirement):\n    required_fields = ['actor', 'goal', 'input', 'output']\n    missing = [field for field in required_fields if not requirement.get(field)]\n    return {\n        'valid': not missing,\n        'missing_fields': missing,\n        'suggestion': '补全参与者、目标、输入和输出后再进入设计阶段' if missing else '可以进入模块设计'\n    }\n\ncase = {\n    'actor': '学生',\n    'goal': '提交在线作业',\n    'input': '作业文件',\n    'output': '提交结果和时间戳'\n}\nprint(validate_requirement(case))",
             },
             ensure_ascii=False,
         )
@@ -179,32 +179,32 @@ for epoch in range(201):
         return json.dumps(
             {
                 "major": major,
-                "target_course": "人工智能导论",
-                "knowledge_level": "人工智能导论基础中等，已了解基础概念，但机器学习体系化掌握还不够稳",
+                "target_course": "软件工程",
+                "knowledge_level": "软件工程基础中等，已了解软件生命周期概念，但需求分析、设计和测试之间的衔接还不够稳",
                 "study_style": "偏好案例驱动、图解说明与代码实操结合的学习方式",
                 "weak_points": topic,
-                "study_goal": f"在计划周期内掌握 {topic}，并能完成基础代码实验",
+                "study_goal": f"在计划周期内掌握 {topic}，并能完成基础工程案例分析",
                 "study_time_prefer": "晚上学习效率较高，适合安排 60 分钟以内的阶段任务",
-                "course_progress": "已完成概论部分，正在进入机器学习基础章节",
-                "challenge_scene": f"看到 {topic} 的公式、流程图和代码时容易对不上号",
-                "preferred_resource": "更喜欢图解、分层练习、代码实验和短视频讲解",
-                "profile_summary": f"{major}学生，在 {topic} 方面需要通过图解与代码结合的方式巩固理解",
+                "course_progress": "已完成软件工程概述，正在进入需求分析和软件设计章节",
+                "challenge_scene": f"看到 {topic} 的流程图、文档模板和工程案例时容易对不上号",
+                "preferred_resource": "更喜欢图解、分层练习、案例拆解和短视频讲解",
+                "profile_summary": f"{major}学生，在 {topic} 方面需要通过图解与案例结合的方式巩固理解",
             },
             ensure_ascii=False,
         )
     if "knowledge_level" in prompt and "study_style" in prompt and "weak_points" in prompt:
         return json.dumps(
             {
-                "knowledge_level": "人工智能导论基础中等，已了解基础概念，但机器学习体系化掌握不足",
+                "knowledge_level": "软件工程基础中等，已了解软件生命周期概念，但需求分析、设计和测试之间的衔接还不够稳",
                 "study_style": "偏好案例驱动、图解说明与代码实操结合的学习方式",
                 "weak_points": topic,
-                "study_goal": f"在计划周期内掌握{topic}，并能完成基础代码实验",
+                "study_goal": f"在计划周期内掌握{topic}，并能完成基础工程案例分析",
                 "study_time_prefer": "晚上学习效率较高，适合安排60分钟以内的阶段任务",
-                "course_progress": "已完成人工智能概论，正在进入机器学习基础章节",
+                "course_progress": "已完成软件工程概述，正在进入需求分析和软件设计章节",
             },
             ensure_ascii=False,
         )
-    return "# 智能答疑\n\n根据课程知识库，监督学习依赖带标签数据学习输入到输出的映射，常见任务包括分类和回归；无监督学习用于无标签数据，常见任务包括聚类和降维。\n\n## 图解说明\n- 有标签数据 → 监督学习 → 分类/回归\n- 无标签数据 → 无监督学习 → 聚类/降维\n\n## 自测\n请判断：房价预测属于分类还是回归？"
+    return "# 智能答疑\n\n根据软件工程课程知识库，需求分析负责明确用户目标、业务规则和系统边界；总体设计负责确定系统架构和模块划分；详细设计则进一步描述模块内部逻辑、接口和关键算法。\n\n## 图解说明\n- 用户问题 → 需求分析 → 需求规格说明书\n- 需求规格 → 总体设计 → 架构与模块\n- 模块职责 → 详细设计 → 接口、流程与伪代码\n\n## 自测\n请判断：为在线学习系统划分“用户管理、课程资源、作业提交”模块，主要属于需求分析还是总体设计？"
 
 
 def _standard_error(message: str, detail: Optional[Any] = None) -> Dict[str, Any]:

@@ -26,7 +26,7 @@
         <el-step title="安全复核" />
       </el-steps>
       <div class="input-line">
-        <el-input v-model="question" type="textarea" :rows="3" placeholder="请输入人工智能导论课程问题，例如：什么是监督学习？" />
+        <el-input v-model="question" type="textarea" :rows="3" placeholder="请输入软件工程课程问题，例如：需求分析和总体设计有什么区别？" />
         <el-button type="primary" :loading="loading" @click="ask">提问</el-button>
       </div>
     </el-card>
@@ -40,12 +40,12 @@ import { ElMessage } from "element-plus";
 import { chatApi } from "../api";
 
 const md = new MarkdownIt({ html: true, linkify: true, breaks: true });
-const question = ref("监督学习和无监督学习有什么区别？");
+const question = ref("需求分析和总体设计有什么区别？");
 const needVideo = ref(false);
 const loading = ref(false);
 const progress = ref(0);
 const activeStep = ref(0);
-const messages = ref([{ role: "assistant", content: "我是人工智能导论多模态答疑助手，会先检索课程知识库，再基于讯飞星火生成回答，并进行防幻觉复核。" }]);
+const messages = ref([{ role: "assistant", content: "我是软件工程课程多模态答疑助手，会先检索课程知识库，再基于讯飞星火生成回答，并进行防幻觉复核。" }]);
 
 function renderMarkdown(text) {
   return md.render(String(text || ""));
