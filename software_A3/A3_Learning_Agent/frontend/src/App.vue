@@ -9,15 +9,18 @@
             <small>多智能体学习系统</small>
           </div>
         </div>
-        <el-menu router :default-active="$route.path" class="menu">
-          <el-menu-item index="/architecture">多智能体架构</el-menu-item>
+        <el-menu router :default-active="$route.path" :default-openeds="['management']" class="menu">
           <el-menu-item index="/profile">对话式画像</el-menu-item>
           <el-menu-item index="/resources">学习资源</el-menu-item>
           <el-menu-item index="/path">学习路径</el-menu-item>
           <el-menu-item index="/chat">智能答疑</el-menu-item>
           <el-menu-item index="/evaluation">学习评估</el-menu-item>
-          <el-menu-item index="/knowledge">知识库管理</el-menu-item>
-          <el-menu-item index="/system">系统状态</el-menu-item>
+          <el-sub-menu index="management">
+            <template #title>系统与管理</template>
+            <el-menu-item index="/architecture">智能体角色市场</el-menu-item>
+            <el-menu-item index="/knowledge">知识库管理</el-menu-item>
+            <el-menu-item index="/system">系统状态</el-menu-item>
+          </el-sub-menu>
         </el-menu>
         <div class="sidebar-footer">
           <div class="user-pill">
@@ -120,6 +123,20 @@ async function logout() {
   flex: 1;
   border-right: none;
   background: transparent;
+}
+
+.menu :deep(.el-sub-menu__title),
+.menu :deep(.el-menu-item) {
+  border-radius: 12px;
+}
+
+.menu :deep(.el-sub-menu .el-menu) {
+  background: transparent;
+}
+
+.menu :deep(.el-sub-menu .el-menu-item) {
+  margin-left: 10px;
+  color: #475569;
 }
 
 .sidebar-footer {

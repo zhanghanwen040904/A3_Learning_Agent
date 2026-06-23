@@ -10,9 +10,9 @@ import ResourceView from "./views/ResourceView.vue";
 import SystemStatusView from "./views/SystemStatusView.vue";
 
 const routes = [
-  { path: "/", redirect: "/architecture" },
+  { path: "/", redirect: "/profile" },
   { path: "/auth", component: AuthView, meta: { title: "登录注册", requiresAuth: false } },
-  { path: "/architecture", component: ArchitectureView, meta: { title: "多智能体架构", requiresAuth: true } },
+  { path: "/architecture", component: ArchitectureView, meta: { title: "智能体角色市场", requiresAuth: true } },
   { path: "/profile", component: ProfileView, meta: { title: "对话式画像", requiresAuth: true } },
   { path: "/resources", component: ResourceView, meta: { title: "学习资源", requiresAuth: true } },
   { path: "/path", component: PathView, meta: { title: "学习路径", requiresAuth: true } },

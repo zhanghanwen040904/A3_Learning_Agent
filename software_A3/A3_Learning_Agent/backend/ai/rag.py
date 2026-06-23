@@ -151,7 +151,11 @@ def _build_fallback_chunks() -> List[dict]:
 def _tokenize_query(query: str) -> List[str]:
     query = clean_text(query)
     words = re.findall(r"[\u4e00-\u9fa5]{2,}|[a-zA-Z0-9]{2,}", query)
-    domain_terms = ["监督学习", "无监督学习", "分类", "回归", "聚类", "降维", "机器学习", "深度学习", "神经网络", "人工智能", "知识表示", "搜索", "伦理", "安全"]
+    domain_terms = [
+        "软件工程", "软件生命周期", "可行性研究", "需求分析", "需求规格说明", "结构化分析", "数据流图", "用例", "总体设计",
+        "详细设计", "模块划分", "接口设计", "编码", "软件测试", "单元测试", "集成测试", "调试", "软件维护", "项目管理",
+        "质量保证", "敏捷开发", "DevOps", "监督学习", "无监督学习", "机器学习", "人工智能"
+    ]
     for term in domain_terms:
         if term in query and term not in words:
             words.append(term)

@@ -19,7 +19,24 @@
           <el-input v-model="requestForm.learning_need" type="textarea" :rows="2" placeholder="例如：希望通过图解和案例掌握需求分析、总体设计或软件测试" />
         </el-form-item>
       </el-form>
-      <el-alert v-if="loading" type="info" :closable="false" show-icon title="六个资源智能体正在并行生成，完成后将自动进行质量审核与必要返工。" />
+      <el-alert v-if="loading" type="info" :closable="false" show-icon :title="currentProgressHint" />
+    </el-card>
+
+    <el-card v-if="loading || generationProgress > 0" class="panel progress-panel">
+      <template #header>
+        <div class="header-line">
+          <span>生成进度追踪</span>
+          <el-tag type="primary" effect="dark">{{ generationProgress }}%</el-tag>
+        </div>
+      </template>
+      <el-progress :percentage="generationProgress" :status="generationProgress === 100 && !loading ? 'success' : undefined" striped striped-flow />
+      <div class="stage-grid">
+        <div v-for="stage in progressStages" :key="stage.key" class="stage-card" :class="stageClass(stage)">
+          <b>{{ stage.index }}</b>
+          <strong>{{ stage.title }}</strong>
+          <span>{{ stage.desc }}</span>
+        </div>
+      </div>
     </el-card>
 
     <el-card class="panel status-card" :class="`status-${displayMode}`">
@@ -43,6 +60,35 @@
           <div>
             <strong>{{ traceId || "未生成" }}</strong>
             <span>本次追踪 ID</span>
+          </div>
+        </div>
+      </div>
+    </el-card>
+
+    <el-card class="panel agent-dashboard">
+      <template #header>
+        <div class="header-line">
+          <div>
+            <strong>智能体协作驾驶舱</strong>
+            <p>展示各角色的实时/最终状态、耗时、返工次数与执行说明。</p>
+          </div>
+          <el-tag :type="loading ? 'primary' : trace.length ? 'success' : 'info'">{{ loading ? "协作中" : trace.length ? "已完成" : "待启动" }}</el-tag>
+        </div>
+      </template>
+      <div class="agent-grid">
+        <div v-for="agent in agentDashboard" :key="agent.name" class="agent-card" :class="`agent-${agent.status}`">
+          <div class="agent-head">
+            <div class="agent-avatar">{{ agent.short }}</div>
+            <div>
+              <strong>{{ agent.name }}</strong>
+              <span>{{ agent.role }}</span>
+            </div>
+            <el-tag :type="agentTagType(agent.status)" size="small">{{ agentStatusLabel(agent.status) }}</el-tag>
+          </div>
+          <p>{{ agent.message }}</p>
+          <div class="agent-meta">
+            <span>{{ agent.duration_ms || 0 }} ms</span>
+            <span>{{ agent.retry_count ? `返工 ${agent.retry_count} 次` : "无返工" }}</span>
           </div>
         </div>
       </div>
@@ -103,6 +149,33 @@
           {{ item.personalization || "依据当前学生画像与知识短板生成" }}
         </el-alert>
 
+        <el-collapse class="audit-collapse">
+          <el-collapse-item title="质量审核与防幻觉报告" name="audit">
+            <div class="audit-grid">
+              <div class="audit-score">
+                <el-progress type="dashboard" :percentage="qualityScore(item)" :color="scoreColors" />
+                <strong>{{ qualityPassed(item) ? "审核通过" : "需要关注" }}</strong>
+                <span>{{ qualityProblems(item).length ? qualityProblems(item).join("；") : "未发现明显问题" }}</span>
+              </div>
+              <div class="audit-bars">
+                <div v-for="metric in qualityMetrics(item)" :key="metric.key" class="metric-row">
+                  <span>{{ metric.label }}</span>
+                  <el-progress :percentage="metric.value" />
+                </div>
+              </div>
+              <div class="guard-card">
+                <strong>防幻觉依据</strong>
+                <p>{{ hallucinationSummary(item) }}</p>
+                <div class="guard-tags">
+                  <el-tag :type="uniqueSources(item.sources).length ? 'success' : 'danger'" size="small">来源 {{ uniqueSources(item.sources).length }} 个</el-tag>
+                  <el-tag :type="qualityPassed(item) ? 'success' : 'warning'" size="small">质量 {{ qualityScore(item) }} 分</el-tag>
+                  <el-tag :type="qualityChecks(item).content_audit === false ? 'danger' : 'success'" size="small">内容安全</el-tag>
+                </div>
+              </div>
+            </div>
+          </el-collapse-item>
+        </el-collapse>
+
         <div v-if="item.resource_type === 'mindmap'" class="mindmap-shell">
           <div class="mindmap-toolbar">
             <span>白蓝详细知识导图</span>
@@ -133,6 +206,7 @@
           <div class="source-row">
             <strong>课程依据：</strong>
             <el-tag v-for="source in uniqueSources(item.sources)" :key="source" size="small" type="info">{{ source }}</el-tag>
+            <el-tag v-if="!uniqueSources(item.sources).length" size="small" type="danger">缺少来源依据</el-tag>
           </div>
         </div>
       </el-card>
@@ -143,7 +217,7 @@
 <script setup>
 import MarkdownIt from "markdown-it";
 import mermaid from "mermaid";
-import { computed, nextTick, onMounted, reactive, ref } from "vue";
+import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref } from "vue";
 import { ElMessage } from "element-plus";
 import { profileApi, resourceApi } from "../api";
 
@@ -172,11 +246,51 @@ const displayMode = ref("empty");
 const resources = ref([]);
 const trace = ref([]);
 const traceId = ref("");
+const generationProgress = ref(0);
+const currentStageIndex = ref(0);
+const progressTimer = ref(null);
 const plan = reactive({});
 const mindmapSvgs = reactive({});
 const requestForm = reactive({ major: "软件工程", course: "软件工程", learning_need: "希望围绕软件工程中的需求分析、总体设计、详细设计、编码测试和维护等知识短板，通过图解、分层练习和案例形成完整学习资料。" });
 
+const progressStages = [
+  { key: "profile", index: "01", title: "画像读取", desc: "合并学生画像与本次学习需求", progress: 12 },
+  { key: "retrieve", index: "02", title: "可信检索", desc: "从软件工程知识库召回依据", progress: 28 },
+  { key: "plan", index: "03", title: "任务规划", desc: "PlannerAgent 拆解六类资源", progress: 42 },
+  { key: "generate", index: "04", title: "并行生成", desc: "六个资源智能体同步生产", progress: 70 },
+  { key: "review", index: "05", title: "审核返工", desc: "质量评分、防幻觉与安全复核", progress: 88 },
+  { key: "package", index: "06", title: "保存打包", desc: "汇总资源包和协作证据", progress: 100 },
+];
+const agentSpecs = [
+  { name: "ProfileAgent", short: "PA", role: "画像分析" },
+  { name: "RetrieveAgent", short: "RA", role: "知识检索" },
+  { name: "PlannerAgent", short: "PL", role: "任务规划" },
+  { name: "DocumentAgent", short: "DA", role: "讲解文档" },
+  { name: "QuizAgent", short: "QA", role: "分层练习" },
+  { name: "ReadingAgent", short: "RD", role: "拓展阅读" },
+  { name: "MindMapAgent", short: "MM", role: "思维导图" },
+  { name: "CodeAgent", short: "CA", role: "代码实操" },
+  { name: "VideoAgent", short: "VA", role: "视频脚本" },
+  { name: "QualityAgent", short: "QG", role: "质量评估" },
+  { name: "SafetyAgent", short: "SA", role: "安全复核" },
+  { name: "PackagerAgent", short: "PK", role: "结果编排" },
+];
+const scoreColors = [
+  { color: "#ef4444", percentage: 59 },
+  { color: "#f59e0b", percentage: 74 },
+  { color: "#10b981", percentage: 100 },
+];
+
 const displayModeLabel = computed(() => ({ current: "本次生成结果", history: "历史资源回显", empty: "等待生成" }[displayMode.value] || "等待生成"));
+const currentProgressHint = computed(() => progressStages[currentStageIndex.value]?.desc || "多智能体正在协同生成资源");
+const agentDashboard = computed(() => agentSpecs.map((spec) => {
+  const event = [...trace.value].reverse().find((item) => item.agent === spec.name);
+  if (event) return { ...spec, ...event, status: event.status || "completed", message: event.message || "执行完成" };
+  if (!loading.value) return { ...spec, status: "idle", message: "等待本次任务启动", duration_ms: 0, retry_count: 0 };
+  const runningNames = agentNamesForStage(currentStageIndex.value);
+  const status = runningNames.includes(spec.name) ? "running" : "pending";
+  return { ...spec, status, message: status === "running" ? "正在处理当前阶段任务" : "等待上游智能体完成", duration_ms: 0, retry_count: 0 };
+}));
 const statusTitle = computed(() => {
   if (loading.value) return "正在生成本次个性化学习资源";
   if (displayMode.value === "current") return "当前展示的是本次六智能体协作生成结果";
@@ -184,12 +298,30 @@ const statusTitle = computed(() => {
   return "尚未生成学习资源";
 });
 const statusDescription = computed(() => {
-  if (loading.value) return "系统正在读取画像、检索课程知识库，并并行调度六个资源智能体。完成后会展示 PlannerAgent 计划和可审计协作轨迹。";
-  if (displayMode.value === "current") return "这些资源由本次点击按钮后实时生成，包含本次追踪 ID、协作轨迹、质量评分和课程依据，适合演示多智能体协作过程。";
+  if (loading.value) return "系统正在读取画像、检索课程知识库，并并行调度六个资源智能体。页面会持续展示生成阶段，完成后用真实协作轨迹覆盖。";
+  if (displayMode.value === "current") return "这些资源由本次点击按钮后实时生成，包含本次追踪 ID、协作轨迹、质量评分、防幻觉审核和课程依据，适合演示多智能体协作过程。";
   if (displayMode.value === "history") return "为了避免学生返回页面后资料丢失，系统会自动加载数据库中每类最新资源。点击上方按钮可基于最新画像重新生成。";
   return "请先在对话式画像页面完成画像采集，或直接填写本次学习需求后启动资源生成。";
 });
 
+function agentNamesForStage(index) {
+  return [
+    ["ProfileAgent"],
+    ["RetrieveAgent"],
+    ["PlannerAgent"],
+    ["DocumentAgent", "QuizAgent", "ReadingAgent", "MindMapAgent", "CodeAgent", "VideoAgent"],
+    ["QualityAgent", "SafetyAgent"],
+    ["PackagerAgent"],
+  ][index] || [];
+}
+function stageClass(stage) {
+  const index = progressStages.findIndex((item) => item.key === stage.key);
+  if (generationProgress.value >= stage.progress) return "done";
+  if (index === currentStageIndex.value && loading.value) return "running";
+  return "pending";
+}
+function agentTagType(status) { return ({ completed: "success", warning: "warning", failed: "danger", running: "primary", pending: "info", idle: "info" }[status] || "info"); }
+function agentStatusLabel(status) { return ({ completed: "完成", warning: "警告", failed: "失败", running: "运行中", pending: "排队", idle: "待启动" }[status] || status); }
 function imageUrl(path) { return `${apiBase}/knowledge/image?path=${encodeURIComponent(String(path || "").trim())}`; }
 function extractImagePaths(text) {
   const source = String(text || "");
@@ -285,7 +417,26 @@ function resourceImages(item) { return extractImagePaths([item.content, item.per
 function shortImageName(path) { return String(path || "").split(/\\|\//).slice(-2).join(" / "); }
 function typeLabel(type) { return ({ doc: "讲解文档", quiz: "分层练习", reading: "拓展阅读", mindmap: "思维导图", code: "代码实操", video: "教学视频" }[type] || type); }
 function eventType(status) { return ({ completed: "success", warning: "warning", failed: "danger" }[status] || "primary"); }
-function qualityScore(item) { return Number(item.quality_score || item.quality?.total || item.metadata?.quality?.total || 0); }
+function qualityObject(item) { return item.quality || item.metadata?.quality || {}; }
+function qualityScore(item) { return Number(item.quality_score || qualityObject(item).total || 0); }
+function qualityPassed(item) { const quality = qualityObject(item); return quality.passed !== false && qualityScore(item) >= 75; }
+function qualityProblems(item) { return qualityObject(item).problems || []; }
+function qualityChecks(item) { return qualityObject(item).checks || {}; }
+function qualityMetrics(item) {
+  const quality = qualityObject(item);
+  return [
+    { key: "accuracy", label: "准确性", value: Number(quality.accuracy || 0) },
+    { key: "personalization", label: "个性化", value: Number(quality.personalization || 0) },
+    { key: "completeness", label: "完整性", value: Number(quality.completeness || 0) },
+    { key: "source_support", label: "来源支撑", value: Number(quality.source_support || 0) },
+  ];
+}
+function hallucinationSummary(item) {
+  const sourceCount = uniqueSources(item.sources).length;
+  if (!sourceCount) return "当前资源缺少课程知识库来源，建议重新生成或检查知识库索引。";
+  if (!qualityPassed(item)) return "资源已有课程依据，但质量审核提示存在需关注项，建议结合来源复核后使用。";
+  return "资源已关联课程知识库来源，并通过质量评分与内容安全检查，可作为本次学习参考。";
+}
 function knowledgePoints(item) {
   if (Array.isArray(item.knowledge_points)) return item.knowledge_points;
   try { return JSON.parse(item.knowledge_points || "[]"); } catch { return []; }
@@ -293,6 +444,24 @@ function knowledgePoints(item) {
 function uniqueSources(sources = []) { return [...new Set((sources || []).map((item) => item.source || item.source_name).filter(Boolean))]; }
 function videoUrl(item) { return item.video_url || item.metadata?.video_url || ""; }
 function playableVideo(item) { const url = videoUrl(item); return /^https?:\/\//.test(url) && !url.includes("example.com"); }
+
+function startProgressSimulation() {
+  stopProgressSimulation();
+  generationProgress.value = 5;
+  currentStageIndex.value = 0;
+  progressTimer.value = setInterval(() => {
+    const next = Math.min(generationProgress.value + 3 + Math.round(Math.random() * 5), 94);
+    generationProgress.value = next;
+    const index = progressStages.findIndex((stage) => next < stage.progress);
+    currentStageIndex.value = index === -1 ? progressStages.length - 1 : index;
+  }, 850);
+}
+function stopProgressSimulation(finalProgress = 100) {
+  if (progressTimer.value) clearInterval(progressTimer.value);
+  progressTimer.value = null;
+  generationProgress.value = finalProgress;
+  currentStageIndex.value = progressStages.length - 1;
+}
 
 async function renderMindmaps() {
   await nextTick();
@@ -319,6 +488,8 @@ async function renderMindmaps() {
 function resetRunArtifacts() {
   trace.value = [];
   traceId.value = "";
+  generationProgress.value = 0;
+  currentStageIndex.value = 0;
   Object.keys(plan).forEach((key) => delete plan[key]);
 }
 
@@ -341,9 +512,11 @@ async function generate() {
   loading.value = true;
   displayMode.value = "current";
   resetRunArtifacts();
+  startProgressSimulation();
   try {
     const res = await resourceApi.generate({ ...requestForm });
     if (res.code !== 200) {
+      stopProgressSimulation(Math.max(generationProgress.value, 60));
       displayMode.value = resources.value.length ? "history" : "empty";
       const detail = res.data?.error ? `：${res.data.error}` : "";
       return ElMessage.error(`${res.msg || "资源生成失败"}${detail}`);
@@ -353,9 +526,11 @@ async function generate() {
     traceId.value = res.data.trace_id || "";
     Object.assign(plan, res.data.plan || {});
     displayMode.value = "current";
+    stopProgressSimulation(100);
     await renderMindmaps();
     ElMessage.success(`六类资源生成完成，共记录${trace.value.length}个协作事件`);
   } catch (error) {
+    stopProgressSimulation(Math.max(generationProgress.value, 60));
     displayMode.value = resources.value.length ? "history" : "empty";
     ElMessage.error(error?.message || "资源生成异常，请确认后端服务正常运行");
   } finally {
@@ -364,12 +539,21 @@ async function generate() {
 }
 
 onMounted(loadResources);
+onBeforeUnmount(() => stopProgressSimulation(generationProgress.value));
 </script>
 
 <style scoped>
 .resource-page { display: grid; gap: 18px; }
 .header-line, .resource-header { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
 .header-line p { margin: 6px 0 0; color: #64748b; font-weight: normal; }
+.progress-panel { border-color: rgba(37, 99, 235, 0.22); background: linear-gradient(135deg, #ffffff, #f8fbff); }
+.stage-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
+.stage-card { min-height: 112px; padding: 14px; border: 1px solid #e2e8f0; border-radius: 16px; background: #fff; color: #64748b; }
+.stage-card b { display: block; color: #94a3b8; font-size: 18px; }
+.stage-card strong { display: block; margin: 8px 0 6px; color: #0f172a; }
+.stage-card span { font-size: 12px; line-height: 1.6; }
+.stage-card.running { border-color: #60a5fa; background: #eff6ff; box-shadow: 0 12px 32px rgba(37, 99, 235, 0.12); }
+.stage-card.done { border-color: #86efac; background: #f0fdf4; }
 .status-card { overflow: hidden; }
 .status-current { border-color: rgba(34, 197, 94, 0.35); background: linear-gradient(135deg, rgba(240, 253, 244, 0.96), rgba(255, 255, 255, 0.94)); }
 .status-history { border-color: rgba(245, 158, 11, 0.35); background: linear-gradient(135deg, rgba(255, 251, 235, 0.96), rgba(255, 255, 255, 0.94)); }
@@ -384,10 +568,33 @@ onMounted(loadResources);
 .empty-panel { padding: 26px; background: rgba(255, 255, 255, 0.9); }
 .request-form { display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 16px; }
 .need-field { grid-column: span 1; }
+.agent-dashboard { background: linear-gradient(180deg, #fff, #f8fbff); }
+.agent-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.agent-card { min-height: 150px; padding: 14px; border: 1px solid #e2e8f0; border-radius: 18px; background: #fff; }
+.agent-card.agent-running { border-color: #60a5fa; background: #eff6ff; box-shadow: 0 12px 28px rgba(37, 99, 235, 0.12); }
+.agent-card.agent-completed { border-color: #bbf7d0; }
+.agent-card.agent-warning { border-color: #fcd34d; background: #fffbeb; }
+.agent-card.agent-failed { border-color: #fca5a5; background: #fef2f2; }
+.agent-head { display: flex; align-items: center; gap: 10px; }
+.agent-head > div:nth-child(2) { flex: 1; min-width: 0; }
+.agent-head strong, .agent-head span { display: block; }
+.agent-head span { margin-top: 3px; color: #64748b; font-size: 12px; }
+.agent-avatar { display: grid; width: 38px; height: 38px; flex: 0 0 auto; place-items: center; border-radius: 13px; color: #fff; background: linear-gradient(135deg, #2563eb, #06b6d4); font-weight: 800; }
+.agent-card p { min-height: 42px; margin: 12px 0; color: #475569; line-height: 1.6; font-size: 13px; }
+.agent-meta { display: flex; flex-wrap: wrap; gap: 8px; color: #64748b; font-size: 12px; }
 .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
 .resource-card { min-width: 0; }
 .resource-header > div:first-child { display: flex; align-items: center; gap: 10px; }
-.personalization { margin-bottom: 18px; }
+.personalization { margin-bottom: 14px; }
+.audit-collapse { margin-bottom: 18px; border-radius: 12px; }
+.audit-grid { display: grid; grid-template-columns: 180px 1fr 1fr; gap: 18px; align-items: center; }
+.audit-score { display: grid; justify-items: center; gap: 8px; text-align: center; }
+.audit-score span { color: #64748b; font-size: 12px; line-height: 1.5; }
+.audit-bars { display: grid; gap: 10px; }
+.metric-row { display: grid; grid-template-columns: 74px 1fr; gap: 10px; align-items: center; color: #475569; font-size: 13px; }
+.guard-card { padding: 14px; border: 1px solid #dbeafe; border-radius: 14px; background: #f8fbff; }
+.guard-card p { margin: 8px 0 12px; color: #475569; line-height: 1.7; }
+.guard-tags { display: flex; flex-wrap: wrap; gap: 8px; }
 .markdown-body { max-height: 650px; overflow: auto; line-height: 1.75; }
 .markdown-body :deep(pre) { overflow: auto; padding: 16px; border-radius: 12px; background: #0f172a; color: #e2e8f0; }
 .mindmap-shell { min-height: 620px; overflow: auto; border: 1px solid #bfdbfe; border-radius: 8px; background: #ffffff; box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.06), 0 14px 36px rgba(30, 64, 175, 0.08); }
@@ -417,9 +624,16 @@ onMounted(loadResources);
 .el-timeline-item p { margin: 6px 0 0; color: #475569; }
 .evidence { display: grid; gap: 8px; color: #475569; font-size: 13px; }
 .source-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+@media (max-width: 1200px) {
+  .stage-grid, .agent-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .audit-grid { grid-template-columns: 1fr; }
+}
 @media (max-width: 1000px) {
   .cards, .request-form { grid-template-columns: 1fr; }
   .status-content { flex-direction: column; }
   .status-metrics { grid-template-columns: 1fr; min-width: 0; }
+}
+@media (max-width: 700px) {
+  .stage-grid, .agent-grid { grid-template-columns: 1fr; }
 }
 </style>
