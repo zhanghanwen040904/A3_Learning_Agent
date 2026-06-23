@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="9027e698-1010-4ba9-9a6d-825f65cb4ae8" name="更改" comment="这次更改了部分问题，学习资源中的图片可以正常显示，思维导图可以正常呈现，但不够美观。学习路径的生成出来的内容进行格式规定。智能问答可以正常问答，但是输出的标题顺序仍然需要调整，图片可以正常生成并输出，但是格式仍需要调整。">
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/ai/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/ai/agents/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/ai/agents/agent_manager.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/ai/agents/base_agent.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/ai/agents/code_agent.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/ai/agents/document_agent.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/ai/agents/evaluator_agent.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/ai/agents/mindmap_agent.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/ai/agents/path_agent.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/ai/agents/planner_agent.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/ai/agents/profile_agent.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/ai/agents/quality_agent.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/ai/agents/quiz_agent.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/ai/agents/reading_agent.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/ai/agents/resource_base.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/ai/agents/retrieve_agent.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/ai/agents/safety_agent.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/ai/agents/text_agent.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/ai/agents/tutor_agent.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/ai/agents/video_agent.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/ai/agents/visual_agent.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/ai/json_utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/ai/rag.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/ai/spark_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/api/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/api/auth_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/api/chat_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/api/evaluation_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/api/knowledge_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/api/path_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/api/profile_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/api/resource_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/api/system_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/app.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/config.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/db/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/db/init.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/db/mysql_db.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/db/schema.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/requirements.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/utils/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/utils/auth_decorator.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/utils/jwt_utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/backend/utils/profile_session.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/docs/AI工具使用说明.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/docs/PPT大纲.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/docs/开源依赖与协议说明.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/docs/数据库与AI模型配置说明.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/docs/测试说明书.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/docs/演示视频脚本.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/docs/用户使用说明书.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/docs/系统开发说明书.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/docs/部署说明.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/docs/需求规格说明书.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/frontend/.env.example" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/frontend/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/frontend/package-lock.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/frontend/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/frontend/src/App.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/frontend/src/api/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/frontend/src/main.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/frontend/src/router.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/frontend/src/styles.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/frontend/src/views/ArchitectureView.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/frontend/src/views/AuthView.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/frontend/src/views/ChatView.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/frontend/src/views/EvaluationView.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/frontend/src/views/KnowledgeView.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/frontend/src/views/PathView.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/frontend/src/views/ProfileView.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/frontend/src/views/ResourceView.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/frontend/src/views/SystemStatusView.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/frontend/vite.config.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/README_软件工程资料库.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/archive/ai_intro_source_docs/01_人工智能概述.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/archive/ai_intro_source_docs/02_搜索与问题求解.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/archive/ai_intro_source_docs/03_知识表示与推理.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/archive/ai_intro_source_docs/04_机器学习基础.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/archive/ai_intro_source_docs/05_监督学习.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/archive/ai_intro_source_docs/06_无监督学习.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/archive/ai_intro_source_docs/07_神经网络与深度学习.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/archive/ai_intro_source_docs/08_自然语言处理.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/archive/ai_intro_source_docs/09_计算机视觉.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/archive/ai_intro_source_docs/10_人工智能伦理与安全.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第1章-软件工程学概述-2/page_008_img_04.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第1章-软件工程学概述-2/page_020_img_01.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第1章-软件工程学概述-2/page_021_img_01.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第1章-软件工程学概述-2/page_024_img_01.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第1章-软件工程学概述-2/page_032_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第1章-软件工程学概述-2/page_033_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第1章-软件工程学概述-2/page_033_img_03.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第1章-软件工程学概述-2/page_034_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第1章-软件工程学概述-2/page_035_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第1章-软件工程学概述-2/page_036_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第1章-软件工程学概述-2/page_076_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第1章-软件工程学概述-2/page_082_img_03.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第1章-软件工程学概述-2/page_093_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第1章-软件工程学概述-2/page_094_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第1章-软件工程学概述-2/page_107_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第1章-软件工程学概述-2/page_108_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第1章-软件工程学概述-2/page_112_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第1章-软件工程学概述-2/page_114_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第2章-可行性研究/page_057_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第2章-可行性研究/page_060_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第2章-可行性研究/page_088_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第3章 需求分析/page_016_img_01.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第3章 需求分析/page_033_img_01.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第3章 需求分析/page_054_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第3章 需求分析/page_055_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第3章 需求分析/page_056_img_03.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第3章 需求分析/page_057_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第3章 需求分析/page_058_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第3章 需求分析/page_059_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第3章 需求分析/page_068_img_03.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第3章 需求分析/page_069_img_03.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第3章 需求分析/page_070_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第3章 需求分析/page_071_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第3章 需求分析/page_073_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第3章 需求分析/page_075_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第3章 需求分析/page_083_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第5章 总体设计-1/page_044_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第5章 总体设计-1/page_051_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第5章 总体设计-1/page_052_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第5章 总体设计-1/page_057_img_03.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第5章 总体设计-1/page_059_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第5章 总体设计-1/page_065_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第5章 总体设计-1/page_069_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第5章 总体设计-1/page_073_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第5章 总体设计-1/page_084_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第5章 总体设计-2/page_050_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第6章 详细设计/page_030_img_05.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第6章 详细设计/page_030_img_06.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第6章 详细设计/page_034_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第6章 详细设计/page_034_img_03.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第6章 详细设计/page_035_img_05.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第6章 详细设计/page_037_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第6章 详细设计/page_039_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第6章 详细设计/page_047_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第6章 详细设计/page_048_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第6章 详细设计/page_054_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第6章 详细设计/page_056_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第6章 详细设计/page_059_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第6章 详细设计/page_064_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第6章 详细设计/page_066_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第6章 详细设计/page_067_img_05.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第6章 详细设计/page_068_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第6章 详细设计/page_068_img_03.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第6章 详细设计/page_069_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第6章 详细设计/page_077_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第6章 详细设计/page_078_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第6章 详细设计/page_090_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第6章 详细设计/page_117_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第6章 详细设计/page_118_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第6章 详细设计/page_121_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第7章 实现-1/page_020_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第7章 实现-1/page_021_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第7章 实现-1/page_034_img_01.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第7章 实现-1/page_039_img_01.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第7章 实现-1/page_057_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第7章 实现-1/page_057_img_21.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第7章 实现-2/page_024_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第7章 实现-2/page_044_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第7章 实现-2/page_045_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第7章 实现-2/page_046_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第7章 实现-2/page_047_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第7章 实现-2/page_052_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第7章 实现-2/page_065_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第7章 实现-2/page_073_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第7章 实现-2/page_082_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第7章 实现-2/page_084_img_02.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/images/第8章 维护/page_018_img_05.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/knowledge_tree/第1章-软件工程学概述-2_knowledge_tree.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/knowledge_tree/第1章-软件工程学概述-2_knowledge_tree.mmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/knowledge_tree/第2章-可行性研究_knowledge_tree.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/knowledge_tree/第2章-可行性研究_knowledge_tree.mmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/knowledge_tree/第3章_需求分析_knowledge_tree.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/knowledge_tree/第3章_需求分析_knowledge_tree.mmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/knowledge_tree/第5章_总体设计-1_knowledge_tree.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/knowledge_tree/第5章_总体设计-1_knowledge_tree.mmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/knowledge_tree/第5章_总体设计-2_knowledge_tree.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/knowledge_tree/第5章_总体设计-2_knowledge_tree.mmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/knowledge_tree/第6章_详细设计_knowledge_tree.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/knowledge_tree/第6章_详细设计_knowledge_tree.mmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/knowledge_tree/第7章_实现-1_knowledge_tree.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/knowledge_tree/第7章_实现-1_knowledge_tree.mmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/knowledge_tree/第7章_实现-2_knowledge_tree.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/knowledge_tree/第7章_实现-2_knowledge_tree.mmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/knowledge_tree/第8章_维护_knowledge_tree.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/knowledge_tree/第8章_维护_knowledge_tree.mmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/knowledge_tree_json/第1章-软件工程学概述-2_knowledge_tree.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/knowledge_tree_json/第1章-软件工程学概述-2_knowledge_tree.mmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/knowledge_tree_json/第2章-可行性研究_knowledge_tree.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/knowledge_tree_json/第2章-可行性研究_knowledge_tree.mmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/knowledge_tree_json/第3章 需求分析_knowledge_tree.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/knowledge_tree_json/第3章 需求分析_knowledge_tree.mmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/knowledge_tree_json/第5章 总体设计-1_knowledge_tree.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/knowledge_tree_json/第5章 总体设计-1_knowledge_tree.mmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/knowledge_tree_json/第5章 总体设计-2_knowledge_tree.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/knowledge_tree_json/第5章 总体设计-2_knowledge_tree.mmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/knowledge_tree_json/第6章 详细设计_knowledge_tree.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/knowledge_tree_json/第6章 详细设计_knowledge_tree.mmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/knowledge_tree_json/第7章 实现-1_knowledge_tree.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/knowledge_tree_json/第7章 实现-1_knowledge_tree.mmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/knowledge_tree_json/第7章 实现-2_knowledge_tree.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/knowledge_tree_json/第7章 实现-2_knowledge_tree.mmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/knowledge_tree_json/第8章 维护_knowledge_tree.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/knowledge_tree_json/第8章 维护_knowledge_tree.mmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/pdf_json/第1章-软件工程学概述-2_knowledge.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/pdf_json/第2章-可行性研究_knowledge.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/pdf_json/第3章 需求分析_knowledge.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/pdf_json/第5章 总体设计-1_knowledge.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/pdf_json/第5章 总体设计-2_knowledge.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/pdf_json/第6章 详细设计_knowledge.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/pdf_json/第7章 实现-1_knowledge.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/pdf_json/第7章 实现-2_knowledge.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/pdf_json/第8章 维护_knowledge.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/semantic_json/第1章-软件工程学概述-2_semantic.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/semantic_json/第2章-可行性研究_semantic.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/semantic_json/第3章 需求分析_semantic.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/semantic_json/第5章 总体设计-1_semantic.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/semantic_json/第5章 总体设计-2_semantic.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/semantic_json/第6章 详细设计_semantic.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/semantic_json/第7章 实现-1_semantic.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/semantic_json/第7章 实现-2_semantic.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/raw_extracted/software_engineering/semantic_json/第8章 维护_semantic.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/source_docs/01_软件工程学概述.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/source_docs/02_可行性研究.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/source_docs/03_需求分析.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/source_docs/04_总体设计_结构化设计基础.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/source_docs/05_总体设计_设计原则与方法.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/source_docs/06_详细设计.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/source_docs/07_实现_编码与测试基础.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/source_docs/08_实现_测试与调试.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/rag_data/source_docs/09_软件维护.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/A3_Learning_Agent-main/software_A3/A3_Learning_Agent/提交清单.md" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="1129" />
+  </component>
+  <component name="Git.Settings">
+    <favorite-branches>
+      <branch-storage>
+        <map>
+          <entry type="LOCAL">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="xuduo" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </favorite-branches>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "xuduo20050224"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/xuduo20050224/knowledge.git",
+    "accountId": "1445ed8c-cdc3-40f1-90ab-2e976d6c4818"
+  }
+}]]></component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.004289519170024" />
+      <entry key="MS500" value="1.5794169040774775" />
+      <entry key="S2" value="2.4666044593784924" />
+      <entry key="S5" value="2.7704421275135203" />
+      <entry key="S10" value="3.1187922928065492" />
+      <entry key="S30" value="8.986807434784161" />
+      <entry key="S60" value="19.629951764942845" />
+      <entry key="M2" value="32.794204229411164" />
+      <entry key="M5" value="46.595408384889105" />
+      <entry key="M10" value="52.77526571220092" />
+      <entry key="M15" value="55.05824219432957" />
+      <entry key="M30" value="57.46400947046608" />
+      <entry key="H1" value="58.71524368800089" />
+      <entry key="H2" value="59.35336950092529" />
+      <entry key="H4" value="59.67561379634326" />
+      <entry key="D1" value="59.945786216163235" />
+      <entry key="W1" value="59.992251505747035" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="0.0" />
+      <entry key="S5" value="0.0" />
+      <entry key="S10" value="0.0" />
+      <entry key="S30" value="0.0" />
+      <entry key="S60" value="0.0" />
+      <entry key="M2" value="0.0" />
+      <entry key="M5" value="0.0" />
+      <entry key="M10" value="0.0" />
+      <entry key="M15" value="0.0" />
+      <entry key="M30" value="0.0" />
+      <entry key="H1" value="0.0" />
+      <entry key="H2" value="0.0" />
+      <entry key="H4" value="0.0" />
+      <entry key="D1" value="0.0" />
+      <entry key="W1" value="0.0" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="0.9836311458160695" />
+      <entry key="MS500" value="1.5732336399230595" />
+      <entry key="S2" value="2.4642906032099097" />
+      <entry key="S5" value="2.769401650775534" />
+      <entry key="S10" value="3.1180071804547485" />
+      <entry key="S30" value="8.985281286895152" />
+      <entry key="S60" value="19.62821698723406" />
+      <entry key="M2" value="32.7927388269987" />
+      <entry key="M5" value="46.594564238281414" />
+      <entry key="M10" value="52.774784608112405" />
+      <entry key="M15" value="55.05790679375363" />
+      <entry key="M30" value="57.463834007820765" />
+      <entry key="H1" value="58.71515393096931" />
+      <entry key="H2" value="59.35332410493163" />
+      <entry key="H4" value="59.67559096756906" />
+      <entry key="D1" value="59.945782393083256" />
+      <entry key="W1" value="59.992250959143405" />
+    </decayedShown>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3,
+  &quot;fromUser&quot;: false
+}</component>
+  <component name="ProjectId" id="3FTpXGjnjUINVJmgEGiJ3m8aiMz" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "xuduo",
+    "last_opened_file_path": "E:/知识问答/software_A3/A3_Learning_Agent/backend",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\知识问答\software_A3\A3_Learning_Agent\backend" />
+      <recent name="E:\知识问答\MY" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-c59985aa861c-c2ffad84badb-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-261.24374.152" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task id="LOCAL-00001" summary="提交">
+      <option name="closed" value="true" />
+      <created>1782038251344</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1782038251344</updated>
+    </task>
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="9027e698-1010-4ba9-9a6d-825f65cb4ae8" name="更改" comment="提交" />
+      <created>1782108952868</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1782108952868</updated>
+      <workItem from="1782108954971" duration="12163000" />
+      <workItem from="1782135159642" duration="3051000" />
+      <workItem from="1782199382663" duration="5375000" />
+    </task>
+    <task id="LOCAL-00002" summary="这次更改了部分问题，学习资源中的图片可以正常显示，思维导图可以正常呈现，但不够美观。学习路径的生成出来的内容进行格式规定。智能问答可以正常问答，但是输出的标题顺序仍然需要调整，图片可以正常生成并输出，但是格式仍需要调整。">
+      <option name="closed" value="true" />
+      <created>1782116603113</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1782116603115</updated>
+    </task>
+    <task id="LOCAL-00003" summary="这次更改了部分问题，学习资源中的图片可以正常显示，思维导图可以正常呈现，但不够美观。学习路径的生成出来的内容进行格式规定。智能问答可以正常问答，但是输出的标题顺序仍然需要调整，图片可以正常生成并输出，但是格式仍需要调整。">
+      <option name="closed" value="true" />
+      <created>1782116733886</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1782116733886</updated>
+    </task>
+    <task id="LOCAL-00004" summary="这次更改了部分问题，学习资源中的图片可以正常显示，思维导图可以正常呈现，但不够美观。学习路径的生成出来的内容进行格式规定。智能问答可以正常问答，但是输出的标题顺序仍然需要调整，图片可以正常生成并输出，但是格式仍需要调整。">
+      <option name="closed" value="true" />
+      <created>1782203807520</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1782203807520</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/master" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="提交" />
+    <MESSAGE value="这次更改了部分问题，学习资源中的图片可以正常显示，思维导图可以正常呈现，但不够美观。学习路径的生成出来的内容进行格式规定。智能问答可以正常问答，但是输出的标题顺序仍然需要调整，图片可以正常生成并输出，但是格式仍需要调整。" />
+    <option name="LAST_COMMIT_MESSAGE" value="这次更改了部分问题，学习资源中的图片可以正常显示，思维导图可以正常呈现，但不够美观。学习路径的生成出来的内容进行格式规定。智能问答可以正常问答，但是输出的标题顺序仍然需要调整，图片可以正常生成并输出，但是格式仍需要调整。" />
+  </component>
+</project>
