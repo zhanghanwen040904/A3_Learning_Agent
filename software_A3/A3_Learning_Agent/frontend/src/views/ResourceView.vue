@@ -223,9 +223,23 @@ import { profileApi, resourceApi } from "../api";
 
 const md = new MarkdownIt({ html: false, linkify: true, breaks: true });
 const apiBase = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
-const absoluteImagePattern = /([A-Za-z]:\\[\s\S]*?\.(?:png|jpg|jpeg|webp|gif))/gi;
-const relativeImagePattern = /(images\/[\S]+?\.(?:png|jpg|jpeg|webp|gif))/gi;
-mermaid.initialize({ startOnLoad: false, theme: "base", securityLevel: "strict", themeVariables: { background: "#ffffff", primaryColor: "#eff6ff", primaryTextColor: "#0f172a", primaryBorderColor: "#3b82f6", lineColor: "#60a5fa", secondaryColor: "#dbeafe", tertiaryColor: "#f8fafc" } });
+const absoluteImagePattern = /([A-Za-z]:\\[^\n\r，,；;）)]+?\.(?:png|jpg|jpeg|webp|gif))/gi;
+const relativeImagePattern = /(images[\\/][^\n\r，,；;）)]+?\.(?:png|jpg|jpeg|webp|gif))/gi;
+mermaid.initialize({
+  startOnLoad: false,
+  theme: "base",
+  securityLevel: "strict",
+  themeVariables: {
+    background: "#ffffff",
+    primaryColor: "#eff6ff",
+    primaryTextColor: "#0f172a",
+    primaryBorderColor: "#2563eb",
+    lineColor: "#60a5fa",
+    secondaryColor: "#dbeafe",
+    tertiaryColor: "#f8fafc",
+    fontFamily: "Microsoft YaHei, PingFang SC, sans-serif",
+  },
+});
 
 const loading = ref(false);
 const displayMode = ref("empty");
@@ -320,6 +334,85 @@ function renderMarkdown(text) {
   source = source.replace(relativeImagePattern, (path) => `\n\n![知识库图片](${imageUrl(path)})\n\n`);
   return md.render(source);
 }
+function stripFences(text) {
+  return String(text || "")
+    .trim()
+    .replace(/^```(?:mermaid|markdown|md|json|text)?\s*/i, "")
+    .replace(/```\s*$/i, "")
+    .trim();
+}
+function cleanMindmapLabel(value) {
+  return String(value || "")
+    .replace(/[`"'{}[\]|<>]/g, "")
+    .replace(/[:：]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 34);
+}
+function parseJsonLike(text) {
+  const source = stripFences(text);
+  try {
+    return JSON.parse(source);
+  } catch {
+    const match = source.match(/\{[\s\S]*\}/);
+    if (!match) return null;
+    try {
+      return JSON.parse(match[0]);
+    } catch {
+      return null;
+    }
+  }
+}
+function extractMindmapSource(text) {
+  const source = stripFences(text);
+  const mermaidFence = String(text || "").match(/```mermaid\s*([\s\S]*?)```/i);
+  if (mermaidFence) return stripFences(mermaidFence[1]);
+  const mindmapIndex = source.search(/^mindmap\b/im);
+  if (mindmapIndex >= 0) {
+    return source.slice(mindmapIndex).replace(/::icon\([^)]+\)/g, "").trim();
+  }
+  return "";
+}
+function buildFallbackMindmap(item) {
+  const title = cleanMindmapLabel(item.title || "软件工程知识导图") || "软件工程知识导图";
+  const points = knowledgePoints(item).map(cleanMindmapLabel).filter(Boolean);
+  const headings = String(item.content || "")
+    .split("\n")
+    .map((line) => line.replace(/^#+\s*/, "").replace(/^[-*]\s*/, ""))
+    .map(cleanMindmapLabel)
+    .filter((line) => line && !line.startsWith("配图") && !line.startsWith("images"))
+    .slice(0, 18);
+  const branches = [...new Set([...points, ...headings])].slice(0, 24);
+  const primary = branches.length ? branches : ["核心概念", "学习步骤", "方法工具", "易错点", "实践应用"];
+  const lines = ["mindmap", `  root((${title}))`];
+  primary.slice(0, 6).forEach((branch, index) => {
+    lines.push(`    ${branch}`);
+    const details = primary.slice(index * 3 + 6, index * 3 + 9);
+    const fallbackDetails = ["定义与作用", "关键输入输出", "常见误区"];
+    (details.length ? details : fallbackDetails).slice(0, 3).forEach((detail) => {
+      lines.push(`      ${cleanMindmapLabel(detail)}`);
+    });
+  });
+  return lines.join("\n");
+}
+function buildMindmapSource(item) {
+  const direct = extractMindmapSource(item.content);
+  if (direct) return direct;
+  const parsed = parseJsonLike(item.content);
+  if (parsed) {
+    const content = parsed.content || parsed.mindmap || parsed.markdown || "";
+    const fromJson = extractMindmapSource(content);
+    if (fromJson) return fromJson;
+    const merged = {
+      ...item,
+      title: parsed.title || item.title,
+      content: content || item.content,
+      knowledge_points: parsed.knowledge_points || item.knowledge_points,
+    };
+    return buildFallbackMindmap(merged);
+  }
+  return buildFallbackMindmap(item);
+}
 function resourceImages(item) { return extractImagePaths([item.content, item.personalization, JSON.stringify(item.metadata || {})].join("\n")); }
 function shortImageName(path) { return String(path || "").split(/\\|\//).slice(-2).join(" / "); }
 function typeLabel(type) { return ({ doc: "讲解文档", quiz: "分层练习", reading: "拓展阅读", mindmap: "思维导图", code: "代码实操", video: "教学视频" }[type] || type); }
@@ -374,12 +467,20 @@ async function renderMindmaps() {
   await nextTick();
   for (const item of resources.value.filter((entry) => entry.resource_type === "mindmap")) {
     const key = item.id || item.resource_type;
+    const source = buildMindmapSource(item);
     try {
       const id = `mindmap-${key}-${Date.now()}`.replace(/[^a-zA-Z0-9-]/g, "");
-      const { svg } = await mermaid.render(id, String(item.content || ""));
+      const { svg } = await mermaid.render(id, source);
       mindmapSvgs[key] = svg;
     } catch (error) {
-      mindmapSvgs[key] = `<pre>${String(item.content || "思维导图生成失败")}</pre>`;
+      const safeSource = buildFallbackMindmap({ ...item, content: "", knowledge_points: knowledgePoints(item) });
+      try {
+        const id = `mindmap-fallback-${key}-${Date.now()}`.replace(/[^a-zA-Z0-9-]/g, "");
+        const { svg } = await mermaid.render(id, safeSource);
+        mindmapSvgs[key] = svg;
+      } catch {
+        mindmapSvgs[key] = `<div class="mindmap-error">思维导图渲染失败，请重新生成资源。</div>`;
+      }
     }
   }
 }
@@ -496,10 +597,22 @@ onBeforeUnmount(() => stopProgressSimulation(generationProgress.value));
 .guard-tags { display: flex; flex-wrap: wrap; gap: 8px; }
 .markdown-body { max-height: 650px; overflow: auto; line-height: 1.75; }
 .markdown-body :deep(pre) { overflow: auto; padding: 16px; border-radius: 12px; background: #0f172a; color: #e2e8f0; }
-.mindmap-shell { min-height: 560px; overflow: auto; border: 1px solid #bfdbfe; border-radius: 12px; background: #ffffff; box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.06), 0 14px 36px rgba(30, 64, 175, 0.08); }
+.mindmap-shell { min-height: 620px; overflow: auto; border: 1px solid #bfdbfe; border-radius: 8px; background: #ffffff; box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.06), 0 14px 36px rgba(30, 64, 175, 0.08); }
 .mindmap-toolbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-bottom: 1px solid #dbeafe; color: #1d4ed8; font-weight: 700; background: linear-gradient(90deg, #eff6ff 0%, #ffffff 100%); }
-.mindmap { min-width: 1180px; min-height: 500px; overflow: auto; padding: 36px; display: grid; place-items: center; background-image: linear-gradient(#eff6ff 1px, transparent 1px), linear-gradient(90deg, #eff6ff 1px, transparent 1px); background-size: 28px 28px; }
-.mindmap :deep(svg) { max-width: none; height: auto; filter: drop-shadow(0 10px 22px rgba(37, 99, 235, 0.14)); }
+.mindmap { min-width: 1280px; min-height: 560px; overflow: auto; padding: 42px; display: grid; place-items: center; background-color: #fbfdff; background-image: linear-gradient(#e6f0ff 1px, transparent 1px), linear-gradient(90deg, #e6f0ff 1px, transparent 1px); background-size: 28px 28px; }
+.mindmap :deep(svg) { max-width: none; min-width: 980px; height: auto; filter: drop-shadow(0 10px 22px rgba(37, 99, 235, 0.14)); }
+.mindmap :deep(.mindmap-node rect),
+.mindmap :deep(.node rect),
+.mindmap :deep(.node circle),
+.mindmap :deep(.node ellipse),
+.mindmap :deep(.node polygon) { fill: #eff6ff !important; stroke: #60a5fa !important; stroke-width: 1.4px !important; }
+.mindmap :deep(.section-root rect),
+.mindmap :deep(.section-root circle),
+.mindmap :deep(.section-root ellipse) { fill: #2563eb !important; stroke: #1d4ed8 !important; }
+.mindmap :deep(text) { fill: #0f172a !important; font-size: 15px !important; font-weight: 600 !important; }
+.mindmap :deep(.edge),
+.mindmap :deep(path) { stroke: #60a5fa !important; }
+.mindmap-error { padding: 24px; color: #1d4ed8; font-weight: 700; background: #eff6ff; border: 1px dashed #93c5fd; border-radius: 8px; }
 .markdown-body :deep(img) { display: block; max-width: 100%; max-height: 360px; object-fit: contain; margin: 14px auto; border-radius: 8px; border: 1px solid #dbeafe; background: #fff; }
 .image-gallery { margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
 .image-title { grid-column: 1 / -1; font-weight: 700; color: #1d4ed8; }

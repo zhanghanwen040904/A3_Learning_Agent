@@ -257,14 +257,26 @@ def retrieve_knowledge(query: str, top_k: int = 3) -> str:
     return format_knowledge_items(retrieve_knowledge_items(query, top_k=top_k))
 
 
+def _extract_image_path(text: str) -> str:
+    absolute = re.search(r"([A-Za-z]:\\[^\n\r，,；;）)]+?\.(?:png|jpg|jpeg|webp|gif))", text, flags=re.IGNORECASE)
+    if absolute:
+        return absolute.group(1).strip()
+    relative = re.search(r"(images[\\/][^\n\r，,；;）)]+?\.(?:png|jpg|jpeg|webp|gif))", text, flags=re.IGNORECASE)
+    if relative:
+        return relative.group(1).strip()
+    return ""
+
+
 def _extract_image_lines(content: str, limit: int = 8) -> List[dict]:
     images = []
     for line in str(content).splitlines():
-        if "jpeg" not in line.lower() and "png" not in line.lower() and "jpg" not in line.lower():
+        if not re.search(r"\.(?:png|jpg|jpeg|webp|gif)", line, flags=re.IGNORECASE):
             continue
         caption = line.strip()
-        path_match = re.search(r"([A-Za-z]:\\[^\s，,；;）)]+?\.(?:png|jpg|jpeg))", caption, flags=re.IGNORECASE)
-        images.append({"caption": caption, "path": path_match.group(1) if path_match else ""})
+        path = _extract_image_path(caption)
+        if not path:
+            continue
+        images.append({"caption": caption, "path": path})
         if len(images) >= limit:
             break
     return images

@@ -263,6 +263,69 @@ def _create_spark_auth_url() -> str:
     return f"{config.XFYUN_SPARK_URL}?{query}"
 
 
+def _is_http_chat_url() -> bool:
+    return str(config.XFYUN_SPARK_URL or "").lower().startswith(("http://", "https://"))
+
+
+def _is_agent_chat_url() -> bool:
+    return "/agent/" in str(config.XFYUN_SPARK_URL or "").lower()
+
+
+def _extract_http_error(response) -> str:
+    text = ""
+    try:
+        text = response.text
+    except Exception:
+        pass
+    if len(text) > 1200:
+        text = text[:1200] + "...(已截断)"
+    return f"HTTP {response.status_code}: {text or response.reason}"
+
+
+def _call_spark_http(prompt: str) -> str:
+    """Call Spark HTTP chat/completions compatible API.
+
+    Spark-X2-Flash WebApi exposes an OpenAI-like endpoint. In this mode
+    XFYUN_API_KEY stores the APIPassword shown in the console.
+    """
+    import requests
+
+    payload = {
+        "model": config.XFYUN_SPARK_DOMAIN or "spark-x",
+        "user": "a3_learning_agent",
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": 0.5,
+        "max_tokens": 4096,
+        "stream": False,
+    }
+    response = requests.post(
+        config.XFYUN_SPARK_URL,
+        headers={
+            "Authorization": f"Bearer {config.XFYUN_API_KEY}",
+            "Content-Type": "application/json",
+        },
+        json=payload,
+        timeout=config.AI_TIMEOUT,
+    )
+    if response.status_code >= 400:
+        raise RuntimeError(_extract_http_error(response))
+    data = response.json()
+
+    if isinstance(data.get("choices"), list) and data["choices"]:
+        choice = data["choices"][0]
+        message = choice.get("message") or {}
+        content = message.get("content") or choice.get("text") or ""
+        if content:
+            return str(content).strip()
+    if isinstance(data.get("data"), dict):
+        content = data["data"].get("content") or data["data"].get("answer")
+        if content:
+            return str(content).strip()
+    if data.get("content") or data.get("answer"):
+        return str(data.get("content") or data.get("answer")).strip()
+    raise RuntimeError(f"Spark HTTP接口未返回有效内容：{data}")
+
+
 def spark_chat(prompt: str) -> str:
     """同步调用讯飞星火 V3.5 生成文本。
 
@@ -274,8 +337,16 @@ def spark_chat(prompt: str) -> str:
         return json.dumps(_standard_error("prompt不能为空"), ensure_ascii=False)
     if config.MOCK_AI:
         return _mock_spark_response(prompt)
+    if _is_http_chat_url():
+        if not config.XFYUN_API_KEY:
+            return json.dumps(_standard_error("讯飞星火HTTP APIPassword未配置"), ensure_ascii=False)
+        try:
+            return _retry_call(lambda: _call_spark_http(prompt))
+        except Exception as exc:
+            return json.dumps(_standard_error("讯飞星火HTTP调用失败", str(exc)), ensure_ascii=False)
+
     if not all([config.XFYUN_APP_ID, config.XFYUN_API_KEY, config.XFYUN_API_SECRET]):
-        return json.dumps(_standard_error("讯飞星火密钥未配置"), ensure_ascii=False)
+        return json.dumps(_standard_error("讯飞星火WebSocket密钥未配置"), ensure_ascii=False)
 
     def _call() -> str:
         import websocket

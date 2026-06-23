@@ -23,7 +23,11 @@ class PathAgent:
         knowledge = retrieve_knowledge(query, top_k=3)
         prompt = f"""
 你是软件工程课程学习规划师。请基于学生画像、学习评估和软件工程教材原文生成个性化学习路径。
-要求包含阶段目标、推荐资源、练习任务、评估指标和动态调整建议。
+输出要求：
+1. 使用普通Markdown正文，不要使用```代码围栏包裹整段内容；
+2. 不要输出ASCII图、emoji或复杂表格；
+3. 使用“阶段标题 + 目标 + 学习任务 + 推荐资源 + 练习方式 + 评估指标”的清晰结构；
+4. 语言简洁明确，适合学生直接照着执行。
 学生画像：{json.dumps(profile, ensure_ascii=False, default=str)}
 学习评估：{mastery_summary or '暂无评估数据'}
 教材原文：
