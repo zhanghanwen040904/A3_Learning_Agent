@@ -1,7 +1,7 @@
-import json
-import re
 import base64
 import html
+import json
+import re
 
 from flask import Blueprint, request
 
@@ -32,14 +32,14 @@ def normalize_markdown(text: str) -> str:
     return content.strip()
 
 
-def _wrap_svg_text(text: str, max_chars: int = 12, max_lines: int = 2) -> list[str]:
+def _wrap_svg_text(text: str, max_chars: int = 10, max_lines: int = 2) -> list[str]:
     text = re.sub(r"\s+", "", str(text or "").strip())
     if not text:
         return []
     lines = [text[index : index + max_chars] for index in range(0, len(text), max_chars)]
     if len(lines) > max_lines:
         lines = lines[:max_lines]
-        lines[-1] = lines[-1][: max_chars - 1] + "..."
+        lines[-1] = lines[-1][: max_chars - 1] + "…"
     return lines
 
 
@@ -49,105 +49,150 @@ def _extract_diagram_section(answer_text: str) -> str:
     return (match.group(1) if match else content).strip()
 
 
-def _extract_diagram_items(answer_text: str, question: str) -> dict:
-    section = _extract_diagram_section(answer_text)
-    title_match = re.search(r"(?:图解主旨|中心主题|主题)[:：]\s*([^\n。；;]+)", section)
-    title = title_match.group(1).strip() if title_match else str(question or "软件工程知识图").strip()
-
-    node_texts: list[str] = []
-    relation_texts: list[str] = []
-    for raw_line in section.splitlines():
+def _extract_short_terms(text: str, limit: int = 10) -> list[str]:
+    stop_words = {
+        "图解主旨",
+        "画面布局",
+        "图中节点",
+        "核心节点",
+        "关系节点",
+        "视觉标注",
+        "中心主题",
+        "左侧内容",
+        "右侧内容",
+        "底部总结",
+        "箭头方向",
+        "强调色",
+        "蓝色系",
+        "橙色系",
+        "主标题",
+        "分区",
+    }
+    terms: list[str] = []
+    for raw_line in str(text or "").splitlines():
         line = raw_line.strip().lstrip("-*•0123456789.、 ")
         if not line:
             continue
-        if "->" in line or "→" in line or "关联" in line:
-            relation_texts.append(line)
-        if any(key in line for key in ("核心节点", "图中节点", "节点", "左侧内容", "右侧内容", "关键输入", "关键输出")):
-            for part in re.split(r"[：:，,、/；;（）()\"\s]+", line):
-                part = part.strip()
-                if 2 <= len(part) <= 12 and part not in {"核心节点", "图中节点", "节点", "左侧内容", "右侧内容"}:
-                    node_texts.append(part)
-
-    for bullet in re.findall(r"^\s*[-*•]\s*([^\n]+)", section, flags=re.MULTILINE):
-        for part in re.split(r"[：:，,、/；;（）()\"\s]+", bullet):
-            part = part.strip()
-            if 2 <= len(part) <= 12 and not part.startswith(("至少", "每个", "说明", "中心", "底部")):
-                node_texts.append(part)
-
-    default_nodes = ["需求分析", "总体设计", "目标差异", "输入输出", "产物文档", "关注重点", "前后衔接", "质量保障", "常见误区", "应用场景"]
+        for part in re.split(r"[：:，,、/；;（）()\"“”\s]+", line):
+            part = re.sub(r"[`#_*<>|{}\[\]]", "", part).strip()
+            if 2 <= len(part) <= 10 and part not in stop_words and not part.startswith(("至少", "每个", "说明")):
+                terms.append(part)
     seen = set()
-    nodes = []
-    for item in node_texts + default_nodes:
-        clean = re.sub(r"[`#_*<>|{}[\]]", "", item).strip()
-        if clean and clean not in seen:
-            seen.add(clean)
-            nodes.append(clean)
-        if len(nodes) >= 10:
+    result = []
+    for term in terms:
+        if term not in seen:
+            seen.add(term)
+            result.append(term)
+        if len(result) >= limit:
             break
+    return result
 
-    relations = []
-    for item in relation_texts:
-        clean = re.sub(r"[`#_*<>|{}[\]]", "", item).strip()
-        if clean and clean not in relations:
-            relations.append(clean.replace("->", "→"))
-        if len(relations) >= 5:
-            break
-    if not relations:
-        relations = ["需求分析 → 总体设计", "用户需求 → 需求规格", "需求规格 → 架构设计", "架构设计 → 模块划分", "设计方案 → 编码测试"]
 
-    return {"title": title[:26], "nodes": nodes, "relations": relations}
+def _diagram_model(answer_text: str, question: str) -> dict:
+    content = f"{question}\n{answer_text}"
+    if "需求分析" in content and "总体设计" in content:
+        return {
+            "title": "需求分析与总体设计的顺序关系",
+            "subtitle": "先明确做什么，再决定怎么组织系统",
+            "flow": [
+                ("需求分析", "理解用户需要"),
+                ("需求规格说明书", "形成设计输入"),
+                ("总体设计", "确定系统结构"),
+                ("模块划分", "分解系统职责"),
+                ("接口定义", "约定协作边界"),
+                ("详细设计", "细化内部逻辑"),
+            ],
+            "left": {
+                "title": "需求分析",
+                "color": "#2563eb",
+                "items": ["关注做什么", "输入用户需求", "输出SRS文档", "识别功能需求"],
+            },
+            "right": {
+                "title": "总体设计",
+                "color": "#0ea5e9",
+                "items": ["关注怎么组织", "输入SRS文档", "输出架构方案", "划分模块接口"],
+            },
+            "relations": ["需求分析是前置阶段", "SRS是总体设计输入", "需求不准会导致返工", "总体设计约束后续实现"],
+        }
+
+    section = _extract_diagram_section(answer_text)
+    terms = _extract_short_terms(section, limit=10)
+    defaults = ["核心概念", "流程步骤", "关键输入", "关键输出", "易错点", "应用场景"]
+    terms = (terms + defaults)[:6]
+    return {
+        "title": str(question or "软件工程知识图")[:28],
+        "subtitle": "知识点结构化图解",
+        "flow": [(term, "课程知识点") for term in terms],
+        "left": {"title": "概念理解", "color": "#2563eb", "items": terms[:4]},
+        "right": {"title": "应用迁移", "color": "#0ea5e9", "items": terms[2:6]},
+        "relations": ["概念 → 判断", "输入 → 输出", "流程 → 产物", "误区 → 修正"],
+    }
+
+
+def _build_text(x: int, y: int, text: str, size: int = 18, color: str = "#0f172a", weight: int = 700, anchor: str = "middle") -> str:
+    lines = _wrap_svg_text(text, max_chars=9, max_lines=2)
+    if not lines:
+        return ""
+    start_y = y if len(lines) == 1 else y - 10
+    return "".join(
+        f'<text x="{x}" y="{start_y + index * 22}" text-anchor="{anchor}" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="{size}" font-weight="{weight}" fill="{color}">{html.escape(line)}</text>'
+        for index, line in enumerate(lines)
+    )
 
 
 def _build_diagram_image(answer_text: str, question: str) -> str:
-    data = _extract_diagram_items(answer_text, question)
-    title = html.escape(data["title"] or "软件工程知识图")
-    nodes = data["nodes"]
-    relations = data["relations"]
-    width, height = 1180, 680
-    node_positions = [
-        (70, 185), (250, 145), (450, 185), (650, 145), (850, 185),
-        (160, 395), (360, 435), (560, 395), (760, 435), (940, 395),
-    ]
+    model = _diagram_model(answer_text, question)
+    width, height = 1200, 720
+    flow = model["flow"][:6]
+    relations = model["relations"][:4]
 
     svg_parts = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
-        '<defs>',
+        "<defs>",
         '<linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#f8fbff"/><stop offset="100%" stop-color="#eaf4ff"/></linearGradient>',
-        '<filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#2563eb" flood-opacity="0.14"/></filter>',
-        '</defs>',
-        '<rect width="1180" height="680" rx="28" fill="url(#bg)"/>',
-        '<rect x="34" y="34" width="1112" height="612" rx="24" fill="#ffffff" stroke="#bfdbfe" stroke-width="2"/>',
-        f'<text x="590" y="86" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="34" font-weight="800" fill="#1d4ed8">{title}</text>',
-        '<text x="590" y="122" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="18" fill="#64748b">软件工程知识图解</text>',
-        '<rect x="470" y="286" width="240" height="90" rx="22" fill="#2563eb" filter="url(#shadow)"/>',
-        '<text x="590" y="322" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="23" font-weight="800" fill="#ffffff">核心关系</text>',
-        '<text x="590" y="352" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="17" fill="#dbeafe">目标 · 产物 · 衔接</text>',
+        '<filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#2563eb" flood-opacity="0.14"/></filter>',
+        '<marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 Z" fill="#60a5fa"/></marker>',
+        "</defs>",
+        '<rect width="1200" height="720" rx="30" fill="url(#bg)"/>',
+        '<rect x="44" y="38" width="1112" height="644" rx="28" fill="#ffffff" stroke="#bfdbfe" stroke-width="2"/>',
+        f'<text x="600" y="86" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="33" font-weight="800" fill="#1d4ed8">{html.escape(model["title"])}</text>',
+        f'<text x="600" y="120" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="18" fill="#64748b">{html.escape(model["subtitle"])}</text>',
     ]
 
-    for x, y in node_positions:
-        svg_parts.append(f'<path d="M590 331 C {590} {y + 50}, {x + 70} {331}, {x + 70} {y + 42}" stroke="#93c5fd" stroke-width="3" fill="none"/>')
+    start_x, y = 112, 185
+    gap, box_w, box_h = 174, 142, 74
+    for index, (title, desc) in enumerate(flow):
+        x = start_x + index * gap
+        fill = "#eff6ff" if index % 2 == 0 else "#e0f2fe"
+        stroke = "#60a5fa"
+        svg_parts.append(f'<rect x="{x}" y="{y}" width="{box_w}" height="{box_h}" rx="18" fill="{fill}" stroke="{stroke}" stroke-width="2" filter="url(#shadow)"/>')
+        svg_parts.append(_build_text(x + box_w // 2, y + 34, title, size=18, color="#0f3a78", weight=800))
+        svg_parts.append(_build_text(x + box_w // 2, y + 59, desc, size=13, color="#64748b", weight=600))
+        if index < len(flow) - 1:
+            x1 = x + box_w + 8
+            x2 = start_x + (index + 1) * gap - 10
+            svg_parts.append(f'<line x1="{x1}" y1="{y + box_h // 2}" x2="{x2}" y2="{y + box_h // 2}" stroke="#60a5fa" stroke-width="3" marker-end="url(#arrow)"/>')
 
-    colors = ["#eff6ff", "#dbeafe", "#f0f9ff", "#e0f2fe"]
-    for index, node in enumerate(nodes[:10]):
-        x, y = node_positions[index]
-        fill = colors[index % len(colors)]
-        svg_parts.append(f'<rect x="{x}" y="{y}" width="150" height="84" rx="18" fill="{fill}" stroke="#60a5fa" stroke-width="2" filter="url(#shadow)"/>')
-        lines = _wrap_svg_text(node, 7, 2)
-        start_y = y + 36 if len(lines) == 1 else y + 30
-        for line_index, line in enumerate(lines):
-            svg_parts.append(
-                f'<text x="{x + 75}" y="{start_y + line_index * 24}" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="20" font-weight="700" fill="#0f3a78">{html.escape(line)}</text>'
-            )
+    panels = [(86, 330, model["left"]), (642, 330, model["right"])]
+    for x, y, panel in panels:
+        svg_parts.append(f'<rect x="{x}" y="{y}" width="472" height="190" rx="22" fill="#f8fbff" stroke="#bfdbfe" stroke-width="2"/>')
+        svg_parts.append(f'<circle cx="{x + 36}" cy="{y + 38}" r="13" fill="{panel["color"]}"/>')
+        svg_parts.append(f'<text x="{x + 60}" y="{y + 46}" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="24" font-weight="800" fill="#0f3a78">{html.escape(panel["title"])}</text>')
+        for idx, item in enumerate(panel["items"][:4]):
+            row_y = y + 82 + idx * 27
+            svg_parts.append(f'<rect x="{x + 30}" y="{row_y - 17}" width="14" height="14" rx="4" fill="{panel["color"]}" opacity="0.8"/>')
+            svg_parts.append(f'<text x="{x + 56}" y="{row_y - 5}" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="17" font-weight="650" fill="#1e293b">{html.escape(item)}</text>')
 
-    rel_y = 560
-    svg_parts.append('<rect x="70" y="528" width="1040" height="82" rx="18" fill="#f8fbff" stroke="#bfdbfe"/>')
-    svg_parts.append('<text x="94" y="560" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="18" font-weight="800" fill="#1d4ed8">关系链</text>')
-    for index, relation in enumerate(relations[:3]):
-        text = html.escape(relation[:34])
-        svg_parts.append(f'<text x="{210 + index * 300}" y="{rel_y}" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="17" fill="#0f172a">{text}</text>')
-    svg_parts.append('</svg>')
-    raw_svg = "".join(svg_parts)
-    encoded = base64.b64encode(raw_svg.encode("utf-8")).decode("ascii")
+    svg_parts.append('<line x1="558" y1="425" x2="642" y2="425" stroke="#60a5fa" stroke-width="4" marker-end="url(#arrow)"/>')
+    svg_parts.append('<text x="600" y="410" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="15" font-weight="800" fill="#2563eb">前后衔接</text>')
+
+    svg_parts.append('<rect x="86" y="565" width="1028" height="70" rx="18" fill="#eff6ff" stroke="#bfdbfe" stroke-width="2"/>')
+    svg_parts.append('<text x="118" y="607" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="19" font-weight="800" fill="#1d4ed8">关系链</text>')
+    for index, relation in enumerate(relations):
+        svg_parts.append(f'<text x="{220 + index * 225}" y="607" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="16" font-weight="650" fill="#0f172a">{html.escape(relation[:18])}</text>')
+
+    svg_parts.append("</svg>")
+    encoded = base64.b64encode("".join(svg_parts).encode("utf-8")).decode("ascii")
     return f"data:image/svg+xml;base64,{encoded}"
 
 

@@ -109,6 +109,7 @@ def _delete_session_outputs(user_id: int, session_id: int) -> None:
     mysql_db.delete("study_resource", "user_id=%s AND profile_session_id=%s", (user_id, session_id))
     mysql_db.delete("study_path", "user_id=%s AND profile_session_id=%s", (user_id, session_id))
     mysql_db.delete("generation_batch", "user_id=%s AND profile_session_id=%s", (user_id, session_id))
+    mysql_db.delete("tutor_conversation", "user_id=%s AND profile_session_id=%s", (user_id, session_id))
 
 
 def _save_conversation_payload(user_id: int, session_id: int, payload: dict) -> None:

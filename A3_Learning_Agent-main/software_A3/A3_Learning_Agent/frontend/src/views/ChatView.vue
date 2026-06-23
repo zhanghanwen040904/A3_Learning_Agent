@@ -13,11 +13,12 @@
       </template>
       <div class="chat-window">
         <div v-for="(item, index) in messages" :key="`${item.role}-${index}`" :class="['bubble', item.role]">
-          <div class="markdown-body" v-html="renderAnswerMarkdown(item)"></div>
+          <div class="markdown-body" v-html="renderAnswerMarkdown(item, 'before')"></div>
           <figure v-if="item.diagram_image" class="diagram-card">
             <img :src="item.diagram_image" alt="图解知识图" />
             <figcaption>图解知识图</figcaption>
           </figure>
+          <div v-if="item.diagram_image" class="markdown-body" v-html="renderAnswerMarkdown(item, 'after')"></div>
           <div v-if="item.sources?.length" class="source-list">
             <strong>参考来源</strong>
             <el-tag v-for="source in item.sources" :key="`${source.source}-${source.chunk_index}`" size="small">
@@ -141,15 +142,18 @@ function renderMarkdown(text) {
   return md.render(normalizeMarkdown(text));
 }
 
-function removeDiagramText(text) {
+function splitAnswerAroundDiagram(text) {
   const source = normalizeMarkdown(text);
-  return source
-    .replace(/\n?##\s*二[、.．]\s*图解说明[\s\S]*?(?=\n##\s*三[、.．]\s*易错点|\n##\s*三|\n#\s*三|$)/, "\n\n")
-    .trim();
+  const match = source.match(/([\s\S]*?)\n?##\s*二[、.．]\s*图解说明[\s\S]*?(?=\n##\s*三[、.．]\s*易错点|\n##\s*三|\n#\s*三|$)([\s\S]*)/);
+  if (!match) return { before: source, after: "" };
+  return { before: match[1].trim(), after: match[2].trim() };
 }
 
-function renderAnswerMarkdown(item) {
-  if (item?.diagram_image) return md.render(removeDiagramText(item.content));
+function renderAnswerMarkdown(item, part = "all") {
+  if (item?.diagram_image) {
+    const split = splitAnswerAroundDiagram(item.content);
+    return md.render(part === "after" ? split.after : split.before);
+  }
   return renderMarkdown(item?.content || "");
 }
 
