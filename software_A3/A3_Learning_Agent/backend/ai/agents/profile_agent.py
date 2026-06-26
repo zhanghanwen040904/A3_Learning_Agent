@@ -2,8 +2,15 @@ import json
 import re
 from typing import Any, Dict, List, Optional
 
-from ai.json_utils import extract_json_object
-from ai.spark_api import spark_chat
+try:
+    from langchain_core.output_parsers import StrOutputParser as LangChainStrOutputParser
+    from langchain_core.prompts import PromptTemplate as LangChainPromptTemplate
+except ModuleNotFoundError:
+    LangChainStrOutputParser = None
+    LangChainPromptTemplate = None
+
+from ai.langchain_adapter import SparkLLM
+from ai.langchain_parsers import parse_json_with_fallback
 from config import config
 from .base_agent import XunfeiAgentSpec
 
@@ -36,27 +43,7 @@ FIELD_ALIASES = {
     "preferred_resource": ["资源偏好", "想优先看到", "喜欢的资源"],
 }
 
-
-class ProfileAgent:
-    """从学生对话中提取结构化学习画像。"""
-
-    def __init__(self):
-        self.role = "学习画像分析师"
-        self.goal = "从学生自然语言对话中抽取学习画像，并严格返回 JSON。"
-        self.agent = XunfeiAgentSpec(
-            role=self.role,
-            goal=self.goal,
-            tools=["spark_chat"],
-            input_schema="学生自然语言对话文本",
-            output_schema='{"major":"","target_course":"","knowledge_level":"","study_style":"","weak_points":"","study_goal":"","study_time_prefer":"","course_progress":"","challenge_scene":"","preferred_resource":"","profile_summary":""}',
-        )
-
-    def analyze(self, dialogue_text: str) -> Dict[str, str]:
-        parsed = self._extract_from_dialogue(dialogue_text)
-        if config.MOCK_AI:
-            return parsed
-
-        prompt = f"""
+PROFILE_ANALYZE_PROMPT_TEMPLATE = """
 你是学习画像分析师。请从学生自然语言对话中抽取结构化学习画像。
 必须严格只返回 JSON，不要 markdown，不要解释。
 JSON 字段必须完全一致：
@@ -75,29 +62,13 @@ JSON 字段必须完全一致：
 - preferred_resource：偏好的资源类型
 - profile_summary：用 1 句话概括学生画像
 
-如果信息不足，请根据对话合理归纳为“{DEFAULT_VALUE}”，不要增加新字段。
+如果信息不足，请根据对话合理归纳为“{default_value}”，不要增加新字段。
 
 学生对话：
 {dialogue_text}
 """.strip()
-        raw = spark_chat(prompt)
-        model_result = self._parse_profile(raw)
-        return self._merge_profile(model_result, parsed)
 
-    def _parse_profile(self, raw: str) -> Dict[str, str]:
-        data = extract_json_object(raw)
-        return {field: str(data.get(field) or DEFAULT_VALUE) for field in PROFILE_FIELDS}
-
-    def chat_extract(self, messages: List[Dict[str, str]], current_profile: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
-        """基于完整多轮对话，调用大模型动态抽取画像并生成下一轮追问。"""
-        current_profile = current_profile or {}
-        parsed_from_messages = self._extract_from_dialogue(self._messages_to_dialogue(messages))
-        base_profile = self._normalize_profile({**current_profile, **{k: v for k, v in parsed_from_messages.items() if v != DEFAULT_VALUE}})
-
-        if config.MOCK_AI:
-            return self._build_chat_result(base_profile, source="mock_fallback")
-
-        prompt = f"""
+PROFILE_CHAT_PROMPT_TEMPLATE = """
 你是高校课程个性化学习画像智能体。你正在和学生进行自然语言对话式画像构建。
 请根据【完整多轮对话】和【当前画像草稿】，完成三件事：
 1. 自动抽取或更新结构化学生画像，不要只机械复制最后一句，要综合上下文理解；
@@ -114,19 +85,6 @@ JSON 字段必须完全一致：
   "reasoning_note": ""
 }}
 
-字段含义：
-- major：学生专业或方向
-- target_course：本次主要学习课程或章节
-- knowledge_level：当前基础水平
-- study_style：偏好的学习方式或认知风格
-- weak_points：当前薄弱知识点、易错点或困惑
-- study_goal：希望达到的结果
-- study_time_prefer：学习时间偏好与节奏
-- course_progress：当前课程进度或学习历史
-- challenge_scene：最常卡住的学习场景
-- preferred_resource：偏好的资源类型
-- profile_summary：用 1 句话概括学生画像
-
 追问策略：
 - 不要重复询问学生已经明确说过的信息；
 - 如果学生一句话包含多个维度，要一次性抽取多个字段；
@@ -135,13 +93,67 @@ JSON 字段必须完全一致：
 - 至少 6 个核心维度清晰后，is_complete 才可为 true。
 
 当前画像草稿：
-{json.dumps(base_profile, ensure_ascii=False)}
+{base_profile}
 
 完整多轮对话：
-{json.dumps(messages, ensure_ascii=False)}
+{messages}
 """.strip()
-        raw = spark_chat(prompt)
-        data = extract_json_object(raw)
+
+PROFILE_ANALYZE_PROMPT = LangChainPromptTemplate.from_template(PROFILE_ANALYZE_PROMPT_TEMPLATE) if LangChainPromptTemplate is not None else None
+PROFILE_CHAT_PROMPT = LangChainPromptTemplate.from_template(PROFILE_CHAT_PROMPT_TEMPLATE) if LangChainPromptTemplate is not None else None
+
+
+class ProfileAgent:
+    """从学生对话中提取结构化学习画像。"""
+
+    def __init__(self):
+        self.role = "学习画像分析师"
+        self.goal = "从学生自然语言对话中抽取学习画像，并严格返回 JSON。"
+        self.agent = XunfeiAgentSpec(
+            role=self.role,
+            goal=self.goal,
+            tools=["langchain_prompt", "spark_llm"],
+            input_schema="学生自然语言对话文本",
+            output_schema='{"major":"","target_course":"","knowledge_level":"","study_style":"","weak_points":"","study_goal":"","study_time_prefer":"","course_progress":"","challenge_scene":"","preferred_resource":"","profile_summary":""}',
+        )
+        self.analyze_chain = (PROFILE_ANALYZE_PROMPT | SparkLLM() | LangChainStrOutputParser()) if PROFILE_ANALYZE_PROMPT is not None and LangChainStrOutputParser is not None else None
+        self.chat_chain = (PROFILE_CHAT_PROMPT | SparkLLM() | LangChainStrOutputParser()) if PROFILE_CHAT_PROMPT is not None and LangChainStrOutputParser is not None else None
+
+    def analyze(self, dialogue_text: str) -> Dict[str, str]:
+        parsed = self._extract_from_dialogue(dialogue_text)
+        if config.MOCK_AI:
+            return parsed
+
+        variables = {"default_value": DEFAULT_VALUE, "dialogue_text": dialogue_text}
+        if self.analyze_chain is not None:
+            raw = self.analyze_chain.invoke(variables)
+        else:
+            raw = SparkLLM().invoke(PROFILE_ANALYZE_PROMPT_TEMPLATE.format(**variables))
+        model_result = self._parse_profile(raw)
+        return self._merge_profile(model_result, parsed)
+
+    def _parse_profile(self, raw: str) -> Dict[str, str]:
+        data = parse_json_with_fallback(raw)
+        return {field: str(data.get(field) or DEFAULT_VALUE) for field in PROFILE_FIELDS}
+
+    def chat_extract(self, messages: List[Dict[str, str]], current_profile: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """基于完整多轮对话，调用大模型动态抽取画像并生成下一轮追问。"""
+        current_profile = current_profile or {}
+        parsed_from_messages = self._extract_from_dialogue(self._messages_to_dialogue(messages))
+        base_profile = self._normalize_profile({**current_profile, **{k: v for k, v in parsed_from_messages.items() if v != DEFAULT_VALUE}})
+
+        if config.MOCK_AI:
+            return self._build_chat_result(base_profile, source="mock_fallback")
+
+        variables = {
+            "base_profile": json.dumps(base_profile, ensure_ascii=False),
+            "messages": json.dumps(messages, ensure_ascii=False),
+        }
+        if self.chat_chain is not None:
+            raw = self.chat_chain.invoke(variables)
+        else:
+            raw = SparkLLM().invoke(PROFILE_CHAT_PROMPT_TEMPLATE.format(**variables))
+        data = parse_json_with_fallback(raw)
         model_profile = self._normalize_profile(data.get("profile") or {})
         merged_profile = self._merge_profile(model_profile, base_profile)
         missing_fields = self._missing_fields(merged_profile)

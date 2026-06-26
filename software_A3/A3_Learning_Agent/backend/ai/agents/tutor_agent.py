@@ -1,16 +1,15 @@
-﻿from ai.rag import retrieve_knowledge, retrieve_knowledge_items
-from ai.spark_api import spark_chat
+﻿try:
+    from langchain_core.output_parsers import StrOutputParser as LangChainStrOutputParser
+    from langchain_core.prompts import PromptTemplate as LangChainPromptTemplate
+except ModuleNotFoundError:
+    LangChainStrOutputParser = None
+    LangChainPromptTemplate = None
+
+from ai.langchain_adapter import SparkLLM
+from ai.rag import retrieve_knowledge, retrieve_knowledge_items
 
 
-class TutorAgent:
-    def __init__(self):
-        self.role = "多模态软件工程答疑老师"
-        self.goal = "严格基于课程知识库回答学生问题，并输出结构清晰、层级固定、适合配图展示的答疑内容。"
-
-    def answer(self, question: str) -> dict:
-        evidence_items = retrieve_knowledge_items(question, top_k=3)
-        evidence = retrieve_knowledge(question, top_k=3)
-        prompt = f"""
+TUTOR_PROMPT_TEMPLATE = """
 你是软件工程课程的多模态答疑老师。请严格基于教材与知识库回答，不要编造。
 
 输出必须严格按以下 4 个部分组织，标题顺序不能变化，不能缺少任何一部分：
@@ -33,5 +32,22 @@ class TutorAgent:
 
 课程知识库证据：{evidence}
 """.strip()
-        answer = spark_chat(prompt)
+
+TUTOR_PROMPT = LangChainPromptTemplate.from_template(TUTOR_PROMPT_TEMPLATE) if LangChainPromptTemplate is not None else None
+
+
+class TutorAgent:
+    def __init__(self):
+        self.role = "多模态软件工程答疑老师"
+        self.goal = "严格基于课程知识库回答学生问题，并输出结构清晰、层级固定、适合配图展示的答疑内容。"
+        self.chain = (TUTOR_PROMPT | SparkLLM() | LangChainStrOutputParser()) if TUTOR_PROMPT is not None and LangChainStrOutputParser is not None else None
+
+    def answer(self, question: str) -> dict:
+        evidence_items = retrieve_knowledge_items(question, top_k=3)
+        evidence = retrieve_knowledge(question, top_k=3)
+        variables = {"question": question, "evidence": evidence}
+        if self.chain is not None:
+            answer = self.chain.invoke(variables)
+        else:
+            answer = SparkLLM().invoke(TUTOR_PROMPT_TEMPLATE.format(**variables))
         return {"answer": answer, "evidence": evidence, "sources": evidence_items}

@@ -3,7 +3,7 @@ import time
 import uuid
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Callable, Dict, Optional
 
 from ai.rag import build_resource_context, retrieve_knowledge_items
 from ai.spark_api import content_audit
@@ -90,6 +90,7 @@ class AgentManager:
         dialogue_text: str = "",
         stored_profile: Optional[Dict[str, Any]] = None,
         request_data: Optional[Dict[str, Any]] = None,
+        event_callback: Optional[Callable[[Dict[str, Any]], None]] = None,
     ) -> Dict[str, Any]:
         trace_id = f"gen_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:6]}"
         result: Dict[str, Any] = {
@@ -107,29 +108,37 @@ class AgentManager:
             "safety": {},
         }
 
+        def emit(event: Dict[str, Any]) -> None:
+            if event_callback:
+                event_callback({"trace_id": trace_id, "time": self._now(), **event})
+
         def trace(agent: str, status: str, message: str, duration_ms: int = 0, retry_count: int = 0) -> None:
-            result["trace"].append(
-                {
-                    "agent": agent,
-                    "status": status,
-                    "message": message,
-                    "duration_ms": duration_ms,
-                    "retry_count": retry_count,
-                    "time": self._now(),
-                }
-            )
+            event = {
+                "agent": agent,
+                "status": status,
+                "message": message,
+                "duration_ms": duration_ms,
+                "retry_count": retry_count,
+                "time": self._now(),
+            }
+            result["trace"].append(event)
+            emit({"type": "agent", **event})
+
+        emit({"type": "start", "status": "running", "message": "多智能体资源生成流程已启动"})
 
         if dialogue_text and not content_audit(dialogue_text):
             result["errors"].append("学生输入未通过内容审核")
             trace("SafetyAgent", "failed", "学生输入未通过内容审核")
             return result
 
+        emit({"type": "agent", "agent": "ProfileAgent", "status": "running", "message": "正在读取结构化画像并合并本次学习需求"})
         start = time.perf_counter()
         context = self._build_context(dialogue_text, stored_profile, request_data)
         result["context"] = context
         result["profile"] = {field: context.get(field) for field in self.PROFILE_FIELDS}
         trace("ProfileAgent", "completed", "已读取结构化画像并合并本次学习需求", int((time.perf_counter() - start) * 1000))
 
+        emit({"type": "agent", "agent": "RetrieveAgent", "status": "running", "message": "正在从软件工程知识库召回可信依据"})
         start = time.perf_counter()
         query = self._build_query(dialogue_text, context)
         knowledge_context = build_resource_context(query, top_k=6)
@@ -139,6 +148,7 @@ class AgentManager:
         result["knowledge"] = json.dumps(knowledge_context, ensure_ascii=False, indent=2)
         trace("RetrieveAgent", "completed" if sources else "warning", f"召回 {len(sources)} 个本地知识库片段", int((time.perf_counter() - start) * 1000))
 
+        emit({"type": "agent", "agent": "PlannerAgent", "status": "running", "message": "正在规划六类互补资源的主题、难度和目标"})
         start = time.perf_counter()
         plan = self.planner_agent.plan(context, sources)
         result["plan"] = plan
@@ -147,15 +157,20 @@ class AgentManager:
 
         def generate_one(resource_type: str) -> Dict[str, Any]:
             agent = self.resource_agents[resource_type]
+            agent_name = agent.__class__.__name__
+            emit({"type": "agent", "agent": agent_name, "status": "running", "message": f"正在生成 {resource_type} 类型个性化资源"})
             started = time.perf_counter()
             task_plan = task_plans.get(resource_type, {"resource_type": resource_type, "goal": context.get("current_need")})
             resource = agent.generate(context, result["knowledge"], task_plan)
+            emit({"type": "agent", "agent": "QualityAgent", "status": "running", "message": f"正在审核 {agent_name} 生成结果"})
             quality = self.quality_agent.evaluate(resource, context, sources)
             retries = 0
             if not quality.get("passed"):
                 retries = 1
                 feedback = "；".join(quality.get("problems") or []) or "请提升准确性、清晰度和个性化程度"
+                emit({"type": "agent", "agent": agent_name, "status": "running", "message": f"质量评分未达标，正在根据反馈返工：{feedback}"})
                 resource = agent.generate(context, result["knowledge"], task_plan, feedback=feedback)
+                emit({"type": "agent", "agent": "QualityAgent", "status": "running", "message": f"正在复审 {agent_name} 返工结果"})
                 quality = self.quality_agent.evaluate(resource, context, sources)
             resource["quality"] = quality
             resource["quality_score"] = quality.get("total", 0)
@@ -194,6 +209,7 @@ class AgentManager:
                     result["errors"].append(f"{agent_name} 失败：{exc}")
                     trace(agent_name, "failed", str(exc))
 
+        emit({"type": "agent", "agent": "SafetyAgent", "status": "running", "message": "正在进行内容安全与防幻觉复核"})
         result["resource_list"] = [result["resources"][key] for key in self.resource_agents if key in result["resources"]]
         all_content = "\n".join(str(item.get("content") or "") for item in result["resource_list"])
         result["safety"] = self.safety_agent.review(all_content, sources)
@@ -204,7 +220,9 @@ class AgentManager:
         )
         if not result["safety"].get("passed"):
             result["errors"].append(result["safety"].get("risk", "内容安全复核未通过"))
+        emit({"type": "agent", "agent": "PackagerAgent", "status": "running", "message": "正在汇总资源包和协作证据"})
         trace("PackagerAgent", "completed", f"已汇总 {len(result['resource_list'])} 类资源")
+        emit({"type": "complete", "status": "completed" if not result.get("errors") else "warning", "message": "多智能体资源生成流程已完成", "result": result})
         return result
 
 
