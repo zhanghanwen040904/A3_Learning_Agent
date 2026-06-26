@@ -1,7 +1,10 @@
 :root {
-  color: #0f172a;
-  background: #f8fafc;
-  font-family: Inter, "Microsoft YaHei", system-ui, sans-serif;
+  color: #101828;
+  background: #f5f7fb;
+  font-family: Inter, "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
 * {
@@ -10,29 +13,100 @@
 
 body {
   margin: 0;
+  min-width: 0;
+  overflow-x: hidden;
+  background: #f5f7fb;
+}
+
+button,
+input,
+textarea {
+  font-family: inherit;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: #cbd5e1;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .page {
-  min-height: calc(100vh - 72px);
-  padding: 28px;
+  min-height: calc(100vh - 76px);
+  max-width: 1480px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 24px 36px;
+  overflow-x: hidden;
 }
 
 .panel {
-  border: 1px solid rgba(148, 163, 184, 0.25);
-  border-radius: 24px;
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+  border: 1px solid #e5eaf3;
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.06);
+}
+
+.el-card {
+  color: #101828;
+}
+
+.el-card :deep(.el-card__header) {
+  padding: 18px 22px;
+  border-bottom: 1px solid #eef2f6;
+}
+
+.el-card :deep(.el-card__body) {
+  padding: 22px;
+}
+
+.el-button {
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.el-tag {
+  border-radius: 999px;
+}
+
+.el-input :deep(.el-textarea__inner),
+.el-input :deep(.el-input__wrapper) {
+  border-radius: 12px;
 }
 
 .markdown-body {
   line-height: 1.8;
-  color: #1e293b;
+  color: #344054;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3 {
+  color: #101828;
 }
 
 .markdown-body pre {
   overflow: auto;
   padding: 14px;
   border-radius: 12px;
-  background: #0f172a;
+  background: #101828;
   color: #e2e8f0;
+}
+
+@media (max-width: 1280px) {
+  body {
+    min-width: 0;
+  }
+
+  .page {
+    padding: 18px;
+  }
 }

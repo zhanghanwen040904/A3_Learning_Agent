@@ -307,11 +307,20 @@ watch(
 <style scoped>
 .chat-page {
   display: grid;
+  height: calc(100vh - 76px);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.chat-card {
+  min-height: 0;
+  height: 100%;
 }
 
 .chat-card :deep(.el-card__body) {
   display: flex;
-  height: calc(100vh - 190px);
+  height: calc(100vh - 76px - 56px - 56px);
+  min-height: 0;
   flex-direction: column;
   gap: 14px;
 }

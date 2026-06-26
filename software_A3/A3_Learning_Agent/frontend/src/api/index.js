@@ -64,6 +64,7 @@ export const profileApi = {
   createSession: (data = {}) => http.post("/profile/sessions", data),
   activateSession: (id) => http.post(`/profile/sessions/${id}/activate`),
   resetSession: (id) => http.post(`/profile/sessions/${id}/reset`),
+  deleteSession: (id) => http.delete(`/profile/sessions/${id}`),
   chat: (data) => http.post("/profile/chat", withProfileSession(data)),
   create: (data) => http.post("/profile/create", withProfileSession(data)),
   update: (data) => http.post("/profile/update", withProfileSession(data)),
