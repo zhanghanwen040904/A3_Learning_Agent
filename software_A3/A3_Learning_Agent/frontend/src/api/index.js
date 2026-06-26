@@ -97,6 +97,9 @@ export const knowledgeApi = {
 };
 
 export const evaluationApi = {
+  bankStatus: () => http.get("/evaluation/bank-status"),
+  rebuildBank: (data = { force: true }) => http.post("/evaluation/rebuild-bank", data),
+  questions: (data = {}) => http.post("/evaluation/questions", data),
   submit: (data) => http.post("/evaluation/submit", data),
   summary: () => http.get("/evaluation/summary"),
   event: (data) => http.post("/evaluation/event", data),
