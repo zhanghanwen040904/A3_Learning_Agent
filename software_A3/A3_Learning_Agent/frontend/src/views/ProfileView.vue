@@ -1,40 +1,47 @@
 <template>
   <div class="page profile-grid">
-    <el-card class="panel session-panel">
-      <template #header>
+    <section class="conversation-workspace panel">
+      <aside class="session-panel">
         <div class="session-head">
-          <strong>画像对话框</strong>
+          <strong>画像会话</strong>
           <el-button type="primary" size="small" @click="newSession">新建</el-button>
         </div>
-      </template>
       <div class="session-list">
-        <button
+        <div
           v-for="item in sessions"
           :key="item.id"
           :class="['session-item', { active: item.id === activeSessionId }]"
           @click="switchSession(item.id)"
         >
-          <strong>{{ item.title || `画像对话 ${item.id}` }}</strong>
+          <div class="session-title-row">
+            <strong>{{ item.title || `画像对话 ${item.id}` }}</strong>
+            <el-button
+              class="session-delete"
+              text
+              type="danger"
+              size="small"
+              :disabled="sending || loading"
+              @click.stop="deleteSession(item)"
+            >删除</el-button>
+          </div>
           <span>{{ item.profile_summary || item.target_course || '空白画像' }}</span>
-        </button>
+        </div>
       </div>
       <el-alert
         type="info"
         :closable="false"
-        title="新建或切换画像对话框后，学生画像、学习资源和学习路径会同步切换。"
+        title="切换画像会话后，学习资源、路径和评估数据会随当前画像同步更新。"
       />
-    </el-card>
+      </aside>
 
-    <el-card class="panel chat-panel">
-      <template #header>
+      <section class="chat-panel">
         <div class="panel-head">
           <div>
-            <strong>对话式画像构建</strong>
-            <p>支持自由自然语言输入，由大模型实时抽取画像维度、识别缺失信息并动态追问。</p>
+            <strong>学习画像构建</strong>
+            <p>通过自然语言对话收集学习目标、基础水平、薄弱点和资源偏好。</p>
           </div>
-          <el-tag :type="modelEnabled ? 'success' : 'warning'">{{ modelEnabled ? '大模型画像中' : 'MOCK兜底模式' }}</el-tag>
+          <el-tag :type="modelEnabled ? 'success' : 'info'">{{ modelEnabled ? '智能分析中' : '本地辅助模式' }}</el-tag>
         </div>
-      </template>
 
       <div ref="messageBoxRef" class="messages">
         <div v-for="(item, index) in messages" :key="index" :class="['msg', item.role]">
@@ -91,11 +98,12 @@
       </div>
 
       <el-progress v-if="loading" :percentage="progress" striped striped-flow />
-    </el-card>
+      </section>
+    </section>
 
     <div class="profile-side">
       <el-card class="panel">
-        <template #header>画像摘要与关键档案</template>
+        <template #header>画像摘要</template>
         <el-alert
           :title="previewSummary"
           type="info"
@@ -398,6 +406,51 @@ async function newSession() {
   ElMessage.success("已新建空白画像对话");
 }
 
+async function deleteSession(item) {
+  if (!item?.id || sending.value || loading.value) return;
+  try {
+    await ElMessageBox.confirm(
+      `确定删除“${item.title || `画像对话 ${item.id}`}”吗？该画像关联的对话、学习资源、路径和答疑记录也会一并删除。`,
+      "删除画像会话",
+      {
+        confirmButtonText: "删除",
+        cancelButtonText: "取消",
+        type: "warning",
+        confirmButtonClass: "el-button--danger",
+      }
+    );
+  } catch {
+    return;
+  }
+
+  const wasActive = Number(item.id) === Number(activeSessionId.value);
+  const res = await profileApi.deleteSession(item.id);
+  if (res.code !== 200) {
+    ElMessage.error(res.msg || "删除画像会话失败");
+    return;
+  }
+
+  localStorage.removeItem(storageKey(item.id));
+  const nextId = res.data?.active_session_id;
+  if (nextId) {
+    activeSessionId.value = Number(nextId);
+    setActiveProfileSessionId(nextId);
+  } else {
+    activeSessionId.value = "";
+    setActiveProfileSessionId("");
+  }
+  await loadSessions();
+  if (wasActive) {
+    Object.keys(profile).forEach((key) => delete profile[key]);
+    if (!restoreState()) initConversation();
+    await loadConversationRemote();
+    await loadProfile();
+    scrollToBottom();
+  }
+  ElMessage.success("画像会话已删除");
+}
+
+
 function clearCurrentSessionState() {
   draft.value = "";
   missingFields.value = [];
@@ -655,8 +708,38 @@ onBeforeUnmount(() => {
 <style scoped>
 .profile-grid {
   display: grid;
-  grid-template-columns: 260px minmax(0, 1.1fr) minmax(340px, 0.85fr);
-  gap: 24px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+  width: 100%;
+  min-width: 0;
+}
+
+.conversation-workspace {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  min-width: 0;
+}
+
+.session-panel,
+.chat-panel,
+.profile-side,
+.profile-side .panel {
+  min-width: 0;
+}
+
+.session-panel {
+  padding: 24px;
+  border-right: 1px solid #eef2f6;
+  background: #fbfcff;
+}
+
+.chat-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  padding: 24px;
 }
 
 .session-head {
@@ -669,7 +752,7 @@ onBeforeUnmount(() => {
 .session-list {
   display: grid;
   gap: 10px;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 
 .session-item {
@@ -678,30 +761,68 @@ onBeforeUnmount(() => {
   width: 100%;
   padding: 12px;
   text-align: left;
-  border: 1px solid #dbeafe;
-  border-radius: 12px;
-  background: #fff;
-  color: #0f172a;
+  border: 1px solid #e5eaf3;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #101828;
   cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.session-item:hover {
+  border-color: #b2ccff;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06);
+}
+
+.session-item strong {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.55;
 }
 
 .session-item span {
-  color: #64748b;
-  font-size: 12px;
+  color: #667085;
+  font-size: 11px;
+  font-weight: 400;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .session-item.active {
-  border-color: #0f766e;
-  background: #ecfdf5;
-  box-shadow: 0 8px 18px rgba(15, 118, 110, 0.12);
+  border-color: #84caff;
+  background: #eff8ff;
+  box-shadow: 0 10px 24px rgba(21, 94, 239, 0.12);
 }
+
+.session-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.session-delete {
+  opacity: 0;
+  flex: 0 0 auto;
+  padding: 2px 3px;
+  font-size: 12px;
+  font-weight: 400;
+  transition: opacity 0.18s ease;
+}
+
+.session-item:hover .session-delete,
+.session-item.active .session-delete {
+  opacity: 1;
+}
+
 
 .profile-side {
   display: grid;
-  gap: 24px;
+  grid-template-columns: 1fr;
+  gap: 18px;
+  align-items: start;
 }
 
 .panel-head,
@@ -712,43 +833,44 @@ onBeforeUnmount(() => {
   gap: 16px;
 }
 
+.panel-head strong,
+.radar-head span {
+  color: #101828;
+  font-size: 16px;
+}
+
 .panel-head p {
+  max-width: 560px;
   margin: 6px 0 0;
-  color: #64748b;
+  color: #667085;
   font-weight: 400;
+  line-height: 1.6;
 }
 
 .radar-head small {
-  color: #64748b;
+  color: #667085;
   font-size: 12px;
   font-weight: 400;
 }
 
-.chat-panel :deep(.el-card__body) {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
 .messages {
-  height: 390px;
+  height: 410px;
   overflow: auto;
-  padding: 18px;
+  padding: 20px;
   scroll-behavior: smooth;
+  border: 1px solid #e5eaf3;
   border-radius: 18px;
-  background:
-    radial-gradient(circle at top right, rgba(186, 230, 253, 0.8), transparent 34%),
-    linear-gradient(180deg, #f8fafc 0%, #eff6ff 100%);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
 }
 
 .msg {
-  max-width: 88%;
-  margin-bottom: 12px;
-  padding: 12px 14px;
+  max-width: 86%;
+  margin-bottom: 14px;
+  padding: 13px 15px;
+  border: 1px solid #eef2f6;
   border-radius: 16px;
-  line-height: 1.7;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+  line-height: 1.72;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
 }
 
 .msg-role {
@@ -758,15 +880,16 @@ onBeforeUnmount(() => {
   gap: 10px;
   margin-bottom: 6px;
   font-size: 12px;
-  color: #64748b;
+  color: #667085;
 }
 
 .msg-role small {
-  color: #94a3b8;
+  color: #98a2b3;
   font-size: 11px;
 }
 
 .msg-content {
+  color: #344054;
   white-space: pre-wrap;
   word-break: break-word;
 }
@@ -778,8 +901,9 @@ onBeforeUnmount(() => {
 
 .msg.user {
   margin-left: auto;
-  color: #064e3b;
-  background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+  border-color: #b2ddff;
+  color: #1849a9;
+  background: #eff8ff;
   border-top-right-radius: 6px;
 }
 
@@ -792,24 +916,19 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   gap: 7px;
-  color: #475569;
+  color: #667085;
 }
 
 .typing-dots span {
   width: 7px;
   height: 7px;
   border-radius: 999px;
-  background: #38bdf8;
+  background: #2e90fa;
   animation: typingBlink 1.2s infinite ease-in-out;
 }
 
-.typing-dots span:nth-child(2) {
-  animation-delay: 0.15s;
-}
-
-.typing-dots span:nth-child(3) {
-  animation-delay: 0.3s;
-}
+.typing-dots span:nth-child(2) { animation-delay: 0.15s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.3s; }
 
 .typing-dots em {
   margin-left: 4px;
@@ -826,22 +945,23 @@ onBeforeUnmount(() => {
   padding: 16px;
   border-radius: 16px;
   background: #f8fafc;
-  border: 1px dashed #94a3b8;
+  border: 1px solid #e5eaf3;
 }
 
 .followup-card {
-  background: #f0fdf4;
-  border-color: #86efac;
+  background: #ecfdf3;
+  border-color: #abefc6;
 }
 
 .prompt-label {
-  font-size: 12px;
-  color: #0f766e;
   margin-bottom: 6px;
+  color: #155eef;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .prompt-text {
-  color: #0f172a;
+  color: #101828;
   line-height: 1.7;
 }
 
@@ -863,7 +983,7 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #64748b;
+  color: #667085;
   font-size: 13px;
 }
 
@@ -875,37 +995,65 @@ onBeforeUnmount(() => {
 
 .summary-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 16px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
 }
 
 .summary-item {
-  padding: 14px;
-  border-radius: 14px;
-  background: #f8fafc;
-  border: 1px solid rgba(148, 163, 184, 0.18);
+  min-height: 100px;
+  padding: 16px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid #eef2f6;
 }
 
 .summary-item span {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 7px;
   font-size: 12px;
-  color: #64748b;
+  color: #667085;
 }
 
 .summary-item strong {
-  color: #0f172a;
-  line-height: 1.6;
+  color: #101828;
+  line-height: 1.55;
+}
+
+.summary-item strong {
+  word-break: break-word;
+}
+
+.profile-side :deep(.el-descriptions__cell),
+.profile-side :deep(.el-descriptions__content) {
+  min-width: 0;
+  word-break: break-word;
 }
 
 .radar {
-  height: 320px;
+  height: 240px;
 }
 
-@media (max-width: 1000px) {
-  .profile-grid {
+@media (max-width: 1320px) {
+  .conversation-workspace {
+    grid-template-columns: 200px minmax(0, 1fr);
+  }
+
+  .summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .profile-grid,
+  .conversation-workspace,
+  .profile-side {
     grid-template-columns: 1fr;
+  }
+
+  .session-panel {
+    border-right: none;
+    border-bottom: 1px solid #eef2f6;
   }
 
   .summary-grid {

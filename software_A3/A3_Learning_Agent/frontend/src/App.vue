@@ -1,45 +1,45 @@
 <template>
   <el-config-provider>
     <el-container class="layout">
-      <el-aside v-if="$route.path !== '/auth'" width="248px" class="sidebar">
+      <el-aside v-if="$route.path !== '/auth'" width="220px" class="sidebar">
         <div class="brand">
           <span class="brand-mark">A3</span>
           <div>
             <strong>Learning Agent</strong>
-            <small>多智能体学习系统</small>
+            <small>个性化学习平台</small>
           </div>
         </div>
-        <el-menu router :default-active="$route.path" :default-openeds="['management']" class="menu">
+        <el-menu router :default-active="$route.path" class="menu">
           <el-menu-item index="/profile">对话式画像</el-menu-item>
           <el-menu-item index="/resources">学习资源</el-menu-item>
           <el-menu-item index="/path">学习路径</el-menu-item>
           <el-menu-item index="/chat">智能答疑</el-menu-item>
           <el-menu-item index="/evaluation">学习评估</el-menu-item>
-          <el-sub-menu index="management">
-            <template #title>系统与管理</template>
-            <el-menu-item index="/architecture">智能体角色市场</el-menu-item>
-            <el-menu-item index="/knowledge">知识库管理</el-menu-item>
-            <el-menu-item index="/system">系统状态</el-menu-item>
-          </el-sub-menu>
         </el-menu>
         <div class="sidebar-footer">
+          <div class="footer-section-title">系统管理</div>
+          <el-menu router :default-active="$route.path" class="bottom-menu">
+            <el-menu-item index="/architecture">智能体角色</el-menu-item>
+            <el-menu-item index="/knowledge">知识库管理</el-menu-item>
+            <el-menu-item index="/system">系统状态</el-menu-item>
+          </el-menu>
           <div class="user-pill">
             <span>{{ usernameInitial }}</span>
             <div>
               <strong>{{ username }}</strong>
-              <small>已登录</small>
+              <small>当前账号</small>
             </div>
           </div>
           <el-button class="logout-button" plain @click="logout">退出登录</el-button>
         </div>
       </el-aside>
-      <el-container>
+      <el-container class="content-shell">
         <el-header v-if="$route.path !== '/auth'" class="topbar">
           <div>
-            <h2>{{ $route.meta.title || "A3 Learning Agent" }}</h2>
-            <p>基于讯飞星火 V3.5 + SeeDance + RAG 的个性化资源生成系统</p>
+            <h2>{{ $route.meta.title || "Learning Agent" }}</h2>
+            <p>面向课程学习的智能画像、资源生成与学习评估平台</p>
           </div>
-          <el-tag effect="dark" type="primary">第十五届中国软件杯 A3</el-tag>
+          <el-tag effect="plain" type="success">在线学习助手</el-tag>
         </el-header>
         <el-main :class="{ 'auth-main': $route.path === '/auth' }">
           <router-view />
@@ -78,35 +78,41 @@ async function logout() {
 
 <style scoped>
 .layout {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #eef2ff 0%, #f8fafc 48%, #ecfeff 100%);
+  height: 100vh;
+  overflow: hidden;
+  background: #f5f7fb;
 }
 
 .sidebar {
+  position: sticky;
+  top: 0;
   display: flex;
   flex-direction: column;
-  padding: 20px 14px;
-  border-right: 1px solid rgba(148, 163, 184, 0.25);
-  background: rgba(255, 255, 255, 0.78);
-  backdrop-filter: blur(18px);
+  height: 100vh;
+  overflow: hidden;
+  padding: 20px 12px;
+  border-right: 1px solid #e5eaf3;
+  background: #ffffff;
+  box-shadow: 8px 0 30px rgba(15, 23, 42, 0.035);
 }
 
 .brand {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin: 8px 8px 24px;
+  margin: 2px 4px 20px;
 }
 
 .brand-mark {
   display: grid;
-  width: 46px;
-  height: 46px;
+  width: 44px;
+  height: 44px;
   place-items: center;
-  border-radius: 16px;
-  background: #2563eb;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #2563eb, #14b8a6);
   color: white;
   font-weight: 800;
+  letter-spacing: 0.02em;
 }
 
 .brand strong,
@@ -114,9 +120,14 @@ async function logout() {
   display: block;
 }
 
+.brand strong {
+  color: #101828;
+  font-size: 16px;
+}
+
 .brand small {
-  color: #64748b;
-  margin-top: 4px;
+  color: #667085;
+  margin-top: 3px;
 }
 
 .menu {
@@ -127,7 +138,16 @@ async function logout() {
 
 .menu :deep(.el-sub-menu__title),
 .menu :deep(.el-menu-item) {
-  border-radius: 12px;
+  height: 38px;
+  margin: 3px 0;
+  border-radius: 10px;
+  color: #475467;
+  font-weight: 500;
+}
+
+.menu :deep(.el-menu-item.is-active) {
+  color: #155eef;
+  background: #eff4ff;
 }
 
 .menu :deep(.el-sub-menu .el-menu) {
@@ -136,14 +156,41 @@ async function logout() {
 
 .menu :deep(.el-sub-menu .el-menu-item) {
   margin-left: 10px;
-  color: #475569;
+  color: #667085;
 }
 
 .sidebar-footer {
   display: grid;
-  gap: 12px;
+  gap: 10px;
   margin-top: auto;
-  padding: 12px 8px 4px;
+  padding: 14px 6px 0;
+  border-top: 1px solid #eef2f6;
+}
+
+.footer-section-title {
+  padding: 0 10px;
+  color: #98a2b3;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.bottom-menu {
+  border-right: none;
+  background: transparent;
+}
+
+.bottom-menu :deep(.el-menu-item) {
+  height: 38px;
+  margin: 2px 0;
+  border-radius: 10px;
+  color: #475467;
+  font-weight: 500;
+}
+
+.bottom-menu :deep(.el-menu-item.is-active) {
+  color: #155eef;
+  background: #eff4ff;
 }
 
 .user-pill {
@@ -151,8 +198,9 @@ async function logout() {
   align-items: center;
   gap: 10px;
   padding: 10px;
+  border: 1px solid #eef2f6;
   border-radius: 16px;
-  background: rgba(37, 99, 235, 0.08);
+  background: #f8fafc;
 }
 
 .user-pill span {
@@ -161,7 +209,7 @@ async function logout() {
   height: 34px;
   place-items: center;
   border-radius: 12px;
-  background: #2563eb;
+  background: #155eef;
   color: #fff;
   font-weight: 800;
 }
@@ -171,8 +219,12 @@ async function logout() {
   display: block;
 }
 
+.user-pill strong {
+  color: #101828;
+}
+
 .user-pill small {
-  color: #64748b;
+  color: #667085;
   margin-top: 2px;
 }
 
@@ -180,27 +232,45 @@ async function logout() {
   width: 100%;
 }
 
+.content-shell {
+  height: 100vh;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.content-shell :deep(.el-main) {
+  min-width: 0;
+  height: calc(100vh - 76px);
+  overflow: auto;
+  padding: 0;
+}
+
 .topbar {
-  height: 72px;
+  height: 76px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.22);
-  background: rgba(255, 255, 255, 0.52);
+  padding: 0 32px;
+  border-bottom: 1px solid #e5eaf3;
+  background: rgba(255, 255, 255, 0.88);
   backdrop-filter: blur(16px);
 }
 
 .topbar h2 {
   margin: 0;
-  font-size: 20px;
+  color: #101828;
+  font-size: 21px;
+  font-weight: 750;
 }
 
 .topbar p {
-  margin: 4px 0 0;
-  color: #64748b;
+  margin: 5px 0 0;
+  color: #667085;
 }
 
 .auth-main {
-  padding: 30px;
+  height: 100vh !important;
+  overflow: hidden !important;
+  padding: 0 !important;
 }
 </style>

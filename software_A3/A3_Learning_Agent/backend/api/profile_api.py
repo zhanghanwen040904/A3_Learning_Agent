@@ -106,10 +106,22 @@ def _delete_session_outputs(user_id: int, session_id: int) -> None:
     resources = mysql_db.query_all("SELECT id FROM study_resource WHERE user_id=%s AND profile_session_id=%s", (user_id, session_id))
     for item in resources:
         mysql_db.delete("resource_source", "resource_id=%s", (item["id"],))
+        mysql_db.delete("resource_feedback", "user_id=%s AND resource_id=%s", (user_id, item["id"]))
+    batches = mysql_db.query_all("SELECT id FROM generation_batch WHERE user_id=%s AND profile_session_id=%s", (user_id, session_id))
+    for item in batches:
+        mysql_db.delete("agent_execution", "batch_id=%s", (item["id"],))
     mysql_db.delete("study_resource", "user_id=%s AND profile_session_id=%s", (user_id, session_id))
     mysql_db.delete("study_path", "user_id=%s AND profile_session_id=%s", (user_id, session_id))
     mysql_db.delete("generation_batch", "user_id=%s AND profile_session_id=%s", (user_id, session_id))
     mysql_db.delete("tutor_conversation", "user_id=%s AND profile_session_id=%s", (user_id, session_id))
+
+
+def _delete_profile_session(user_id: int, session_id: int) -> None:
+    mysql_db.delete("student_profile", "user_id=%s AND profile_session_id=%s", (user_id, session_id))
+    mysql_db.delete("profile_conversation", "user_id=%s AND profile_session_id=%s", (user_id, session_id))
+    mysql_db.delete("learning_event", "user_id=%s AND profile_session_id=%s", (user_id, session_id))
+    _delete_session_outputs(user_id, session_id)
+    mysql_db.delete("profile_session", "id=%s AND user_id=%s", (session_id, user_id))
 
 
 def _save_conversation_payload(user_id: int, session_id: int, payload: dict) -> None:
@@ -184,6 +196,24 @@ def reset_session(session_id: int):
         return success({"profile_session_id": session_id, "profile": _empty_profile(session_id)}, "画像会话已清空")
     except Exception as exc:
         return fail("画像会话清空失败", 500, {"error": str(exc)})
+
+
+@profile_bp.delete("/sessions/<int:session_id>")
+@login_required
+def delete_session(session_id: int):
+    try:
+        if not _session_belongs_to_user(request.user_id, session_id):
+            return fail("画像会话不存在", 404)
+        current = mysql_db.query_one("SELECT is_active FROM profile_session WHERE id=%s AND user_id=%s", (session_id, request.user_id)) or {}
+        _delete_profile_session(request.user_id, session_id)
+        next_session = _active_session(request.user_id, create_if_missing=False)
+        if current.get("is_active") and next_session:
+            _set_active_session(request.user_id, next_session["id"])
+        if not next_session:
+            next_session = _create_session(request.user_id, activate=True)
+        return success({"active_session_id": next_session["id"] if next_session else None}, "画像会话已删除")
+    except Exception as exc:
+        return fail("画像会话删除失败", 500, {"error": str(exc)})
 
 
 @profile_bp.post("/chat")
