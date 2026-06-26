@@ -219,7 +219,7 @@ import MarkdownIt from "markdown-it";
 import mermaid from "mermaid";
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref } from "vue";
 import { ElMessage } from "element-plus";
-import { profileApi, resourceApi } from "../api";
+import { activeProfileSessionId, profileApi, resourceApi } from "../api";
 
 const md = new MarkdownIt({ html: false, linkify: true, breaks: true });
 const apiBase = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
@@ -248,7 +248,7 @@ const trace = ref([]);
 const traceId = ref("");
 const generationProgress = ref(0);
 const currentStageIndex = ref(0);
-const progressTimer = ref(null);
+const eventSource = ref(null);
 const plan = reactive({});
 const mindmapSvgs = reactive({});
 const requestForm = reactive({ major: "软件工程", course: "软件工程", learning_need: "希望围绕软件工程中的需求分析、总体设计、详细设计、编码测试和维护等知识短板，通过图解、分层练习和案例形成完整学习资料。" });
@@ -342,12 +342,35 @@ function stripFences(text) {
     .trim();
 }
 function cleanMindmapLabel(value) {
-  return String(value || "")
-    .replace(/[`"'{}[\]|<>]/g, "")
-    .replace(/[:：]/g, " ")
+  const cleaned = String(value || "")
+    .replace(/[`"'{}[\]|<>()[\]]/g, "")
+    .replace(/[:：;]/g, " ")
+    .replace(/-->|---|==>|-/g, " ")
+    .replace(/[#*_~\\/]/g, " ")
     .replace(/\s+/g, " ")
     .trim()
     .slice(0, 34);
+  return cleaned || "知识点";
+}
+function normalizeMindmapSource(text) {
+  const lines = stripFences(text)
+    .replace(/::icon\([^)]+\)/g, "")
+    .split("\n")
+    .map((line) => line.replace(/\t/g, "  ").trimEnd())
+    .filter((line) => line.trim() && !line.trim().startsWith("%%"));
+  const startIndex = lines.findIndex((line) => /^mindmap\b/i.test(line.trim()));
+  if (startIndex < 0) return "";
+  const normalized = ["mindmap"];
+  for (const line of lines.slice(startIndex + 1)) {
+    const raw = line.trim();
+    if (!raw || /^```/.test(raw)) continue;
+    const leading = line.match(/^\s*/)?.[0].length || 0;
+    const depth = Math.max(1, Math.min(5, Math.floor(leading / 2) + 1));
+    const label = cleanMindmapLabel(raw.replace(/^[-*+]\s*/, "").replace(/^root\s*/i, ""));
+    normalized.push(`${"  ".repeat(depth)}${label}`);
+  }
+  if (normalized.length < 3) return "";
+  return normalized.join("\n");
 }
 function parseJsonLike(text) {
   const source = stripFences(text);
@@ -366,11 +389,9 @@ function parseJsonLike(text) {
 function extractMindmapSource(text) {
   const source = stripFences(text);
   const mermaidFence = String(text || "").match(/```mermaid\s*([\s\S]*?)```/i);
-  if (mermaidFence) return stripFences(mermaidFence[1]);
+  if (mermaidFence) return normalizeMindmapSource(mermaidFence[1]);
   const mindmapIndex = source.search(/^mindmap\b/im);
-  if (mindmapIndex >= 0) {
-    return source.slice(mindmapIndex).replace(/::icon\([^)]+\)/g, "").trim();
-  }
+  if (mindmapIndex >= 0) return normalizeMindmapSource(source.slice(mindmapIndex));
   return "";
 }
 function buildFallbackMindmap(item) {
@@ -384,7 +405,7 @@ function buildFallbackMindmap(item) {
     .slice(0, 18);
   const branches = [...new Set([...points, ...headings])].slice(0, 24);
   const primary = branches.length ? branches : ["核心概念", "学习步骤", "方法工具", "易错点", "实践应用"];
-  const lines = ["mindmap", `  root((${title}))`];
+  const lines = ["mindmap", `  ${title}`];
   primary.slice(0, 6).forEach((branch, index) => {
     lines.push(`    ${branch}`);
     const details = primary.slice(index * 3 + 6, index * 3 + 9);
@@ -445,22 +466,54 @@ function uniqueSources(sources = []) { return [...new Set((sources || []).map((i
 function videoUrl(item) { return item.video_url || item.metadata?.video_url || ""; }
 function playableVideo(item) { const url = videoUrl(item); return /^https?:\/\//.test(url) && !url.includes("example.com"); }
 
-function startProgressSimulation() {
-  stopProgressSimulation();
-  generationProgress.value = 5;
-  currentStageIndex.value = 0;
-  progressTimer.value = setInterval(() => {
-    const next = Math.min(generationProgress.value + 3 + Math.round(Math.random() * 5), 94);
-    generationProgress.value = next;
-    const index = progressStages.findIndex((stage) => next < stage.progress);
-    currentStageIndex.value = index === -1 ? progressStages.length - 1 : index;
-  }, 850);
+function closeEventSource() {
+  if (eventSource.value) {
+    eventSource.value.close();
+    eventSource.value = null;
+  }
 }
-function stopProgressSimulation(finalProgress = 100) {
-  if (progressTimer.value) clearInterval(progressTimer.value);
-  progressTimer.value = null;
+function progressForAgent(agentName, status) {
+  const stageMap = {
+    ProfileAgent: 12,
+    RetrieveAgent: 28,
+    PlannerAgent: 42,
+    DocumentAgent: 70,
+    QuizAgent: 70,
+    ReadingAgent: 70,
+    MindMapAgent: 70,
+    CodeAgent: 70,
+    VideoAgent: 70,
+    QualityAgent: 88,
+    SafetyAgent: 94,
+    PackagerAgent: 100,
+  };
+  const target = stageMap[agentName] || generationProgress.value;
+  return status === "running" ? Math.max(generationProgress.value, Math.max(5, target - 8)) : Math.max(generationProgress.value, target);
+}
+function applyAgentEvent(event) {
+  if (!event?.agent) return;
+  traceId.value = event.trace_id || traceId.value;
+  if (event.status !== "running") trace.value = [...trace.value, event];
+  generationProgress.value = progressForAgent(event.agent, event.status);
+  const index = progressStages.findIndex((stage) => generationProgress.value <= stage.progress);
+  currentStageIndex.value = index === -1 ? progressStages.length - 1 : index;
+}
+function finishProgress(finalProgress = 100) {
+  closeEventSource();
   generationProgress.value = finalProgress;
   currentStageIndex.value = progressStages.length - 1;
+}
+
+async function safeRenderMindmap(key, source) {
+  try {
+    await mermaid.parse(source);
+    const id = `mindmap-${key}-${Date.now()}`.replace(/[^a-zA-Z0-9-]/g, "");
+    const { svg } = await mermaid.render(id, source);
+    mindmapSvgs[key] = svg;
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 async function renderMindmaps() {
@@ -468,19 +521,14 @@ async function renderMindmaps() {
   for (const item of resources.value.filter((entry) => entry.resource_type === "mindmap")) {
     const key = item.id || item.resource_type;
     const source = buildMindmapSource(item);
-    try {
-      const id = `mindmap-${key}-${Date.now()}`.replace(/[^a-zA-Z0-9-]/g, "");
-      const { svg } = await mermaid.render(id, source);
-      mindmapSvgs[key] = svg;
-    } catch (error) {
-      const safeSource = buildFallbackMindmap({ ...item, content: "", knowledge_points: knowledgePoints(item) });
-      try {
-        const id = `mindmap-fallback-${key}-${Date.now()}`.replace(/[^a-zA-Z0-9-]/g, "");
-        const { svg } = await mermaid.render(id, safeSource);
-        mindmapSvgs[key] = svg;
-      } catch {
-        mindmapSvgs[key] = `<div class="mindmap-error">思维导图渲染失败，请重新生成资源。</div>`;
-      }
+    if (source && await safeRenderMindmap(key, source)) continue;
+
+    const safeSource = buildFallbackMindmap({ ...item, content: "", knowledge_points: knowledgePoints(item) });
+    if (await safeRenderMindmap(`fallback-${key}`, safeSource)) {
+      mindmapSvgs[key] = mindmapSvgs[`fallback-${key}`];
+      delete mindmapSvgs[`fallback-${key}`];
+    } else {
+      mindmapSvgs[key] = `<div class="mindmap-error">思维导图渲染失败，已隐藏 Mermaid 原始错误，请重新生成资源。</div>`;
     }
   }
 }
@@ -508,38 +556,70 @@ async function loadResources() {
   await renderMindmaps();
 }
 
+function streamUrl() {
+  const params = new URLSearchParams();
+  const token = localStorage.getItem("token") || "";
+  if (token) params.set("token", token);
+  const sessionId = activeProfileSessionId();
+  if (sessionId) params.set("profile_session_id", sessionId);
+  Object.entries(requestForm).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && String(value).trim()) params.set(key, String(value));
+  });
+  return `${apiBase}/resource/generate/stream?${params.toString()}`;
+}
+
+function handleStreamResult(payload) {
+  const result = payload.result || {};
+  resources.value = result.resource_list || [];
+  trace.value = result.trace || trace.value;
+  traceId.value = result.trace_id || traceId.value;
+  Object.keys(plan).forEach((key) => delete plan[key]);
+  Object.assign(plan, result.plan || {});
+  displayMode.value = "current";
+  finishProgress(100);
+  loading.value = false;
+  renderMindmaps();
+  ElMessage.success(`六类资源生成完成，共记录${trace.value.length}个真实协作事件`);
+}
+
+function handleStreamError(payload) {
+  finishProgress(Math.max(generationProgress.value, 60));
+  loading.value = false;
+  displayMode.value = resources.value.length ? "history" : "empty";
+  const detail = payload?.error ? `：${payload.error}` : "";
+  ElMessage.error(`${payload?.message || "资源生成失败"}${detail}`);
+}
+
 async function generate() {
   loading.value = true;
   displayMode.value = "current";
   resetRunArtifacts();
-  startProgressSimulation();
-  try {
-    const res = await resourceApi.generate({ ...requestForm });
-    if (res.code !== 200) {
-      stopProgressSimulation(Math.max(generationProgress.value, 60));
-      displayMode.value = resources.value.length ? "history" : "empty";
-      const detail = res.data?.error ? `：${res.data.error}` : "";
-      return ElMessage.error(`${res.msg || "资源生成失败"}${detail}`);
+  finishProgress(0);
+  generationProgress.value = 5;
+  currentStageIndex.value = 0;
+  const source = new EventSource(streamUrl());
+  eventSource.value = source;
+  source.addEventListener("agent", (event) => applyAgentEvent(JSON.parse(event.data || "{}")));
+  source.addEventListener("start", (event) => {
+    const payload = JSON.parse(event.data || "{}");
+    traceId.value = payload.trace_id || traceId.value;
+    generationProgress.value = Math.max(generationProgress.value, 5);
+  });
+  source.addEventListener("result", (event) => handleStreamResult(JSON.parse(event.data || "{}")));
+  source.addEventListener("error", (event) => {
+    if (event.data) {
+      handleStreamError(JSON.parse(event.data || "{}"));
+    } else if (loading.value) {
+      handleStreamError({ message: "SSE 连接中断，请确认后端服务正常运行" });
     }
-    resources.value = res.data.resource_list || [];
-    trace.value = res.data.trace || [];
-    traceId.value = res.data.trace_id || "";
-    Object.assign(plan, res.data.plan || {});
-    displayMode.value = "current";
-    stopProgressSimulation(100);
-    await renderMindmaps();
-    ElMessage.success(`六类资源生成完成，共记录${trace.value.length}个协作事件`);
-  } catch (error) {
-    stopProgressSimulation(Math.max(generationProgress.value, 60));
-    displayMode.value = resources.value.length ? "history" : "empty";
-    ElMessage.error(error?.message || "资源生成异常，请确认后端服务正常运行");
-  } finally {
-    loading.value = false;
-  }
+  });
+  source.onerror = () => {
+    if (loading.value) handleStreamError({ message: "SSE 连接中断，请确认后端服务正常运行" });
+  };
 }
 
 onMounted(loadResources);
-onBeforeUnmount(() => stopProgressSimulation(generationProgress.value));
+onBeforeUnmount(() => closeEventSource());
 </script>
 
 <style scoped>

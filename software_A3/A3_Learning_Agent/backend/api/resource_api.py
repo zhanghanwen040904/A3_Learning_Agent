@@ -1,8 +1,10 @@
 import json
+import queue
 import re
+import threading
 from pathlib import Path
 
-from flask import Blueprint, request
+from flask import Blueprint, Response, request, stream_with_context
 
 from ai.agents import agent_manager
 from ai.rag import generated_kb_dir
@@ -10,6 +12,7 @@ from ai.spark_api import content_audit
 from db import mysql_db
 from utils import fail, success
 from utils.auth_decorator import login_required
+from utils.jwt_utils import verify_token
 from utils.profile_session import resolve_profile_session
 
 resource_bp = Blueprint("resource", __name__)
@@ -307,3 +310,148 @@ def list_my_resources():
 @login_required
 def list_resources(user_id: int):
     return list_my_resources()
+
+
+def _persist_stream_result(result: dict, user_id: int, session_id: int) -> dict:
+    batch_id = mysql_db.insert(
+        "generation_batch",
+        {
+            "trace_id": result["trace_id"],
+            "user_id": user_id,
+            "profile_session_id": session_id,
+            "profile_snapshot": json.dumps(result.get("context", {}), ensure_ascii=False),
+            "plan": json.dumps(result.get("plan", {}), ensure_ascii=False),
+            "status": "completed" if not result.get("errors") else "completed_with_warnings",
+            "error_summary": "；".join(result.get("errors", [])),
+        },
+    )
+    saved_resources = []
+    for item in result.get("resource_list", []):
+        item = _append_images_to_resource(item)
+        content = str(item.get("content", ""))
+        if content and content_audit(content):
+            metadata = _safe_json_loads(item.get("metadata"), {})
+            metadata.update({"format": item.get("format"), "quality": item.get("quality"), "retry_count": item.get("retry_count", 0), "duration_ms": item.get("duration_ms", 0), "video_url": item.get("video_url")})
+            resource_id = mysql_db.insert(
+                "study_resource",
+                {
+                    "user_id": user_id,
+                    "profile_session_id": session_id,
+                    "resource_type": item.get("resource_type", "unknown"),
+                    "title": item.get("title", "未命名资源"),
+                    "content": content,
+                    "batch_id": batch_id,
+                    "agent_name": item.get("agent_name"),
+                    "knowledge_points": json.dumps(item.get("knowledge_points", []), ensure_ascii=False),
+                    "personalization": item.get("personalization"),
+                    "quality_score": item.get("quality_score"),
+                    "audit_status": "passed" if item.get("quality", {}).get("passed") else "warning",
+                    "metadata": json.dumps(metadata, ensure_ascii=False),
+                },
+            )
+            for source in item.get("sources", []):
+                mysql_db.insert(
+                    "resource_source",
+                    {
+                        "resource_id": resource_id,
+                        "source_name": source.get("source", "unknown"),
+                        "chunk_index": source.get("chunk_index"),
+                        "relevance_score": source.get("score"),
+                        "retrieval_mode": source.get("retrieval_mode"),
+                    },
+                )
+            saved_resources.append({"id": resource_id, **item, "content": content})
+    score_by_agent = {item.get("agent_name"): item.get("quality_score") for item in result.get("resource_list", [])}
+    for event in result.get("trace", []):
+        mysql_db.insert(
+            "agent_execution",
+            {
+                "batch_id": batch_id,
+                "agent_name": event.get("agent"),
+                "status": event.get("status", "unknown"),
+                "message": event.get("message"),
+                "score": score_by_agent.get(event.get("agent")),
+                "retry_count": event.get("retry_count", 0),
+                "duration_ms": event.get("duration_ms", 0),
+            },
+        )
+    mysql_db.execute("UPDATE generation_batch SET finish_time=NOW() WHERE id=%s", (batch_id,))
+    result["resource_list"] = saved_resources or result.get("resource_list", [])
+    result["batch_id"] = batch_id
+    result["profile_session_id"] = session_id
+    return result
+
+
+def _sse(event: str, data: dict) -> str:
+    return f"event: {event}\ndata: {json.dumps(data, ensure_ascii=False)}\n\n"
+
+
+def _user_from_stream_request():
+    token = request.args.get("token", "").strip()
+    if not token:
+        auth_header = request.headers.get("Authorization", "").strip()
+        parts = auth_header.split()
+        if len(parts) == 2 and parts[0].lower() == "bearer":
+            token = parts[1]
+    return verify_token(token) if token else None
+
+
+@resource_bp.get("/generate/stream")
+def generate_resources_stream():
+    user_info = _user_from_stream_request()
+    if not user_info:
+        return Response(_sse("error", {"message": "请先登录"}), status=401, mimetype="text/event-stream")
+
+    user_id = user_info["user_id"]
+    payload = {key: request.args.get(key) for key in request.args if key != "token"}
+    if payload.get("profile_session_id"):
+        try:
+            payload["profile_session_id"] = int(payload["profile_session_id"])
+        except Exception:
+            pass
+
+    def stream():
+        events = queue.Queue()
+        done = object()
+
+        def push(event: dict) -> None:
+            events.put(event)
+
+        def worker() -> None:
+            try:
+                session = resolve_profile_session(user_id, payload, create_if_missing=False)
+                if not session:
+                    push({"type": "error", "message": "请先新建画像对话并生成画像"})
+                    return
+                session_id = session["id"]
+                profile = mysql_db.query_one("SELECT * FROM student_profile WHERE user_id=%s AND profile_session_id=%s", (user_id, session_id))
+                if not profile and not payload.get("dialogue"):
+                    push({"type": "error", "message": "当前画像为空，请先生成学生画像，再生成学习资源"})
+                    return
+                dialogue = str(payload.get("dialogue") or payload.get("learning_need") or "")
+                if dialogue and not content_audit(dialogue):
+                    push({"type": "error", "message": "资源生成输入未通过内容审核"})
+                    return
+                result = agent_manager.run_pipeline(dialogue, stored_profile=profile, request_data=payload, event_callback=push)
+                saved = _persist_stream_result(result, user_id, session_id)
+                push({"type": "result", "message": "资源生成成功", "result": saved})
+            except Exception as exc:
+                push({"type": "error", "message": "资源生成失败", "error": str(exc)})
+            finally:
+                events.put(done)
+
+        threading.Thread(target=worker, daemon=True).start()
+        yield _sse("open", {"message": "SSE connected"})
+        while True:
+            event = events.get()
+            if event is done:
+                yield _sse("close", {"message": "stream closed"})
+                break
+            event_type = event.get("type", "message")
+            yield _sse(event_type, event)
+
+    return Response(
+        stream_with_context(stream()),
+        mimetype="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
