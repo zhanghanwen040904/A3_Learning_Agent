@@ -1,3 +1,4 @@
+import json
 import re
 import shutil
 from pathlib import Path
@@ -36,16 +37,65 @@ def generated_kb_dir() -> Path:
     return Path(config.RAG_SOURCE_DIR).parent
 
 
+def raw_extracted_dir() -> Path:
+    return generated_kb_dir() / "raw_extracted" / "software_engineering"
+
+
+def semantic_json_dir() -> Path:
+    return raw_extracted_dir() / "semantic_json"
+
+
 def clean_text(text: str) -> str:
     if not text:
         return ""
     text = re.sub(r"```[\s\S]*?```", lambda m: m.group(0).replace("```", ""), text)
     text = re.sub(r"[#>*_`~\-]{1,}", " ", text)
     text = re.sub(r"\[([^\]]+)\]\([^\)]+\)", r"\1", text)
-    text = re.sub(r"[^\u4e00-\u9fa5a-zA-Z0-9，。！？；：、,.!?;:()（）\[\]{}<>/=+\-*\n\s]", " ", text)
+    text = re.sub(r"[^\u4e00-\u9fa5a-zA-Z0-9，。！？；：、,.!?;:()\[\]{}<>/=+\-*\n\s]", " ", text)
     text = re.sub(r"[ \t]+", " ", text)
     text = re.sub(r"\n{2,}", "\n", text)
     return text.strip()
+
+
+def _normalize_line(line: str) -> str:
+    line = str(line or "").strip()
+    line = re.sub(r"\[第\d+页\]\s*", "", line)
+    line = re.sub(r"^[onq•·]\s*", "", line, flags=re.IGNORECASE)
+    line = re.sub(r"\s+[onq•·]\s+", "；", line, flags=re.IGNORECASE)
+    line = re.sub(r"\s{2,}", " ", line)
+    return line.strip()
+
+
+def _is_noise_line(line: str) -> bool:
+    stripped = str(line or "").strip()
+    if not stripped:
+        return True
+    if stripped.startswith(("课程：", "来源文件：", "知识路径：", "起始页：")):
+        return True
+    if re.fullmatch(r"\[第\d+页\].*", stripped):
+        return True
+    if re.fullmatch(r"[onq•·\-\s]+", stripped, flags=re.IGNORECASE):
+        return True
+    if stripped in {"是", "否", "客户", "顾客", "需求", "输入", "输出", "项目小组", "设计小组", "分析员", "系统分"}:
+        return True
+    if len(stripped) <= 2:
+        return True
+    return False
+
+
+def preprocess_text(text: str) -> str:
+    lines = clean_text(text).splitlines()
+    cleaned = []
+    previous = ""
+    for raw in lines:
+        line = _normalize_line(raw)
+        if _is_noise_line(line):
+            continue
+        if line == previous:
+            continue
+        cleaned.append(line)
+        previous = line
+    return "\n".join(cleaned).strip()
 
 
 def reset_rag_cache() -> None:
@@ -104,7 +154,14 @@ def list_source_documents() -> List[dict]:
     documents = []
     for path in sorted(source_dir.rglob("*")):
         if path.is_file() and path.suffix.lower() in {".txt", ".md", ".pdf", ".docx"}:
-            documents.append({"name": path.name, "path": str(path.relative_to(source_dir)), "suffix": path.suffix.lower(), "size": path.stat().st_size})
+            documents.append(
+                {
+                    "name": path.name,
+                    "path": str(path.relative_to(source_dir)),
+                    "suffix": path.suffix.lower(),
+                    "size": path.stat().st_size,
+                }
+            )
     return documents
 
 
@@ -121,10 +178,56 @@ def _load_source_documents() -> List[dict]:
             raw = _read_pdf(path)
         else:
             raw = _read_docx(path)
-        cleaned = clean_text(raw)
+        cleaned = preprocess_text(raw)
         if cleaned:
             documents.append({"source": path.name, "text": cleaned})
     return documents
+
+
+def _load_semantic_chunks() -> List[dict]:
+    semantic_dir = semantic_json_dir()
+    if not semantic_dir.exists():
+        return []
+
+    chunks: List[dict] = []
+    doc_index = 0
+    for path in sorted(semantic_dir.glob("*.json")):
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        source_name = path.stem.replace("_semantic", "") + ".pdf"
+        for item in payload.get("knowledge_chunks", []):
+            metadata = item.get("metadata") or {}
+            content = preprocess_text(item.get("content_text") or "")
+            if len(content) < 20:
+                continue
+            section_path = metadata.get("section_path") or []
+            section_title = metadata.get("section_title") or ""
+            knowledge_point = metadata.get("knowledge_point") or section_title or (section_path[-1] if section_path else "")
+            chunks.append(
+                {
+                    "source": source_name,
+                    "chunk_index": metadata.get("chunk_index", 0),
+                    "content": content,
+                    "doc_index": doc_index,
+                    "chunk_id": item.get("chunk_id") or "",
+                    "metadata": {
+                        "title": knowledge_point,
+                        "source": source_name,
+                        "section_title": section_title,
+                        "section_path": " > ".join(section_path) if isinstance(section_path, list) else str(section_path),
+                        "pages": metadata.get("pages", []),
+                        "chunk_id": item.get("chunk_id") or "",
+                        "knowledge_point": knowledge_point,
+                        "knowledge_type": metadata.get("knowledge_type", ""),
+                        "tags": metadata.get("tags", []),
+                        "retrieval_source": "semantic_json",
+                    },
+                }
+            )
+            doc_index += 1
+    return chunks
 
 
 def _split_text(text: str, chunk_size: int = 600, overlap: int = 50) -> List[str]:
@@ -141,10 +244,37 @@ def _split_text(text: str, chunk_size: int = 600, overlap: int = 50) -> List[str
 
 
 def _build_fallback_chunks() -> List[dict]:
+    semantic_chunks = _load_semantic_chunks()
+    if semantic_chunks:
+        return semantic_chunks
+
     chunks = []
     for doc_index, doc in enumerate(_load_source_documents()):
         for chunk_index, chunk in enumerate(_split_text(doc["text"])):
-            chunks.append({"source": doc["source"], "chunk_index": chunk_index, "content": chunk, "doc_index": doc_index})
+            content = preprocess_text(chunk)
+            if not content:
+                continue
+            chunks.append(
+                {
+                    "source": doc["source"],
+                    "chunk_index": chunk_index,
+                    "content": content,
+                    "doc_index": doc_index,
+                    "chunk_id": f"doc_{doc_index}_chunk_{chunk_index}",
+                    "metadata": {
+                        "title": doc["source"],
+                        "source": doc["source"],
+                        "section_title": "",
+                        "section_path": "",
+                        "pages": [],
+                        "chunk_id": f"doc_{doc_index}_chunk_{chunk_index}",
+                        "knowledge_point": doc["source"],
+                        "knowledge_type": "",
+                        "tags": [],
+                        "retrieval_source": "source_docs",
+                    },
+                }
+            )
     return chunks
 
 
@@ -178,11 +308,25 @@ def _fallback_search(query: str, top_k: int = 3) -> List[dict]:
         scored.append((score, item))
     scored.sort(key=lambda pair: pair[0], reverse=True)
     return [
-        {"source": item["source"], "chunk_index": item["chunk_index"], "content": item["content"], "score": round(float(score), 4), "retrieval_mode": "keyword"}
+        {
+            "source": item["source"],
+            "chunk_index": item["chunk_index"],
+            "content": item["content"],
+            "score": round(float(score), 4),
+            "retrieval_mode": "keyword",
+            "metadata": item.get("metadata", {}),
+        }
         for score, item in scored[:top_k]
         if score > 0
     ] or [
-        {"source": item["source"], "chunk_index": item["chunk_index"], "content": item["content"], "score": 0, "retrieval_mode": "keyword"}
+        {
+            "source": item["source"],
+            "chunk_index": item["chunk_index"],
+            "content": item["content"],
+            "score": 0,
+            "retrieval_mode": "keyword",
+            "metadata": item.get("metadata", {}),
+        }
         for _, item in scored[:top_k]
     ]
 
@@ -191,7 +335,7 @@ def build_vector_db(force: bool = False) -> dict:
     global _fallback_chunks, _last_build_result
     _fallback_chunks = _build_fallback_chunks()
     if not _fallback_chunks:
-        _last_build_result = {"status": "empty", "documents": 0, "chunks": 0, "message": "source_docs目录下没有可构建的课程文档"}
+        _last_build_result = {"status": "empty", "documents": 0, "chunks": 0, "message": "没有可构建的课程知识数据"}
         return _last_build_result
 
     if force:
@@ -206,20 +350,43 @@ def build_vector_db(force: bool = False) -> dict:
     try:
         collection = _get_collection()
         if collection.count() > 0 and not force:
-            _last_build_result = {"status": "loaded", "chunks": collection.count(), "fallback_chunks": len(_fallback_chunks), "message": "向量库已存在，已直接加载"}
+            _last_build_result = {
+                "status": "loaded",
+                "chunks": collection.count(),
+                "fallback_chunks": len(_fallback_chunks),
+                "retrieval_source": _fallback_chunks[0].get("metadata", {}).get("retrieval_source", "unknown"),
+                "message": "向量库已存在，直接加载",
+            }
             return _last_build_result
 
         ids, texts, metadatas = [], [], []
         for index, item in enumerate(_fallback_chunks):
-            ids.append(f"doc_{item['doc_index']}_chunk_{item['chunk_index']}")
+            ids.append(str(item.get("chunk_id") or f"doc_{item['doc_index']}_chunk_{item['chunk_index']}"))
             texts.append(item["content"])
-            metadatas.append({"source": item["source"], "chunk_index": item["chunk_index"]})
+            metadatas.append(item.get("metadata", {}) | {"source": item["source"], "chunk_index": item["chunk_index"]})
         embeddings = _get_embedding_model().encode(texts, normalize_embeddings=True).tolist()
         collection.add(ids=ids, documents=texts, embeddings=embeddings, metadatas=metadatas)
-        _last_build_result = {"status": "created", "documents": len(list_source_documents()), "chunks": len(texts), "fallback_chunks": len(_fallback_chunks), "retrieval_mode": "vector", "message": "向量库构建完成"}
+        _last_build_result = {
+            "status": "created",
+            "documents": len(list_source_documents()),
+            "chunks": len(texts),
+            "fallback_chunks": len(_fallback_chunks),
+            "retrieval_mode": "vector",
+            "retrieval_source": _fallback_chunks[0].get("metadata", {}).get("retrieval_source", "unknown"),
+            "message": "向量库构建完成",
+        }
         return _last_build_result
     except Exception as exc:
-        _last_build_result = {"status": "fallback", "documents": len(list_source_documents()), "chunks": len(_fallback_chunks), "fallback_chunks": len(_fallback_chunks), "retrieval_mode": "keyword", "message": "向量库暂不可用，已启用关键词检索降级模式", "warning": str(exc)}
+        _last_build_result = {
+            "status": "fallback",
+            "documents": len(list_source_documents()),
+            "chunks": len(_fallback_chunks),
+            "fallback_chunks": len(_fallback_chunks),
+            "retrieval_mode": "keyword",
+            "retrieval_source": _fallback_chunks[0].get("metadata", {}).get("retrieval_source", "unknown") if _fallback_chunks else "unknown",
+            "message": "向量库暂不可用，已启用关键词检索降级模式",
+            "warning": str(exc),
+        }
         return _last_build_result
 
 
@@ -239,7 +406,16 @@ def retrieve_knowledge_items(query: str, top_k: int = 3) -> List[dict]:
             items = []
             for index, doc in enumerate(docs):
                 metadata = metadatas[index] if index < len(metadatas) else {}
-                items.append({"source": metadata.get("source", "unknown"), "chunk_index": metadata.get("chunk_index", index), "content": doc, "score": distances[index] if index < len(distances) else None, "retrieval_mode": "vector"})
+                items.append(
+                    {
+                        "source": metadata.get("source", "unknown"),
+                        "chunk_index": metadata.get("chunk_index", index),
+                        "content": doc,
+                        "score": distances[index] if index < len(distances) else None,
+                        "retrieval_mode": "vector",
+                        "metadata": metadata,
+                    }
+                )
             if items:
                 return items
     except Exception:
@@ -249,8 +425,11 @@ def retrieve_knowledge_items(query: str, top_k: int = 3) -> List[dict]:
 
 def format_knowledge_items(items: List[dict]) -> str:
     if not items:
-        return "未检索到课程知识库内容，请检查 rag_data/source_docs 中的软件工程课程资料。"
-    return "\n\n".join(f"【教材来源：{item['source']}｜片段{item['chunk_index']}｜模式：{item.get('retrieval_mode', 'unknown')}】\n{item['content']}" for item in items)
+        return "未检索到课程知识内容，请检查 rag_data/source_docs 或 raw_extracted/semantic_json 中的课程资料。"
+    return "\n\n".join(
+        f"【教材来源：{item['source']}｜片段：{item['chunk_index']}｜模式：{item.get('retrieval_mode', 'unknown')}】\n{item['content']}"
+        for item in items
+    )
 
 
 def retrieve_knowledge(query: str, top_k: int = 3) -> str:
@@ -258,10 +437,10 @@ def retrieve_knowledge(query: str, top_k: int = 3) -> str:
 
 
 def _extract_image_path(text: str) -> str:
-    absolute = re.search(r"([A-Za-z]:\\[^\n\r，,；;）)]+?\.(?:png|jpg|jpeg|webp|gif))", text, flags=re.IGNORECASE)
+    absolute = re.search(r"([A-Za-z]:\\[^\n\r，。；]+?\.(?:png|jpg|jpeg|webp|gif))", text, flags=re.IGNORECASE)
     if absolute:
         return absolute.group(1).strip()
-    relative = re.search(r"(images[\\/][^\n\r，,；;）)]+?\.(?:png|jpg|jpeg|webp|gif))", text, flags=re.IGNORECASE)
+    relative = re.search(r"(images[\\/][^\n\r，。；]+?\.(?:png|jpg|jpeg|webp|gif))", text, flags=re.IGNORECASE)
     if relative:
         return relative.group(1).strip()
     return ""
@@ -341,7 +520,7 @@ def build_resource_context(query: str, top_k: int = 6) -> dict:
         "generation_rules": [
             "只能依据 retrieved_chunks、knowledge_tree 和 images 生成学习资源。",
             "优先围绕 query 对应的核心知识点，不要把多个无关章节硬拼在一起。",
-            "只要 images 非空，必须在资源内容中输出“配图建议：caption（path）”。",
+            "只要 images 非空，必须在资源内容中输出“配图建议：caption(path)”。",
             "输出给学生时隐藏 chunk_id、score、retrieval_mode、JSON 字段名等内部信息。",
             "讲解要短、清楚、可读，避免直接罗列大量来源路径。",
             "允许整理、改写、举例，但不得编造教材不存在的事实、页码、图片路径。",
@@ -352,6 +531,7 @@ def build_resource_context(query: str, top_k: int = 6) -> dict:
 
 def rag_status() -> dict:
     documents = list_source_documents()
+    semantic_chunks = _load_semantic_chunks()
     chunk_count = 0
     mode = _last_build_result.get("retrieval_mode", "unknown")
     try:
@@ -362,7 +542,17 @@ def rag_status() -> dict:
     except Exception:
         chunk_count = len(_fallback_chunks) or len(_build_fallback_chunks())
         mode = "keyword"
-    return {"source_dir": config.RAG_SOURCE_DIR, "vector_dir": config.RAG_VECTOR_DIR, "documents": documents, "document_count": len(documents), "chunk_count": chunk_count or len(_fallback_chunks), "retrieval_mode": mode, "last_build": _last_build_result}
+    return {
+        "source_dir": config.RAG_SOURCE_DIR,
+        "semantic_dir": str(semantic_json_dir()),
+        "vector_dir": config.RAG_VECTOR_DIR,
+        "documents": documents,
+        "document_count": len(documents),
+        "semantic_chunk_count": len(semantic_chunks),
+        "chunk_count": chunk_count or len(_fallback_chunks),
+        "retrieval_mode": mode,
+        "last_build": _last_build_result,
+    }
 
 
 class RAGService:

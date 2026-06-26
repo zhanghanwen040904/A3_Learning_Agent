@@ -3,89 +3,242 @@
     <el-card class="panel">
       <template #header>
         <div class="header-line">
-          <span>学习效果评估</span>
-          <el-button :loading="loading" @click="loadSummary">刷新评估</el-button>
+          <span>学习检测与掌握度更新</span>
+          <div class="header-actions">
+            <el-button :loading="summaryLoading" @click="loadSummary">刷新评估</el-button>
+            <el-button :loading="bankLoading" @click="rebuildBank">重建题库</el-button>
+          </div>
         </div>
       </template>
 
       <el-row :gutter="18">
-        <el-col :span="8"><el-statistic title="平均得分" :value="summary.avg_score || 0" suffix="分" /></el-col>
-        <el-col :span="8"><el-statistic title="练习次数" :value="summary.quiz_count || 0" /></el-col>
-        <el-col :span="8"><el-statistic title="薄弱点数量" :value="(summary.weak_points || []).length" /></el-col>
+        <el-col :span="6"><el-statistic title="平均得分" :value="summary.avg_score || 0" suffix="分" /></el-col>
+        <el-col :span="6"><el-statistic title="已完成题数" :value="summary.quiz_count || 0" /></el-col>
+        <el-col :span="6"><el-statistic title="当前薄弱点" :value="liveWeakPoints.length" /></el-col>
+        <el-col :span="6"><el-statistic title="题库题目数" :value="summary.bank_status?.question_count || 0" /></el-col>
       </el-row>
 
-      <el-alert class="loop-alert" type="success" :closable="false" show-icon>
-        <template #title><strong>学习闭环状态</strong></template>
-        {{ loopSummary }}
-      </el-alert>
+      <div class="profile-box">
+        <div class="section-title">画像摘要</div>
+        <el-space wrap>
+          <el-tag v-if="summary.profile?.weak_points" type="danger">薄弱点：{{ summary.profile.weak_points }}</el-tag>
+          <el-tag v-if="summary.profile?.study_goal" type="success">目标：{{ summary.profile.study_goal }}</el-tag>
+          <el-tag v-if="summary.profile?.course_progress">进度：{{ summary.profile.course_progress }}</el-tag>
+        </el-space>
+      </div>
     </el-card>
 
     <el-card class="panel">
-      <template #header>提交练习答案</template>
-      <el-form label-position="top">
-        <el-form-item label="知识点">
-          <el-input v-model="form.knowledge_point" />
-        </el-form-item>
-        <el-form-item label="题目">
-          <el-input v-model="form.question" type="textarea" :rows="2" />
-        </el-form-item>
-        <el-form-item label="我的答案">
-          <el-input v-model="form.answer" type="textarea" :rows="4" />
-        </el-form-item>
-        <el-button type="primary" :loading="submitting" @click="submit">提交并评估</el-button>
-        <el-button :loading="pathLoading" @click="regeneratePath">根据评估结果重规划路径</el-button>
-      </el-form>
-    </el-card>
+      <template #header>按画像生成检测题</template>
 
-    <el-card v-if="latestResult" class="panel result-panel">
-      <template #header>
-        <div class="header-line">
-          <span>本次评估反馈</span>
-          <el-tag :type="latestResult.score >= 80 ? 'success' : latestResult.score >= 60 ? 'warning' : 'danger'">{{ latestResult.score }} 分</el-tag>
-        </div>
-      </template>
-      <div class="result-grid">
-        <div class="result-score">
-          <el-progress type="dashboard" :percentage="Number(latestResult.score || 0)" />
-          <strong>{{ latestResult.score >= 80 ? "掌握较好" : latestResult.score >= 60 ? "需要巩固" : "优先补弱" }}</strong>
-        </div>
-        <div>
-          <h3>EvaluatorAgent 反馈</h3>
-          <p>{{ latestResult.feedback }}</p>
-          <el-alert v-if="Object.keys(latestResult.profile_update || {}).length" type="warning" :closable="false" show-icon>
-            <template #title><strong>画像已随学更新</strong></template>
-            {{ profileUpdateText(latestResult.profile_update) }}
-          </el-alert>
+      <div class="generator-grid">
+        <el-form label-position="top" class="generator-form">
+          <el-form-item label="出题模式">
+            <el-radio-group v-model="generator.mode">
+              <el-radio-button label="batch">一次展示全部</el-radio-button>
+              <el-radio-button label="single">逐题作答</el-radio-button>
+            </el-radio-group>
+          </el-form-item>
+
+          <el-form-item label="题目数量">
+            <el-input-number v-model="generator.count" :min="3" :max="10" />
+          </el-form-item>
+
+          <el-form-item label="指定知识点（可选）">
+            <el-input v-model="generator.knowledgePoint" placeholder="如：需求分析 / 总体设计 / 测试" clearable />
+          </el-form-item>
+
+          <el-button type="primary" :loading="questionLoading" @click="generateQuestions">生成检测题</el-button>
+        </el-form>
+
+        <div class="generator-info">
+          <div class="section-title">推荐知识点</div>
+          <el-empty v-if="!recommendedPoints.length" description="点击左侧按钮后，系统会根据画像与薄弱点推荐题目。" />
+          <el-space v-else wrap>
+            <el-tag v-for="item in recommendedPoints" :key="item" effect="light">{{ item }}</el-tag>
+          </el-space>
         </div>
       </div>
     </el-card>
 
+    <div v-if="questions.length" class="workspace-grid">
+      <el-card class="panel main-panel">
+        <template #header>
+          <div class="header-line">
+            <span>个性化检测题</span>
+            <span class="subtle">
+              {{ generator.mode === "single" ? `第 ${activeQuestionIndex + 1} / ${questions.length} 题` : `共 ${questions.length} 题` }}
+            </span>
+          </div>
+        </template>
+
+        <div v-if="generator.mode === 'single'">
+          <div class="focus-strip">
+            <el-progress :percentage="progressPercent" :stroke-width="10" />
+            <div class="focus-strip-text">
+              <span>已完成 {{ answeredCount }} / {{ questions.length }} 题</span>
+              <span v-if="currentQuestion?.result" :class="scoreClass(currentQuestion.result.score)">
+                本题得分：{{ currentQuestion.result.score }}
+              </span>
+            </div>
+          </div>
+
+          <div class="question-card question-card--focus">
+            <div class="question-meta">
+              <el-tag>{{ currentQuestion.question_type }}</el-tag>
+              <el-tag type="success">{{ currentQuestion.knowledge_path }}</el-tag>
+              <el-tag type="info">{{ currentQuestion.difficulty }}</el-tag>
+            </div>
+
+            <h3>{{ currentQuestion.order }}. {{ currentQuestion.prompt }}</h3>
+
+            <el-input
+              v-model="currentQuestion.userAnswer"
+              type="textarea"
+              :rows="5"
+              placeholder="请输入你的答案"
+            />
+
+            <div class="question-actions">
+              <el-button type="primary" :loading="submitting" @click="submitQuestion(currentQuestion)">提交并判题</el-button>
+              <el-button v-if="activeQuestionIndex > 0" @click="activeQuestionIndex -= 1">上一题</el-button>
+              <el-button v-if="activeQuestionIndex < questions.length - 1" @click="activeQuestionIndex += 1">下一题</el-button>
+            </div>
+
+            <div v-if="currentQuestion.result" class="result-box">
+              <el-alert
+                :title="currentQuestion.result.is_correct ? '回答较好，继续保持' : '需要继续巩固'"
+                :type="currentQuestion.result.is_correct ? 'success' : 'warning'"
+                :closable="false"
+                show-icon
+              />
+              <p><strong>得分：</strong><span :class="scoreClass(currentQuestion.result.score)">{{ currentQuestion.result.score }}</span></p>
+              <p><strong>反馈：</strong>{{ currentQuestion.result.feedback }}</p>
+              <p><strong>参考答案：</strong>{{ currentQuestion.result.reference_answer }}</p>
+              <p><strong>解析：</strong>{{ currentQuestion.result.explanation }}</p>
+              <p><strong>易错点：</strong>{{ currentQuestion.result.common_mistake }}</p>
+              <div v-if="currentQuestion.result.scoring_points?.length">
+                <strong>得分点：</strong>
+                <ul class="score-list">
+                  <li v-for="(point, index) in currentQuestion.result.scoring_points" :key="index">{{ point }}</li>
+                </ul>
+              </div>
+              <p v-if="currentQuestion.result.missed_keywords?.length">
+                <strong>遗漏关键点：</strong>{{ currentQuestion.result.missed_keywords.join("、") }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div v-else class="question-list">
+          <div v-for="question in questions" :key="question.id" class="question-card">
+            <div class="question-meta">
+              <el-tag>{{ question.question_type }}</el-tag>
+              <el-tag type="success">{{ question.knowledge_path }}</el-tag>
+              <el-tag type="info">{{ question.difficulty }}</el-tag>
+              <el-tag v-if="question.result" :type="question.result.score >= 75 ? 'success' : 'warning'">
+                {{ question.result.score }} 分
+              </el-tag>
+            </div>
+
+            <h3>{{ question.order }}. {{ question.prompt }}</h3>
+
+            <el-input
+              v-model="question.userAnswer"
+              type="textarea"
+              :rows="4"
+              placeholder="请输入你的答案"
+            />
+
+            <div class="question-actions">
+              <el-button type="primary" :loading="submittingId === question.id" @click="submitQuestion(question)">提交并判题</el-button>
+            </div>
+
+            <div v-if="question.result" class="result-box">
+              <el-alert
+                :title="question.result.is_correct ? '回答较好，继续保持' : '需要继续巩固'"
+                :type="question.result.is_correct ? 'success' : 'warning'"
+                :closable="false"
+                show-icon
+              />
+              <p><strong>得分：</strong><span :class="scoreClass(question.result.score)">{{ question.result.score }}</span></p>
+              <p><strong>反馈：</strong>{{ question.result.feedback }}</p>
+              <p><strong>参考答案：</strong>{{ question.result.reference_answer }}</p>
+              <p><strong>解析：</strong>{{ question.result.explanation }}</p>
+              <p><strong>易错点：</strong>{{ question.result.common_mistake }}</p>
+              <div v-if="question.result.scoring_points?.length">
+                <strong>得分点：</strong>
+                <ul class="score-list">
+                  <li v-for="(point, index) in question.result.scoring_points" :key="index">{{ point }}</li>
+                </ul>
+              </div>
+              <p v-if="question.result.missed_keywords?.length">
+                <strong>遗漏关键点：</strong>{{ question.result.missed_keywords.join("、") }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </el-card>
+
+      <div class="side-panel-stack">
+        <el-card class="panel">
+          <template #header>实时学习画像</template>
+
+          <div class="side-section">
+            <div class="mini-title">当前进度</div>
+            <el-progress :percentage="progressPercent" />
+          </div>
+
+          <div class="side-section">
+            <div class="mini-title">最近得分</div>
+            <div v-if="recentScores.length" class="score-chip-list">
+              <el-tag
+                v-for="(item, index) in recentScores"
+                :key="index"
+                :type="item >= 85 ? 'success' : item >= 70 ? 'primary' : 'danger'"
+              >
+                {{ item }} 分
+              </el-tag>
+            </div>
+            <el-empty v-else description="提交题目后会在这里显示最近得分" />
+          </div>
+
+          <div class="side-section">
+            <div class="mini-title">当前薄弱知识点</div>
+            <div v-if="liveWeakPoints.length" class="weak-list">
+              <div v-for="item in liveWeakPoints" :key="item.name" class="weak-item">
+                <div class="weak-name">{{ item.name }}</div>
+                <el-progress :percentage="item.score" :status="item.score < 60 ? 'exception' : undefined" />
+              </div>
+            </div>
+            <el-empty v-else description="当前没有明显薄弱点" />
+          </div>
+        </el-card>
+
+        <el-card class="panel">
+          <template #header>下一步学习任务</template>
+          <el-timeline>
+            <el-timeline-item v-for="(item, index) in summary.next_tasks || []" :key="index">
+              {{ item }}
+            </el-timeline-item>
+          </el-timeline>
+        </el-card>
+      </div>
+    </div>
+
     <el-row :gutter="18">
-      <el-col :span="12">
+      <el-col :span="24">
         <el-card class="panel">
           <template #header>知识点掌握度</template>
           <el-table :data="summary.mastery || []" border>
-            <el-table-column prop="knowledge_point" label="知识点" />
-            <el-table-column prop="mastery_score" label="掌握度" width="120">
+            <el-table-column prop="knowledge_point" label="知识点" min-width="180" />
+            <el-table-column prop="mastery_score" label="掌握度" width="150">
               <template #default="scope">
                 <el-progress :percentage="Number(scope.row.mastery_score || 0)" />
               </template>
             </el-table-column>
-            <el-table-column prop="weak_reason" label="建议" />
+            <el-table-column prop="weak_reason" label="薄弱原因/建议" min-width="220" />
           </el-table>
-        </el-card>
-      </el-col>
-      <el-col :span="12">
-        <el-card class="panel">
-          <template #header>
-            <div class="header-line">
-              <span>下一步学习任务</span>
-              <el-button link type="primary" :loading="pathLoading" @click="regeneratePath">更新路径</el-button>
-            </div>
-          </template>
-          <el-timeline>
-            <el-timeline-item v-for="(item, index) in summary.next_tasks || []" :key="index">{{ item }}</el-timeline-item>
-          </el-timeline>
         </el-card>
       </el-col>
     </el-row>
@@ -95,76 +248,156 @@
 <script setup>
 import { computed, onMounted, reactive, ref } from "vue";
 import { ElMessage } from "element-plus";
-import { evaluationApi, pathApi } from "../api";
+import { evaluationApi } from "../api";
 
-const summary = reactive({ mastery: [], weak_points: [], next_tasks: [] });
-const loading = ref(false);
+const summary = reactive({
+  avg_score: 0,
+  quiz_count: 0,
+  mastery: [],
+  weak_points: [],
+  next_tasks: [],
+  profile: {},
+  bank_status: {},
+});
+
+const summaryLoading = ref(false);
+const bankLoading = ref(false);
+const questionLoading = ref(false);
 const submitting = ref(false);
-const pathLoading = ref(false);
-const latestResult = ref(null);
-const form = reactive({
-  knowledge_point: "需求分析",
-  question: "需求分析和总体设计有什么区别？请结合在线学习系统举例说明。",
-  answer: "需求分析关注用户目标、业务规则和系统边界，输出需求规格说明；总体设计把需求转化为系统架构和模块划分，例如把在线学习系统拆分为用户管理、课程资源、作业提交和学习评估等模块。",
+const submittingId = ref("");
+const activeQuestionIndex = ref(0);
+const questions = ref([]);
+const recommendedPoints = ref([]);
+const recentScores = ref([]);
+
+const generator = reactive({
+  mode: "single",
+  count: 5,
+  knowledgePoint: "",
 });
 
-const loopSummary = computed(() => {
-  const weakCount = (summary.weak_points || []).length;
-  if (!summary.quiz_count) return "尚未提交练习。提交答案后，系统会自动评分、更新掌握度、刷新画像薄弱点，并据此调整下一步学习任务。";
-  if (weakCount) return `已根据 ${summary.quiz_count} 次练习记录识别出 ${weakCount} 个薄弱点，建议点击“根据评估结果重规划路径”生成新的学习安排。`;
-  return `已完成 ${summary.quiz_count} 次练习，当前暂无明显薄弱点，可进入综合案例与项目实践阶段。`;
+const currentQuestion = computed(() => questions.value[activeQuestionIndex.value] || {});
+const answeredCount = computed(() => questions.value.filter((item) => item.result).length);
+const progressPercent = computed(() => {
+  if (!questions.value.length) return 0;
+  return Math.round((answeredCount.value / questions.value.length) * 100);
 });
+
+const liveWeakPoints = computed(() => {
+  const mastery = (summary.mastery || []).map((item) => ({
+    name: item.knowledge_point,
+    score: Number(item.mastery_score || 0),
+  }));
+  return mastery
+    .filter((item) => item.score < 75)
+    .sort((a, b) => a.score - b.score)
+    .slice(0, 5);
+});
+
+function scoreClass(score) {
+  const value = Number(score || 0);
+  if (value >= 85) return "score-good";
+  if (value >= 70) return "score-mid";
+  return "score-low";
+}
 
 async function loadSummary() {
-  loading.value = true;
+  summaryLoading.value = true;
   try {
     const res = await evaluationApi.summary();
-    if (res.code === 200) Object.assign(summary, res.data);
+    if (res.code === 200) {
+      Object.assign(summary, res.data || {});
+    } else {
+      ElMessage.error(res.msg || "评估数据加载失败");
+    }
   } finally {
-    loading.value = false;
+    summaryLoading.value = false;
   }
 }
 
-async function submit() {
-  submitting.value = true;
+async function rebuildBank() {
+  bankLoading.value = true;
   try {
-    const res = await evaluationApi.submit(form);
+    const res = await evaluationApi.rebuildBank({ force: true });
     if (res.code === 200) {
-      ElMessage.success(`评估完成：${res.data.score}分`);
-      latestResult.value = res.data;
+      ElMessage.success("知识点与题库已重建");
       await loadSummary();
+      await generateQuestions();
     } else {
-      ElMessage.error(res.msg);
+      ElMessage.error(res.msg || "题库重建失败");
     }
   } finally {
+    bankLoading.value = false;
+  }
+}
+
+async function generateQuestions() {
+  questionLoading.value = true;
+  try {
+    const res = await evaluationApi.questions({
+      count: generator.count,
+      knowledge_point: generator.knowledgePoint,
+    });
+    if (res.code === 200) {
+      activeQuestionIndex.value = 0;
+      recentScores.value = [];
+      recommendedPoints.value = res.data.recommended_knowledge_points || [];
+      questions.value = (res.data.questions || []).map((item) => ({
+        ...item,
+        userAnswer: "",
+        result: null,
+      }));
+      ElMessage.success(`已生成 ${questions.value.length} 道个性化检测题`);
+    } else {
+      ElMessage.error(res.msg || "检测题生成失败");
+    }
+  } finally {
+    questionLoading.value = false;
+  }
+}
+
+async function submitQuestion(question) {
+  if (!question.userAnswer?.trim()) {
+    ElMessage.warning("请先填写答案");
+    return;
+  }
+
+  submittingId.value = question.id;
+  submitting.value = true;
+  try {
+    const res = await evaluationApi.submit({
+      question: question.prompt,
+      answer: question.userAnswer,
+      knowledge_point: question.knowledge_path,
+      reference_answer: question.reference_answer,
+      explanation: question.explanation,
+      common_mistake: question.common_mistake,
+      scoring_points: question.scoring_points,
+    });
+    if (res.code === 200) {
+      question.result = res.data;
+      recentScores.value = [res.data.score, ...recentScores.value].slice(0, 6);
+      ElMessage.success(`判题完成，得到 ${res.data.score} 分`);
+      await loadSummary();
+
+      if (generator.mode === "single" && activeQuestionIndex.value < questions.value.length - 1) {
+        setTimeout(() => {
+          activeQuestionIndex.value += 1;
+        }, 500);
+      }
+    } else {
+      ElMessage.error(res.msg || "判题失败");
+    }
+  } finally {
+    submittingId.value = "";
     submitting.value = false;
   }
 }
 
-function profileUpdateText(update = {}) {
-  return Object.entries(update).map(([key, value]) => `${fieldLabel(key)}：${value}`).join("；");
-}
-
-function fieldLabel(key) {
-  return ({ weak_points: "薄弱点", course_progress: "课程进度", study_goal: "学习目标", study_style: "学习偏好" }[key] || key);
-}
-
-async function regeneratePath() {
-  pathLoading.value = true;
-  try {
-    const res = await pathApi.generate();
-    if (res.code === 200) {
-      ElMessage.success("已根据最新画像和掌握度重新生成学习路径，请到学习路径页面查看");
-      await loadSummary();
-    } else {
-      ElMessage.error(res.msg || "学习路径重规划失败，请先确认已生成学生画像");
-    }
-  } finally {
-    pathLoading.value = false;
-  }
-}
-
-onMounted(loadSummary);
+onMounted(async () => {
+  await loadSummary();
+  await generateQuestions();
+});
 </script>
 
 <style scoped>
@@ -172,34 +405,177 @@ onMounted(loadSummary);
   display: grid;
   gap: 18px;
 }
-.loop-alert {
-  margin-top: 18px;
-}
-.result-panel {
-  border-color: rgba(37, 99, 235, 0.18);
-  background: linear-gradient(135deg, #ffffff, #f8fbff);
-}
-.result-grid {
-  display: grid;
-  grid-template-columns: 180px 1fr;
-  gap: 22px;
-  align-items: center;
-}
-.result-score {
-  display: grid;
-  justify-items: center;
-  gap: 8px;
-}
-.result-grid h3 {
-  margin: 0 0 10px;
-}
-.result-grid p {
-  color: #475569;
-  line-height: 1.8;
-}
+
 .header-line {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.subtle {
+  color: #909399;
+  font-size: 13px;
+}
+
+.profile-box {
+  margin-top: 18px;
+}
+
+.section-title {
+  margin-bottom: 10px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.generator-grid {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 18px;
+}
+
+.workspace-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 18px;
+}
+
+.main-panel {
+  min-width: 0;
+}
+
+.side-panel-stack {
+  display: grid;
+  gap: 18px;
+}
+
+.question-list {
+  display: grid;
+  gap: 16px;
+}
+
+.question-card {
+  border: 1px solid #ebeef5;
+  border-radius: 12px;
+  padding: 18px;
+  background: #fafcff;
+}
+
+.question-card--focus {
+  background: linear-gradient(180deg, #fcfdff 0%, #f7faff 100%);
+}
+
+.question-meta {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.question-actions {
+  margin-top: 14px;
+  display: flex;
+  gap: 12px;
+}
+
+.result-box {
+  margin-top: 16px;
+  display: grid;
+  gap: 8px;
+}
+
+.score-list {
+  margin: 6px 0 0 18px;
+  padding: 0;
+}
+
+.focus-strip {
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #f5f9ff;
+  border: 1px solid #e4eefc;
+}
+
+.focus-strip-text {
+  margin-top: 8px;
+  display: flex;
+  justify-content: space-between;
+  color: #606266;
+  font-size: 13px;
+}
+
+.side-section {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.side-section:last-child {
+  margin-bottom: 0;
+}
+
+.mini-title {
+  font-size: 13px;
+  color: #606266;
+  font-weight: 600;
+}
+
+.score-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.weak-list {
+  display: grid;
+  gap: 12px;
+}
+
+.weak-item {
+  display: grid;
+  gap: 6px;
+}
+
+.weak-name {
+  font-size: 13px;
+  color: #303133;
+}
+
+.score-good {
+  color: #67c23a;
+  font-weight: 600;
+}
+
+.score-mid {
+  color: #409eff;
+  font-weight: 600;
+}
+
+.score-low {
+  color: #f56c6c;
+  font-weight: 600;
+}
+
+@media (max-width: 1200px) {
+  .workspace-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 960px) {
+  .generator-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .focus-strip-text {
+    flex-direction: column;
+    gap: 6px;
+  }
 }
 </style>

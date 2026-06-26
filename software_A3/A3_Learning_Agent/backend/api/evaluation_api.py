@@ -3,6 +3,7 @@ import json
 from flask import Blueprint, request
 
 from ai.agents import EvaluatorAgent
+from ai.assessment_pipeline import assessment_status, build_assessment_assets, generate_personalized_questions
 from db import mysql_db
 from utils import fail, require_fields, success
 from utils.auth_decorator import login_required
@@ -20,21 +21,80 @@ def _upsert_mastery(user_id: int, knowledge_point: str, score: int, weak_reason:
 
 
 def _refresh_profile_after_evaluation(user_id: int) -> dict:
-    mastery = mysql_db.query_all("SELECT knowledge_point, mastery_score FROM mastery_record WHERE user_id=%s ORDER BY mastery_score ASC", (user_id,))
+    mastery = mysql_db.query_all(
+        "SELECT knowledge_point, mastery_score FROM mastery_record WHERE user_id=%s ORDER BY mastery_score ASC",
+        (user_id,),
+    )
     if not mastery:
         return {}
+
     weak_items = [item for item in mastery if int(item.get("mastery_score") or 0) < 70]
     strong_items = [item for item in mastery if int(item.get("mastery_score") or 0) >= 85]
     update_data = {}
+
     if weak_items:
         update_data["weak_points"] = "、".join(item["knowledge_point"] for item in weak_items[:5])
     if strong_items:
-        update_data["course_progress"] = f"已较好掌握：{'、'.join(item['knowledge_point'] for item in strong_items[:5])}；需继续巩固：{update_data.get('weak_points', '综合应用能力')}"
+        strong_text = "、".join(item["knowledge_point"] for item in strong_items[:5])
+        weak_text = update_data.get("weak_points", "综合应用能力")
+        update_data["course_progress"] = f"当前优势知识点：{strong_text}；仍需巩固：{weak_text}"
     elif weak_items:
-        update_data["course_progress"] = f"当前薄弱知识点：{update_data['weak_points']}，建议优先复习并完成基础练习。"
+        update_data["course_progress"] = f"当前薄弱知识点：{update_data['weak_points']}，建议优先复习并完成对应检测题。"
+
     if update_data:
         mysql_db.update("student_profile", update_data, "user_id=%s", (user_id,))
     return update_data
+
+
+def _get_profile(user_id: int) -> dict:
+    return mysql_db.query_one("SELECT * FROM student_profile WHERE user_id=%s", (user_id,)) or {}
+
+
+def _get_mastery(user_id: int) -> list[dict]:
+    return mysql_db.query_all(
+        "SELECT * FROM mastery_record WHERE user_id=%s ORDER BY mastery_score ASC, update_time DESC",
+        (user_id,),
+    )
+
+
+@evaluation_bp.post("/rebuild-bank")
+@login_required
+def rebuild_bank():
+    try:
+        payload = request.get_json(silent=True) or {}
+        result = build_assessment_assets(force=bool(payload.get("force", True)))
+        return success(result, "知识点与题库已重建")
+    except Exception as exc:
+        return fail("题库重建失败", 500, {"error": str(exc)})
+
+
+@evaluation_bp.get("/bank-status")
+@login_required
+def bank_status():
+    try:
+        return success(assessment_status(), "题库状态查询成功")
+    except Exception as exc:
+        return fail("题库状态查询失败", 500, {"error": str(exc)})
+
+
+@evaluation_bp.post("/questions")
+@login_required
+def generate_questions():
+    try:
+        payload = request.get_json(silent=True) or {}
+        profile = _get_profile(request.user_id)
+        mastery = _get_mastery(request.user_id)
+        count = int(payload.get("count") or 5)
+        knowledge_point = str(payload.get("knowledge_point") or "")
+        result = generate_personalized_questions(profile, mastery, count=count, knowledge_point=knowledge_point)
+        result["profile_snapshot"] = {
+            "weak_points": profile.get("weak_points", ""),
+            "study_goal": profile.get("study_goal", ""),
+            "course_progress": profile.get("course_progress", ""),
+        }
+        return success(result, "个性化检测题生成成功")
+    except Exception as exc:
+        return fail("个性化检测题生成失败", 500, {"error": str(exc)})
 
 
 @evaluation_bp.post("/submit")
@@ -48,20 +108,29 @@ def submit_quiz():
 
         knowledge_point = str(payload.get("knowledge_point") or "机器学习基础")
         reference_answer = str(payload.get("reference_answer") or "")
-        result = evaluator_agent.grade(str(payload["question"]), str(payload["answer"]), reference_answer, knowledge_point)
+        result = evaluator_agent.grade(
+            str(payload["question"]),
+            str(payload["answer"]),
+            reference_answer,
+            knowledge_point,
+            str(payload.get("explanation") or ""),
+            str(payload.get("common_mistake") or ""),
+            payload.get("scoring_points") or [],
+        )
         record_id = mysql_db.insert(
             "quiz_result",
             {
                 "user_id": request.user_id,
                 "question": str(payload["question"]),
                 "answer": str(payload["answer"]),
-                "reference_answer": reference_answer,
+                "reference_answer": result["reference_answer"],
                 "score": result["score"],
                 "feedback": result["feedback"],
                 "knowledge_point": knowledge_point,
             },
         )
-        _upsert_mastery(request.user_id, knowledge_point, int(result["score"]), result["feedback"])
+
+        _upsert_mastery(request.user_id, knowledge_point, int(result["score"]), result["weak_reason"])
         profile_update = _refresh_profile_after_evaluation(request.user_id)
         mysql_db.insert(
             "learning_event",
@@ -69,7 +138,15 @@ def submit_quiz():
                 "user_id": request.user_id,
                 "event_type": "finish_quiz",
                 "knowledge_point": knowledge_point,
-                "detail": json.dumps({"score": result["score"], "question": payload["question"]}, ensure_ascii=False),
+                "detail": json.dumps(
+                    {
+                        "score": result["score"],
+                        "question": payload["question"],
+                        "is_correct": result["is_correct"],
+                        "missed_keywords": result["missed_keywords"],
+                    },
+                    ensure_ascii=False,
+                ),
             },
         )
         return success({"id": record_id, **result, "profile_update": profile_update}, "练习提交成功")
@@ -81,18 +158,25 @@ def submit_quiz():
 @login_required
 def summary():
     try:
-        quiz_results = mysql_db.query_all("SELECT * FROM quiz_result WHERE user_id=%s ORDER BY create_time DESC LIMIT 20", (request.user_id,))
-        mastery = mysql_db.query_all("SELECT * FROM mastery_record WHERE user_id=%s ORDER BY mastery_score ASC", (request.user_id,))
-        events = mysql_db.query_all("SELECT * FROM learning_event WHERE user_id=%s ORDER BY create_time DESC LIMIT 20", (request.user_id,))
-        avg_score = 0
-        if quiz_results:
-            avg_score = round(sum(int(item.get("score") or 0) for item in quiz_results) / len(quiz_results), 1)
+        quiz_results = mysql_db.query_all(
+            "SELECT * FROM quiz_result WHERE user_id=%s ORDER BY create_time DESC LIMIT 20",
+            (request.user_id,),
+        )
+        mastery = _get_mastery(request.user_id)
+        events = mysql_db.query_all(
+            "SELECT * FROM learning_event WHERE user_id=%s ORDER BY create_time DESC LIMIT 20",
+            (request.user_id,),
+        )
+        avg_score = round(sum(int(item.get("score") or 0) for item in quiz_results) / len(quiz_results), 1) if quiz_results else 0
         weak_points = [item for item in mastery if int(item.get("mastery_score") or 0) < 70]
-        next_tasks = []
         if weak_points:
-            next_tasks = [f"复习 {item['knowledge_point']}，完成基础概念题并查看相关课程讲解文档" for item in weak_points[:3]]
+            next_tasks = [f"优先复习 {item['knowledge_point']}，并完成对应练习题与解析回顾。" for item in weak_points[:3]]
         else:
-            next_tasks = ["完成监督学习与无监督学习综合练习", "阅读神经网络与深度学习章节", "尝试运行代码实操案例"]
+            next_tasks = [
+                "继续完成综合应用题，巩固知识迁移能力。",
+                "结合资源区的代码案例完成一次实操。",
+                "挑选尚未覆盖的知识点继续检测，完善掌握图谱。",
+            ]
         return success(
             {
                 "avg_score": avg_score,
@@ -102,6 +186,8 @@ def summary():
                 "quiz_results": quiz_results,
                 "events": events,
                 "next_tasks": next_tasks,
+                "profile": _get_profile(request.user_id),
+                "bank_status": assessment_status(),
             },
             "学习评估查询成功",
         )
