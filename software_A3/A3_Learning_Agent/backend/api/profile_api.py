@@ -265,7 +265,8 @@ def create_profile():
             return fail("学生对话未通过内容审核", 403)
 
         profile_payload = payload.get("profile") if isinstance(payload.get("profile"), dict) else None
-        profile = profile_payload or profile_agent.analyze(dialogue)
+        analyzed_profile = profile_agent.analyze(dialogue)
+        profile = profile_agent._merge_profile(profile_payload or {}, analyzed_profile)
         data = {"user_id": request.user_id, "profile_session_id": session_id, **{field: profile.get(field, DEFAULT_VALUE) for field in PROFILE_FIELDS}}
         mysql_db.upsert_by_unique_key("student_profile", data, update_fields=["profile_session_id", *PROFILE_FIELDS])
         title = data.get("profile_summary") or data.get("target_course") or data.get("major") or session.get("title")

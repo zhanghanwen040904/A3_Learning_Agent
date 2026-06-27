@@ -35,7 +35,6 @@
             <span>欢迎回来</span>
             <p>登录后继续使用你的个性化学习空间</p>
           </div>
-          <span class="login-badge">AI 学习助手</span>
         </div>
 
         <el-form :model="form" label-position="top" class="login-form" @keyup.enter="login">
@@ -342,21 +341,6 @@ async function register() {
   line-height: 1.7;
 }
 
-.login-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 22px;
-  padding: 0 8px;
-  border: 1px solid #bbf7d0;
-  border-radius: 999px;
-  background: #f0fdf4;
-  color: #16a34a;
-  font-size: 11px;
-  font-weight: 500;
-  line-height: 1;
-  white-space: nowrap;
-}
 
 .login-form {
   margin-top: 26px;

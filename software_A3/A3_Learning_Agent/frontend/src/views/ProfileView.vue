@@ -24,7 +24,6 @@
               @click.stop="deleteSession(item)"
             >删除</el-button>
           </div>
-          <span>{{ item.profile_summary || item.target_course || '空白画像' }}</span>
         </div>
       </div>
       <el-alert
@@ -116,12 +115,12 @@
             <strong>{{ previewProfile.major }}</strong>
           </div>
           <div class="summary-item">
-            <span>目标课程</span>
-            <strong>{{ previewProfile.target_course }}</strong>
+            <span>基础情况</span>
+            <strong>{{ previewProfile.knowledge_level }}</strong>
           </div>
           <div class="summary-item">
-            <span>困难场景</span>
-            <strong>{{ previewProfile.challenge_scene }}</strong>
+            <span>知识短板</span>
+            <strong>{{ previewProfile.weak_points }}</strong>
           </div>
           <div class="summary-item">
             <span>资源偏好</span>
@@ -156,7 +155,12 @@ import { ElMessage, ElMessageBox } from "element-plus";
 import { ACTIVE_PROFILE_SESSION_KEY, profileApi, setActiveProfileSessionId } from "../api";
 
 const DEFAULT_VALUE = "待进一步观察";
-const STORAGE_PREFIX = "a3_learning_agent_profile_conversation_v2";
+const STORAGE_PREFIX = "a3_learning_agent_profile_conversation_v3";
+const WELCOME_MESSAGE = "\u4f60\u597d\uff0c\u6211\u662f\u5927\u6a21\u578b\u753b\u50cf\u52a9\u624b\u3002\u4f60\u53ef\u4ee5\u76f4\u63a5\u7528\u4e00\u6bb5\u81ea\u7136\u8bed\u8a00\u63cf\u8ff0\u5b66\u4e60\u60c5\u51b5\uff0c\u6211\u4f1a\u81ea\u52a8\u62bd\u53d6\u4e13\u4e1a\u3001\u76ee\u6807\u3001\u57fa\u7840\u3001\u8584\u5f31\u70b9\u3001\u504f\u597d\u7b49\u753b\u50cf\u7ef4\u5ea6\uff0c\u5e76\u6839\u636e\u7f3a\u5931\u4fe1\u606f\u52a8\u6001\u8ffd\u95ee\u3002\u4f60\u53ef\u4ee5\u7528\u4e00\u6bb5\u8bdd\u81ea\u7531\u63cf\u8ff0\u4f60\u7684\u4e13\u4e1a\u3001\u8bfe\u7a0b\u76ee\u6807\u3001\u57fa\u7840\u3001\u8584\u5f31\u70b9\u548c\u504f\u597d\u7684\u5b66\u4e60\u65b9\u5f0f\u3002";
+const LEGACY_WELCOME_MESSAGES = [
+  "\u4f60\u597d\uff0c\u6211\u662f\u5927\u6a21\u578b\u753b\u50cf\u52a9\u624b\u3002\u4f60\u53ef\u4ee5\u76f4\u63a5\u7528\u4e00\u6bb5\u81ea\u7136\u8bed\u8a00\u63cf\u8ff0\u5b66\u4e60\u60c5\u51b5\uff0c\u6211\u4f1a\u81ea\u52a8\u62bd\u53d6\u4e13\u4e1a\u3001\u76ee\u6807\u3001\u57fa\u7840\u3001\u8584\u5f31\u70b9\u3001\u504f\u597d\u7b49\u753b\u50cf\u7ef4\u5ea6\uff0c\u5e76\u6839\u636e\u7f3a\u5931\u4fe1\u606f\u52a8\u6001\u8ffd\u95ee\u3002",
+  "\u4f60\u53ef\u4ee5\u7528\u4e00\u6bb5\u8bdd\u81ea\u7531\u63cf\u8ff0\u4f60\u7684\u4e13\u4e1a\u3001\u8bfe\u7a0b\u76ee\u6807\u3001\u57fa\u7840\u3001\u8584\u5f31\u70b9\u548c\u504f\u597d\u7684\u5b66\u4e60\u65b9\u5f0f\u3002\u6211\u4f1a\u81ea\u52a8\u63d0\u53d6\u753b\u50cf\uff0c\u5e76\u53ea\u8ffd\u95ee\u7f3a\u5931\u6216\u6a21\u7cca\u7684\u4fe1\u606f\u3002",
+];
 
 const prompts = [
   { id: "major", label: "专业背景", question: "你现在的专业或方向是什么？如果这门课和你的专业结合很紧，也可以一起说。" },
@@ -243,15 +247,57 @@ function assistantMessage(content) {
   return { role: "assistant", content, time: timeLabel() };
 }
 
+function sameMessage(a, b) {
+  return a?.role === b?.role && normalizeText(a?.content) === normalizeText(b?.content);
+}
+
+function isWelcomeContent(content) {
+  const normalized = normalizeText(content);
+  return normalized === WELCOME_MESSAGE
+    || LEGACY_WELCOME_MESSAGES.includes(normalized)
+    || (normalized.includes("\u753b\u50cf\u52a9\u624b") && normalized.includes("\u81ea\u7136\u8bed\u8a00\u63cf\u8ff0"));
+}
+
+function cleanMessages(list = []) {
+  const cleaned = [];
+  let welcomeInserted = false;
+
+  for (const item of list) {
+    if (!item?.role || !normalizeText(item.content)) continue;
+    const content = normalizeText(item.content);
+
+    if (item.role === "assistant" && isWelcomeContent(content)) {
+      if (!welcomeInserted) {
+        cleaned.push({ ...item, content: WELCOME_MESSAGE });
+        welcomeInserted = true;
+      }
+      continue;
+    }
+
+    const next = { ...item, content };
+    if (!sameMessage(cleaned[cleaned.length - 1], next)) cleaned.push(next);
+  }
+
+  if (!cleaned.length) return cleaned;
+  if (cleaned[0].role !== "assistant" || !isWelcomeContent(cleaned[0].content)) {
+    cleaned.unshift(assistantMessage(WELCOME_MESSAGE));
+  }
+  return cleaned;
+}
+
+function pushAssistant(content) {
+  const msg = assistantMessage(normalizeText(content));
+  if (!sameMessage(messages.value[messages.value.length - 1], msg)) {
+    messages.value.push(msg);
+  }
+}
+
 function userMessage(content) {
   return { role: "user", content, time: timeLabel() };
 }
 
 function initConversation() {
-  messages.value = [
-    assistantMessage("你好，我是大模型画像助手。你可以直接用一段自然语言描述学习情况，我会自动抽取专业、目标、基础、薄弱点、偏好等画像维度，并根据缺失信息动态追问。"),
-    assistantMessage(nextQuestion.value),
-  ];
+  messages.value = [assistantMessage(WELCOME_MESSAGE)];
 }
 
 function fieldLabel(key) {
@@ -314,7 +360,9 @@ function restoreState() {
     const saved = JSON.parse(raw);
     if (!Array.isArray(saved.messages) || saved.messages.length === 0) return false;
 
-    messages.value = saved.messages;
+    const restoredMessages = cleanMessages(saved.messages);
+    if (!restoredMessages.length) return false;
+    messages.value = restoredMessages;
     draft.value = saved.draft || "";
     Object.assign(profile, saved.profile || {});
     missingFields.value = Array.isArray(saved.missingFields) ? saved.missingFields : [];
@@ -331,7 +379,7 @@ function restoreState() {
 }
 
 function applyState(saved = {}) {
-  messages.value = Array.isArray(saved.messages) && saved.messages.length ? saved.messages : [];
+  messages.value = Array.isArray(saved.messages) && saved.messages.length ? cleanMessages(saved.messages) : [];
   draft.value = saved.draft || "";
   Object.keys(profile).forEach((key) => delete profile[key]);
   Object.assign(profile, saved.profile || {});
@@ -356,8 +404,11 @@ async function loadConversationRemote() {
   try {
     const res = await profileApi.getConversation();
     if (res.code === 200 && Array.isArray(res.data?.messages) && res.data.messages.length) {
-      messages.value = res.data.messages;
-      persistState();
+      const remoteMessages = cleanMessages(res.data.messages);
+      if (remoteMessages.length && remoteMessages.length >= messages.value.length) {
+        messages.value = remoteMessages;
+        persistState();
+      }
     }
   } catch {
     // 本地会话仍可继续使用。
@@ -476,6 +527,12 @@ async function sendMessage() {
   }
   if (sending.value || loading.value) return;
 
+  const latest = messages.value[messages.value.length - 1];
+  if (latest?.role === "user" && normalizeText(latest.content) === text) {
+    ElMessage.warning("这条回答已经发送过了");
+    return;
+  }
+
   sending.value = true;
   messages.value.push(userMessage(text));
   draft.value = "";
@@ -496,9 +553,10 @@ async function sendMessage() {
     confidence.value = Number(res.data.confidence || 0);
     isComplete.value = Boolean(res.data.is_complete);
     modelEnabled.value = Boolean(res.data.model_enabled);
-    messages.value.push(assistantMessage(nextQuestion.value));
+    pushAssistant(nextQuestion.value);
+    messages.value = cleanMessages(messages.value);
     persistState();
-    saveConversationRemote();
+    await saveConversationRemote();
   } catch (error) {
     messages.value.push(assistantMessage("大模型画像对话接口异常，请确认后端已启动，并检查讯飞配置或 MOCK_AI 设置。"));
     ElMessage.error(error?.message || "发送失败，请重试");
@@ -781,14 +839,6 @@ onBeforeUnmount(() => {
   line-height: 1.55;
 }
 
-.session-item span {
-  color: #667085;
-  font-size: 11px;
-  font-weight: 400;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
 
 .session-item.active {
   border-color: #84caff;
