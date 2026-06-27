@@ -6,6 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="9027e698-1010-4ba9-9a6d-825f65cb4ae8" name="更改" comment="这次更改了部分问题，学习资源中的图片可以正常显示，思维导图可以正常呈现，但不够美观。学习路径的生成出来的内容进行格式规定。智能问答可以正常问答，但是输出的标题顺序仍然需要调整，图片可以正常生成并输出，但是格式仍需要调整。">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/A3_Learning_Agent/backend/ai/agents/profile_agent.py" beforeDir="false" afterPath="$PROJECT_DIR$/software_A3/A3_Learning_Agent/backend/ai/agents/profile_agent.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/A3_Learning_Agent/backend/api/profile_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/software_A3/A3_Learning_Agent/backend/api/profile_api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/A3_Learning_Agent/frontend/src/views/AuthView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/software_A3/A3_Learning_Agent/frontend/src/views/AuthView.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/A3_Learning_Agent/frontend/src/views/ProfileView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/software_A3/A3_Learning_Agent/frontend/src/views/ProfileView.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -13,7 +17,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="1129" />
+    <option name="cachedIndexableFilesCount" value="348" />
   </component>
   <component name="Git.Settings">
     <favorite-branches>
@@ -120,29 +124,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.highlight.mappings&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.highlight.symlinks&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.show.date&quot;: &quot;false&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.show.permissions&quot;: &quot;false&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.show.size&quot;: &quot;false&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;zhanghanwen&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/软件/pycharm_professional‌/my_pythonProgram&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "WebServerToolWindowPanel.toolwindow.highlight.mappings": "true",
+    "WebServerToolWindowPanel.toolwindow.highlight.symlinks": "true",
+    "WebServerToolWindowPanel.toolwindow.show.date": "false",
+    "WebServerToolWindowPanel.toolwindow.show.permissions": "false",
+    "WebServerToolWindowPanel.toolwindow.show.size": "false",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "xuduo",
+    "last_opened_file_path": "D:/软件/pycharm_professional‌/my_pythonProgram",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\知识问答\software_A3\A3_Learning_Agent\backend" />
@@ -152,8 +156,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-PY-252.27397.106" />
-        <option value="bundled-python-sdk-4e2b1448bda8-9a97661f3031-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.27397.106" />
+        <option value="bundled-python-sdk-c59985aa861c-c2ffad84badb-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-261.24374.152" />
       </set>
     </attachedChunks>
   </component>
@@ -177,6 +180,7 @@
       <workItem from="1782199382663" duration="5375000" />
       <workItem from="1782278023268" duration="6250000" />
       <workItem from="1782369454165" duration="9024000" />
+      <workItem from="1782535577032" duration="8730000" />
     </task>
     <task id="LOCAL-00002" summary="这次更改了部分问题，学习资源中的图片可以正常显示，思维导图可以正常呈现，但不够美观。学习路径的生成出来的内容进行格式规定。智能问答可以正常问答，但是输出的标题顺序仍然需要调整，图片可以正常生成并输出，但是格式仍需要调整。">
       <option name="closed" value="true" />
