@@ -92,11 +92,17 @@
 
             <h3>{{ currentQuestion.order }}. {{ currentQuestion.prompt }}</h3>
 
+            <div v-if="currentQuestion.options?.length" class="option-list">
+              <div v-for="option in currentQuestion.options" :key="option.label" class="option-item">
+                <strong>{{ option.label }}.</strong> {{ option.text }}
+              </div>
+            </div>
+
             <el-input
               v-model="currentQuestion.userAnswer"
               type="textarea"
               :rows="5"
-              placeholder="请输入你的答案"
+              :placeholder="currentQuestion.options?.length ? '请输入选项字母或选项内容' : '请输入你的答案'"
             />
 
             <div class="question-actions">
@@ -143,11 +149,17 @@
 
             <h3>{{ question.order }}. {{ question.prompt }}</h3>
 
+            <div v-if="question.options?.length" class="option-list">
+              <div v-for="option in question.options" :key="option.label" class="option-item">
+                <strong>{{ option.label }}.</strong> {{ option.text }}
+              </div>
+            </div>
+
             <el-input
               v-model="question.userAnswer"
               type="textarea"
               :rows="4"
-              placeholder="请输入你的答案"
+              :placeholder="question.options?.length ? '请输入选项字母或选项内容' : '请输入你的答案'"
             />
 
             <div class="question-actions">
@@ -365,15 +377,18 @@ async function submitQuestion(question) {
   submittingId.value = question.id;
   submitting.value = true;
   try {
-    const res = await evaluationApi.submit({
-      question: question.prompt,
-      answer: question.userAnswer,
-      knowledge_point: question.knowledge_path,
-      reference_answer: question.reference_answer,
-      explanation: question.explanation,
-      common_mistake: question.common_mistake,
-      scoring_points: question.scoring_points,
-    });
+      const res = await evaluationApi.submit({
+        question: question.prompt,
+        answer: question.userAnswer,
+        knowledge_point: question.knowledge_path,
+        reference_answer: question.reference_answer,
+        explanation: question.explanation,
+        common_mistake: question.common_mistake,
+        scoring_points: question.scoring_points,
+        question_type: question.question_type,
+        feedback_correct: question.feedback_correct,
+        feedback_wrong: question.feedback_wrong,
+      });
     if (res.code === 200) {
       question.result = res.data;
       recentScores.value = [res.data.score, ...recentScores.value].slice(0, 6);
@@ -411,6 +426,21 @@ onMounted(async () => {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+}
+
+.option-list {
+  margin: 12px 0;
+  padding: 12px 14px;
+  background: #f8fbff;
+  border: 1px solid #e3eefc;
+  border-radius: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.option-item {
+  line-height: 1.7;
+  color: #334155;
 }
 
 .header-actions {

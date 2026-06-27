@@ -116,6 +116,9 @@ def submit_quiz():
             str(payload.get("explanation") or ""),
             str(payload.get("common_mistake") or ""),
             payload.get("scoring_points") or [],
+            str(payload.get("question_type") or ""),
+            str(payload.get("feedback_correct") or ""),
+            str(payload.get("feedback_wrong") or ""),
         )
         record_id = mysql_db.insert(
             "quiz_result",

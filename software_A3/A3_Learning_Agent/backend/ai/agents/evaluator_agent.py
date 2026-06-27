@@ -85,6 +85,68 @@ class EvaluatorAgent:
                 matched += 1
         return matched / len(ref_units)
 
+    def _extract_reference_choice_answer(self, reference: str) -> tuple[str, str]:
+        reference = str(reference or "").strip()
+        match = re.match(r"^\s*([A-H]+)\s*[：:]\s*(.+?)\s*$", reference)
+        if match:
+            return match.group(1).strip().upper(), match.group(2).strip()
+        letters = re.findall(r"[A-H]", reference.upper())
+        if letters and len(reference) <= 8:
+            return "".join(letters), ""
+        return "", ""
+
+    def _normalize_choice_answer(self, answer: str) -> str:
+        return "".join(re.findall(r"[A-H]", str(answer or "").upper()))
+
+    def _grade_objective(
+        self,
+        answer_text: str,
+        reference: str,
+        knowledge_point: str,
+        explanation: str,
+        common_mistake: str,
+        scoring_points: list,
+        feedback_correct: str = "",
+        feedback_wrong: str = "",
+    ) -> dict:
+        reference_code, reference_text = self._extract_reference_choice_answer(reference)
+        normalized_answer = self._normalize_text(answer_text)
+        normalized_reference_text = self._normalize_text(reference_text)
+        answer_code = self._normalize_choice_answer(answer_text)
+
+        exact_code_match = bool(reference_code and answer_code == reference_code)
+        exact_text_match = bool(reference_text and normalized_answer == normalized_reference_text)
+        inclusive_text_match = bool(reference_text and normalized_reference_text and normalized_reference_text in normalized_answer)
+
+        if exact_code_match or exact_text_match or inclusive_text_match:
+            score = 100
+            is_correct = True
+            feedback = feedback_correct or "回答正确，客观题答案命中。"
+            matched_keywords = [reference_code or reference_text or knowledge_point]
+            missed_keywords = []
+            weak_reason = "当前题目回答正确，可以继续下一题。"
+        else:
+            score = 0
+            is_correct = False
+            feedback = feedback_wrong or "回答不正确，客观题需要准确作答。"
+            matched_keywords = []
+            missed_keywords = [reference_code or reference_text or knowledge_point]
+            weak_reason = f"当前题目未正确命中客观题答案：{reference_code or reference_text or knowledge_point}"
+
+        return {
+            "score": score,
+            "is_correct": is_correct,
+            "feedback": feedback,
+            "knowledge_point": knowledge_point,
+            "reference_answer": reference,
+            "explanation": explanation or "这是一道客观题，作答时应直接锁定正确选项或标准答案内容。",
+            "common_mistake": common_mistake or "常见问题是只凭印象作答，没有准确对应到标准选项。",
+            "scoring_points": scoring_points,
+            "matched_keywords": matched_keywords,
+            "missed_keywords": missed_keywords,
+            "weak_reason": weak_reason,
+        }
+
     def grade(
         self,
         question: str,
@@ -94,10 +156,26 @@ class EvaluatorAgent:
         explanation: str = "",
         common_mistake: str = "",
         scoring_points: list | None = None,
+        question_type: str = "",
+        feedback_correct: str = "",
+        feedback_wrong: str = "",
     ) -> dict:
         answer_text = str(answer or "").strip()
         reference = str(reference_answer or question or "").strip()
         scoring_points = scoring_points or []
+        question_type = str(question_type or "").strip().lower()
+
+        if question_type in {"单选题", "多选题", "判断题", "single_choice", "multiple_choice", "true_false"}:
+            return self._grade_objective(
+                answer_text,
+                reference,
+                knowledge_point,
+                explanation,
+                common_mistake,
+                scoring_points,
+                feedback_correct,
+                feedback_wrong,
+            )
 
         normalized_answer = self._normalize_text(answer_text)
         normalized_reference = self._normalize_text(reference)
