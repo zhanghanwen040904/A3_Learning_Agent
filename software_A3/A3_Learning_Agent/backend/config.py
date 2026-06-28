@@ -77,6 +77,7 @@ class Config:
     JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY", "a3_learner_2026_softcup")
     JWT_EXPIRE_HOURS: int = int(os.getenv("JWT_EXPIRE_HOURS", "24"))
 
+    AI_PROVIDER: str = os.getenv("AI_PROVIDER", "xunfei").lower()
     AI_RETRY_TIMES: int = int(os.getenv("AI_RETRY_TIMES", "3"))
     AI_RETRY_INTERVAL: float = float(os.getenv("AI_RETRY_INTERVAL", "1.2"))
     AI_TIMEOUT: int = int(os.getenv("AI_TIMEOUT", "90"))

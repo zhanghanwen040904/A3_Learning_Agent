@@ -98,7 +98,7 @@
       </el-aside>
 
       <el-container class="main-shell">
-        <el-main :class="{ 'auth-main': isAuthPage }">
+        <el-main :class="{ 'auth-main': isAuthPage, 'profile-main': route.path === '/profile' }">
           <router-view />
         </el-main>
       </el-container>
@@ -640,6 +640,10 @@ function syncActiveSession() {
   height: 100vh;
   overflow: auto;
   padding: 0;
+}
+
+.main-shell :deep(.el-main.profile-main) {
+  overflow: hidden;
 }
 
 .auth-main {
