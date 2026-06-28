@@ -1,42 +1,37 @@
 <template>
-  <div class="page">
-    <el-card class="panel">
-      <template #header>
-        <div class="header-line">
-          <div>
-            <strong>个性化学习路径</strong>
-            <p>学习路径会跟随当前画像对话框自动切换。新建画像或重新开始后，这里会先保持空白。</p>
-          </div>
-          <el-button type="primary" :loading="loading" @click="generatePath">生成学习路径</el-button>
+  <div class="page path-page">
+    <el-card class="panel hero-card">
+      <div class="header-line">
+        <div>
+          <strong>个性化学习路径</strong>
+          <p>学习路径会跟随当前画像会话自动切换，新建画像或重新开始后这里会先保持空白。</p>
         </div>
-      </template>
+        <el-button type="primary" :loading="loading" @click="generatePath">生成学习路径</el-button>
+      </div>
 
       <el-progress v-if="loading" :percentage="progress" striped striped-flow />
-
-      <el-empty
-        v-if="!loading && !paths.length"
-        description="当前画像还没有学习路径。请先生成当前画像，再点击生成学习路径。"
-      />
-
-      <el-timeline v-else class="timeline">
-        <el-timeline-item
-          v-for="(item, index) in paths"
-          :key="item.id || index"
-          :timestamp="item.create_time || '刚刚生成'"
-          placement="top"
-        >
-          <el-card>
-            <template #header>
-              <div class="header-line">
-                <span>学习路径 #{{ item.id || index + 1 }}</span>
-                <el-tag>{{ item.status || "active" }}</el-tag>
-              </div>
-            </template>
-            <div class="markdown-body" v-html="renderMarkdown(item.path_content)"></div>
-          </el-card>
-        </el-timeline-item>
-      </el-timeline>
     </el-card>
+
+    <el-empty
+      v-if="!loading && !paths.length"
+      class="panel empty-panel"
+      description="当前画像还没有学习路径，请先生成画像，再点击上方按钮。"
+    />
+
+    <div v-else class="path-list">
+      <el-card v-for="(item, index) in paths" :key="item.id || index" class="panel path-card">
+        <template #header>
+          <div class="header-line">
+            <div>
+              <strong>学习路径 {{ item.id || index + 1 }}</strong>
+              <p>{{ item.create_time || "刚刚生成" }}</p>
+            </div>
+            <el-tag>{{ item.status || "active" }}</el-tag>
+          </div>
+        </template>
+        <div class="markdown-body path-content" v-html="renderMarkdown(item.path_content)"></div>
+      </el-card>
+    </div>
   </div>
 </template>
 
@@ -56,11 +51,6 @@ function normalizeMarkdown(text) {
   const fenced = source.match(/^```(?:markdown|md|text)?\s*([\s\S]*?)\s*```$/i);
   if (fenced) source = fenced[1].trim();
   source = source.replace(/^\s*```(?:markdown|md|text|json)?\s*$/gim, "").replace(/^\s*```\s*$/gm, "");
-  source = source
-    .split("\n")
-    .map((line) => (line.startsWith("    ") && !line.startsWith("        ") ? line.slice(4) : line))
-    .join("\n");
-  source = source.replace(/^\s*[-*]\s*\*\*(目标|学习任务|推荐资源|练习方式|评估指标)\*\*\s*[:：]/gm, "**$1：**");
   return source.trim();
 }
 
@@ -70,9 +60,7 @@ function renderMarkdown(text) {
 
 async function loadPaths() {
   const res = await pathApi.list();
-  if (res.code === 200) {
-    paths.value = res.data || [];
-  }
+  if (res.code === 200) paths.value = res.data || [];
 }
 
 async function generatePath() {
@@ -100,72 +88,68 @@ onMounted(loadPaths);
 </script>
 
 <style scoped>
+.path-page {
+  display: grid;
+  gap: 18px;
+}
+
 .header-line {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
 }
+
 .header-line p {
   margin: 6px 0 0;
   color: #64748b;
-  font-weight: 400;
 }
-.timeline {
-  margin-top: 22px;
+
+.empty-panel {
+  padding: 34px;
 }
-.markdown-body {
-  padding: 4px 2px 8px;
-  line-height: 1.75;
+
+.path-list {
+  display: grid;
+  gap: 16px;
+}
+
+.path-content {
+  line-height: 1.8;
   color: #0f172a;
 }
-.markdown-body :deep(h1) {
+
+.path-content :deep(h1) {
   margin: 0 0 18px;
-  padding: 18px 20px;
+  padding: 16px 18px;
   border: 1px solid #bfdbfe;
-  border-radius: 8px;
+  border-radius: 14px;
   background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
   color: #1d4ed8;
-  font-size: 24px;
+  font-size: 22px;
 }
-.markdown-body :deep(h2) {
+
+.path-content :deep(h2) {
   margin: 24px 0 12px;
   padding: 12px 16px;
-  border-left: 5px solid #3b82f6;
-  border-radius: 8px;
+  border-left: 4px solid #3b82f6;
   background: #f8fbff;
   color: #0f3a78;
-  font-size: 20px;
+  font-size: 18px;
 }
-.markdown-body :deep(h3) {
+
+.path-content :deep(h3) {
   margin: 16px 0 10px;
   color: #1e40af;
-  font-size: 17px;
+  font-size: 16px;
 }
-.markdown-body :deep(p) {
-  margin: 8px 0;
-}
-.markdown-body :deep(strong) {
-  display: inline-block;
-  margin: 8px 0 4px;
-  color: #1d4ed8;
-}
-.markdown-body :deep(ul),
-.markdown-body :deep(ol) {
-  margin: 6px 0 12px;
+
+.path-content :deep(ul),
+.path-content :deep(ol) {
   padding-left: 22px;
 }
-.markdown-body :deep(li) {
+
+.path-content :deep(li) {
   margin: 6px 0;
-  line-height: 1.8;
-}
-.markdown-body :deep(pre) {
-  overflow: auto;
-  padding: 16px;
-  border: 1px solid #bfdbfe;
-  border-radius: 8px;
-  background: #f8fbff;
-  color: #0f172a;
-  white-space: pre-wrap;
 }
 </style>
