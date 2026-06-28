@@ -1,3 +1,4 @@
+import json
 import os
 from dataclasses import dataclass
 from pathlib import Path
@@ -7,6 +8,25 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = BASE_DIR.parent
 load_dotenv(BASE_DIR / ".env", override=True)
+
+
+def _load_settings_env() -> None:
+    settings_path = PROJECT_ROOT / "settings.json"
+    if not settings_path.exists():
+        return
+    try:
+        data = json.loads(settings_path.read_text(encoding="utf-8"))
+    except Exception:
+        return
+    env = data.get("env") if isinstance(data, dict) else None
+    if not isinstance(env, dict):
+        return
+    for key, value in env.items():
+        if key and value is not None and not os.getenv(str(key)):
+            os.environ[str(key)] = str(value)
+
+
+_load_settings_env()
 
 
 @dataclass
@@ -36,6 +56,11 @@ class Config:
     XFYUN_API_SECRET: str = os.getenv("XFYUN_API_SECRET", "")
     XFYUN_SPARK_URL: str = os.getenv("XFYUN_SPARK_URL", "wss://spark-api.xf-yun.com/x2")
     XFYUN_SPARK_DOMAIN: str = os.getenv("XFYUN_SPARK_DOMAIN", "spark-x")
+
+    ANTHROPIC_AUTH_TOKEN: str = os.getenv("ANTHROPIC_AUTH_TOKEN", "")
+    ANTHROPIC_BASE_URL: str = os.getenv("ANTHROPIC_BASE_URL", "")
+    ANTHROPIC_MODEL: str = os.getenv("ANTHROPIC_MODEL", "")
+    ANTHROPIC_SMALL_FAST_MODEL: str = os.getenv("ANTHROPIC_SMALL_FAST_MODEL", "")
 
     SEEDANCE_API_KEY: str = os.getenv("SEEDANCE_API_KEY", "")
     SEEDANCE_API_URL: str = os.getenv("SEEDANCE_API_URL", "")

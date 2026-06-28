@@ -1,0 +1,5403 @@
+{
+  "source_file": "C:\\Users\\ASUS\\Desktop\\新建文件夹 (2)\\第5章 总体设计-2.pdf",
+  "course": "软件工程",
+  "max_chars": 800,
+  "overlap": 100,
+  "outline_nodes": [
+    {
+      "node_id": "node_0d3cc5018578",
+      "parent_id": null,
+      "title": "软件工程",
+      "level": 0,
+      "chapter_id": "chapter_0d3cc5018578",
+      "start_page": 1,
+      "path": [
+        "软件工程"
+      ],
+      "paragraph_count": 1
+    },
+    {
+      "node_id": "node_9e0ace4df88e",
+      "parent_id": "node_0d3cc5018578",
+      "title": "第五章 总体设计（2）",
+      "level": 1,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 1,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）"
+      ],
+      "paragraph_count": 37
+    },
+    {
+      "node_id": "node_9cd1dbfa6155",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "变换型结构",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 10,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "变换型结构"
+      ],
+      "paragraph_count": 10
+    },
+    {
+      "node_id": "node_283d62e653bb",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "输出 主加工 输入 变换型数据流图",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 11,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "输出 主加工 输入 变换型数据流图"
+      ],
+      "paragraph_count": 24
+    },
+    {
+      "node_id": "node_3bd0baf78c19",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "事务型结构",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 13,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "事务型结构"
+      ],
+      "paragraph_count": 6
+    },
+    {
+      "node_id": "node_3f46089a5c94",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "集中式事务型数据流图",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 14,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "集中式事务型数据流图"
+      ],
+      "paragraph_count": 24
+    },
+    {
+      "node_id": "node_22dcc007d548",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "结构化设计",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 18,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "结构化设计"
+      ],
+      "paragraph_count": 12
+    },
+    {
+      "node_id": "node_b0af53709e5c",
+      "parent_id": "node_22dcc007d548",
+      "title": "5.5.2 变换分析",
+      "level": 3,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 19,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "结构化设计",
+        "5.5.2 变换分析"
+      ],
+      "paragraph_count": 9
+    },
+    {
+      "node_id": "node_cfe216957ee4",
+      "parent_id": "node_22dcc007d548",
+      "title": "（1）通过模／数转换实现传感器和微处理机 接口；",
+      "level": 3,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 20,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "结构化设计",
+        "（1）通过模／数转换实现传感器和微处理机 接口；"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_3f82d6562262",
+      "parent_id": "node_22dcc007d548",
+      "title": "（2）在发光二极管面板上显示数据； （3）指示每小时英里数（mph），行驶的里程 ，每加仑油行驶的英里数（mpg）等等；",
+      "level": 3,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 20,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "结构化设计",
+        "（2）在发光二极管面板上显示数据； （3）指示每小时英里数（mph），行驶的里程 ，每加仑油行驶的英里数（mpg）等等；"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_a924eac46b4f",
+      "parent_id": "node_22dcc007d548",
+      "title": "（4）指示加速或减速； （5）超速警告：如果车速超过55英里／小时 ，则发出超速警告铃声。",
+      "level": 3,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 20,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "结构化设计",
+        "（4）指示加速或减速； （5）超速警告：如果车速超过55英里／小时 ，则发出超速警告铃声。"
+      ],
+      "paragraph_count": 1
+    },
+    {
+      "node_id": "node_d3cb6bcd6fe0",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "1、复查基本",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 21,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "1、复查基本"
+      ],
+      "paragraph_count": 4
+    },
+    {
+      "node_id": "node_a89ba77caf38",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "系统模型",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 21,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "系统模型"
+      ],
+      "paragraph_count": 4
+    },
+    {
+      "node_id": "node_80e8ea76ebed",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "2、复查并精化",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 21,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "2、复查并精化"
+      ],
+      "paragraph_count": 3
+    },
+    {
+      "node_id": "node_1638101ea719",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "数据流图",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 21,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "数据流图"
+      ],
+      "paragraph_count": 9
+    },
+    {
+      "node_id": "node_fc31d5e3d836",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "3、确定数据流 图的类型",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 21,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "3、确定数据流 图的类型"
+      ],
+      "paragraph_count": 7
+    },
+    {
+      "node_id": "node_433171731825",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "4、确定输入流和 输出流的边界,孤 立变换中心",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 21,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "4、确定输入流和 输出流的边界,孤 立变换中心"
+      ],
+      "paragraph_count": 4
+    },
+    {
+      "node_id": "node_6c3ceaa31236",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "7、精化",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 21,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "7、精化"
+      ],
+      "paragraph_count": 3
+    },
+    {
+      "node_id": "node_2590ae9cc008",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "5、第一级分解",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 21,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "5、第一级分解"
+      ],
+      "paragraph_count": 4
+    },
+    {
+      "node_id": "node_4ebb27b52d5f",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "6、第二级分解",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 21,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "6、第二级分解"
+      ],
+      "paragraph_count": 2
+    },
+    {
+      "node_id": "node_b1a2a2642752",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "1、复查基本系统模型",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 22,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "1、复查基本系统模型"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_9909f4fcf754",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "o 目的：确保系统的",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 22,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "o 目的：确保系统的"
+      ],
+      "paragraph_count": 3
+    },
+    {
+      "node_id": "node_d13499051611",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "输入数据和输出数 据符合实际。 o 措施：重新检查数",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 22,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "输入数据和输出数 据符合实际。 o 措施：重新检查数"
+      ],
+      "paragraph_count": 17
+    },
+    {
+      "node_id": "node_c851791c05a6",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "据流图。",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 22,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "据流图。"
+      ],
+      "paragraph_count": 21
+    },
+    {
+      "node_id": "node_1196c8c32603",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "2、复查并精化数据流图",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 23,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "2、复查并精化数据流图"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_6da30dfd068e",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "o 精化原则",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 23,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "o 精化原则"
+      ],
+      "paragraph_count": 5
+    },
+    {
+      "node_id": "node_e32142773eca",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "n 确保能够反映目",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 23,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "n 确保能够反映目"
+      ],
+      "paragraph_count": 5
+    },
+    {
+      "node_id": "node_a2f5481c7e28",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "标系统的正确的 逻辑模型。 n 应该使数据流图",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 23,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "标系统的正确的 逻辑模型。 n 应该使数据流图"
+      ],
+      "paragraph_count": 15
+    },
+    {
+      "node_id": "node_3ae798781147",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "中每个处理都代 表一个规模适中 的并且相对独立 的子功能。",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 23,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "中每个处理都代 表一个规模适中 的并且相对独立 的子功能。"
+      ],
+      "paragraph_count": 19
+    },
+    {
+      "node_id": "node_85eb796e0ea7",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "3、确定数据流图的类型",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 25,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "3、确定数据流图的类型"
+      ],
+      "paragraph_count": 1
+    },
+    {
+      "node_id": "node_7c01108ff55d",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "从图中可以看 出，数据沿着两条 输入通路进入系统 ，然后沿着五条通 路离开，没有明显 的事务中心。",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 25,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "从图中可以看 出，数据沿着两条 输入通路进入系统 ，然后沿着五条通 路离开，没有明显 的事务中心。"
+      ],
+      "paragraph_count": 29
+    },
+    {
+      "node_id": "node_676eba990a2c",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "可以认为这个 数据流图的类型是 变换型数据流图。",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 25,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "可以认为这个 数据流图的类型是 变换型数据流图。"
+      ],
+      "paragraph_count": 11
+    },
+    {
+      "node_id": "node_621a0f7fe0bc",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "4、确定输入流和输出流的边界，从而孤立出变换中心",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 26,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "4、确定输入流和输出流的边界，从而孤立出变换中心"
+      ],
+      "paragraph_count": 17
+    },
+    {
+      "node_id": "node_ebd3a5747803",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "rpm 不同的人选择 不同的分界点",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 26,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "rpm 不同的人选择 不同的分界点"
+      ],
+      "paragraph_count": 35
+    },
+    {
+      "node_id": "node_1d0132da2db9",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "应该在能够完成控制功能并且保持好的耦合和内 聚特性的前提下，尽量使第一级控制中的模块数 目最小。",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 28,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "应该在能够完成控制功能并且保持好的耦合和内 聚特性的前提下，尽量使第一级控制中的模块数 目最小。"
+      ],
+      "paragraph_count": 6
+    },
+    {
+      "node_id": "node_2b7da4fa0f71",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "6、进行“第二级分解”",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 30,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "6、进行“第二级分解”"
+      ],
+      "paragraph_count": 8
+    },
+    {
+      "node_id": "node_400296c8485e",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "第二级分解的方法",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 30,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "第二级分解的方法"
+      ],
+      "paragraph_count": 3
+    },
+    {
+      "node_id": "node_fa8a0b94b07d",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "6、进行“第二级分解”",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 31,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "6、进行“第二级分解”"
+      ],
+      "paragraph_count": 18
+    },
+    {
+      "node_id": "node_c7d318e27845",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "第二级分解的结果：",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 31,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "第二级分解的结果："
+      ],
+      "paragraph_count": 8
+    },
+    {
+      "node_id": "node_cd909b8dce92",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "接收 传感器信号",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 31,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "接收 传感器信号"
+      ],
+      "paragraph_count": 9
+    },
+    {
+      "node_id": "node_4e45168eaa58",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "数据 转换控制",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 31,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "数据 转换控制"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_a8103aa6a5a9",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "转换成rpm 计算gph",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 31,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "转换成rpm 计算gph"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_fb0bc22f888c",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "收集sps",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 31,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "收集sps"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_98e2391f52d3",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "读燃料流量",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 31,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "读燃料流量"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_6a2b80ebf873",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "确定 加速/减速 计算mph 计算mpg 计算里程",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 31,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "确定 加速/减速 计算mph 计算mpg 计算里程"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_80f1b8b8b72f",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "读旋转信号",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 31,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "读旋转信号"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_3d40593e08e7",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "未经精化的输入结构 未经精化的变换结构",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 31,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "未经精化的输入结构 未经精化的变换结构"
+      ],
+      "paragraph_count": 3
+    },
+    {
+      "node_id": "node_af12c2965717",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "6、进行“第二级分解” △SPS",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 32,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "6、进行“第二级分解” △SPS"
+      ],
+      "paragraph_count": 24
+    },
+    {
+      "node_id": "node_a15a779e3cfc",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "驱动仪表板",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 32,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "驱动仪表板"
+      ],
+      "paragraph_count": 10
+    },
+    {
+      "node_id": "node_e8026f9b2d1c",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "加速/减速",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 32,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "加速/减速"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_bf80f6be344e",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "显示 显示mpg 显示里程 发出警告铃声 显示mph",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 32,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "显示 显示mpg 显示里程 发出警告铃声 显示mph"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_56be2ce7a722",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "发光二极",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 32,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "发光二极"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_f9c04f266514",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "管显示",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 32,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "管显示"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_ffbf42e83c07",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "未经精化的输出结构",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 32,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "未经精化的输出结构"
+      ],
+      "paragraph_count": 10
+    },
+    {
+      "node_id": "node_15e34f60c410",
+      "parent_id": "node_ffbf42e83c07",
+      "title": "（1）输入结构中的模块“转换成rpm” 和“收集sps”可以合并；",
+      "level": 3,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 35,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "未经精化的输出结构",
+        "（1）输入结构中的模块“转换成rpm” 和“收集sps”可以合并；"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_99ebc0729910",
+      "parent_id": "node_ffbf42e83c07",
+      "title": "（2）模块“确定加速／减速”可以放 在模块“计算mph”下面，以减少耦合；",
+      "level": 3,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 35,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "未经精化的输出结构",
+        "（2）模块“确定加速／减速”可以放 在模块“计算mph”下面，以减少耦合；"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_edd77e6441a0",
+      "parent_id": "node_ffbf42e83c07",
+      "title": "（3）模块“加速／减速显示”可以相 应地放在模块“显示mph”的下面。",
+      "level": 3,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 35,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "未经精化的输出结构",
+        "（3）模块“加速／减速显示”可以相 应地放在模块“显示mph”的下面。"
+      ],
+      "paragraph_count": 12
+    },
+    {
+      "node_id": "node_6814b469f876",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "未经精化的输入结构 未经精化的变换结构",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 36,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "未经精化的输入结构 未经精化的变换结构"
+      ],
+      "paragraph_count": 11
+    },
+    {
+      "node_id": "node_1080e0cc5d93",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "精化的数字仪表板系统的软件结构",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "精化的数字仪表板系统的软件结构"
+      ],
+      "paragraph_count": 11
+    },
+    {
+      "node_id": "node_1406276fcb8f",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "数字仪表板",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "数字仪表板"
+      ],
+      "paragraph_count": 5
+    },
+    {
+      "node_id": "node_a8f87ebb6bd0",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "控制",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "控制"
+      ],
+      "paragraph_count": 11
+    },
+    {
+      "node_id": "node_018ff130a37c",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "数据转换",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "数据转换"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_0cf9eb4bd005",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "接收传感器",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "接收传感器"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_d20767c04d81",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "控制 驱动仪表板",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "控制 驱动仪表板"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_a2f314c8a12c",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "信号",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "信号"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_b576d82b6dd2",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "gph 转换成",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "gph 转换成"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_9063c332699c",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "mph 计算",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "mph 计算"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_532c4873f5f4",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "mpg 计算",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "mpg 计算"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_619128fb269d",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "计算",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "计算"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_4694aa4ca8a4",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "计算",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "计算"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_22cdba063fcf",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "mpg 显示",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "mpg 显示"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_5669580d205b",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "显示",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "显示"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_0ca05cae3e1e",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "显示",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "显示"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_6a8ce50deaa9",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "发出警",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "发出警"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_6bd17473bb8c",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "rpm",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "rpm"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_c857ce1433a3",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "mph",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "mph"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_a9ea7472962c",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "里程",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "里程"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_1603dbabf37b",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "里程",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "里程"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_b240ec0fa1c0",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "报铃声",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "报铃声"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_52680e8f163f",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "加速/减速",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "加速/减速"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_4920e7b68ed0",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "读旋转",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "读旋转"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_003d02a155c7",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "读燃料",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "读燃料"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_6c347f8aa999",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "确定",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "确定"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_0add5a100b07",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "发光二极管",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "发光二极管"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_e6b70b4e61c2",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "加速/减速",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "加速/减速"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_9079e2cb1238",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "信号",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "信号"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_185842740d40",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "流量",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "流量"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_22fcad072a69",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "显示",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "显示"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_acbc7cfd7042",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "显示",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "显示"
+      ],
+      "paragraph_count": 6
+    },
+    {
+      "node_id": "node_6bec7d3084e5",
+      "parent_id": "node_acbc7cfd7042",
+      "title": "4.5.3 事务分析",
+      "level": 3,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 39,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "显示",
+        "4.5.3 事务分析"
+      ],
+      "paragraph_count": 10
+    },
+    {
+      "node_id": "node_82c59a639586",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "事务分析映射方法",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 40,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "事务分析映射方法"
+      ],
+      "paragraph_count": 18
+    },
+    {
+      "node_id": "node_098515cc5462",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "事务分析",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 41,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "事务分析"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_5270ccea2491",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "调度 模块",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 41,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "调度 模块"
+      ],
+      "paragraph_count": 2
+    },
+    {
+      "node_id": "node_cd913e957bb7",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "事务 中心",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 41,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "事务 中心"
+      ],
+      "paragraph_count": 4
+    },
+    {
+      "node_id": "node_c22f7f63ac04",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "每个活动流通路映射为与其 流特征相对应的结构",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 41,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "每个活动流通路映射为与其 流特征相对应的结构"
+      ],
+      "paragraph_count": 2
+    },
+    {
+      "node_id": "node_2d78be286bce",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "事务分析的映射方法",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 41,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "事务分析的映射方法"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_dd2eb0bf0952",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "举例：事务型转换结构图",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 42,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "举例：事务型转换结构图"
+      ],
+      "paragraph_count": 21
+    },
+    {
+      "node_id": "node_f610a64fff56",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "MT",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 43,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "MT"
+      ],
+      "paragraph_count": 12
+    },
+    {
+      "node_id": "node_9ee59ad3e8bd",
+      "parent_id": "node_f610a64fff56",
+      "title": "（2）主图是事务型，子图是变换型",
+      "level": 3,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 47,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "MT",
+        "（2）主图是事务型，子图是变换型"
+      ],
+      "paragraph_count": 3
+    },
+    {
+      "node_id": "node_d43416789afa",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "Step-2 确定输入数据流和输出流的边 界，从而孤立变换中心",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 50,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "Step-2 确定输入数据流和输出流的边 界，从而孤立变换中心"
+      ],
+      "paragraph_count": 3
+    },
+    {
+      "node_id": "node_6c3957bc0f78",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "Step-3 完成“第一级分解”",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 51,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "Step-3 完成“第一级分解”"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_66e805613e18",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "o 画出顶层控制模块以及输入、变换和输出的",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 51,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "o 画出顶层控制模块以及输入、变换和输出的"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_0fffb0849f9a",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "主控模块。",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 51,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "主控模块。"
+      ],
+      "paragraph_count": 6
+    },
+    {
+      "node_id": "node_9342de79ae38",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "Step-4 完成“第二级分解”",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 52,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "Step-4 完成“第二级分解”"
+      ],
+      "paragraph_count": 7
+    },
+    {
+      "node_id": "node_63ac5ca0cc57",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "Step-5 优化",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 53,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "Step-5 优化"
+      ],
+      "paragraph_count": 4
+    },
+    {
+      "node_id": "node_6d5ee263e540",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "最终的软件结构图如下：",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 54,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "最终的软件结构图如下："
+      ],
+      "paragraph_count": 7
+    },
+    {
+      "node_id": "node_deb06ab424e0",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "数据流图软件结构图",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 54,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "数据流图软件结构图"
+      ],
+      "paragraph_count": 0
+    },
+    {
+      "node_id": "node_c0d6b43fb72b",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "面向数据流设计方法总结",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 55,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "面向数据流设计方法总结"
+      ],
+      "paragraph_count": 5
+    },
+    {
+      "node_id": "node_a9d624d0c3d0",
+      "parent_id": "node_c0d6b43fb72b",
+      "title": "4.5.4 设计优化",
+      "level": 3,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 56,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "面向数据流设计方法总结",
+        "4.5.4 设计优化"
+      ],
+      "paragraph_count": 23
+    }
+  ],
+  "knowledge_chunks": [
+    {
+      "chunk_id": "chunk_fbaf3f4eec0a",
+      "node_id": "node_9e0ace4df88e",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "结构化设计方法 (SD) 即基于对数据流的分析。它利用“映射”把数据流图转换为软件结构，任何系统都可用数据流图表示，信息流是任何系统的核心。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "第五章 总体设计（2）",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）"
+        ],
+        "section_level": 1,
+        "start_page": 1,
+        "pages": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "结构化设计方法 (SD)",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [
+          "chunk_4cf58591965c"
+        ],
+        "knowledge_type": "method",
+        "tags": [
+          "结构化设计",
+          "SD",
+          "数据流图",
+          "映射"
+        ],
+        "parent_rule_chunk_id": "chunk_30bbc3ad64bd",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "merged_cb50a4a3a764",
+      "node_id": "node_9e0ace4df88e",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "变换型结构是系统的一种典型形式。其特点是信息通常以“外部世界”的形式进入软件系统，经过处理后再以“外部世界”的形式离开系统。在 DFD 图中表现为传入部分、变换中心和传出部分。\n\n信息沿输入通路\n\n进入系统，同时由外 部形式变换成内部形 式，进入系统的信息 通过变换中心，经过 加工处理以后再沿输 出通路变换成外部形 式离开软件系统。 当数据流具有这些特\n\n信息流\n\n外部表示\n\n输入流 输出流\n\n信 息\n\n变换流\n\n征时，这种信息流称 为变换流。\n\n内部表示\n\n时间",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "第五章 总体设计（2）",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）"
+        ],
+        "section_level": 1,
+        "start_page": 1,
+        "pages": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "chunk_index": 1,
+        "chunk_method": "merged",
+        "knowledge_point": "变换型结构",
+        "prerequisite_node_ids": [
+          "chunk_4cf58591965c"
+        ],
+        "next_node_ids": [
+          "chunk_b4775dcc136e"
+        ],
+        "knowledge_type": "concept",
+        "tags": [
+          "变换型结构",
+          "变换流",
+          "DFD",
+          "传入部分",
+          "变换中心",
+          "传出部分"
+        ],
+        "parent_rule_chunk_id": "chunk_30bbc3ad64bd",
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_19a04083bbdd",
+          "chunk_398b9045efad"
+        ]
+      }
+    },
+    {
+      "chunk_id": "merged_3d43cdaee4ee",
+      "node_id": "node_9e0ace4df88e",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "事务型结构是系统的另一种典型形式。其特点是数据沿输入通路到达一个处理后，这个处理根据输入数据的类型在若干个动作序列中选出一个来执行。在 DFD 图中表现为事务中心、接受部分和多个动作。\n\n数据沿输入通路到\n\n事务\n\n达一个处理T，这个 处理根据输入数据的 类型在若干个动作序 列中选出一个来执行。 这种“以事务为中心 的”的数据流，成为 “事务流”。\n\nT\n\n事务中心\n\n处理T称为事务中心，完成以下任务：接收输入数据；分析每个事务 以确定它的类型；根据事务类型选取一条活动通路。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "第五章 总体设计（2）",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）"
+        ],
+        "section_level": 1,
+        "start_page": 1,
+        "pages": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          13
+        ],
+        "chunk_index": 1,
+        "chunk_method": "merged",
+        "knowledge_point": "事务型结构",
+        "prerequisite_node_ids": [
+          "chunk_4cf58591965c"
+        ],
+        "next_node_ids": [
+          "chunk_dced6be0911e"
+        ],
+        "knowledge_type": "concept",
+        "tags": [
+          "事务型结构",
+          "事务流",
+          "DFD",
+          "事务中心",
+          "动作序列"
+        ],
+        "parent_rule_chunk_id": "chunk_30bbc3ad64bd",
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_b1763c8b605e",
+          "chunk_4a9a151b523c"
+        ]
+      }
+    },
+    {
+      "chunk_id": "chunk_4cf58591965c",
+      "node_id": "node_9e0ace4df88e",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "面向数据流的设计方法把信息流映射为软件结构，信息流的类型决定了映射的方法。主要分为变换流和事务流两种映射方式。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "第五章 总体设计（2）",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）"
+        ],
+        "section_level": 1,
+        "start_page": 1,
+        "pages": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "面向数据流的设计方法",
+        "prerequisite_node_ids": [
+          "chunk_fbaf3f4eec0a"
+        ],
+        "next_node_ids": [
+          "merged_cb50a4a3a764",
+          "merged_3d43cdaee4ee"
+        ],
+        "knowledge_type": "process_model",
+        "tags": [
+          "面向数据流",
+          "设计方法",
+          "信息流",
+          "映射"
+        ],
+        "parent_rule_chunk_id": "chunk_30bbc3ad64bd",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_b4775dcc136e",
+      "node_id": "node_283d62e653bb",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "打 印 报 表\n\n报表\n\n月 末 结 帐 处 理\n\n日 常 帐 务 处 理\n\n物理输出\n\n凭 证 验 证\n\n凭 证 输 入\n\n记帐凭证\n\n物理输入\n\n打 印 帐 薄\n\n帐薄 物理输出\n\n逻 辑 输 入\n\n逻 辑 输 出\n\n传入部分 传出部分\n\n变换中心\n\n输入 信息\n\n正确 信息 结果\n\n数据\n\n格式 检查 处理 显示\n\n物理 输入\n\n逻辑 输出\n\n物理 输出\n\n逻辑 输入\n\n特点：具有明确的传入、变换(或称主加 工) 和传出界面的DFD",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "输出 主加工 输入 变换型数据流图",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "输出 主加工 输入 变换型数据流图"
+        ],
+        "section_level": 2,
+        "start_page": 11,
+        "pages": [
+          11,
+          12
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "输出 主加工 输入 变换型数据流图",
+        "prerequisite_node_ids": [
+          "merged_cb50a4a3a764"
+        ],
+        "next_node_ids": [
+          "chunk_b2827ecd9064"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_dced6be0911e",
+      "node_id": "node_3f46089a5c94",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "报名\n\n付款\n\n分类\n\n复审\n\n注销\n\n查询\n\n事务中心 事务处理 发散式事务型数据流图\n\n接收\n\n通常在大型系统DFD中,变换型和事务型 结构往往共存:\n\n传入 变换 传出\n\nT\n\n事务中心\n\n精化数据流图\n\n“事务” “变换”\n\n流类型\n\n区分事务中心 和数据接收路径\n\n区分输入和 输出分支\n\n映射成事务结构\n\n映射成变换结构\n\n用启发式设计规则精化软件结构\n\n事务分析 变换分析\n\n导出接口描述和全程数据结构\n\n复查\n\n详细设计",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "集中式事务型数据流图",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "集中式事务型数据流图"
+        ],
+        "section_level": 2,
+        "start_page": 14,
+        "pages": [
+          14,
+          15,
+          16,
+          17
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "集中式事务型数据流图",
+        "prerequisite_node_ids": [
+          "merged_3d43cdaee4ee"
+        ],
+        "next_node_ids": [
+          "chunk_b2827ecd9064"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_b2827ecd9064",
+      "node_id": "node_22dcc007d548",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "主模块\n\n由变换分 析产生\n\n主加工模块\n\n输出模块\n\n输入模块\n\n事务控制模块\n\n由事务分 析产生\n\n接收模块\n\n动作发送模块\n\n动作1模块\n\n动作2模块\n\n动作3模块",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "结构化设计",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "结构化设计"
+        ],
+        "section_level": 2,
+        "start_page": 18,
+        "pages": [
+          18
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "结构化设计",
+        "prerequisite_node_ids": [
+          "chunk_b4775dcc136e",
+          "chunk_dced6be0911e"
+        ],
+        "next_node_ids": [
+          "chunk_c8fc9ca18af1"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_c8fc9ca18af1",
+      "node_id": "node_b0af53709e5c",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "o 把具有变换流特点的数据流按预先确定的模式映射成软\n\n件结构 o 具有“变换型”的数据流图，明显可以分割为“导\n\n入” 、“加工变换”和“导出” 三部分，对应软件结 构的“传入子系统”、“中心变换子系统”和“传出子 系统”三部分\n\n主模块\n\n输出模块 由变换分 析产生\n\n主加工模块\n\n输入模块\n\n变换分析设计举例\n\n通过一个汽车数字仪表板的设计来介绍 变换分析的过程。假设仪表板的功能如下：",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "5.5.2 变换分析",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "结构化设计",
+          "5.5.2 变换分析"
+        ],
+        "section_level": 3,
+        "start_page": 19,
+        "pages": [
+          19,
+          20
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "5.5.2 变换分析",
+        "prerequisite_node_ids": [
+          "chunk_b2827ecd9064"
+        ],
+        "next_node_ids": [
+          "chunk_9f1f02527eab"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_9f1f02527eab",
+      "node_id": "node_d3cb6bcd6fe0",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "读入 旋转 信号\n\n确定 加速/\n\n减速 箭头指示\n\n信号数/秒",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "1、复查基本",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "1、复查基本"
+        ],
+        "section_level": 2,
+        "start_page": 21,
+        "pages": [
+          21
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "1、复查基本",
+        "prerequisite_node_ids": [
+          "chunk_c8fc9ca18af1"
+        ],
+        "next_node_ids": [
+          "chunk_6275ce0cf7e0"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_6275ce0cf7e0",
+      "node_id": "node_a89ba77caf38",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "(SPS)\n\n△SPS\n\n产生 加速/减 速显示\n\n收集 并求 平均",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "系统模型",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "系统模型"
+        ],
+        "section_level": 2,
+        "start_page": 21,
+        "pages": [
+          21
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "系统模型",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_fa1fdfa129d7",
+      "node_id": "node_1638101ea719",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "上箭头 转换成\n\nrpm\n\n转/分\n\n燃料流量\n\n(rpm)\n\n计算 里程\n\n传感器信号\n\nrpm\n\n英里",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "数据流图",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "数据流图"
+        ],
+        "section_level": 2,
+        "start_page": 21,
+        "pages": [
+          21
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "数据流图",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [
+          "chunk_d7f0016d843e"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_d7f0016d843e",
+      "node_id": "node_fc31d5e3d836",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "读入 并核实\n\n产生 里程 显示\n\n计算 mph 和 超速值\n\n燃料流量\n\n超速值\n\n计算\n\n显示 发出 警告 铃声",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "3、确定数据流 图的类型",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "3、确定数据流 图的类型"
+        ],
+        "section_level": 2,
+        "start_page": 21,
+        "pages": [
+          21
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "3、确定数据流 图的类型",
+        "prerequisite_node_ids": [
+          "chunk_fa1fdfa129d7"
+        ],
+        "next_node_ids": [
+          "chunk_b942152901e6"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_b942152901e6",
+      "node_id": "node_433171731825",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "mph\n\ngph\n\ngph\n\n计算 燃料 消耗",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "4、确定输入流和 输出流的边界,孤 立变换中心",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "4、确定输入流和 输出流的边界,孤 立变换中心"
+        ],
+        "section_level": 2,
+        "start_page": 21,
+        "pages": [
+          21
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "4、确定输入流和 输出流的边界,孤 立变换中心",
+        "prerequisite_node_ids": [
+          "chunk_d7f0016d843e"
+        ],
+        "next_node_ids": [
+          "chunk_dc816b4c25e1"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_dc816b4c25e1",
+      "node_id": "node_2590ae9cc008",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "产生\n\nmph 显示\n\n产生\n\nmpg 显示",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "5、第一级分解",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "5、第一级分解"
+        ],
+        "section_level": 2,
+        "start_page": 21,
+        "pages": [
+          21
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "5、第一级分解",
+        "prerequisite_node_ids": [
+          "chunk_b942152901e6"
+        ],
+        "next_node_ids": [
+          "chunk_1ac944ce4240"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_1ac944ce4240",
+      "node_id": "node_9909f4fcf754",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "旋转信号\n\n读入 旋转 信号\n\n确定 加速/",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "o 目的：确保系统的",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "o 目的：确保系统的"
+        ],
+        "section_level": 2,
+        "start_page": 22,
+        "pages": [
+          22
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "o 目的：确保系统的",
+        "prerequisite_node_ids": [
+          "chunk_dc816b4c25e1"
+        ],
+        "next_node_ids": [
+          "chunk_7adac9ce7d11"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_7adac9ce7d11",
+      "node_id": "node_d13499051611",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "减速 箭头指示\n\n信号数/秒\n\n(SPS)\n\n△SPS\n\n产生 加速/减 速显示\n\n收集 并求 平均\n\n下箭头\n\n△SPS\n\n水平线\n\n上箭头 转换成\n\nrpm\n\n转/分\n\n燃料流量\n\n(rpm)\n\n计算 里程\n\n传感器信号\n\nrpm",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "输入数据和输出数 据符合实际。 o 措施：重新检查数",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "输入数据和输出数 据符合实际。 o 措施：重新检查数"
+        ],
+        "section_level": 2,
+        "start_page": 22,
+        "pages": [
+          22
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "输入数据和输出数 据符合实际。 o 措施：重新检查数",
+        "prerequisite_node_ids": [
+          "chunk_1ac944ce4240"
+        ],
+        "next_node_ids": [
+          "chunk_13a9f40c6550"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_13a9f40c6550",
+      "node_id": "node_c851791c05a6",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "英里\n\n读入 并核实\n\n产生 里程 显示\n\n计算 mph 和 超速值\n\n燃料流量\n\n超速值\n\n计算\n\n显示 发出 警告 铃声\n\nmph\n\ngph\n\ngph\n\n计算 燃料 消耗\n\n警告铃声\n\nmph\n\nmpg\n\n产生\n\nmph 显示\n\n产生\n\nmpg 显示\n\nmpg 显示\n\nmph 显示",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "据流图。",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "据流图。"
+        ],
+        "section_level": 2,
+        "start_page": 22,
+        "pages": [
+          22
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "据流图。",
+        "prerequisite_node_ids": [
+          "chunk_7adac9ce7d11"
+        ],
+        "next_node_ids": [
+          "chunk_8b6aeec209a2"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_8b6aeec209a2",
+      "node_id": "node_6da30dfd068e",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "旋转信号\n\n读入 旋转 信号\n\n确定 加速/\n\n减速 箭头指示\n\n信号数/秒",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "o 精化原则",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "o 精化原则"
+        ],
+        "section_level": 2,
+        "start_page": 23,
+        "pages": [
+          23
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "o 精化原则",
+        "prerequisite_node_ids": [
+          "chunk_13a9f40c6550"
+        ],
+        "next_node_ids": [
+          "chunk_9a091772f27a"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_9a091772f27a",
+      "node_id": "node_e32142773eca",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "(SPS)\n\n△SPS\n\n产生 加速/减 速显示\n\n收集 并求 平均\n\n下箭头",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "n 确保能够反映目",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "n 确保能够反映目"
+        ],
+        "section_level": 2,
+        "start_page": 23,
+        "pages": [
+          23
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "n 确保能够反映目",
+        "prerequisite_node_ids": [
+          "chunk_8b6aeec209a2"
+        ],
+        "next_node_ids": [
+          "chunk_2f0769d6c1d2"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_2f0769d6c1d2",
+      "node_id": "node_a2f5481c7e28",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "△SPS\n\n水平线\n\n上箭头 转换成\n\nrpm\n\n转/分\n\n燃料流量\n\n(rpm)\n\n计算 里程\n\n传感器信号\n\nrpm\n\n英里\n\n读入 并核实\n\n产生 里程 显示\n\n计算 mph 和 超速值\n\n燃料流量",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "标系统的正确的 逻辑模型。 n 应该使数据流图",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "标系统的正确的 逻辑模型。 n 应该使数据流图"
+        ],
+        "section_level": 2,
+        "start_page": 23,
+        "pages": [
+          23
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "标系统的正确的 逻辑模型。 n 应该使数据流图",
+        "prerequisite_node_ids": [
+          "chunk_9a091772f27a"
+        ],
+        "next_node_ids": [],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_590a453b0032",
+      "node_id": "node_3ae798781147",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "超速值\n\n计算\n\n显示 发出 警告 铃声\n\nmph\n\ngph\n\ngph\n\n计算 燃料 消耗\n\n警告铃声\n\nmph\n\nmpg\n\n产生\n\nmph 显示\n\n产生\n\nmpg 显示\n\nmpg 显示\n\nmph 显示\n\n3、确定数据流图的类型\n\no 确定数据流图究竟是事务型还是变换型。\n\nn 一般都可按照变换流来处理； n 有明显事务特征的按照事务流处理； n 确定数据流的全局特性； n 孤立局部区域；",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "中每个处理都代 表一个规模适中 的并且相对独立 的子功能。",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "中每个处理都代 表一个规模适中 的并且相对独立 的子功能。"
+        ],
+        "section_level": 2,
+        "start_page": 23,
+        "pages": [
+          23,
+          24
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "中每个处理都代 表一个规模适中 的并且相对独立 的子功能。",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [
+          "chunk_397a483fe7fa"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_397a483fe7fa",
+      "node_id": "node_7c01108ff55d",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "读入 旋转 信号\n\n确定 加速/\n\n减速 箭头指示\n\n信号数/秒\n\n(SPS)\n\n△SPS\n\n产生 加速/减 速显示\n\n收集 并求 平均\n\n下箭头\n\n△SPS\n\n水平线\n\n上箭头 转换成\n\nrpm\n\n转/分\n\n燃料流量\n\n(rpm)\n\n计算 里程\n\n传感器信号\n\nrpm\n\n英里\n\n读入 并核实\n\n产生 里程 显示\n\n计算 mph 和 超速值\n\n燃料流量\n\n超速值\n\n计算\n\n显示 发出 警告 铃声\n\nmph\n\ngph",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "从图中可以看 出，数据沿着两条 输入通路进入系统 ，然后沿着五条通 路离开，没有明显 的事务中心。",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "从图中可以看 出，数据沿着两条 输入通路进入系统 ，然后沿着五条通 路离开，没有明显 的事务中心。"
+        ],
+        "section_level": 2,
+        "start_page": 25,
+        "pages": [
+          25
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "从图中可以看 出，数据沿着两条 输入通路进入系统 ，然后沿着五条通 路离开，没有明显 的事务中心。",
+        "prerequisite_node_ids": [
+          "chunk_590a453b0032"
+        ],
+        "next_node_ids": [
+          "chunk_ec368a0c0e90"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_ec368a0c0e90",
+      "node_id": "node_676eba990a2c",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "gph\n\n计算 燃料 消耗\n\n警告铃声\n\nmph\n\nmpg\n\n产生\n\nmph 显示\n\n产生\n\nmpg 显示\n\nmpg 显示\n\nmph 显示",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "可以认为这个 数据流图的类型是 变换型数据流图。",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "可以认为这个 数据流图的类型是 变换型数据流图。"
+        ],
+        "section_level": 2,
+        "start_page": 25,
+        "pages": [
+          25
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "可以认为这个 数据流图的类型是 变换型数据流图。",
+        "prerequisite_node_ids": [
+          "chunk_397a483fe7fa"
+        ],
+        "next_node_ids": [
+          "chunk_f07cdd2a280f"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_f07cdd2a280f",
+      "node_id": "node_621a0f7fe0bc",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "旋转信号\n\n读入 旋转 信号\n\n确定 加速/\n\n信号数/秒\n\n减速 箭头指示\n\n(SPS)\n\n△SPS\n\n收集 并求 平均\n\n产生 加速/减 速显示 下箭头\n\n△SPS\n\n水平线\n\n上箭头 转换成\n\n转/分\n\nrpm\n\n(rpm)\n\n燃料流量 传感器信号\n\n计算 里程",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "4、确定输入流和输出流的边界，从而孤立出变换中心",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "4、确定输入流和输出流的边界，从而孤立出变换中心"
+        ],
+        "section_level": 2,
+        "start_page": 26,
+        "pages": [
+          26
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "4、确定输入流和输出流的边界，从而孤立出变换中心",
+        "prerequisite_node_ids": [
+          "chunk_ec368a0c0e90"
+        ],
+        "next_node_ids": [
+          "chunk_8dec391a7a89"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_8dec391a7a89",
+      "node_id": "node_ebd3a5747803",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "英里\n\n读入 并核实\n\n燃料流量 产生 里程 显示\n\n计算 mph 和 超速值\n\n超速值\n\n计算\n\n显示 发出 警告 铃声\n\nmph\n\ngph\n\ngph\n\n计算 燃料 消耗\n\n警告铃声\n\nmph\n\nmpg\n\n产生\n\nmph 显示\n\n产生\n\nmpg 显示\n\nmpg 显示\n\nmph 显示\n\n5、完成“第一级分解”\n\nCm\n\nCt Ca Ce\n\n第一级分解的方法\n\n输入处理 控制模块\n\n变换中心 控制模块\n\n输出处理 控制模块\n\n5、完成“第一级分解”\n\n数字仪表板\n\n控制\n\n控制 接收传感器\n\n数据转换\n\n信号 驱动仪表板\n\n输入控制 变换控制 输出控制\n\n第一级分解的结果",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "rpm 不同的人选择 不同的分界点",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "rpm 不同的人选择 不同的分界点"
+        ],
+        "section_level": 2,
+        "start_page": 26,
+        "pages": [
+          26,
+          27,
+          28
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "rpm 不同的人选择 不同的分界点",
+        "prerequisite_node_ids": [
+          "chunk_f07cdd2a280f"
+        ],
+        "next_node_ids": [
+          "chunk_8d2d4c8e7b35"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_8d2d4c8e7b35",
+      "node_id": "node_1d0132da2db9",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "6、进行“第二级分解”\n\no 逐个把数据流图中的每个处理映射为软件\n\n结构中的一个适当的模块； n 把输入处理映射成输入控制的低层模块（从\n\n变换中心边界开始逆着输入通路向外）； n 把输出处理映射成输出控制的低层模块（从\n\n沿着输出通路向外） ； n 把变换中心的处理映射为变换控制的低层模\n\n块（直接或间接）； o 处理和模块通常是一一对应的",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "应该在能够完成控制功能并且保持好的耦合和内 聚特性的前提下，尽量使第一级控制中的模块数 目最小。",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "应该在能够完成控制功能并且保持好的耦合和内 聚特性的前提下，尽量使第一级控制中的模块数 目最小。"
+        ],
+        "section_level": 2,
+        "start_page": 28,
+        "pages": [
+          29
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "应该在能够完成控制功能并且保持好的耦合和内 聚特性的前提下，尽量使第一级控制中的模块数 目最小。",
+        "prerequisite_node_ids": [
+          "chunk_8dec391a7a89"
+        ],
+        "next_node_ids": [
+          "merged_bdaa99e7cba7"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "merged_bdaa99e7cba7",
+      "node_id": "node_2b7da4fa0f71",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "Cm\n\nD C\n\nCa\n\nA\n\nB\n\nC B\n\nD\n\nA\n\n信号数/秒\n\n减速 箭头指示\n\n(SPS)\n\n△SPS\n\n收集 并求 平均\n\n产生 加速/减 速显示 下箭头\n\n△SPS\n\n水平线\n\n上箭头 转换成\n\n转/分\n\nrpm\n\n(rpm)\n\n燃料流量 传感器信号\n\n计算 里程\n\nrpm\n\n英里\n\n读入 并核实\n\n燃料流量 产生 里程 显示",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "6、进行“第二级分解”",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "6、进行“第二级分解”"
+        ],
+        "section_level": 2,
+        "start_page": 30,
+        "pages": [
+          30,
+          31
+        ],
+        "chunk_index": 1,
+        "chunk_method": "merged",
+        "knowledge_point": "6、进行“第二级分解”",
+        "prerequisite_node_ids": [
+          "chunk_8d2d4c8e7b35"
+        ],
+        "next_node_ids": [
+          "chunk_996d13a4762d"
+        ],
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_8436f3941c19",
+          "chunk_60f9a61e2f28"
+        ]
+      }
+    },
+    {
+      "chunk_id": "chunk_996d13a4762d",
+      "node_id": "node_400296c8485e",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "旋转信号\n\n读入 旋转 信号\n\n确定 加速/",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "第二级分解的方法",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "第二级分解的方法"
+        ],
+        "section_level": 2,
+        "start_page": 30,
+        "pages": [
+          31
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "第二级分解的方法",
+        "prerequisite_node_ids": [
+          "merged_bdaa99e7cba7"
+        ],
+        "next_node_ids": [
+          "chunk_bd437d02cc10"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_bd437d02cc10",
+      "node_id": "node_c7d318e27845",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "计算 mph 和 超速值\n\n超速值\n\n计算\n\n显示 发出 警告 铃声\n\nmph\n\ngph\n\ngph\n\n计算 燃料 消耗",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "第二级分解的结果：",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "第二级分解的结果："
+        ],
+        "section_level": 2,
+        "start_page": 31,
+        "pages": [
+          31
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "第二级分解的结果：",
+        "prerequisite_node_ids": [
+          "chunk_996d13a4762d"
+        ],
+        "next_node_ids": [
+          "chunk_26048fb1eeb7"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_26048fb1eeb7",
+      "node_id": "node_cd909b8dce92",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "警告铃声\n\nmph\n\nmpg\n\n产生\n\nmph 显示\n\n产生\n\nmpg 显示\n\nmpg 显示\n\nmph 显示",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "接收 传感器信号",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "接收 传感器信号"
+        ],
+        "section_level": 2,
+        "start_page": 31,
+        "pages": [
+          31
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "接收 传感器信号",
+        "prerequisite_node_ids": [
+          "chunk_bd437d02cc10"
+        ],
+        "next_node_ids": [],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "merged_988040dda45e",
+      "node_id": "node_3d40593e08e7",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "旋转信号\n\n读入 旋转 信号\n\n确定 加速/\n\n旋转信号\n\n读入 旋转 信号\n\n确定 加速/\n\n信号数/秒\n\n减速 箭头指示\n\n(SPS)\n\n△SPS\n\n收集 并求 平均\n\n产生 加速/减 速显示 下箭头\n\n△SPS\n\n水平线",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "未经精化的输入结构 未经精化的变换结构",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "未经精化的输入结构 未经精化的变换结构"
+        ],
+        "section_level": 2,
+        "start_page": 31,
+        "pages": [
+          32,
+          37
+        ],
+        "chunk_index": 1,
+        "chunk_method": "merged",
+        "knowledge_point": "未经精化的输入结构 未经精化的变换结构",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [
+          "chunk_bfacdd440299"
+        ],
+        "images": [],
+        "merged_from_chunk_ids": [
+          "chunk_e8048a1d943e",
+          "chunk_47bf79e1d6e6"
+        ]
+      }
+    },
+    {
+      "chunk_id": "chunk_bfacdd440299",
+      "node_id": "node_af12c2965717",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "信号数/秒\n\n减速 箭头指示\n\n(SPS)\n\n收集 并求 平均\n\n产生 加速/减 速显示 下箭头\n\n△SPS\n\n水平线\n\n上箭头 转换成\n\n转/分\n\nrpm\n\n(rpm)\n\n燃料流量 传感器信号\n\n计算 里程\n\nrpm\n\n英里\n\n读入 并核实\n\n燃料流量 产生 里程 显示\n\n计算 mph 和 超速值\n\n超速值\n\n计算\n\n显示 发出 警告 铃声\n\nmph\n\ngph\n\ngph",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "6、进行“第二级分解” △SPS",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "6、进行“第二级分解” △SPS"
+        ],
+        "section_level": 2,
+        "start_page": 32,
+        "pages": [
+          32
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "6、进行“第二级分解” △SPS",
+        "prerequisite_node_ids": [
+          "merged_988040dda45e"
+        ],
+        "next_node_ids": [
+          "chunk_f60bc4283468"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_f60bc4283468",
+      "node_id": "node_a15a779e3cfc",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "计算 燃料 消耗\n\n警告铃声\n\nmph\n\nmpg\n\n产生\n\nmph 显示\n\n产生\n\nmpg 显示\n\nmpg 显示\n\nmph 显示",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "驱动仪表板",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "驱动仪表板"
+        ],
+        "section_level": 2,
+        "start_page": 32,
+        "pages": [
+          32
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "驱动仪表板",
+        "prerequisite_node_ids": [
+          "chunk_bfacdd440299"
+        ],
+        "next_node_ids": [
+          "chunk_d98f5623744b"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_d98f5623744b",
+      "node_id": "node_ffbf42e83c07",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "6、进行“第二级分解”\n\no 虽然每个模块的名字表明了其基本功能，\n\n还是应该为每个模块写一个简要说明 n 进出该模块的信息； n 模块内部的信息； n 过程陈述，包括主要判定点及任务； n 对约束和特殊点的简短讨论；\n\n选用IPO 图说明\n\n7、使用设计度量和设计准则对第一次分割 得到的软件结构进一步精化\n\no 根据模块独立性原理进行精化\n\nn 尽可能高的内聚，尽可能松散的耦合 n 分解的结果易于实现、测试和维护 o 主要措施：\n\nn 分解； n 合并；\n\n7、使用设计度量和设计准则对第一次分割 得到的软件结构进一步精化\n\n对于从前面的设计步骤得到的软件结 构，还可以进行许多修改：",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "未经精化的输出结构",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "未经精化的输出结构"
+        ],
+        "section_level": 2,
+        "start_page": 32,
+        "pages": [
+          33,
+          34,
+          35
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "未经精化的输出结构",
+        "prerequisite_node_ids": [
+          "chunk_f60bc4283468"
+        ],
+        "next_node_ids": [
+          "chunk_3f906e42dfd7"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_3f906e42dfd7",
+      "node_id": "node_edd77e6441a0",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "驱动仪表板\n\n加速/减速\n\n显示 显示mpg 显示里程 发出警告铃声 显示mph\n\n接收 传感器信号\n\n发光二极\n\n管显示\n\n数据 转换控制\n\n转换成rpm 计算gph\n\n收集sps\n\n读燃料流量\n\n确定 加速/减速 计算mph 计算mpg 计算里程\n\n读旋转信号",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "（3）模块“加速／减速显示”可以相 应地放在模块“显示mph”的下面。",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "未经精化的输出结构",
+          "（3）模块“加速／减速显示”可以相 应地放在模块“显示mph”的下面。"
+        ],
+        "section_level": 3,
+        "start_page": 35,
+        "pages": [
+          36
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "（3）模块“加速／减速显示”可以相 应地放在模块“显示mph”的下面。",
+        "prerequisite_node_ids": [
+          "chunk_d98f5623744b"
+        ],
+        "next_node_ids": [
+          "chunk_65362288f17f"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_65362288f17f",
+      "node_id": "node_1080e0cc5d93",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "上箭头 转换成\n\n转/分\n\nrpm\n\n(rpm)\n\n燃料流量 传感器信号\n\n计算 里程\n\nrpm\n\n英里\n\n读入 并核实\n\n燃料流量 产生 里程 显示\n\n计算 mph 和 超速值",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "精化的数字仪表板系统的软件结构",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "精化的数字仪表板系统的软件结构"
+        ],
+        "section_level": 2,
+        "start_page": 37,
+        "pages": [
+          37
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "精化的数字仪表板系统的软件结构",
+        "prerequisite_node_ids": [
+          "chunk_3f906e42dfd7"
+        ],
+        "next_node_ids": [
+          "chunk_34c7cc8bdb0e"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_34c7cc8bdb0e",
+      "node_id": "node_1406276fcb8f",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "超速值\n\n计算\n\n显示 发出 警告 铃声\n\nmph\n\ngph",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "数字仪表板",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "数字仪表板"
+        ],
+        "section_level": 2,
+        "start_page": 37,
+        "pages": [
+          37
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "数字仪表板",
+        "prerequisite_node_ids": [
+          "chunk_65362288f17f"
+        ],
+        "next_node_ids": [
+          "chunk_83b042e42a54"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_83b042e42a54",
+      "node_id": "node_a8f87ebb6bd0",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "gph\n\n计算 燃料 消耗\n\n警告铃声\n\nmph\n\nmpg\n\n产生\n\nmph 显示\n\n产生\n\nmpg 显示\n\nmpg 显示\n\nmph 显示",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "控制",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "控制"
+        ],
+        "section_level": 2,
+        "start_page": 37,
+        "pages": [
+          37
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "控制",
+        "prerequisite_node_ids": [
+          "chunk_34c7cc8bdb0e"
+        ],
+        "next_node_ids": [
+          "chunk_60c6eb907bd5"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_60c6eb907bd5",
+      "node_id": "node_acbc7cfd7042",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "变换分析小结\n\no 上述7个步骤的目的，是开发出软件的整体\n\n表示 o 一旦确定了软件结构，就可以把它作为一个\n\n整体来复查，从而能够评价和精化软件结构 o 修改只需要少量的附加工作，但对提高软件\n\n质量有着深远的意义 o 如果程序是唯一的描述，开发人员很难站在\n\n全局的高度来评价和精化软件",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "显示",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "显示"
+        ],
+        "section_level": 2,
+        "start_page": 37,
+        "pages": [
+          38
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "显示",
+        "prerequisite_node_ids": [
+          "chunk_83b042e42a54"
+        ],
+        "next_node_ids": [
+          "chunk_10abd5c5b434"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_10abd5c5b434",
+      "node_id": "node_6bec7d3084e5",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "o 虽然在任何情况下都可以使用变换分析，但具有\n\n明显事务特点的数据流，还是应该采用事务分析 n 在DFD上确定事务中心、接收部分和发送部分。 n 画出软件结构图框架，把DFD上的三部分分别映射为\n\n调度模块、接收模块和动作发送模块。 n 分解细化接收分支和发送分支，完成初始软件结构图。\n\n事务控制模块\n\n由事务分 析产生\n\n调度模块\n\n接收模块\n\n动作1模块\n\n动作2模块\n\n动作3模块",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "4.5.3 事务分析",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "显示",
+          "4.5.3 事务分析"
+        ],
+        "section_level": 3,
+        "start_page": 39,
+        "pages": [
+          39
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "4.5.3 事务分析",
+        "prerequisite_node_ids": [
+          "chunk_60c6eb907bd5"
+        ],
+        "next_node_ids": [],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_60618b75fff1",
+      "node_id": "node_82c59a639586",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "o 映射出的软件结构包括一个接收分支和一个发送分支\n\nn 接收从事务中心的边界开始，沿着接收流通路的处\n\n理映射为模块 n 发送分支包含一个调度模块，控制下层所有模块\n\n控制\n\n对\n\nP1\n\n应\n\n接收事务 发送事务\n\nI\n\nP2\n\n模\n\nP3\n\n块\n\nP1 P2 P3\n\n图\n\n事物流 事务中心事务处理\n\n原 始 的 数 据 流 图\n\n事务分析技术",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "事务分析映射方法",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "事务分析映射方法"
+        ],
+        "section_level": 2,
+        "start_page": 40,
+        "pages": [
+          40
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "事务分析映射方法",
+        "prerequisite_node_ids": [
+          "chunk_13c6ef9e2300"
+        ],
+        "next_node_ids": [
+          "chunk_929ef983c31f"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_13c6ef9e2300",
+      "node_id": "node_cd913e957bb7",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "调度\n\nA _C T L\n\nB _CT L C _CT L\n\nA 通路",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "事务 中心",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "事务 中心"
+        ],
+        "section_level": 2,
+        "start_page": 41,
+        "pages": [
+          41
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "事务 中心",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [
+          "chunk_60618b75fff1"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_929ef983c31f",
+      "node_id": "node_dd2eb0bf0952",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "逻辑 输出\n\n逻辑 输入\n\nG\n\nD\n\n输出\n\nA B C\n\nE\n\nH\n\n输入\n\nF\n\n物理 输入\n\n事务中心\n\n物理 输出\n\n------ 事务型 数据流图\n\nG\n\nD\n\nA B C\n\nE\n\nH\n\nF\n\n------ 事务型 数据流图(DFD)",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "举例：事务型转换结构图",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "举例：事务型转换结构图"
+        ],
+        "section_level": 2,
+        "start_page": 42,
+        "pages": [
+          42,
+          43
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "举例：事务型转换结构图",
+        "prerequisite_node_ids": [
+          "chunk_60618b75fff1"
+        ],
+        "next_node_ids": [
+          "chunk_6519d93f3db2"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_6519d93f3db2",
+      "node_id": "node_9ee59ad3e8bd",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "Step-1 确定数据流图类型\n\no 该流图是典型的“三段”数据流图，即由输\n\n入、变换和输出“三段”组成，不存在明显 的调度特性； o 故确定其为变换型数据流图。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "（2）主图是事务型，子图是变换型",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "MT",
+          "（2）主图是事务型，子图是变换型"
+        ],
+        "section_level": 3,
+        "start_page": 47,
+        "pages": [
+          49
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "（2）主图是事务型，子图是变换型",
+        "prerequisite_node_ids": [
+          "chunk_929ef983c31f"
+        ],
+        "next_node_ids": [
+          "chunk_07887c0a31d8"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_07887c0a31d8",
+      "node_id": "node_d43416789afa",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "物理输 出\n\n物理输 入\n\n逻辑输 入 逻辑输 出",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "Step-2 确定输入数据流和输出流的边 界，从而孤立变换中心",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "Step-2 确定输入数据流和输出流的边 界，从而孤立变换中心"
+        ],
+        "section_level": 2,
+        "start_page": 50,
+        "pages": [
+          50
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "Step-2 确定输入数据流和输出流的边 界，从而孤立变换中心",
+        "prerequisite_node_ids": [
+          "chunk_6519d93f3db2"
+        ],
+        "next_node_ids": [
+          "chunk_f89bcec43967"
+        ],
+        "images": [
+          {
+            "image_id": "第5章 总体设计-2_p050_i02",
+            "page": 50,
+            "file_name": "page_050_img_02.jpeg",
+            "path": "images/第5章 总体设计-2/page_050_img_02.jpeg",
+            "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_050_img_02.jpeg",
+            "width": 3277,
+            "height": 1375,
+            "file_size": 248491,
+            "ext": "jpeg",
+            "xref": 246,
+            "rule_class": "vision_candidate",
+            "llm_checked": true,
+            "is_knowledge_image": true,
+            "image_type": "flowchart",
+            "caption": "库存管理系统的业务流程图，展示了从仓库管理员接收事务到采购员接收定货报表的完整数据流转过程。",
+            "related_chunk_ids": [
+              "chunk_07887c0a31d8"
+            ],
+            "confidence": 0.95,
+            "reject_reason": ""
+          }
+        ]
+      }
+    },
+    {
+      "chunk_id": "chunk_f89bcec43967",
+      "node_id": "node_0fffb0849f9a",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "某仓库定货\n\n系统\n\n控制 输入事务\n\n事务处理\n\n控制 生成报表控制\n\n输入控制 变换控制 输出控制",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "主控模块。",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "主控模块。"
+        ],
+        "section_level": 2,
+        "start_page": 51,
+        "pages": [
+          51
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "主控模块。",
+        "prerequisite_node_ids": [
+          "chunk_07887c0a31d8"
+        ],
+        "next_node_ids": [
+          "chunk_1512668c8b02"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_1512668c8b02",
+      "node_id": "node_9342de79ae38",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "某仓库定货\n\n系统\n\n事务处理\n\n输入事务\n\n控制 生成报表控制\n\n控制\n\n更新库存 接收事务 产生报表 处理事务",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "Step-4 完成“第二级分解”",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "Step-4 完成“第二级分解”"
+        ],
+        "section_level": 2,
+        "start_page": 52,
+        "pages": [
+          52
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "Step-4 完成“第二级分解”",
+        "prerequisite_node_ids": [
+          "chunk_f89bcec43967"
+        ],
+        "next_node_ids": [
+          "chunk_0f803099e844"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_0f803099e844",
+      "node_id": "node_63ac5ca0cc57",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "o 优化的原则：高内聚、低耦合。\n\nn 合并“输入事务控制”与“接收事务”模块，\n\n减少模块数及控制关系，降低耦合； n 合并“生成报表控制”与“产生报表”模块，\n\n同样减少模块数及控制关系，降低耦合；",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "Step-5 优化",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "Step-5 优化"
+        ],
+        "section_level": 2,
+        "start_page": 53,
+        "pages": [
+          53
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "Step-5 优化",
+        "prerequisite_node_ids": [
+          "chunk_1512668c8b02"
+        ],
+        "next_node_ids": [
+          "chunk_7f900fe7bac9"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_7f900fe7bac9",
+      "node_id": "node_6d5ee263e540",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "某仓库定货\n\n系统\n\n接收事务 产生报表\n\n事务处理\n\n控制\n\n更新库存\n\n处理事务",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "最终的软件结构图如下：",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "最终的软件结构图如下："
+        ],
+        "section_level": 2,
+        "start_page": 54,
+        "pages": [
+          54
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "最终的软件结构图如下：",
+        "prerequisite_node_ids": [
+          "chunk_0f803099e844"
+        ],
+        "next_node_ids": [
+          "chunk_6c6cba6c0beb"
+        ],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_6c6cba6c0beb",
+      "node_id": "node_c0d6b43fb72b",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "o 一般说来，如果数据流不具有显著的事务中心特点，最\n\n好使用变换分析； o 反之，如果具有明显的事务中心，则应该采用事务分析\n\n技术。 o 但是，机械地遵循变换分析或事务分析的映射规则，很\n\n可能会得到一些不必要的控制模块，如果它们确实用处 不大，应该把它们合并。 o 反之，如果一个控制模块功能过分复杂，则应该分解为\n\n两个或多个控制模块，或者增加中间层次的控制模块。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "面向数据流设计方法总结",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "面向数据流设计方法总结"
+        ],
+        "section_level": 2,
+        "start_page": 55,
+        "pages": [
+          55
+        ],
+        "chunk_index": 1,
+        "chunk_method": "rule",
+        "knowledge_point": "面向数据流设计方法总结",
+        "prerequisite_node_ids": [
+          "chunk_7f900fe7bac9"
+        ],
+        "next_node_ids": [],
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_c2e07def6763",
+      "node_id": "node_a9d624d0c3d0",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "设计优化应致力于开发能够满足所有功能和性能要求，且按照设计原理和启发式设计规则衡量是值得接收的软件。一个不能工作的“最佳设计”价值值得怀疑。设计优化应在设计的早期阶段尽量对软件结构进行优化。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "4.5.4 设计优化",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "面向数据流设计方法总结",
+          "4.5.4 设计优化"
+        ],
+        "section_level": 3,
+        "start_page": 56,
+        "pages": [
+          56,
+          57,
+          58,
+          59,
+          60
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "设计优化的目标与原则",
+        "prerequisite_node_ids": [],
+        "next_node_ids": [
+          "chunk_2b1c786babbb"
+        ],
+        "knowledge_type": "concept",
+        "tags": [
+          "设计优化",
+          "早期优化",
+          "功能要求",
+          "性能要求"
+        ],
+        "parent_rule_chunk_id": "chunk_5b9fa299e3e4",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_fb71edefdbea",
+      "node_id": "node_a9d624d0c3d0",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "设计优化应遵循以下策略：结构简单通常表示设计风格优雅且效率高；力求做到在有效的模块化的前提下使用最少的模块，并使用最简单的数据结构；先使它能工作，然后再使它快起来。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "4.5.4 设计优化",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "面向数据流设计方法总结",
+          "4.5.4 设计优化"
+        ],
+        "section_level": 3,
+        "start_page": 56,
+        "pages": [
+          56,
+          57,
+          58,
+          59,
+          60
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "设计优化的具体策略",
+        "prerequisite_node_ids": [
+          "chunk_c2e07def6763"
+        ],
+        "next_node_ids": [],
+        "knowledge_type": "method",
+        "tags": [
+          "结构简单",
+          "模块化",
+          "数据结构",
+          "先工作后优化"
+        ],
+        "parent_rule_chunk_id": "chunk_5b9fa299e3e4",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_7503e1c3b960",
+      "node_id": "node_a9d624d0c3d0",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "对时间起决定作用的软件进行优化，应遵循以下流程：首先在不考虑时间因素的前提下开发并精化软件结构；然后在详细设计阶段选出最耗费时间的模块，仔细设计它们的处理过程；使用高级程序设计语言编写程序；孤立出大量占用处理器资源的模块；必要时重新设计或使用依赖于机器的语言重写上述大量占用资源的模块的代码，以提高效率。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "4.5.4 设计优化",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "面向数据流设计方法总结",
+          "4.5.4 设计优化"
+        ],
+        "section_level": 3,
+        "start_page": 56,
+        "pages": [
+          56,
+          57,
+          58,
+          59,
+          60
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "对时间起决定作用的软件优化流程",
+        "prerequisite_node_ids": [
+          "chunk_fb71edefdbea"
+        ],
+        "next_node_ids": [],
+        "knowledge_type": "process_model",
+        "tags": [
+          "时间优化",
+          "详细设计",
+          "资源占用",
+          "语言重写"
+        ],
+        "parent_rule_chunk_id": "chunk_5b9fa299e3e4",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_2b1c786babbb",
+      "node_id": "node_a9d624d0c3d0",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "总体设计应该先确定系统的物理配置方案，并进而确定系统的程序结构。软件结构设计时最主要的原理是模块独立性原理。抽象和求精是一对互补的概念，也是软件设计中的重要方法和手段。启发式规则的灵活运用、由数据流图映射出软件结构是常用的方法。要充分利用软件结构设计基本原理和启发式规则来优化软件的设计。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "4.5.4 设计优化",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "面向数据流设计方法总结",
+          "4.5.4 设计优化"
+        ],
+        "section_level": 3,
+        "start_page": 56,
+        "pages": [
+          56,
+          57,
+          58,
+          59,
+          60
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "总体设计的基本原则与方法",
+        "prerequisite_node_ids": [
+          "chunk_c2e07def6763"
+        ],
+        "next_node_ids": [
+          "chunk_dc2474213428"
+        ],
+        "knowledge_type": "concept",
+        "tags": [
+          "总体设计",
+          "物理配置",
+          "模块独立性",
+          "抽象与求精",
+          "数据流图映射"
+        ],
+        "parent_rule_chunk_id": "chunk_5b9fa299e3e4",
+        "images": []
+      }
+    },
+    {
+      "chunk_id": "chunk_dc2474213428",
+      "node_id": "node_a9d624d0c3d0",
+      "chapter_id": "chapter_63e8d438120f",
+      "content_text": "在详细设计和编码之前进行结构设计的好处是，可以在软件开发的早期站在全局的高度对软件结构进行优化。",
+      "embedding": null,
+      "metadata": {
+        "course": "软件工程",
+        "section_title": "4.5.4 设计优化",
+        "section_path": [
+          "软件工程",
+          "第五章 总体设计（2）",
+          "面向数据流设计方法总结",
+          "4.5.4 设计优化"
+        ],
+        "section_level": 3,
+        "start_page": 56,
+        "pages": [
+          56,
+          57,
+          58,
+          59,
+          60
+        ],
+        "chunk_index": 1,
+        "chunk_method": "llm_boundary_clean",
+        "knowledge_point": "早期结构设计的优势",
+        "prerequisite_node_ids": [
+          "chunk_2b1c786babbb"
+        ],
+        "next_node_ids": [],
+        "knowledge_type": "comparison",
+        "tags": [
+          "早期设计",
+          "全局优化",
+          "详细设计前"
+        ],
+        "parent_rule_chunk_id": "chunk_5b9fa299e3e4",
+        "images": []
+      }
+    }
+  ],
+  "stats": {
+    "outline_node_count": 109,
+    "chunk_count": 55,
+    "min_chunk_chars": 22,
+    "max_chunk_chars": 295,
+    "avg_chunk_chars": 110.85,
+    "embedded_chunk_count": 0
+  },
+  "stage": "semantic_slice",
+  "source_pdf_json": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\pdf_json\\第5章 总体设计-2_knowledge.json",
+  "images": [
+    {
+      "image_id": "第5章 总体设计-2_p050_i02",
+      "page": 50,
+      "file_name": "page_050_img_02.jpeg",
+      "path": "images/第5章 总体设计-2/page_050_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_050_img_02.jpeg",
+      "width": 3277,
+      "height": 1375,
+      "file_size": 248491,
+      "ext": "jpeg",
+      "xref": 246,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "flowchart",
+      "caption": "库存管理系统的业务流程图，展示了从仓库管理员接收事务到采购员接收定货报表的完整数据流转过程。",
+      "related_chunk_ids": [
+        "chunk_07887c0a31d8"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    }
+  ],
+  "rejected_images": [
+    {
+      "image_id": "第5章 总体设计-2_p001_i01",
+      "page": 1,
+      "file_name": "page_001_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_001_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_001_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 20604,
+      "ext": "jpeg",
+      "xref": 8,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT背景模板，包含校徽、学院名称及装饰性图形，无具体软件工程知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含学校Logo和装饰图形，无教学知识点内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p002_i01",
+      "page": 2,
+      "file_name": "page_002_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_002_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_002_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板页，仅包含学校 Logo 和装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo 和装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p003_i01",
+      "page": 3,
+      "file_name": "page_003_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_003_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_003_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo及装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p003_i02",
+      "page": 3,
+      "file_name": "page_003_img_02.jpeg",
+      "path": "images/第5章 总体设计-2/page_003_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_003_img_02.jpeg",
+      "width": 176,
+      "height": 106,
+      "file_size": 935,
+      "ext": "jpeg",
+      "xref": 25,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p003_i03",
+      "page": 3,
+      "file_name": "page_003_img_03.jpeg",
+      "path": "images/第5章 总体设计-2/page_003_img_03.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_003_img_03.jpeg",
+      "width": 1168,
+      "height": 125,
+      "file_size": 2963,
+      "ext": "jpeg",
+      "xref": 27,
+      "rule_class": "uncertain_or_decoration",
+      "is_knowledge_image": false,
+      "reject_reason": "uncertain_or_decoration",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p004_i01",
+      "page": 4,
+      "file_name": "page_004_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_004_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_004_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景，无具体教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo及装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p004_i02",
+      "page": 4,
+      "file_name": "page_004_img_02.jpeg",
+      "path": "images/第5章 总体设计-2/page_004_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_004_img_02.jpeg",
+      "width": 265,
+      "height": 107,
+      "file_size": 1103,
+      "ext": "jpeg",
+      "xref": 36,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p004_i03",
+      "page": 4,
+      "file_name": "page_004_img_03.jpeg",
+      "path": "images/第5章 总体设计-2/page_004_img_03.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_004_img_03.jpeg",
+      "width": 242,
+      "height": 125,
+      "file_size": 1139,
+      "ext": "jpeg",
+      "xref": 38,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p005_i01",
+      "page": 5,
+      "file_name": "page_005_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_005_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_005_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo及装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p005_i02",
+      "page": 5,
+      "file_name": "page_005_img_02.jpeg",
+      "path": "images/第5章 总体设计-2/page_005_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_005_img_02.jpeg",
+      "width": 822,
+      "height": 125,
+      "file_size": 2291,
+      "ext": "jpeg",
+      "xref": 47,
+      "rule_class": "uncertain_or_decoration",
+      "is_knowledge_image": false,
+      "reject_reason": "uncertain_or_decoration",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p005_i03",
+      "page": 5,
+      "file_name": "page_005_img_03.jpeg",
+      "path": "images/第5章 总体设计-2/page_005_img_03.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_005_img_03.jpeg",
+      "width": 114,
+      "height": 370,
+      "file_size": 1395,
+      "ext": "jpeg",
+      "xref": 49,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p005_i04",
+      "page": 5,
+      "file_name": "page_005_img_04.jpeg",
+      "path": "images/第5章 总体设计-2/page_005_img_04.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_005_img_04.jpeg",
+      "width": 703,
+      "height": 283,
+      "file_size": 7324,
+      "ext": "jpeg",
+      "xref": 51,
+      "rule_class": "uncertain_or_decoration",
+      "is_knowledge_image": false,
+      "reject_reason": "uncertain_or_decoration",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p005_i05",
+      "page": 5,
+      "file_name": "page_005_img_05.jpeg",
+      "path": "images/第5章 总体设计-2/page_005_img_05.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_005_img_05.jpeg",
+      "width": 875,
+      "height": 303,
+      "file_size": 10914,
+      "ext": "jpeg",
+      "xref": 58,
+      "rule_class": "uncertain_or_decoration",
+      "is_knowledge_image": false,
+      "reject_reason": "uncertain_or_decoration",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p006_i01",
+      "page": 6,
+      "file_name": "page_006_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_006_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_006_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含学校Logo和装饰元素，无实质性的软件工程知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p006_i02",
+      "page": 6,
+      "file_name": "page_006_img_02.jpeg",
+      "path": "images/第5章 总体设计-2/page_006_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_006_img_02.jpeg",
+      "width": 1638,
+      "height": 124,
+      "file_size": 3923,
+      "ext": "jpeg",
+      "xref": 67,
+      "rule_class": "uncertain_or_decoration",
+      "is_knowledge_image": false,
+      "reject_reason": "uncertain_or_decoration",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p007_i01",
+      "page": 7,
+      "file_name": "page_007_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_007_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_007_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板背景页，仅包含学校 Logo 和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo 和装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p008_i01",
+      "page": 8,
+      "file_name": "page_008_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_008_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_008_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院名称及装饰性背景，无具体教学内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，属于PPT模板，不包含任何软件工程知识点、图表或代码示例。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p008_i02",
+      "page": 8,
+      "file_name": "page_008_img_02.jpeg",
+      "path": "images/第5章 总体设计-2/page_008_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_008_img_02.jpeg",
+      "width": 389,
+      "height": 399,
+      "file_size": 7602,
+      "ext": "jpeg",
+      "xref": 83,
+      "rule_class": "uncertain_or_decoration",
+      "is_knowledge_image": false,
+      "reject_reason": "uncertain_or_decoration",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p008_i03",
+      "page": 8,
+      "file_name": "page_008_img_03.jpeg",
+      "path": "images/第5章 总体设计-2/page_008_img_03.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_008_img_03.jpeg",
+      "width": 372,
+      "height": 403,
+      "file_size": 6897,
+      "ext": "jpeg",
+      "xref": 90,
+      "rule_class": "uncertain_or_decoration",
+      "is_knowledge_image": false,
+      "reject_reason": "uncertain_or_decoration",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p009_i01",
+      "page": 9,
+      "file_name": "page_009_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_009_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_009_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo及装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p009_i02",
+      "page": 9,
+      "file_name": "page_009_img_02.jpeg",
+      "path": "images/第5章 总体设计-2/page_009_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_009_img_02.jpeg",
+      "width": 358,
+      "height": 125,
+      "file_size": 1363,
+      "ext": "jpeg",
+      "xref": 94,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p010_i01",
+      "page": 10,
+      "file_name": "page_010_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_010_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_010_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板背景页，仅包含学校 Logo 和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为 PPT 模板背景，包含页眉页脚和装饰元素，无正文知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p011_i01",
+      "page": 11,
+      "file_name": "page_011_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_011_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_011_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板页，仅包含学校 Logo 和装饰性背景，无教学知识内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo 和装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p012_i01",
+      "page": 12,
+      "file_name": "page_012_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_012_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_012_img_01.jpeg",
+      "width": 934,
+      "height": 125,
+      "file_size": 2515,
+      "ext": "jpeg",
+      "xref": 113,
+      "rule_class": "uncertain_or_decoration",
+      "is_knowledge_image": false,
+      "reject_reason": "uncertain_or_decoration",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p012_i02",
+      "page": 12,
+      "file_name": "page_012_img_02.jpeg",
+      "path": "images/第5章 总体设计-2/page_012_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_012_img_02.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板页，仅包含学校 Logo 和装饰性背景，无教学知识内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为 PPT 模板页，包含学校 Logo 和装饰性背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p013_i01",
+      "page": 13,
+      "file_name": "page_013_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_013_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_013_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板背景页，仅包含学校 Logo 和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片为 PPT 模板背景，仅包含装饰元素和 Logo，无实质性的软件工程知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p014_i01",
+      "page": 14,
+      "file_name": "page_014_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_014_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_014_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院标识及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，无软件工程知识点内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p015_i01",
+      "page": 15,
+      "file_name": "page_015_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_015_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_015_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT模板页，仅包含学校Logo和装饰性背景元素，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板页，包含校徽、学院标识及装饰性背景，缺乏任何软件工程相关的知识图表或正文内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p016_i01",
+      "page": 16,
+      "file_name": "page_016_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_016_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_016_img_01.jpeg",
+      "width": 1174,
+      "height": 125,
+      "file_size": 2995,
+      "ext": "jpeg",
+      "xref": 128,
+      "rule_class": "uncertain_or_decoration",
+      "is_knowledge_image": false,
+      "reject_reason": "uncertain_or_decoration",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p016_i02",
+      "page": 16,
+      "file_name": "page_016_img_02.jpeg",
+      "path": "images/第5章 总体设计-2/page_016_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_016_img_02.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT模板背景页，仅包含学校Logo和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含校徽、学院标识及装饰元素，缺乏任何软件工程相关的知识图表或正文内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p017_i01",
+      "page": 17,
+      "file_name": "page_017_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_017_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_017_img_01.jpeg",
+      "width": 473,
+      "height": 125,
+      "file_size": 1587,
+      "ext": "jpeg",
+      "xref": 132,
+      "rule_class": "uncertain_or_decoration",
+      "is_knowledge_image": false,
+      "reject_reason": "uncertain_or_decoration",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p017_i02",
+      "page": 17,
+      "file_name": "page_017_img_02.jpeg",
+      "path": "images/第5章 总体设计-2/page_017_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_017_img_02.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景元素，无软件工程知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板页，包含学校Logo和装饰背景，无教学知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p018_i01",
+      "page": 18,
+      "file_name": "page_018_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_018_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_018_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板页，仅包含学校 Logo 和装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚和装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p019_i01",
+      "page": 19,
+      "file_name": "page_019_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_019_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_019_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT模板背景页，仅包含学校Logo和装饰性渐变条，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片为纯背景页，仅包含页眉页脚和学校Logo，无任何正文或知识图表内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p020_i01",
+      "page": 20,
+      "file_name": "page_020_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_020_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_020_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT模板背景页，仅包含学校Logo和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含校徽和装饰元素，不包含任何软件工程相关的知识图表或正文内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p021_i01",
+      "page": 21,
+      "file_name": "page_021_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_021_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_021_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板页，仅包含学校 Logo 和装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚和装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p022_i01",
+      "page": 22,
+      "file_name": "page_022_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_022_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_022_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT模板背景页，仅包含学校Logo和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含校徽、学院名称及装饰线条，无任何软件工程知识图表或正文内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p023_i01",
+      "page": 23,
+      "file_name": "page_023_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_023_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_023_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板背景页，仅包含学校 Logo 和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo 和装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p024_i01",
+      "page": 24,
+      "file_name": "page_024_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_024_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_024_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板页，仅包含学校 Logo 和装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚和装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p025_i01",
+      "page": 25,
+      "file_name": "page_025_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_025_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_025_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT模板页，仅包含学校Logo和装饰性背景元素，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板页，包含校徽、学院名称及装饰性背景，缺乏任何软件工程相关的知识图表或正文内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p026_i01",
+      "page": 26,
+      "file_name": "page_026_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_026_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_026_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板页，仅包含学校 Logo 和装饰性背景，无教学知识内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo 和空白背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p027_i01",
+      "page": 27,
+      "file_name": "page_027_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_027_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_027_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景元素，无具体软件工程知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，无教学知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p028_i01",
+      "page": 28,
+      "file_name": "page_028_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_028_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_028_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景元素，无具体软件工程知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板页，包含学校Logo和装饰背景，无教学知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p029_i01",
+      "page": 29,
+      "file_name": "page_029_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_029_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_029_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板页，包含学校Logo和装饰背景，无正文或知识图表内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p030_i01",
+      "page": 30,
+      "file_name": "page_030_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_030_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_030_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 1.0,
+      "reject_reason": "图片仅包含页眉页脚、Logo及装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p031_i01",
+      "page": 31,
+      "file_name": "page_031_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_031_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_031_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板页，仅包含学校 Logo 和装饰性背景，无教学知识内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo 和装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p032_i01",
+      "page": 32,
+      "file_name": "page_032_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_032_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_032_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板页，仅包含学校 Logo 和装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo 和装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p033_i01",
+      "page": 33,
+      "file_name": "page_033_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_033_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_033_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院名称及装饰性背景，无具体知识内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，属于PPT模板，无教学知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p034_i01",
+      "page": 34,
+      "file_name": "page_034_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_034_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_034_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院名称及装饰性背景，无具体知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，无软件工程相关的流程图、结构图、代码或知识点内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p035_i01",
+      "page": 35,
+      "file_name": "page_035_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_035_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_035_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT模板背景页，仅包含学校Logo和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含校徽和装饰元素，缺乏实质性的软件工程知识内容（如流程图、结构图或代码示例）。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p036_i01",
+      "page": 36,
+      "file_name": "page_036_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_036_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_036_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板背景页，仅包含学校 Logo 和装饰性图形，无教学知识内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为 PPT 模板背景，包含学校 Logo 和装饰元素，无正文知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p037_i01",
+      "page": 37,
+      "file_name": "page_037_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_037_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_037_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板页，仅包含学校 Logo 和装饰性背景，无教学知识内容",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo 和装饰背景，无正文知识内容"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p038_i01",
+      "page": 38,
+      "file_name": "page_038_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_038_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_038_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT模板背景页，仅包含学校Logo和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含页眉页脚和装饰元素，无正文知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p039_i01",
+      "page": 39,
+      "file_name": "page_039_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_039_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_039_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院名称及装饰性背景，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片为PPT模板页，仅包含页眉页脚和装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p040_i01",
+      "page": 40,
+      "file_name": "page_040_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_040_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_040_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板背景页，仅包含学校 Logo 和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为 PPT 模板背景，包含学校 Logo 和装饰元素，无正文知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p041_i01",
+      "page": 41,
+      "file_name": "page_041_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_041_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_041_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板背景页，仅包含学校 Logo 和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为 PPT 模板背景，包含学校 Logo 和装饰性图形，无正文知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p042_i01",
+      "page": 42,
+      "file_name": "page_042_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_042_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_042_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板背景页，仅包含学校 Logo 和装饰性图形，无教学知识内容",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片为 PPT 模板背景页，仅包含学校 Logo 和装饰性图形，无教学知识内容"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p042_i02",
+      "page": 42,
+      "file_name": "page_042_img_02.jpeg",
+      "path": "images/第5章 总体设计-2/page_042_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_042_img_02.jpeg",
+      "width": 32,
+      "height": 50,
+      "file_size": 866,
+      "ext": "jpeg",
+      "xref": 195,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p042_i03",
+      "page": 42,
+      "file_name": "page_042_img_03.jpeg",
+      "path": "images/第5章 总体设计-2/page_042_img_03.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_042_img_03.jpeg",
+      "width": 45,
+      "height": 64,
+      "file_size": 1179,
+      "ext": "jpeg",
+      "xref": 197,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p042_i04",
+      "page": 42,
+      "file_name": "page_042_img_04.jpeg",
+      "path": "images/第5章 总体设计-2/page_042_img_04.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_042_img_04.jpeg",
+      "width": 36,
+      "height": 50,
+      "file_size": 1078,
+      "ext": "jpeg",
+      "xref": 199,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p042_i05",
+      "page": 42,
+      "file_name": "page_042_img_05.jpeg",
+      "path": "images/第5章 总体设计-2/page_042_img_05.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_042_img_05.jpeg",
+      "width": 46,
+      "height": 63,
+      "file_size": 1064,
+      "ext": "jpeg",
+      "xref": 201,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p042_i06",
+      "page": 42,
+      "file_name": "page_042_img_06.jpeg",
+      "path": "images/第5章 总体设计-2/page_042_img_06.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_042_img_06.jpeg",
+      "width": 45,
+      "height": 63,
+      "file_size": 1236,
+      "ext": "jpeg",
+      "xref": 203,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p042_i07",
+      "page": 42,
+      "file_name": "page_042_img_07.jpeg",
+      "path": "images/第5章 总体设计-2/page_042_img_07.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_042_img_07.jpeg",
+      "width": 45,
+      "height": 64,
+      "file_size": 1229,
+      "ext": "jpeg",
+      "xref": 205,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p042_i08",
+      "page": 42,
+      "file_name": "page_042_img_08.jpeg",
+      "path": "images/第5章 总体设计-2/page_042_img_08.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_042_img_08.jpeg",
+      "width": 46,
+      "height": 63,
+      "file_size": 1060,
+      "ext": "jpeg",
+      "xref": 207,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p043_i01",
+      "page": 43,
+      "file_name": "page_043_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_043_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_043_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板背景页，仅包含学校 Logo 和装饰性渐变条，无教学知识内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片为 PPT 模板背景，仅包含学校 Logo 和装饰性渐变条，无教学知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p043_i02",
+      "page": 43,
+      "file_name": "page_043_img_02.jpeg",
+      "path": "images/第5章 总体设计-2/page_043_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_043_img_02.jpeg",
+      "width": 46,
+      "height": 63,
+      "file_size": 1064,
+      "ext": "jpeg",
+      "xref": 201,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p043_i03",
+      "page": 43,
+      "file_name": "page_043_img_03.jpeg",
+      "path": "images/第5章 总体设计-2/page_043_img_03.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_043_img_03.jpeg",
+      "width": 46,
+      "height": 63,
+      "file_size": 1060,
+      "ext": "jpeg",
+      "xref": 207,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p043_i04",
+      "page": 43,
+      "file_name": "page_043_img_04.jpeg",
+      "path": "images/第5章 总体设计-2/page_043_img_04.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_043_img_04.jpeg",
+      "width": 32,
+      "height": 50,
+      "file_size": 873,
+      "ext": "jpeg",
+      "xref": 211,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p043_i05",
+      "page": 43,
+      "file_name": "page_043_img_05.jpeg",
+      "path": "images/第5章 总体设计-2/page_043_img_05.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_043_img_05.jpeg",
+      "width": 45,
+      "height": 64,
+      "file_size": 1188,
+      "ext": "jpeg",
+      "xref": 213,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p043_i06",
+      "page": 43,
+      "file_name": "page_043_img_06.jpeg",
+      "path": "images/第5章 总体设计-2/page_043_img_06.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_043_img_06.jpeg",
+      "width": 36,
+      "height": 50,
+      "file_size": 1066,
+      "ext": "jpeg",
+      "xref": 215,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p043_i07",
+      "page": 43,
+      "file_name": "page_043_img_07.jpeg",
+      "path": "images/第5章 总体设计-2/page_043_img_07.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_043_img_07.jpeg",
+      "width": 45,
+      "height": 63,
+      "file_size": 1227,
+      "ext": "jpeg",
+      "xref": 217,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p043_i08",
+      "page": 43,
+      "file_name": "page_043_img_08.jpeg",
+      "path": "images/第5章 总体设计-2/page_043_img_08.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_043_img_08.jpeg",
+      "width": 45,
+      "height": 64,
+      "file_size": 1248,
+      "ext": "jpeg",
+      "xref": 219,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p043_i09",
+      "page": 43,
+      "file_name": "page_043_img_09.jpeg",
+      "path": "images/第5章 总体设计-2/page_043_img_09.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_043_img_09.jpeg",
+      "width": 41,
+      "height": 52,
+      "file_size": 1107,
+      "ext": "jpeg",
+      "xref": 221,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p043_i10",
+      "page": 43,
+      "file_name": "page_043_img_10.jpeg",
+      "path": "images/第5章 总体设计-2/page_043_img_10.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_043_img_10.jpeg",
+      "width": 39,
+      "height": 52,
+      "file_size": 1185,
+      "ext": "jpeg",
+      "xref": 223,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p043_i11",
+      "page": 43,
+      "file_name": "page_043_img_11.jpeg",
+      "path": "images/第5章 总体设计-2/page_043_img_11.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_043_img_11.jpeg",
+      "width": 39,
+      "height": 53,
+      "file_size": 1187,
+      "ext": "jpeg",
+      "xref": 225,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p043_i12",
+      "page": 43,
+      "file_name": "page_043_img_12.jpeg",
+      "path": "images/第5章 总体设计-2/page_043_img_12.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_043_img_12.jpeg",
+      "width": 39,
+      "height": 52,
+      "file_size": 1169,
+      "ext": "jpeg",
+      "xref": 227,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p043_i13",
+      "page": 43,
+      "file_name": "page_043_img_13.jpeg",
+      "path": "images/第5章 总体设计-2/page_043_img_13.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_043_img_13.jpeg",
+      "width": 30,
+      "height": 52,
+      "file_size": 946,
+      "ext": "jpeg",
+      "xref": 229,
+      "rule_class": "tiny_icon_or_fragment",
+      "is_knowledge_image": false,
+      "reject_reason": "tiny_icon_or_fragment",
+      "llm_checked": false
+    },
+    {
+      "image_id": "第5章 总体设计-2_p044_i01",
+      "page": 44,
+      "file_name": "page_044_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_044_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_044_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板背景页，包含校徽、学院名称及装饰性图形，无具体教学内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，无软件工程相关的知识点、图表或代码内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p044_i02",
+      "page": 44,
+      "file_name": "page_044_img_02.jpeg",
+      "path": "images/第5章 总体设计-2/page_044_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_044_img_02.jpeg",
+      "width": 710,
+      "height": 409,
+      "file_size": 25150,
+      "ext": "jpeg",
+      "xref": 233,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "flowchart",
+      "caption": "旅客查询系统的业务流程图，展示了从录入员发起查询到最终显示结果的逻辑处理过程。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "llm_rejected_or_low_confidence"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p045_i01",
+      "page": 45,
+      "file_name": "page_045_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_045_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_045_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板背景页，仅包含校徽、学院名称及装饰性图形，无具体教学内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo及装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p046_i01",
+      "page": 46,
+      "file_name": "page_046_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_046_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_046_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院名称及装饰性背景元素，无具体教学内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、学院名称和空白背景，属于PPT模板或装饰元素，不包含软件工程课程相关的知识点（如流程图、结构图、代码等）。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p046_i02",
+      "page": 46,
+      "file_name": "page_046_img_02.jpeg",
+      "path": "images/第5章 总体设计-2/page_046_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_046_img_02.jpeg",
+      "width": 653,
+      "height": 308,
+      "file_size": 15906,
+      "ext": "jpeg",
+      "xref": 238,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "diagram",
+      "caption": "展示软件总体设计中模块结构图（SC）与数据流图（DFD）的对应关系及层次分解示例。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "llm_rejected_or_low_confidence"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p047_i01",
+      "page": 47,
+      "file_name": "page_047_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_047_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_047_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板背景页，仅包含校徽、学院标识及装饰性渐变图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片为PPT模板背景，仅包含学校Logo和装饰元素，无软件工程教学相关的知识图表、流程图、代码或数据内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p047_i02",
+      "page": 47,
+      "file_name": "page_047_img_02.jpeg",
+      "path": "images/第5章 总体设计-2/page_047_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_047_img_02.jpeg",
+      "width": 624,
+      "height": 334,
+      "file_size": 16147,
+      "ext": "jpeg",
+      "xref": 241,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "diagram",
+      "caption": "软件工程总体设计中的数据流图（DFD）与结构图（SC）示例，展示了主图与子图的分解关系。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "llm_rejected_or_low_confidence"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p048_i01",
+      "page": 48,
+      "file_name": "page_048_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_048_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_048_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "一张包含北京信息科技大学校徽和计算机学院标识的PPT空白模板页，无具体教学内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo和装饰性背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p048_i02",
+      "page": 48,
+      "file_name": "page_048_img_02.jpeg",
+      "path": "images/第5章 总体设计-2/page_048_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_048_img_02.jpeg",
+      "width": 1222,
+      "height": 119,
+      "file_size": 30392,
+      "ext": "jpeg",
+      "xref": 244,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "图片仅包含标题文字“定货系统的软件结构设计”，属于PPT装饰性文本，不包含具体的知识图表或内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "仅为标题文本，无实质教学知识点"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p048_i03",
+      "page": 48,
+      "file_name": "page_048_img_03.jpeg",
+      "path": "images/第5章 总体设计-2/page_048_img_03.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_048_img_03.jpeg",
+      "width": 3277,
+      "height": 1375,
+      "file_size": 248491,
+      "ext": "jpeg",
+      "xref": 246,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "flowchart",
+      "caption": "库存管理系统的顶层数据流图，展示了仓库管理员、采购员、数据存储及处理过程之间的数据流向。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "llm_rejected_or_low_confidence"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p049_i01",
+      "page": 49,
+      "file_name": "page_049_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_049_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_049_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板背景页，仅包含校徽、学院名称及装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片为PPT模板背景，仅包含学校Logo和装饰性图形，无软件工程知识点内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p050_i01",
+      "page": 50,
+      "file_name": "page_050_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_050_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_050_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板背景页，包含校徽和装饰性渐变条，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，无软件工程相关的流程图、结构图或知识点内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p051_i01",
+      "page": 51,
+      "file_name": "page_051_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_051_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_051_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板背景页，包含校徽和装饰性渐变条，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含学校Logo和装饰元素，无实质性的软件工程知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p052_i01",
+      "page": 52,
+      "file_name": "page_052_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_052_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_052_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板背景页，仅包含学校 Logo 和装饰性渐变图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片为 PPT 模板背景，仅包含页眉页脚和装饰元素，无正文知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p053_i01",
+      "page": 53,
+      "file_name": "page_053_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_053_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_053_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT模板背景页，仅包含学校Logo和装饰性渐变条，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含页眉页脚、Logo及装饰背景，无正文知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p054_i01",
+      "page": 54,
+      "file_name": "page_054_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_054_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_054_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板背景页，包含校徽和装饰性渐变条。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、学院名称及空白背景装饰，无具体的软件工程知识点内容（如结构图、流程图等）。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p055_i01",
+      "page": 55,
+      "file_name": "page_055_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_055_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_055_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，包含校徽、学院标识及装饰性背景，无具体教学内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅包含学校Logo、页眉页脚及装饰性背景，属于PPT模板，不包含任何软件工程知识点、图表或代码示例。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p056_i01",
+      "page": 56,
+      "file_name": "page_056_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_056_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_056_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT 模板背景页，仅包含学校 Logo 和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为 PPT 模板背景，包含页眉 Logo 和页脚装饰，无正文知识内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p057_i01",
+      "page": 57,
+      "file_name": "page_057_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_057_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_057_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板页，仅包含校徽、学院标识及装饰性背景元素，无具体教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含学校Logo和装饰图案，缺乏软件工程课程所需的教学知识内容（如流程图、结构图或代码示例）。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p058_i01",
+      "page": 58,
+      "file_name": "page_058_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_058_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_058_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板背景页，仅包含校徽、学院名称及装饰性线条，无具体教学内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含学校Logo和装饰元素，缺乏具体的软件工程知识点、图表或代码内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p059_i01",
+      "page": 59,
+      "file_name": "page_059_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_059_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_059_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "PPT模板背景页，仅包含学校Logo和装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片仅为PPT模板背景，包含校徽和装饰元素，不包含任何软件工程知识图表或正文内容。"
+    },
+    {
+      "image_id": "第5章 总体设计-2_p060_i01",
+      "page": 60,
+      "file_name": "page_060_img_01.jpeg",
+      "path": "images/第5章 总体设计-2/page_060_img_01.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_060_img_01.jpeg",
+      "width": 800,
+      "height": 600,
+      "file_size": 14519,
+      "ext": "jpeg",
+      "xref": 17,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": false,
+      "image_type": "decoration",
+      "caption": "北京信息科技大学计算机学院的PPT模板背景页，仅包含校徽、学院名称及装饰性图形，无教学知识点内容。",
+      "related_chunk_ids": [],
+      "confidence": 0.95,
+      "reject_reason": "图片为PPT模板背景，仅包含学校Logo和装饰元素，无软件工程知识点内容。"
+    }
+  ],
+  "cleaning": {
+    "filtered_non_knowledge_count": 9,
+    "filtered_non_knowledge_samples": [
+      {
+        "chunk_id": "chunk_66b135357d89",
+        "title": "软件工程",
+        "reason": "generic_fragment",
+        "pages": [
+          1
+        ],
+        "text_preview": "高级软件工程"
+      },
+      {
+        "chunk_id": "chunk_cd783999f633",
+        "title": "（4）指示加速或减速； （5）超速警告：如果车速超过55英里／小时 ，则发出超速警告铃声。",
+        "reason": "toc_or_fragment",
+        "pages": [
+          21
+        ],
+        "text_preview": "旋转信号"
+      },
+      {
+        "chunk_id": "chunk_cca6e43d1e6e",
+        "title": "2、复查并精化",
+        "reason": "toc_or_fragment",
+        "pages": [
+          21
+        ],
+        "text_preview": "下箭头\n\n△SPS\n\n水平线"
+      },
+      {
+        "chunk_id": "chunk_4956469884d4",
+        "title": "7、精化",
+        "reason": "toc_or_fragment",
+        "pages": [
+          21
+        ],
+        "text_preview": "警告铃声\n\nmph\n\nmpg"
+      },
+      {
+        "chunk_id": "chunk_fd0da1f4dec7",
+        "title": "6、第二级分解",
+        "reason": "toc_or_fragment",
+        "pages": [
+          21
+        ],
+        "text_preview": "mpg 显示\n\nmph 显示"
+      },
+      {
+        "chunk_id": "chunk_90ebb685efa2",
+        "title": "3、确定数据流图的类型",
+        "reason": "toc_or_fragment",
+        "pages": [
+          25
+        ],
+        "text_preview": "旋转信号"
+      },
+      {
+        "chunk_id": "chunk_8010ec43d6a9",
+        "title": "调度 模块",
+        "reason": "toc_or_fragment",
+        "pages": [
+          41
+        ],
+        "text_preview": "总控\n\n接收通路"
+      },
+      {
+        "chunk_id": "chunk_f783aa4d4c81",
+        "title": "每个活动流通路映射为与其 流特征相对应的结构",
+        "reason": "toc_or_fragment",
+        "pages": [
+          41
+        ],
+        "text_preview": "C 通路\n\nB 通路"
+      },
+      {
+        "chunk_id": "chunk_168bb5c3b873",
+        "title": "MT",
+        "reason": "exercise_like_text",
+        "pages": [
+          43,
+          44,
+          45,
+          46
+        ],
+        "text_preview": "C\n\nD,E,F\n\n------ 事务型 系统结构图(SC)\n\nC\n\n逻辑输入 逻辑输出\n\nD,E,F\n\n课堂练习：分析数据流类型，并映射成软件结构\n\n混合流设计\n\n一般中型以上的系统的数据流图中，都会既\n\n有变换流，又有事务流----混合的数据流图， 其软件结构设计方法： （1）确定数据流图整体上的类型。 （2）标出局部的数据流图范围，确定其类型。 （3）"
+      }
+    ],
+    "merged_duplicate_group_count": 4,
+    "merged_duplicate_samples": [
+      {
+        "title": "6、进行“第二级分解”",
+        "merged_count": 2,
+        "merged_chunk_id": "merged_bdaa99e7cba7"
+      },
+      {
+        "title": "未经精化的输入结构 未经精化的变换结构",
+        "merged_count": 2,
+        "merged_chunk_id": "merged_988040dda45e"
+      },
+      {
+        "title": "变换型结构",
+        "merged_count": 2,
+        "merged_chunk_id": "merged_cb50a4a3a764"
+      },
+      {
+        "title": "事务型结构",
+        "merged_count": 2,
+        "merged_chunk_id": "merged_3d43cdaee4ee"
+      }
+    ],
+    "rule_relation_fallback_edges_added": 0,
+    "rejected_image_count": 99
+  },
+  "llm": {
+    "used_boundaries": true,
+    "generated_relations": true,
+    "used_image_filter": true,
+    "model": "xopqwen35v35b",
+    "base_url": "https://maas-api.cn-huabei-1.xf-yun.com/v2"
+  }
+}

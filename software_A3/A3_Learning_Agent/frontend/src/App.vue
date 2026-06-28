@@ -1,472 +1,656 @@
 ﻿<template>
   <el-config-provider>
-    <div class="app-shell" :class="{ 'auth-shell': !showShell }">
-      <aside v-if="showShell" class="sidebar">
-        <div class="brand-block">
-          <div class="brand-mark">A3</div>
-          <div class="brand-copy">
-            <strong>Learning Agent</strong>
-            <p>面向课程学习的个性化学习平台</p>
-          </div>
+    <el-container class="app-shell">
+      <el-aside v-if="!isAuthPage" width="292px" class="sidebar">
+        <div class="sidebar-topbar">
+          <div class="brand-title">学习助手</div>
         </div>
 
-        <nav class="nav-group">
-          <button
-            v-for="item in mainNav"
-            :key="item.path"
-            class="nav-item"
-            :class="{ active: isNavActive(item.path) }"
-            @click="router.push(item.path)"
-          >
-            <span class="nav-title">{{ item.label }}</span>
-          </button>
-        </nav>
+        <el-button class="new-chat-button" :loading="creatingSession" @click="createNewChat">
+          <el-icon><Plus /></el-icon>
+          New chat
+        </el-button>
 
-        <div class="sidebar-bottom">
-          <div class="session-switcher">
-            <div class="section-row">
-              <strong>画像会话</strong>
-              <el-button size="small" type="primary" @click="createSession">新建</el-button>
+        <div class="menu-group">
+          <div class="menu-group-label">Workspace</div>
+          <el-menu router :default-active="route.path" class="side-menu">
+            <el-menu-item v-for="item in primaryNav" :key="item.path" :index="item.path">
+              <el-icon><component :is="item.icon" /></el-icon>
+              <span>{{ item.label }}</span>
+            </el-menu-item>
+          </el-menu>
+        </div>
+
+        <div class="menu-group menu-group-compact">
+          <div class="menu-group-label">系统</div>
+          <el-menu router :default-active="route.path" class="side-menu">
+            <el-menu-item v-for="item in secondaryNav" :key="item.path" :index="item.path">
+              <el-icon><component :is="item.icon" /></el-icon>
+              <span>{{ item.label }}</span>
+            </el-menu-item>
+          </el-menu>
+        </div>
+
+        <div class="recent-section">
+          <div class="recent-header">
+            <div class="recent-heading">
+              <span class="recent-title-main">Recents</span>
             </div>
-            <div class="session-list">
-              <button
-                v-for="item in sessionItems"
-                :key="item.id"
-                class="session-chip"
-                :class="{ active: Number(item.id) === Number(activeSessionId) }"
-                @click="switchSession(item.id)"
+
+            <el-button text circle class="refresh-button" @click="loadRecentSessions">
+              <el-icon><RefreshRight /></el-icon>
+            </el-button>
+          </div>
+
+          <div class="recent-list">
+            <div
+              v-for="item in recentSessions"
+              :key="item.id"
+              :class="['recent-item', { active: Number(item.id) === Number(activeSessionId) && route.path === '/profile' }]"
+              role="button"
+              tabindex="0"
+              @click="openSession(item.id)"
+              @keydown.enter.prevent="openSession(item.id)"
+              @keydown.space.prevent="openSession(item.id)"
+            >
+              <span class="recent-title">{{ item.title || `会话 ${item.id}` }}</span>
+              <el-dropdown
+                trigger="click"
+                placement="right-start"
+                popper-class="recent-actions-popper"
+                @command="(command) => handleSessionCommand(command, item)"
+                @click.stop
               >
-                <span class="session-title">
-                  {{ sessionLabel(item, sessionItems.findIndex((entry) => entry.id === item.id) + 1) }}
-                </span>
-              </button>
+                <el-button text circle class="recent-more-button" title="更多操作" @click.stop>
+                  <el-icon><MoreFilled /></el-icon>
+                </el-button>
+                <template #dropdown>
+                  <el-dropdown-menu class="recent-actions-menu">
+                    <el-dropdown-item command="rename" class="recent-action-item">
+                      <el-icon><EditPen /></el-icon>
+                      <span>重命名</span>
+                    </el-dropdown-item>
+                    <el-dropdown-item command="delete" class="recent-action-item danger">
+                      <el-icon><Delete /></el-icon>
+                      <span>删除</span>
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+            </div>
+
+            <div v-if="!recentSessions.length" class="recent-empty">
+              <span>No recent chats</span>
             </div>
           </div>
-
-          <div class="account-card">
-            <div class="account-avatar">{{ usernameInitial }}</div>
-            <div class="account-copy">
-              <strong>{{ username }}</strong>
-              <span>当前用户</span>
-            </div>
-            <el-button text class="settings-link" @click="router.push('/settings')">设置</el-button>
-          </div>
-
-          <el-button class="logout-button" @click="logout">退出登录</el-button>
         </div>
-      </aside>
 
-      <main class="main-shell">
-        <header v-if="showShell" class="topbar">
-          <h1>{{ pageTitle }}</h1>
-          <div class="topbar-actions">
-            <el-button type="primary">升级</el-button>
-            <el-button text @click="router.push('/settings')">设置</el-button>
+        <div class="sidebar-footer">
+          <div class="user-row">
+            <div class="user-avatar">{{ usernameInitial }}</div>
+            <div class="user-copy">
+              <strong>{{ username }}</strong>
+              <small>已登录</small>
+            </div>
+            <el-button class="logout-button" text @click="logout">退出登录</el-button>
           </div>
-        </header>
+        </div>
+      </el-aside>
 
-        <section class="view-shell" :class="{ auth: !showShell }">
+      <el-container class="main-shell">
+        <el-main :class="{ 'auth-main': isAuthPage }">
           <router-view />
-        </section>
-      </main>
-    </div>
+        </el-main>
+      </el-container>
+    </el-container>
   </el-config-provider>
 </template>
 
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { ElMessage, ElMessageBox } from 'element-plus';
-import { activeProfileSessionId, profileApi, setActiveProfileSessionId } from './api';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { ElMessage, ElMessageBox } from "element-plus";
+import {
+  ChatDotRound,
+  Connection,
+  Cpu,
+  DataAnalysis,
+  Delete,
+  EditPen,
+  FolderOpened,
+  MoreFilled,
+  Monitor,
+  Notebook,
+  Plus,
+  Reading,
+  RefreshRight,
+} from "@element-plus/icons-vue";
+import { activeProfileSessionId, profileApi, setActiveProfileSessionId } from "./api";
 
 const router = useRouter();
 const route = useRoute();
 
-const mainNav = [
-  { path: '/profile', label: '学习画像' },
-  { path: '/resources', label: '学习资源' },
-  { path: '/path', label: '学习路径' },
-  { path: '/chat', label: '智能答疑' },
-  { path: '/evaluation', label: '学习评估' },
+const primaryNav = [
+  { path: "/profile", label: "对话画像", icon: ChatDotRound },
+  { path: "/resources", label: "学习资源", icon: Notebook },
+  { path: "/path", label: "学习路径", icon: Connection },
+  { path: "/chat", label: "智能答疑", icon: Reading },
+  { path: "/evaluation", label: "学习评估", icon: DataAnalysis },
 ];
 
-const pageTitles = {
-  '/profile': '学习画像',
-  '/profile/chat': '画像会话',
-  '/resources': '学习资源',
-  '/path': '学习路径',
-  '/chat': '智能答疑',
-  '/evaluation': '学习评估',
-  '/settings': '设置',
-};
+const secondaryNav = [
+  { path: "/architecture", label: "智能体架构", icon: Cpu },
+  { path: "/knowledge", label: "知识库管理", icon: FolderOpened },
+  { path: "/system", label: "系统状态", icon: Monitor },
+];
 
-const showShell = computed(() => route.path !== '/auth');
-const user = computed(() => JSON.parse(localStorage.getItem('user') || '{}'));
-const username = computed(() => user.value.username || '学习者');
+const user = computed(() => JSON.parse(localStorage.getItem("user") || "{}"));
+const username = computed(() => user.value.username || "学习者");
 const usernameInitial = computed(() => username.value.slice(0, 1).toUpperCase());
-const pageTitle = computed(() => pageTitles[route.path] || 'Learning Agent');
-
-const sessionItems = ref([]);
+const isAuthPage = computed(() => route.path === "/auth");
+const recentSessions = ref([]);
+const creatingSession = ref(false);
 const activeSessionId = ref(activeProfileSessionId());
 
-function isNavActive(path) {
-  if (path === '/profile') {
-    return route.path === '/profile' || route.path === '/profile/chat';
+function byCreateTime(a, b) {
+  const aTime = a?.create_time ? new Date(a.create_time).getTime() : 0;
+  const bTime = b?.create_time ? new Date(b.create_time).getTime() : 0;
+
+  if (aTime && bTime && aTime !== bTime) {
+    return aTime - bTime;
   }
-  return route.path === path;
+
+  return Number(a?.id || 0) - Number(b?.id || 0);
 }
 
-function sessionLabel(item, index) {
-  const raw = String(item?.title || '').trim();
-  if (!raw || raw === '空白画像') return `画像对话 ${index}`;
-  return raw.replace(/\s+/g, ' ').slice(0, 28);
-}
-
-async function loadSessions() {
-  if (!localStorage.getItem('token')) return;
+async function loadRecentSessions() {
+  if (isAuthPage.value) return;
   const res = await profileApi.sessions();
-  if (res.code !== 200) return;
-  sessionItems.value = res.data.sessions || [];
-  const nextId = res.data.active_session_id || activeProfileSessionId() || sessionItems.value[0]?.id || '';
-  activeSessionId.value = nextId ? String(nextId) : '';
-  setActiveProfileSessionId(nextId);
+  if (res.code === 200) {
+    recentSessions.value = [...(res.data.sessions || [])]
+      .sort(byCreateTime)
+      .slice(0, 7);
+  }
 }
 
-async function switchSession(id) {
-  if (!id || String(id) === String(activeSessionId.value)) return;
-  const res = await profileApi.activateSession(id);
-  if (res.code !== 200) {
-    ElMessage.error(res.msg || '切换画像会话失败');
+async function createNewChat() {
+  creatingSession.value = true;
+  try {
+    const res = await profileApi.createSession();
+    if (res.code !== 200) {
+      ElMessage.error(res.msg || "新建会话失败");
+      return;
+    }
+    setActiveProfileSessionId(res.data.id);
+    activeSessionId.value = String(res.data.id);
+    await loadRecentSessions();
+    if (route.path !== "/profile") {
+      await router.push("/profile");
+    } else {
+      window.dispatchEvent(new CustomEvent("a3-profile-session-created", { detail: { id: res.data.id } }));
+    }
+  } finally {
+    creatingSession.value = false;
+  }
+}
+
+async function openSession(id) {
+  if (Number(id) === Number(activeSessionId.value) && route.path === "/profile") {
     return;
   }
+  const previousSessionId = activeSessionId.value;
   activeSessionId.value = String(id);
   setActiveProfileSessionId(id);
-  window.dispatchEvent(new CustomEvent('profile-session-changed', { detail: { id: Number(id) } }));
-  await loadSessions();
-  if (route.path !== '/profile/chat') router.push('/profile/chat');
-}
-
-async function createSession() {
-  const res = await profileApi.createSession();
+  const res = await profileApi.activateSession(id);
   if (res.code !== 200) {
-    ElMessage.error(res.msg || '新建画像会话失败');
+    activeSessionId.value = previousSessionId;
+    setActiveProfileSessionId(previousSessionId || "");
+    ElMessage.error(res.msg || "切换会话失败");
     return;
   }
-  const nextId = res.data.id;
-  activeSessionId.value = String(nextId);
-  setActiveProfileSessionId(nextId);
-  window.dispatchEvent(new CustomEvent('profile-session-changed', { detail: { id: Number(nextId), reset: true } }));
-  await loadSessions();
-  if (route.path !== '/profile/chat') router.push('/profile/chat');
+  if (route.path !== "/profile") {
+    await router.push("/profile");
+  } else {
+    window.dispatchEvent(new CustomEvent("a3-profile-session-change", { detail: { id } }));
+  }
+}
+
+function sessionTitle(item) {
+  return item?.title || `会话 ${item?.id || ""}`;
+}
+
+async function handleSessionCommand(command, item) {
+  if (command === "rename") {
+    await renameSession(item);
+    return;
+  }
+  if (command === "delete") {
+    await deleteSession(item);
+  }
+}
+
+async function renameSession(item) {
+  const id = item?.id;
+  if (!id) return;
+
+  try {
+    const { value } = await ElMessageBox.prompt("请输入新的对话名称", "重命名", {
+      confirmButtonText: "保存",
+      cancelButtonText: "取消",
+      inputValue: sessionTitle(item),
+      inputPattern: /\S/,
+      inputErrorMessage: "对话名称不能为空",
+    });
+    const title = String(value || "").trim();
+    if (!title || title === item.title) return;
+
+    const res = await profileApi.renameSession(id, title);
+    if (res.code !== 200) {
+      ElMessage.error(res.msg || "重命名失败");
+      return;
+    }
+    await loadRecentSessions();
+    ElMessage.success(res.msg || "已重命名");
+  } catch (error) {
+    // 用户取消
+  }
+}
+
+async function deleteSession(item) {
+  const id = item?.id;
+  if (!id) return;
+
+  try {
+    await ElMessageBox.confirm(`确定要删除“${sessionTitle(item)}”吗？删除后相关画像、资源、路径和答疑记录也会一并移除。`, "删除对话", {
+      confirmButtonText: "删除",
+      cancelButtonText: "取消",
+      type: "warning",
+      confirmButtonClass: "el-button--danger",
+    });
+
+    const wasActive = Number(id) === Number(activeSessionId.value);
+    const res = await profileApi.deleteSession(id);
+    if (res.code !== 200) {
+      ElMessage.error(res.msg || "删除对话失败");
+      return;
+    }
+
+    const nextActiveId = res.data?.active_session_id || "";
+    setActiveProfileSessionId(nextActiveId);
+    activeSessionId.value = nextActiveId ? String(nextActiveId) : "";
+    await loadRecentSessions();
+    ElMessage.success(res.msg || "对话已删除");
+
+    if (wasActive) {
+      if (route.path !== "/profile") {
+        await router.push("/profile");
+      }
+      window.dispatchEvent(new CustomEvent("a3-profile-session-change", { detail: { id: nextActiveId } }));
+    }
+  } catch (error) {
+    // 用户取消
+  }
 }
 
 async function logout() {
   try {
-    await ElMessageBox.confirm('确定退出当前账号吗？', '退出登录', {
-      confirmButtonText: '退出',
-      cancelButtonText: '取消',
-      type: 'warning',
+    await ElMessageBox.confirm("确定要退出当前账号吗？", "退出登录", {
+      confirmButtonText: "退出",
+      cancelButtonText: "取消",
+      type: "warning",
     });
-  } catch {
-    return;
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setActiveProfileSessionId("");
+    activeSessionId.value = "";
+    router.push("/auth");
+  } catch (error) {
+    // 用户取消
   }
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
-  setActiveProfileSessionId('');
-  router.push('/auth');
 }
 
-function handleSessionRefresh() {
-  loadSessions();
-}
-
-watch(
-  () => route.path,
-  () => {
-    if (showShell.value) loadSessions();
-  }
-);
+watch(() => route.path, () => {
+  loadRecentSessions();
+});
 
 onMounted(() => {
-  loadSessions();
-  window.addEventListener('profile-session-refresh', handleSessionRefresh);
+  activeSessionId.value = activeProfileSessionId();
+  loadRecentSessions();
+  window.addEventListener("a3-profile-session-refresh", loadRecentSessions);
+  window.addEventListener("a3-profile-session-change", syncActiveSession);
+  window.addEventListener("a3-profile-session-created", syncActiveSession);
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener('profile-session-refresh', handleSessionRefresh);
+  window.removeEventListener("a3-profile-session-refresh", loadRecentSessions);
+  window.removeEventListener("a3-profile-session-change", syncActiveSession);
+  window.removeEventListener("a3-profile-session-created", syncActiveSession);
 });
+
+function syncActiveSession() {
+  activeSessionId.value = activeProfileSessionId();
+}
 </script>
 
 <style scoped>
 .app-shell {
-  display: grid;
-  grid-template-columns: 280px minmax(0, 1fr);
   height: 100vh;
   overflow: hidden;
   background: #ffffff;
-  color: #37352f;
-}
-
-.auth-shell {
-  grid-template-columns: 1fr;
 }
 
 .sidebar {
-  position: sticky;
-  top: 0;
   display: flex;
-  height: 100vh;
   flex-direction: column;
-  gap: 14px;
-  overflow-y: auto;
-  padding: 16px 12px;
-  border-right: 1px solid #ececf1;
-  background: #f7f7f8;
+  gap: 10px;
+  height: 100vh;
+  padding: 12px 10px 10px;
+  overflow: hidden;
+  border-right: 1px solid #ececec;
+  background: #f8f8fb;
 }
 
-.brand-block {
+.sidebar-topbar {
   display: flex;
-  gap: 14px;
   align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px 2px;
 }
 
-.brand-mark {
-  display: grid;
-  width: 40px;
-  height: 40px;
-  place-items: center;
-  border-radius: 10px;
-  background: #10a37f;
-  color: #ffffff;
-  font-weight: 800;
-  font-size: 15px;
+.brand-title {
+  color: #111827;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
-.brand-copy strong {
-  display: block;
-  color: #37352f;
-  font-size: 14px;
+.new-chat-button {
+  justify-content: flex-start;
+  height: 44px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #111827;
+  font-weight: 500;
 }
 
-.brand-copy p {
-  margin: 4px 0 0;
-  color: #6e6e73;
-  font-size: 12px;
-  line-height: 1.45;
-}
-
-.nav-group {
+.menu-group {
   display: grid;
   gap: 4px;
 }
 
-.nav-item {
-  width: 100%;
-  min-height: 40px;
-  padding: 8px 12px;
-  border: 0;
-  border-radius: 8px;
-  background: transparent;
-  color: #6e6e80;
-  text-align: left;
-  cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
+.menu-group-compact {
+  margin-top: 2px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #ececf2;
 }
 
-.nav-item:hover {
-  background: #f7f7f8;
-  color: #000000;
-}
-
-.nav-item.active {
-  background: #ececf1;
-  color: #000000;
-}
-
-.nav-title {
-  color: inherit;
+.menu-group-label {
+  padding: 0 10px;
+  color: #8f96a3;
+  font-size: 11px;
   font-weight: 600;
-  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
-.sidebar-bottom {
-  display: grid;
-  min-height: 0;
-  gap: 12px;
-  margin-top: auto;
-}
-
-.session-switcher {
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  min-height: 210px;
-  max-height: 360px;
-  padding: 8px 0;
-}
-
-.section-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 10px;
-}
-
-.section-row strong {
-  color: #37352f;
-  font-size: 14px;
-}
-
-.session-list {
-  display: grid;
-  gap: 6px;
-  min-height: 0;
-  overflow: auto;
-  padding-right: 4px;
-}
-
-.session-chip {
-  width: 100%;
-  min-height: 44px;
-  padding: 10px 12px;
-  border: 0;
-  border-radius: 8px;
+.side-menu {
+  border-right: none;
   background: transparent;
-  color: #6e6e80;
+}
+
+.side-menu :deep(.el-menu-item) {
+  height: 40px;
+  margin: 2px 0;
+  padding-left: 12px !important;
+  border-radius: 10px;
+  color: #4b5563;
+  font-weight: 450;
+}
+
+.side-menu :deep(.el-menu-item .el-icon) {
+  margin-right: 10px;
+  font-size: 17px;
+}
+
+.side-menu :deep(.el-menu-item.is-active) {
+  color: #111827;
+  background: #eceff3;
+}
+
+.side-menu :deep(.el-menu-item:hover) {
+  background: #f1f2f5;
+}
+
+.recent-section {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 4px;
+}
+
+.recent-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 10px;
+}
+
+.recent-heading {
+  display: grid;
+}
+
+.recent-title-main {
+  color: #111827;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.refresh-button {
+  color: #a1a1aa;
+}
+
+.recent-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: grid;
+  align-content: start;
+  gap: 1px;
+  padding: 0 4px 6px;
+}
+
+.recent-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.recent-list::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: #d9dce3;
+}
+
+.recent-item {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 30px;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 4px 4px 4px 10px;
   text-align: left;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: #202123;
   cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: 0.16s ease;
 }
 
-.session-chip:hover {
-  background: #f7f7f8;
-  color: #000000;
+.recent-item:hover {
+  background: #f3f4f6;
 }
 
-.session-chip.active {
-  background: #ececf1;
-  color: #000000;
+.recent-item.active {
+  background: #e8eaee;
+  color: #111827;
 }
 
-.session-title {
-  display: -webkit-box;
+.recent-title {
+  display: block;
+  min-width: 0;
   overflow: hidden;
-  max-width: 100%;
-  color: inherit;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.recent-more-button {
+  width: 28px;
+  height: 28px;
+  color: #6b7280;
+  opacity: 0.72;
+}
+
+.recent-item:hover .recent-more-button,
+.recent-item.active .recent-more-button,
+.recent-more-button:focus-visible {
+  opacity: 1;
+}
+
+.recent-more-button:hover {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+:global(.recent-actions-popper) {
+  border-radius: 18px !important;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.16) !important;
+}
+
+:global(.recent-actions-menu) {
+  min-width: 168px;
+  padding: 10px !important;
+}
+
+:global(.recent-action-item) {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  height: 42px;
+  border-radius: 10px;
+  color: #111827 !important;
+  font-size: 15px;
+}
+
+:global(.recent-action-item .el-icon) {
+  margin-right: 0;
+  font-size: 18px;
+}
+
+:global(.recent-action-item.danger) {
+  color: #dc2626 !important;
+}
+
+:global(.recent-action-item.danger:hover) {
+  background: #fee2e2 !important;
+}
+
+.recent-empty {
+  padding: 10px;
+  color: #9ca3af;
   font-size: 13px;
   line-height: 1.5;
-  white-space: normal;
-  word-break: break-word;
-  overflow-wrap: anywhere;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
 }
 
-.account-card {
-  display: grid;
-  grid-template-columns: 36px minmax(0, 1fr) auto;
-  gap: 10px;
+.sidebar-footer {
+  display: block;
+  flex: 0 0 auto;
+  padding-top: 8px;
+  border-top: 1px solid #ececf2;
+}
+
+.user-row {
+  display: flex;
   align-items: center;
-  padding: 8px 0;
-}
-
-.account-avatar {
-  display: grid;
-  width: 36px;
-  height: 36px;
-  place-items: center;
-  border-radius: 10px;
-  background: #000000;
-  color: #ffffff;
-  font-weight: 800;
-  font-size: 14px;
-}
-
-.account-copy strong {
-  display: block;
-  color: #37352f;
-  font-size: 14px;
-}
-
-.account-copy span {
-  display: block;
-  margin-top: 2px;
-  color: #6e6e73;
-  font-size: 12px;
-}
-
-.settings-link {
-  min-height: auto;
+  gap: 10px;
   padding: 6px 8px;
 }
 
+.user-avatar {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 999px;
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.user-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+.user-copy strong,
+.user-copy small {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.user-copy strong {
+  color: #111827;
+  font-size: 14px;
+}
+
+.user-copy small {
+  margin-top: 2px;
+  color: #8b919b;
+}
+
 .logout-button {
-  width: 100%;
+  flex: 0 0 auto;
+  height: 30px;
+  padding: 0 8px;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.logout-button:hover {
+  color: #ef4444;
+  background: #fee2e2;
 }
 
 .main-shell {
-  display: flex;
   min-width: 0;
   height: 100vh;
-  min-height: 0;
-  flex-direction: column;
-  overflow: hidden;
   background: #ffffff;
 }
 
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 56px;
-  flex-shrink: 0;
-  padding: 10px 24px;
-  border-bottom: 1px solid #ececf1;
-  background: #ffffff;
-}
-
-.topbar h1 {
-  margin: 0;
-  color: #37352f;
-  font-size: 20px;
-  line-height: 1.2;
-}
-
-.topbar-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.view-shell {
+.main-shell :deep(.el-main) {
   min-width: 0;
-  min-height: 0;
-  flex: 1;
+  height: 100vh;
   overflow: auto;
+  padding: 0;
 }
 
-.view-shell.auth {
-  overflow: hidden;
+.auth-main {
+  height: 100vh !important;
+  overflow: hidden !important;
+  padding: 0 !important;
 }
 
-@media (max-width: 980px) {
-  .app-shell {
-    grid-template-columns: 1fr;
-  }
-
+@media (max-width: 1024px) {
   .sidebar {
-    position: relative;
-    height: auto;
-    border-right: none;
-    border-bottom: 1px solid #ececf1;
-  }
-
-  .main-shell {
-    height: auto;
+    display: none;
   }
 }
 </style>
-
-
-
-

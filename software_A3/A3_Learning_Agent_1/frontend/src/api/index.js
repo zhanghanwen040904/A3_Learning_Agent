@@ -1,0 +1,114 @@
+import axios from "axios";
+import router from "../router";
+
+export const ACTIVE_PROFILE_SESSION_KEY = "a3_active_profile_session_id";
+
+export function activeProfileSessionId() {
+  return localStorage.getItem(ACTIVE_PROFILE_SESSION_KEY) || "";
+}
+
+export function setActiveProfileSessionId(id) {
+  if (id) {
+    localStorage.setItem(ACTIVE_PROFILE_SESSION_KEY, String(id));
+  } else {
+    localStorage.removeItem(ACTIVE_PROFILE_SESSION_KEY);
+  }
+}
+
+function withProfileSession(data = {}) {
+  const sessionId = activeProfileSessionId();
+  return sessionId ? { ...data, profile_session_id: Number(sessionId) } : data;
+}
+
+function profileSessionParams(params = {}) {
+  const sessionId = activeProfileSessionId();
+  return sessionId ? { ...params, profile_session_id: sessionId } : params;
+}
+
+const http = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api",
+  timeout: 120000,
+});
+
+http.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+http.interceptors.response.use(
+  (response) => response.data,
+  (error) => {
+    const data = error.response?.data || error;
+    if (error.response?.status === 401 || data?.code === 401) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      localStorage.removeItem(ACTIVE_PROFILE_SESSION_KEY);
+      if (router.currentRoute.value.path !== "/auth") {
+        router.push("/auth");
+      }
+    }
+    return Promise.resolve(data);
+  }
+);
+
+export const authApi = {
+  register: (data) => http.post("/auth/register", data),
+  login: (data) => http.post("/auth/login", data),
+};
+
+export const profileApi = {
+  sessions: () => http.get("/profile/sessions"),
+  createSession: (data = {}) => http.post("/profile/sessions", data),
+  activateSession: (id) => http.post(`/profile/sessions/${id}/activate`),
+  resetSession: (id) => http.post(`/profile/sessions/${id}/reset`),
+  deleteSession: (id) => http.delete(`/profile/sessions/${id}`),
+  chat: (data) => http.post("/profile/chat", withProfileSession(data)),
+  create: (data) => http.post("/profile/create", withProfileSession(data)),
+  update: (data) => http.post("/profile/update", withProfileSession(data)),
+  get: () => http.get("/profile/", { params: profileSessionParams() }),
+  getConversation: () => http.get("/profile/conversation", { params: profileSessionParams() }),
+  saveConversation: (data) => http.post("/profile/conversation", withProfileSession(data)),
+  clearConversation: () => http.delete("/profile/conversation", { params: profileSessionParams() }),
+};
+
+export const resourceApi = {
+  generate: (data = {}) => http.post("/resource/generate", withProfileSession(data)),
+  list: () => http.get("/resource/", { params: profileSessionParams() }),
+};
+
+export const pathApi = {
+  generate: (data = {}) => http.post("/path/generate", withProfileSession(data)),
+  list: () => http.get("/path/", { params: profileSessionParams() }),
+};
+
+export const chatApi = {
+  answer: (data) => http.post("/chat/answer", withProfileSession(data)),
+  history: () => http.get("/chat/history", { params: profileSessionParams() }),
+  saveHistory: (data) => http.post("/chat/history", withProfileSession(data)),
+  clearHistory: () => http.delete("/chat/history", { params: profileSessionParams() }),
+};
+
+export const knowledgeApi = {
+  status: () => http.get("/knowledge/status"),
+  rebuild: (data = { force: true }) => http.post("/knowledge/rebuild", data),
+  search: (data) => http.post("/knowledge/search", data),
+};
+
+export const evaluationApi = {
+  bankStatus: () => http.get("/evaluation/bank-status"),
+  rebuildBank: (data = { force: true }) => http.post("/evaluation/rebuild-bank", data),
+  questions: (data = {}) => http.post("/evaluation/questions", data),
+  submit: (data) => http.post("/evaluation/submit", data),
+  summary: () => http.get("/evaluation/summary"),
+  event: (data) => http.post("/evaluation/event", data),
+};
+
+export const systemApi = {
+  status: () => http.get("/system/status"),
+  testAi: (data = {}) => http.post("/system/test-ai", data),
+};
+
+export default http;

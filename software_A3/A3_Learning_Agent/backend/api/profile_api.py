@@ -1,4 +1,4 @@
-import json
+﻿import json
 from typing import Optional
 
 from flask import Blueprint, request
@@ -27,6 +27,7 @@ PROFILE_FIELDS = [
 ]
 
 DEFAULT_VALUE = "待进一步观察"
+AGGREGATE_PROFILE_SESSION_ID = 0
 
 
 def _json_dumps(value) -> str:
@@ -53,6 +54,19 @@ def _profile_session_id_from_payload(payload: Optional[dict] = None):
         return int(raw)
     except Exception:
         return None
+
+
+def _profile_only(data: Optional[dict] = None) -> dict:
+    data = data or {}
+    profile = {field: str(data.get(field) or DEFAULT_VALUE) for field in PROFILE_FIELDS}
+    profile["profile_summary"] = profile_agent._build_summary(profile)
+    return profile
+
+
+def _empty_profile(session_id=None):
+    data = {"profile_session_id": session_id}
+    data.update({field: DEFAULT_VALUE for field in PROFILE_FIELDS})
+    return data
 
 
 def _session_belongs_to_user(user_id: int, session_id: int) -> bool:
@@ -96,10 +110,20 @@ def _resolve_session(user_id: int, payload: Optional[dict] = None, create_if_mis
     return _active_session(user_id, create_if_missing=create_if_missing)
 
 
-def _empty_profile(session_id=None):
-    data = {"profile_session_id": session_id}
-    data.update({field: DEFAULT_VALUE for field in PROFILE_FIELDS})
-    return data
+def _save_conversation_payload(user_id: int, session_id: int, payload: dict) -> None:
+    messages = payload.get("messages") if isinstance(payload.get("messages"), list) else []
+    answer_map = payload.get("answer_map") if isinstance(payload.get("answer_map"), dict) else {}
+    extra_notes = payload.get("extra_notes") if isinstance(payload.get("extra_notes"), list) else []
+    current_index = int(payload.get("current_index") or 0)
+    data = {
+        "user_id": user_id,
+        "profile_session_id": session_id,
+        "messages": _json_dumps(messages),
+        "answer_map": _json_dumps(answer_map),
+        "extra_notes": _json_dumps(extra_notes),
+        "current_index": current_index,
+    }
+    mysql_db.upsert_by_unique_key("profile_conversation", data, update_fields=["messages", "answer_map", "extra_notes", "current_index"])
 
 
 def _delete_session_outputs(user_id: int, session_id: int) -> None:
@@ -124,20 +148,66 @@ def _delete_profile_session(user_id: int, session_id: int) -> None:
     mysql_db.delete("profile_session", "id=%s AND user_id=%s", (session_id, user_id))
 
 
-def _save_conversation_payload(user_id: int, session_id: int, payload: dict) -> None:
-    messages = payload.get("messages") if isinstance(payload.get("messages"), list) else []
-    answer_map = payload.get("answer_map") if isinstance(payload.get("answer_map"), dict) else {}
-    extra_notes = payload.get("extra_notes") if isinstance(payload.get("extra_notes"), list) else []
-    current_index = int(payload.get("current_index") or 0)
-    data = {
-        "user_id": user_id,
-        "profile_session_id": session_id,
-        "messages": _json_dumps(messages),
-        "answer_map": _json_dumps(answer_map),
-        "extra_notes": _json_dumps(extra_notes),
-        "current_index": current_index,
-    }
-    mysql_db.upsert_by_unique_key("profile_conversation", data, update_fields=["messages", "answer_map", "extra_notes", "current_index"])
+def _all_conversation_messages(user_id: int) -> list:
+    rows = mysql_db.query_all(
+        """
+        SELECT profile_session_id, messages, update_time
+        FROM profile_conversation
+        WHERE user_id=%s
+        ORDER BY update_time ASC, profile_session_id ASC
+        """,
+        (user_id,),
+    )
+    result = []
+    for row in rows:
+        messages = _json_loads(row.get("messages"), [])
+        if isinstance(messages, list) and messages:
+            result.append({"profile_session_id": row.get("profile_session_id"), "messages": messages})
+    return result
+
+
+def _aggregate_profile_data(user_id: int, transient_profile: Optional[dict] = None) -> dict:
+    merged = _profile_only({})
+
+    for item in _all_conversation_messages(user_id):
+        dialogue = profile_agent._messages_to_dialogue(item.get("messages") or [])
+        if dialogue.strip():
+            parsed = profile_agent._extract_from_dialogue(dialogue)
+            merged = profile_agent._merge_profile(merged, _profile_only(parsed))
+
+    rows = mysql_db.query_all(
+        """
+        SELECT *
+        FROM student_profile
+        WHERE user_id=%s AND profile_session_id <> %s
+        ORDER BY update_time ASC, profile_session_id ASC
+        """,
+        (user_id, AGGREGATE_PROFILE_SESSION_ID),
+    )
+    for row in rows:
+        merged = profile_agent._merge_profile(merged, _profile_only(row))
+
+    if transient_profile:
+        merged = profile_agent._merge_profile(merged, _profile_only(transient_profile))
+
+    merged = _profile_only(merged)
+    return {"user_id": user_id, "profile_session_id": AGGREGATE_PROFILE_SESSION_ID, **merged}
+
+
+def _refresh_aggregate_profile(user_id: int, transient_profile: Optional[dict] = None) -> dict:
+    data = _aggregate_profile_data(user_id, transient_profile=transient_profile)
+    mysql_db.upsert_by_unique_key("student_profile", data, update_fields=["profile_session_id", *PROFILE_FIELDS])
+    return data
+
+
+def _cached_aggregate_profile(user_id: int) -> Optional[dict]:
+    row = mysql_db.query_one(
+        "SELECT * FROM student_profile WHERE user_id=%s AND profile_session_id=%s",
+        (user_id, AGGREGATE_PROFILE_SESSION_ID),
+    )
+    if not row:
+        return None
+    return {"user_id": user_id, "profile_session_id": AGGREGATE_PROFILE_SESSION_ID, **_profile_only(row)}
 
 
 @profile_bp.get("/sessions")
@@ -193,9 +263,29 @@ def reset_session(session_id: int):
         mysql_db.delete("profile_conversation", "user_id=%s AND profile_session_id=%s", (request.user_id, session_id))
         _delete_session_outputs(request.user_id, session_id)
         _set_active_session(request.user_id, session_id)
+        _refresh_aggregate_profile(request.user_id)
         return success({"profile_session_id": session_id, "profile": _empty_profile(session_id)}, "画像会话已清空")
     except Exception as exc:
         return fail("画像会话清空失败", 500, {"error": str(exc)})
+
+
+@profile_bp.patch("/sessions/<int:session_id>")
+@login_required
+def rename_session(session_id: int):
+    try:
+        if not _session_belongs_to_user(request.user_id, session_id):
+            return fail("画像会话不存在", 404)
+        payload = request.get_json(silent=True) or {}
+        title = str(payload.get("title") or "").strip()
+        if not title:
+            return fail("会话名称不能为空", 400)
+        if len(title) > 120:
+            title = title[:120]
+        mysql_db.update("profile_session", {"title": title}, "id=%s AND user_id=%s", (session_id, request.user_id))
+        session = mysql_db.query_one("SELECT * FROM profile_session WHERE id=%s AND user_id=%s", (session_id, request.user_id))
+        return success(session, "画像会话已重命名")
+    except Exception as exc:
+        return fail("画像会话重命名失败", 500, {"error": str(exc)})
 
 
 @profile_bp.delete("/sessions/<int:session_id>")
@@ -206,6 +296,7 @@ def delete_session(session_id: int):
             return fail("画像会话不存在", 404)
         current = mysql_db.query_one("SELECT is_active FROM profile_session WHERE id=%s AND user_id=%s", (session_id, request.user_id)) or {}
         _delete_profile_session(request.user_id, session_id)
+        _refresh_aggregate_profile(request.user_id)
         next_session = _active_session(request.user_id, create_if_missing=False)
         if current.get("is_active") and next_session:
             _set_active_session(request.user_id, next_session["id"])
@@ -269,13 +360,17 @@ def create_profile():
         profile = profile_agent._merge_profile(profile_payload or {}, analyzed_profile)
         data = {"user_id": request.user_id, "profile_session_id": session_id, **{field: profile.get(field, DEFAULT_VALUE) for field in PROFILE_FIELDS}}
         mysql_db.upsert_by_unique_key("student_profile", data, update_fields=["profile_session_id", *PROFILE_FIELDS])
+
         title = data.get("profile_summary") or data.get("target_course") or data.get("major") or session.get("title")
         mysql_db.update("profile_session", {"title": str(title)[:120]}, "id=%s AND user_id=%s", (session_id, request.user_id))
+
         conversation = payload.get("conversation")
         if isinstance(conversation, dict):
             _save_conversation_payload(request.user_id, session_id, conversation)
+
         _delete_session_outputs(request.user_id, session_id)
-        return success(data, "画像创建成功")
+        aggregate_profile = _refresh_aggregate_profile(request.user_id, transient_profile=profile)
+        return success({**data, "aggregate_profile": aggregate_profile}, "画像创建成功")
     except Exception as exc:
         return fail("画像创建失败", 500, {"error": str(exc)})
 
@@ -305,8 +400,10 @@ def update_profile():
         affected = mysql_db.update("student_profile", data, "user_id=%s AND profile_session_id=%s", (request.user_id, session_id))
         if affected == 0:
             mysql_db.insert("student_profile", {"user_id": request.user_id, "profile_session_id": session_id, **data})
+
         _delete_session_outputs(request.user_id, session_id)
-        return success({"user_id": request.user_id, "profile_session_id": session_id, **data}, "画像更新成功")
+        aggregate_profile = _refresh_aggregate_profile(request.user_id, transient_profile=data)
+        return success({"user_id": request.user_id, "profile_session_id": session_id, **data, "aggregate_profile": aggregate_profile}, "画像更新成功")
     except Exception as exc:
         return fail("画像更新失败", 500, {"error": str(exc)})
 
@@ -322,6 +419,18 @@ def get_my_profile():
         return success(profile or _empty_profile(session["id"]), "查询成功")
     except Exception as exc:
         return fail("画像查询失败", 500, {"error": str(exc)})
+
+
+@profile_bp.get("/aggregate")
+@login_required
+def get_aggregate_profile():
+    try:
+        profile = _cached_aggregate_profile(request.user_id)
+        if not profile:
+            profile = _refresh_aggregate_profile(request.user_id)
+        return success(profile, "综合画像读取成功")
+    except Exception as exc:
+        return fail("综合画像读取失败", 500, {"error": str(exc)})
 
 
 @profile_bp.get("/<int:user_id>")
@@ -376,6 +485,7 @@ def clear_conversation():
         session = _resolve_session(request.user_id, create_if_missing=False)
         if session:
             mysql_db.delete("profile_conversation", "user_id=%s AND profile_session_id=%s", (request.user_id, session["id"]))
+            _refresh_aggregate_profile(request.user_id)
         return success({}, "对话记录已清空")
     except Exception as exc:
         return fail("对话记录清空失败", 500, {"error": str(exc)})

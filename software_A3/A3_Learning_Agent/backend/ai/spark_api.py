@@ -326,10 +326,57 @@ def _call_spark_http(prompt: str) -> str:
     raise RuntimeError(f"Spark HTTP接口未返回有效内容：{data}")
 
 
-def spark_chat(prompt: str) -> str:
-    """同步调用讯飞星火 V3.5 生成文本。
+def _call_anthropic_compatible(prompt: str) -> str:
+    import requests
 
-    功能：向讯飞星火 V3.5 发送单轮提示词并返回文本结果。
+    base_url = str(config.ANTHROPIC_BASE_URL or "").rstrip("/")
+    url = base_url if base_url.endswith("/messages") else f"{base_url}/messages"
+    payload = {
+        "model": config.ANTHROPIC_MODEL or config.ANTHROPIC_SMALL_FAST_MODEL,
+        "max_tokens": 4096,
+        "temperature": 0.5,
+        "messages": [{"role": "user", "content": prompt}],
+    }
+    response = requests.post(
+        url,
+        headers={
+            "x-api-key": config.ANTHROPIC_AUTH_TOKEN,
+            "anthropic-version": "2023-06-01",
+            "Content-Type": "application/json",
+        },
+        json=payload,
+        timeout=config.AI_TIMEOUT,
+    )
+    if response.status_code >= 400:
+        raise RuntimeError(_extract_http_error(response))
+    data = response.json()
+    content = data.get("content")
+    if isinstance(content, list):
+        parts = []
+        for item in content:
+            if isinstance(item, dict):
+                if item.get("type") == "text" and item.get("text"):
+                    parts.append(str(item["text"]))
+                elif item.get("content"):
+                    parts.append(str(item["content"]))
+        text = "".join(parts).strip()
+        if text:
+            return text
+    if data.get("completion"):
+        return str(data["completion"]).strip()
+    if data.get("answer") or data.get("content"):
+        return str(data.get("answer") or data.get("content")).strip()
+    raise RuntimeError(f"Anthropic兼容接口未返回有效内容：{data}")
+
+
+def _has_anthropic_compatible_config() -> bool:
+    return bool(config.ANTHROPIC_AUTH_TOKEN and config.ANTHROPIC_BASE_URL and (config.ANTHROPIC_MODEL or config.ANTHROPIC_SMALL_FAST_MODEL))
+
+
+def spark_chat(prompt: str) -> str:
+    """同步调用当前配置的大模型生成文本。
+
+    功能：优先使用 settings.json 中的 Anthropic 兼容大模型；未配置时回退到原有讯飞星火配置。
     输入：prompt，自然语言提示词。
     输出：成功时返回模型文本；失败时返回 JSON 字符串格式的标准错误信息。
     """
@@ -337,6 +384,11 @@ def spark_chat(prompt: str) -> str:
         return json.dumps(_standard_error("prompt不能为空"), ensure_ascii=False)
     if config.MOCK_AI:
         return _mock_spark_response(prompt)
+    if _has_anthropic_compatible_config():
+        try:
+            return _retry_call(lambda: _call_anthropic_compatible(prompt))
+        except Exception as exc:
+            return json.dumps(_standard_error("settings.json大模型调用失败", str(exc)), ensure_ascii=False)
     if _is_http_chat_url():
         if not config.XFYUN_API_KEY:
             return json.dumps(_standard_error("讯飞星火HTTP APIPassword未配置"), ensure_ascii=False)

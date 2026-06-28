@@ -1,0 +1,1975 @@
+{
+  "stage": "knowledge_tree",
+  "source_file": "C:\\Users\\ASUS\\Desktop\\新建文件夹 (2)\\第5章 总体设计-2.pdf",
+  "course": "软件工程",
+  "outline_nodes": [
+    {
+      "node_id": "node_0d3cc5018578",
+      "parent_id": null,
+      "title": "软件工程",
+      "level": 0,
+      "chapter_id": "chapter_0d3cc5018578",
+      "start_page": 1,
+      "path": [
+        "软件工程"
+      ],
+      "paragraph_count": 1,
+      "chunk_count": 0
+    },
+    {
+      "node_id": "node_9e0ace4df88e",
+      "parent_id": "node_0d3cc5018578",
+      "title": "第五章 总体设计（2）",
+      "level": 1,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 1,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）"
+      ],
+      "paragraph_count": 37,
+      "chunk_count": 4
+    },
+    {
+      "node_id": "node_283d62e653bb",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "输出 主加工 输入 变换型数据流图",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 11,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "输出 主加工 输入 变换型数据流图"
+      ],
+      "paragraph_count": 24,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_3f46089a5c94",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "集中式事务型数据流图",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 14,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "集中式事务型数据流图"
+      ],
+      "paragraph_count": 24,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_22dcc007d548",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "结构化设计",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 18,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "结构化设计"
+      ],
+      "paragraph_count": 12,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_b0af53709e5c",
+      "parent_id": "node_22dcc007d548",
+      "title": "5.5.2 变换分析",
+      "level": 3,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 19,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "结构化设计",
+        "5.5.2 变换分析"
+      ],
+      "paragraph_count": 9,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_d3cb6bcd6fe0",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "1、复查基本",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 21,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "1、复查基本"
+      ],
+      "paragraph_count": 4,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_a89ba77caf38",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "系统模型",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 21,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "系统模型"
+      ],
+      "paragraph_count": 4,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_1638101ea719",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "数据流图",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 21,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "数据流图"
+      ],
+      "paragraph_count": 9,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_fc31d5e3d836",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "3、确定数据流 图的类型",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 21,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "3、确定数据流 图的类型"
+      ],
+      "paragraph_count": 7,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_433171731825",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "4、确定输入流和 输出流的边界,孤 立变换中心",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 21,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "4、确定输入流和 输出流的边界,孤 立变换中心"
+      ],
+      "paragraph_count": 4,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_2590ae9cc008",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "5、第一级分解",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 21,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "5、第一级分解"
+      ],
+      "paragraph_count": 4,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_9909f4fcf754",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "o 目的：确保系统的",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 22,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "o 目的：确保系统的"
+      ],
+      "paragraph_count": 3,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_d13499051611",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "输入数据和输出数 据符合实际。 o 措施：重新检查数",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 22,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "输入数据和输出数 据符合实际。 o 措施：重新检查数"
+      ],
+      "paragraph_count": 17,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_c851791c05a6",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "据流图。",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 22,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "据流图。"
+      ],
+      "paragraph_count": 21,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_6da30dfd068e",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "o 精化原则",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 23,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "o 精化原则"
+      ],
+      "paragraph_count": 5,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_e32142773eca",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "n 确保能够反映目",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 23,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "n 确保能够反映目"
+      ],
+      "paragraph_count": 5,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_a2f5481c7e28",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "标系统的正确的 逻辑模型。 n 应该使数据流图",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 23,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "标系统的正确的 逻辑模型。 n 应该使数据流图"
+      ],
+      "paragraph_count": 15,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_3ae798781147",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "中每个处理都代 表一个规模适中 的并且相对独立 的子功能。",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 23,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "中每个处理都代 表一个规模适中 的并且相对独立 的子功能。"
+      ],
+      "paragraph_count": 19,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_7c01108ff55d",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "从图中可以看 出，数据沿着两条 输入通路进入系统 ，然后沿着五条通 路离开，没有明显 的事务中心。",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 25,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "从图中可以看 出，数据沿着两条 输入通路进入系统 ，然后沿着五条通 路离开，没有明显 的事务中心。"
+      ],
+      "paragraph_count": 29,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_676eba990a2c",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "可以认为这个 数据流图的类型是 变换型数据流图。",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 25,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "可以认为这个 数据流图的类型是 变换型数据流图。"
+      ],
+      "paragraph_count": 11,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_621a0f7fe0bc",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "4、确定输入流和输出流的边界，从而孤立出变换中心",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 26,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "4、确定输入流和输出流的边界，从而孤立出变换中心"
+      ],
+      "paragraph_count": 17,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_ebd3a5747803",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "rpm 不同的人选择 不同的分界点",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 26,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "rpm 不同的人选择 不同的分界点"
+      ],
+      "paragraph_count": 35,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_1d0132da2db9",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "应该在能够完成控制功能并且保持好的耦合和内 聚特性的前提下，尽量使第一级控制中的模块数 目最小。",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 28,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "应该在能够完成控制功能并且保持好的耦合和内 聚特性的前提下，尽量使第一级控制中的模块数 目最小。"
+      ],
+      "paragraph_count": 6,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_2b7da4fa0f71",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "6、进行“第二级分解”",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 30,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "6、进行“第二级分解”"
+      ],
+      "paragraph_count": 8,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_400296c8485e",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "第二级分解的方法",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 30,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "第二级分解的方法"
+      ],
+      "paragraph_count": 3,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_c7d318e27845",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "第二级分解的结果：",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 31,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "第二级分解的结果："
+      ],
+      "paragraph_count": 8,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_cd909b8dce92",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "接收 传感器信号",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 31,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "接收 传感器信号"
+      ],
+      "paragraph_count": 9,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_3d40593e08e7",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "未经精化的输入结构 未经精化的变换结构",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 31,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "未经精化的输入结构 未经精化的变换结构"
+      ],
+      "paragraph_count": 3,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_af12c2965717",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "6、进行“第二级分解” △SPS",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 32,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "6、进行“第二级分解” △SPS"
+      ],
+      "paragraph_count": 24,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_a15a779e3cfc",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "驱动仪表板",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 32,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "驱动仪表板"
+      ],
+      "paragraph_count": 10,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_ffbf42e83c07",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "未经精化的输出结构",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 32,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "未经精化的输出结构"
+      ],
+      "paragraph_count": 10,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_edd77e6441a0",
+      "parent_id": "node_ffbf42e83c07",
+      "title": "（3）模块“加速／减速显示”可以相 应地放在模块“显示mph”的下面。",
+      "level": 3,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 35,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "未经精化的输出结构",
+        "（3）模块“加速／减速显示”可以相 应地放在模块“显示mph”的下面。"
+      ],
+      "paragraph_count": 12,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_1080e0cc5d93",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "精化的数字仪表板系统的软件结构",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "精化的数字仪表板系统的软件结构"
+      ],
+      "paragraph_count": 11,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_1406276fcb8f",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "数字仪表板",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "数字仪表板"
+      ],
+      "paragraph_count": 5,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_a8f87ebb6bd0",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "控制",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "控制"
+      ],
+      "paragraph_count": 11,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_acbc7cfd7042",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "显示",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 37,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "显示"
+      ],
+      "paragraph_count": 6,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_6bec7d3084e5",
+      "parent_id": "node_acbc7cfd7042",
+      "title": "4.5.3 事务分析",
+      "level": 3,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 39,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "显示",
+        "4.5.3 事务分析"
+      ],
+      "paragraph_count": 10,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_82c59a639586",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "事务分析映射方法",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 40,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "事务分析映射方法"
+      ],
+      "paragraph_count": 18,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_cd913e957bb7",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "事务 中心",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 41,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "事务 中心"
+      ],
+      "paragraph_count": 4,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_dd2eb0bf0952",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "举例：事务型转换结构图",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 42,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "举例：事务型转换结构图"
+      ],
+      "paragraph_count": 21,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_f610a64fff56",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "MT",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 43,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "MT"
+      ],
+      "paragraph_count": 12,
+      "chunk_count": 0
+    },
+    {
+      "node_id": "node_9ee59ad3e8bd",
+      "parent_id": "node_f610a64fff56",
+      "title": "（2）主图是事务型，子图是变换型",
+      "level": 3,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 47,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "MT",
+        "（2）主图是事务型，子图是变换型"
+      ],
+      "paragraph_count": 3,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_d43416789afa",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "Step-2 确定输入数据流和输出流的边 界，从而孤立变换中心",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 50,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "Step-2 确定输入数据流和输出流的边 界，从而孤立变换中心"
+      ],
+      "paragraph_count": 3,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_0fffb0849f9a",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "主控模块。",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 51,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "主控模块。"
+      ],
+      "paragraph_count": 6,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_9342de79ae38",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "Step-4 完成“第二级分解”",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 52,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "Step-4 完成“第二级分解”"
+      ],
+      "paragraph_count": 7,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_63ac5ca0cc57",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "Step-5 优化",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 53,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "Step-5 优化"
+      ],
+      "paragraph_count": 4,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_6d5ee263e540",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "最终的软件结构图如下：",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 54,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "最终的软件结构图如下："
+      ],
+      "paragraph_count": 7,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_c0d6b43fb72b",
+      "parent_id": "node_9e0ace4df88e",
+      "title": "面向数据流设计方法总结",
+      "level": 2,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 55,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "面向数据流设计方法总结"
+      ],
+      "paragraph_count": 5,
+      "chunk_count": 1
+    },
+    {
+      "node_id": "node_a9d624d0c3d0",
+      "parent_id": "node_c0d6b43fb72b",
+      "title": "4.5.4 设计优化",
+      "level": 3,
+      "chapter_id": "chapter_63e8d438120f",
+      "start_page": 56,
+      "path": [
+        "软件工程",
+        "第五章 总体设计（2）",
+        "面向数据流设计方法总结",
+        "4.5.4 设计优化"
+      ],
+      "paragraph_count": 23,
+      "chunk_count": 5
+    }
+  ],
+  "knowledge_points": [
+    {
+      "chunk_id": "chunk_fbaf3f4eec0a",
+      "parent_node_id": "node_9e0ace4df88e",
+      "title": "结构化设计方法 (SD)",
+      "pages": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 70,
+      "images": []
+    },
+    {
+      "chunk_id": "merged_cb50a4a3a764",
+      "parent_node_id": "node_9e0ace4df88e",
+      "title": "变换型结构",
+      "pages": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "method": "merged",
+      "char_count": 234,
+      "images": []
+    },
+    {
+      "chunk_id": "merged_3d43cdaee4ee",
+      "parent_node_id": "node_9e0ace4df88e",
+      "title": "事务型结构",
+      "pages": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        13
+      ],
+      "method": "merged",
+      "char_count": 240,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_4cf58591965c",
+      "parent_node_id": "node_9e0ace4df88e",
+      "title": "面向数据流的设计方法",
+      "pages": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 55,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_b4775dcc136e",
+      "parent_node_id": "node_283d62e653bb",
+      "title": "输出 主加工 输入 变换型数据流图",
+      "pages": [
+        11,
+        12
+      ],
+      "method": "rule",
+      "char_count": 221,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_dced6be0911e",
+      "parent_node_id": "node_3f46089a5c94",
+      "title": "集中式事务型数据流图",
+      "pages": [
+        14,
+        15,
+        16,
+        17
+      ],
+      "method": "rule",
+      "char_count": 218,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_b2827ecd9064",
+      "parent_node_id": "node_22dcc007d548",
+      "title": "结构化设计",
+      "pages": [
+        18
+      ],
+      "method": "rule",
+      "char_count": 85,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_c8fc9ca18af1",
+      "parent_node_id": "node_b0af53709e5c",
+      "title": "5.5.2 变换分析",
+      "pages": [
+        19,
+        20
+      ],
+      "method": "rule",
+      "char_count": 197,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_9f1f02527eab",
+      "parent_node_id": "node_d3cb6bcd6fe0",
+      "title": "1、复查基本",
+      "pages": [
+        21
+      ],
+      "method": "rule",
+      "char_count": 32,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_6275ce0cf7e0",
+      "parent_node_id": "node_a89ba77caf38",
+      "title": "系统模型",
+      "pages": [
+        21
+      ],
+      "method": "rule",
+      "char_count": 34,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_fa1fdfa129d7",
+      "parent_node_id": "node_1638101ea719",
+      "title": "数据流图",
+      "pages": [
+        21
+      ],
+      "method": "rule",
+      "char_count": 53,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_d7f0016d843e",
+      "parent_node_id": "node_fc31d5e3d836",
+      "title": "3、确定数据流 图的类型",
+      "pages": [
+        21
+      ],
+      "method": "rule",
+      "char_count": 58,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_b942152901e6",
+      "parent_node_id": "node_433171731825",
+      "title": "4、确定输入流和 输出流的边界,孤 立变换中心",
+      "pages": [
+        21
+      ],
+      "method": "rule",
+      "char_count": 23,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_dc816b4c25e1",
+      "parent_node_id": "node_2590ae9cc008",
+      "title": "5、第一级分解",
+      "pages": [
+        21
+      ],
+      "method": "rule",
+      "char_count": 22,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_1ac944ce4240",
+      "parent_node_id": "node_9909f4fcf754",
+      "title": "o 目的：确保系统的",
+      "pages": [
+        22
+      ],
+      "method": "rule",
+      "char_count": 22,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_7adac9ce7d11",
+      "parent_node_id": "node_d13499051611",
+      "title": "输入数据和输出数 据符合实际。 o 措施：重新检查数",
+      "pages": [
+        22
+      ],
+      "method": "rule",
+      "char_count": 117,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_13a9f40c6550",
+      "parent_node_id": "node_c851791c05a6",
+      "title": "据流图。",
+      "pages": [
+        22
+      ],
+      "method": "rule",
+      "char_count": 143,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_8b6aeec209a2",
+      "parent_node_id": "node_6da30dfd068e",
+      "title": "o 精化原则",
+      "pages": [
+        23
+      ],
+      "method": "rule",
+      "char_count": 38,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_9a091772f27a",
+      "parent_node_id": "node_e32142773eca",
+      "title": "n 确保能够反映目",
+      "pages": [
+        23
+      ],
+      "method": "rule",
+      "char_count": 39,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_2f0769d6c1d2",
+      "parent_node_id": "node_a2f5481c7e28",
+      "title": "标系统的正确的 逻辑模型。 n 应该使数据流图",
+      "pages": [
+        23
+      ],
+      "method": "rule",
+      "char_count": 102,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_590a453b0032",
+      "parent_node_id": "node_3ae798781147",
+      "title": "中每个处理都代 表一个规模适中 的并且相对独立 的子功能。",
+      "pages": [
+        23,
+        24
+      ],
+      "method": "rule",
+      "char_count": 196,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_397a483fe7fa",
+      "parent_node_id": "node_7c01108ff55d",
+      "title": "从图中可以看 出，数据沿着两条 输入通路进入系统 ，然后沿着五条通 路离开，没有明显 的事务中心。",
+      "pages": [
+        25
+      ],
+      "method": "rule",
+      "char_count": 209,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_ec368a0c0e90",
+      "parent_node_id": "node_676eba990a2c",
+      "title": "可以认为这个 数据流图的类型是 变换型数据流图。",
+      "pages": [
+        25
+      ],
+      "method": "rule",
+      "char_count": 69,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_f07cdd2a280f",
+      "parent_node_id": "node_621a0f7fe0bc",
+      "title": "4、确定输入流和输出流的边界，从而孤立出变换中心",
+      "pages": [
+        26
+      ],
+      "method": "rule",
+      "char_count": 134,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_8dec391a7a89",
+      "parent_node_id": "node_ebd3a5747803",
+      "title": "rpm 不同的人选择 不同的分界点",
+      "pages": [
+        26,
+        27,
+        28
+      ],
+      "method": "rule",
+      "char_count": 288,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_8d2d4c8e7b35",
+      "parent_node_id": "node_1d0132da2db9",
+      "title": "应该在能够完成控制功能并且保持好的耦合和内 聚特性的前提下，尽量使第一级控制中的模块数 目最小。",
+      "pages": [
+        29
+      ],
+      "method": "rule",
+      "char_count": 173,
+      "images": []
+    },
+    {
+      "chunk_id": "merged_bdaa99e7cba7",
+      "parent_node_id": "node_2b7da4fa0f71",
+      "title": "6、进行“第二级分解”",
+      "pages": [
+        30,
+        31
+      ],
+      "method": "merged",
+      "char_count": 172,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_996d13a4762d",
+      "parent_node_id": "node_400296c8485e",
+      "title": "第二级分解的方法",
+      "pages": [
+        31
+      ],
+      "method": "rule",
+      "char_count": 22,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_bd437d02cc10",
+      "parent_node_id": "node_c7d318e27845",
+      "title": "第二级分解的结果：",
+      "pages": [
+        31
+      ],
+      "method": "rule",
+      "char_count": 59,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_26048fb1eeb7",
+      "parent_node_id": "node_cd909b8dce92",
+      "title": "接收 传感器信号",
+      "pages": [
+        31
+      ],
+      "method": "rule",
+      "char_count": 54,
+      "images": []
+    },
+    {
+      "chunk_id": "merged_988040dda45e",
+      "parent_node_id": "node_3d40593e08e7",
+      "title": "未经精化的输入结构 未经精化的变换结构",
+      "pages": [
+        32,
+        37
+      ],
+      "method": "merged",
+      "char_count": 113,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_bfacdd440299",
+      "parent_node_id": "node_af12c2965717",
+      "title": "6、进行“第二级分解” △SPS",
+      "pages": [
+        32
+      ],
+      "method": "rule",
+      "char_count": 187,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_f60bc4283468",
+      "parent_node_id": "node_a15a779e3cfc",
+      "title": "驱动仪表板",
+      "pages": [
+        32
+      ],
+      "method": "rule",
+      "char_count": 64,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_d98f5623744b",
+      "parent_node_id": "node_ffbf42e83c07",
+      "title": "未经精化的输出结构",
+      "pages": [
+        33,
+        34,
+        35
+      ],
+      "method": "rule",
+      "char_count": 295,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_3f906e42dfd7",
+      "parent_node_id": "node_edd77e6441a0",
+      "title": "（3）模块“加速／减速显示”可以相 应地放在模块“显示mph”的下面。",
+      "pages": [
+        36
+      ],
+      "method": "rule",
+      "char_count": 132,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_65362288f17f",
+      "parent_node_id": "node_1080e0cc5d93",
+      "title": "精化的数字仪表板系统的软件结构",
+      "pages": [
+        37
+      ],
+      "method": "rule",
+      "char_count": 89,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_34c7cc8bdb0e",
+      "parent_node_id": "node_1406276fcb8f",
+      "title": "数字仪表板",
+      "pages": [
+        37
+      ],
+      "method": "rule",
+      "char_count": 30,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_83b042e42a54",
+      "parent_node_id": "node_a8f87ebb6bd0",
+      "title": "控制",
+      "pages": [
+        37
+      ],
+      "method": "rule",
+      "char_count": 69,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_60c6eb907bd5",
+      "parent_node_id": "node_acbc7cfd7042",
+      "title": "显示",
+      "pages": [
+        38
+      ],
+      "method": "rule",
+      "char_count": 146,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_10abd5c5b434",
+      "parent_node_id": "node_6bec7d3084e5",
+      "title": "4.5.3 事务分析",
+      "pages": [
+        39
+      ],
+      "method": "rule",
+      "char_count": 195,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_60618b75fff1",
+      "parent_node_id": "node_82c59a639586",
+      "title": "事务分析映射方法",
+      "pages": [
+        40
+      ],
+      "method": "rule",
+      "char_count": 175,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_13c6ef9e2300",
+      "parent_node_id": "node_cd913e957bb7",
+      "title": "事务 中心",
+      "pages": [
+        41
+      ],
+      "method": "rule",
+      "char_count": 35,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_929ef983c31f",
+      "parent_node_id": "node_dd2eb0bf0952",
+      "title": "举例：事务型转换结构图",
+      "pages": [
+        42,
+        43
+      ],
+      "method": "rule",
+      "char_count": 123,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_6519d93f3db2",
+      "parent_node_id": "node_9ee59ad3e8bd",
+      "title": "（2）主图是事务型，子图是变换型",
+      "pages": [
+        49
+      ],
+      "method": "rule",
+      "char_count": 82,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_07887c0a31d8",
+      "parent_node_id": "node_d43416789afa",
+      "title": "Step-2 确定输入数据流和输出流的边 界，从而孤立变换中心",
+      "pages": [
+        50
+      ],
+      "method": "rule",
+      "char_count": 25,
+      "images": [
+        {
+          "image_id": "第5章 总体设计-2_p050_i02",
+          "page": 50,
+          "file_name": "page_050_img_02.jpeg",
+          "path": "images/第5章 总体设计-2/page_050_img_02.jpeg",
+          "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_050_img_02.jpeg",
+          "width": 3277,
+          "height": 1375,
+          "file_size": 248491,
+          "ext": "jpeg",
+          "xref": 246,
+          "rule_class": "vision_candidate",
+          "llm_checked": true,
+          "is_knowledge_image": true,
+          "image_type": "flowchart",
+          "caption": "库存管理系统的业务流程图，展示了从仓库管理员接收事务到采购员接收定货报表的完整数据流转过程。",
+          "related_chunk_ids": [
+            "chunk_07887c0a31d8"
+          ],
+          "confidence": 0.95,
+          "reject_reason": ""
+        }
+      ]
+    },
+    {
+      "chunk_id": "chunk_f89bcec43967",
+      "parent_node_id": "node_0fffb0849f9a",
+      "title": "主控模块。",
+      "pages": [
+        51
+      ],
+      "method": "rule",
+      "char_count": 51,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_1512668c8b02",
+      "parent_node_id": "node_9342de79ae38",
+      "title": "Step-4 完成“第二级分解”",
+      "pages": [
+        52
+      ],
+      "method": "rule",
+      "char_count": 57,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_0f803099e844",
+      "parent_node_id": "node_63ac5ca0cc57",
+      "title": "Step-5 优化",
+      "pages": [
+        53
+      ],
+      "method": "rule",
+      "char_count": 101,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_7f900fe7bac9",
+      "parent_node_id": "node_6d5ee263e540",
+      "title": "最终的软件结构图如下：",
+      "pages": [
+        54
+      ],
+      "method": "rule",
+      "char_count": 42,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_6c6cba6c0beb",
+      "parent_node_id": "node_c0d6b43fb72b",
+      "title": "面向数据流设计方法总结",
+      "pages": [
+        55
+      ],
+      "method": "rule",
+      "char_count": 186,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_c2e07def6763",
+      "parent_node_id": "node_a9d624d0c3d0",
+      "title": "设计优化的目标与原则",
+      "pages": [
+        56,
+        57,
+        58,
+        59,
+        60
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 95,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_fb71edefdbea",
+      "parent_node_id": "node_a9d624d0c3d0",
+      "title": "设计优化的具体策略",
+      "pages": [
+        56,
+        57,
+        58,
+        59,
+        60
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 82,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_7503e1c3b960",
+      "parent_node_id": "node_a9d624d0c3d0",
+      "title": "对时间起决定作用的软件优化流程",
+      "pages": [
+        56,
+        57,
+        58,
+        59,
+        60
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 152,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_2b1c786babbb",
+      "parent_node_id": "node_a9d624d0c3d0",
+      "title": "总体设计的基本原则与方法",
+      "pages": [
+        56,
+        57,
+        58,
+        59,
+        60
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 144,
+      "images": []
+    },
+    {
+      "chunk_id": "chunk_dc2474213428",
+      "parent_node_id": "node_a9d624d0c3d0",
+      "title": "早期结构设计的优势",
+      "pages": [
+        56,
+        57,
+        58,
+        59,
+        60
+      ],
+      "method": "llm_boundary_clean",
+      "char_count": 48,
+      "images": []
+    }
+  ],
+  "relations": [
+    {
+      "source": "chunk_fbaf3f4eec0a",
+      "target": "chunk_4cf58591965c",
+      "type": "next"
+    },
+    {
+      "source": "chunk_4cf58591965c",
+      "target": "merged_cb50a4a3a764",
+      "type": "prerequisite"
+    },
+    {
+      "source": "merged_cb50a4a3a764",
+      "target": "chunk_b4775dcc136e",
+      "type": "next"
+    },
+    {
+      "source": "chunk_4cf58591965c",
+      "target": "merged_3d43cdaee4ee",
+      "type": "prerequisite"
+    },
+    {
+      "source": "merged_3d43cdaee4ee",
+      "target": "chunk_dced6be0911e",
+      "type": "next"
+    },
+    {
+      "source": "chunk_fbaf3f4eec0a",
+      "target": "chunk_4cf58591965c",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_4cf58591965c",
+      "target": "merged_cb50a4a3a764",
+      "type": "next"
+    },
+    {
+      "source": "chunk_4cf58591965c",
+      "target": "merged_3d43cdaee4ee",
+      "type": "next"
+    },
+    {
+      "source": "merged_cb50a4a3a764",
+      "target": "chunk_b4775dcc136e",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_b4775dcc136e",
+      "target": "chunk_b2827ecd9064",
+      "type": "next"
+    },
+    {
+      "source": "merged_3d43cdaee4ee",
+      "target": "chunk_dced6be0911e",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_dced6be0911e",
+      "target": "chunk_b2827ecd9064",
+      "type": "next"
+    },
+    {
+      "source": "chunk_b4775dcc136e",
+      "target": "chunk_b2827ecd9064",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_dced6be0911e",
+      "target": "chunk_b2827ecd9064",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_b2827ecd9064",
+      "target": "chunk_c8fc9ca18af1",
+      "type": "next"
+    },
+    {
+      "source": "chunk_b2827ecd9064",
+      "target": "chunk_c8fc9ca18af1",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_c8fc9ca18af1",
+      "target": "chunk_9f1f02527eab",
+      "type": "next"
+    },
+    {
+      "source": "chunk_c8fc9ca18af1",
+      "target": "chunk_9f1f02527eab",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_9f1f02527eab",
+      "target": "chunk_6275ce0cf7e0",
+      "type": "next"
+    },
+    {
+      "source": "chunk_fa1fdfa129d7",
+      "target": "chunk_d7f0016d843e",
+      "type": "next"
+    },
+    {
+      "source": "chunk_fa1fdfa129d7",
+      "target": "chunk_d7f0016d843e",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_d7f0016d843e",
+      "target": "chunk_b942152901e6",
+      "type": "next"
+    },
+    {
+      "source": "chunk_d7f0016d843e",
+      "target": "chunk_b942152901e6",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_b942152901e6",
+      "target": "chunk_dc816b4c25e1",
+      "type": "next"
+    },
+    {
+      "source": "chunk_b942152901e6",
+      "target": "chunk_dc816b4c25e1",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_dc816b4c25e1",
+      "target": "chunk_1ac944ce4240",
+      "type": "next"
+    },
+    {
+      "source": "chunk_dc816b4c25e1",
+      "target": "chunk_1ac944ce4240",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_1ac944ce4240",
+      "target": "chunk_7adac9ce7d11",
+      "type": "next"
+    },
+    {
+      "source": "chunk_1ac944ce4240",
+      "target": "chunk_7adac9ce7d11",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_7adac9ce7d11",
+      "target": "chunk_13a9f40c6550",
+      "type": "next"
+    },
+    {
+      "source": "chunk_7adac9ce7d11",
+      "target": "chunk_13a9f40c6550",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_13a9f40c6550",
+      "target": "chunk_8b6aeec209a2",
+      "type": "next"
+    },
+    {
+      "source": "chunk_13a9f40c6550",
+      "target": "chunk_8b6aeec209a2",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_8b6aeec209a2",
+      "target": "chunk_9a091772f27a",
+      "type": "next"
+    },
+    {
+      "source": "chunk_8b6aeec209a2",
+      "target": "chunk_9a091772f27a",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_9a091772f27a",
+      "target": "chunk_2f0769d6c1d2",
+      "type": "next"
+    },
+    {
+      "source": "chunk_9a091772f27a",
+      "target": "chunk_2f0769d6c1d2",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_590a453b0032",
+      "target": "chunk_397a483fe7fa",
+      "type": "next"
+    },
+    {
+      "source": "chunk_590a453b0032",
+      "target": "chunk_397a483fe7fa",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_397a483fe7fa",
+      "target": "chunk_ec368a0c0e90",
+      "type": "next"
+    },
+    {
+      "source": "chunk_397a483fe7fa",
+      "target": "chunk_ec368a0c0e90",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_ec368a0c0e90",
+      "target": "chunk_f07cdd2a280f",
+      "type": "next"
+    },
+    {
+      "source": "chunk_ec368a0c0e90",
+      "target": "chunk_f07cdd2a280f",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_f07cdd2a280f",
+      "target": "chunk_8dec391a7a89",
+      "type": "next"
+    },
+    {
+      "source": "chunk_f07cdd2a280f",
+      "target": "chunk_8dec391a7a89",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_8dec391a7a89",
+      "target": "chunk_8d2d4c8e7b35",
+      "type": "next"
+    },
+    {
+      "source": "chunk_8dec391a7a89",
+      "target": "chunk_8d2d4c8e7b35",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_8d2d4c8e7b35",
+      "target": "merged_bdaa99e7cba7",
+      "type": "next"
+    },
+    {
+      "source": "chunk_8d2d4c8e7b35",
+      "target": "merged_bdaa99e7cba7",
+      "type": "prerequisite"
+    },
+    {
+      "source": "merged_bdaa99e7cba7",
+      "target": "chunk_996d13a4762d",
+      "type": "next"
+    },
+    {
+      "source": "merged_bdaa99e7cba7",
+      "target": "chunk_996d13a4762d",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_996d13a4762d",
+      "target": "chunk_bd437d02cc10",
+      "type": "next"
+    },
+    {
+      "source": "chunk_996d13a4762d",
+      "target": "chunk_bd437d02cc10",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_bd437d02cc10",
+      "target": "chunk_26048fb1eeb7",
+      "type": "next"
+    },
+    {
+      "source": "chunk_bd437d02cc10",
+      "target": "chunk_26048fb1eeb7",
+      "type": "prerequisite"
+    },
+    {
+      "source": "merged_988040dda45e",
+      "target": "chunk_bfacdd440299",
+      "type": "next"
+    },
+    {
+      "source": "merged_988040dda45e",
+      "target": "chunk_bfacdd440299",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_bfacdd440299",
+      "target": "chunk_f60bc4283468",
+      "type": "next"
+    },
+    {
+      "source": "chunk_bfacdd440299",
+      "target": "chunk_f60bc4283468",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_f60bc4283468",
+      "target": "chunk_d98f5623744b",
+      "type": "next"
+    },
+    {
+      "source": "chunk_f60bc4283468",
+      "target": "chunk_d98f5623744b",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_d98f5623744b",
+      "target": "chunk_3f906e42dfd7",
+      "type": "next"
+    },
+    {
+      "source": "chunk_d98f5623744b",
+      "target": "chunk_3f906e42dfd7",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_3f906e42dfd7",
+      "target": "chunk_65362288f17f",
+      "type": "next"
+    },
+    {
+      "source": "chunk_3f906e42dfd7",
+      "target": "chunk_65362288f17f",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_65362288f17f",
+      "target": "chunk_34c7cc8bdb0e",
+      "type": "next"
+    },
+    {
+      "source": "chunk_65362288f17f",
+      "target": "chunk_34c7cc8bdb0e",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_34c7cc8bdb0e",
+      "target": "chunk_83b042e42a54",
+      "type": "next"
+    },
+    {
+      "source": "chunk_34c7cc8bdb0e",
+      "target": "chunk_83b042e42a54",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_83b042e42a54",
+      "target": "chunk_60c6eb907bd5",
+      "type": "next"
+    },
+    {
+      "source": "chunk_83b042e42a54",
+      "target": "chunk_60c6eb907bd5",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_60c6eb907bd5",
+      "target": "chunk_10abd5c5b434",
+      "type": "next"
+    },
+    {
+      "source": "chunk_60c6eb907bd5",
+      "target": "chunk_10abd5c5b434",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_13c6ef9e2300",
+      "target": "chunk_60618b75fff1",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_60618b75fff1",
+      "target": "chunk_929ef983c31f",
+      "type": "next"
+    },
+    {
+      "source": "chunk_13c6ef9e2300",
+      "target": "chunk_60618b75fff1",
+      "type": "next"
+    },
+    {
+      "source": "chunk_60618b75fff1",
+      "target": "chunk_929ef983c31f",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_929ef983c31f",
+      "target": "chunk_6519d93f3db2",
+      "type": "next"
+    },
+    {
+      "source": "chunk_929ef983c31f",
+      "target": "chunk_6519d93f3db2",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_6519d93f3db2",
+      "target": "chunk_07887c0a31d8",
+      "type": "next"
+    },
+    {
+      "source": "chunk_6519d93f3db2",
+      "target": "chunk_07887c0a31d8",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_07887c0a31d8",
+      "target": "chunk_f89bcec43967",
+      "type": "next"
+    },
+    {
+      "source": "chunk_07887c0a31d8",
+      "target": "chunk_f89bcec43967",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_f89bcec43967",
+      "target": "chunk_1512668c8b02",
+      "type": "next"
+    },
+    {
+      "source": "chunk_f89bcec43967",
+      "target": "chunk_1512668c8b02",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_1512668c8b02",
+      "target": "chunk_0f803099e844",
+      "type": "next"
+    },
+    {
+      "source": "chunk_1512668c8b02",
+      "target": "chunk_0f803099e844",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_0f803099e844",
+      "target": "chunk_7f900fe7bac9",
+      "type": "next"
+    },
+    {
+      "source": "chunk_0f803099e844",
+      "target": "chunk_7f900fe7bac9",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_7f900fe7bac9",
+      "target": "chunk_6c6cba6c0beb",
+      "type": "next"
+    },
+    {
+      "source": "chunk_7f900fe7bac9",
+      "target": "chunk_6c6cba6c0beb",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_c2e07def6763",
+      "target": "chunk_2b1c786babbb",
+      "type": "next"
+    },
+    {
+      "source": "chunk_c2e07def6763",
+      "target": "chunk_fb71edefdbea",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_fb71edefdbea",
+      "target": "chunk_7503e1c3b960",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_c2e07def6763",
+      "target": "chunk_2b1c786babbb",
+      "type": "prerequisite"
+    },
+    {
+      "source": "chunk_2b1c786babbb",
+      "target": "chunk_dc2474213428",
+      "type": "next"
+    },
+    {
+      "source": "chunk_2b1c786babbb",
+      "target": "chunk_dc2474213428",
+      "type": "prerequisite"
+    }
+  ],
+  "stats": {
+    "outline_node_count": 50,
+    "knowledge_point_count": 55,
+    "relation_count": 97
+  },
+  "source_pdf_json": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\pdf_json\\第5章 总体设计-2_knowledge.json",
+  "source_semantic_json": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\semantic_json\\第5章 总体设计-2_semantic.json",
+  "images": [
+    {
+      "image_id": "第5章 总体设计-2_p050_i02",
+      "page": 50,
+      "file_name": "page_050_img_02.jpeg",
+      "path": "images/第5章 总体设计-2/page_050_img_02.jpeg",
+      "absolute_path": "E:\\知识问答\\MY\\batch_outputs_llm_vision\\images\\第5章 总体设计-2\\page_050_img_02.jpeg",
+      "width": 3277,
+      "height": 1375,
+      "file_size": 248491,
+      "ext": "jpeg",
+      "xref": 246,
+      "rule_class": "vision_candidate",
+      "llm_checked": true,
+      "is_knowledge_image": true,
+      "image_type": "flowchart",
+      "caption": "库存管理系统的业务流程图，展示了从仓库管理员接收事务到采购员接收定货报表的完整数据流转过程。",
+      "related_chunk_ids": [
+        "chunk_07887c0a31d8"
+      ],
+      "confidence": 0.95,
+      "reject_reason": ""
+    }
+  ],
+  "rejected_image_count": 99,
+  "image_filter": {
+    "used_llm": true,
+    "model": "xopqwen35v35b"
+  }
+}
