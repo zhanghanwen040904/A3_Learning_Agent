@@ -9,6 +9,7 @@ from .structured_course_data import load_semantic_chunks, normalize_title, split
 ASSESSMENT_DIR = Path(config.RAG_SOURCE_DIR).parent / "assessment"
 KNOWLEDGE_POINTS_PATH = ASSESSMENT_DIR / "knowledge_points.json"
 QUESTION_BANK_PATH = ASSESSMENT_DIR / "question_bank.json"
+MANUAL_QUESTION_BANK_PATH = Path(config.RAG_SOURCE_DIR).parent / "manual_question_bank" / "manual_question_bank_system.json"
 
 DEFAULT_COUNT = 5
 DOMAIN_TERMS = [
@@ -126,6 +127,73 @@ def _make_prompt(knowledge_point: str, knowledge_type: str, tags: List[str]) -> 
     return f"请解释知识点“{title}”。"
 
 
+def _build_knowledge_points_from_question_bank(question_bank: List[dict]) -> List[dict]:
+    knowledge_points: List[dict] = []
+    node_index: Dict[str, str] = {}
+
+    def ensure_node(path_parts: List[str], source: str, summary: str, keywords: List[str]) -> str:
+        path_text = "/".join(path_parts)
+        if path_text in node_index:
+            return node_index[path_text]
+        parent_path = "/".join(path_parts[:-1]) if len(path_parts) > 1 else None
+        parent_id = node_index.get(parent_path) if parent_path else None
+        node_id = f"kp-{_slug(path_text)}"
+        node_index[path_text] = node_id
+        knowledge_points.append(
+            {
+                "id": node_id,
+                "name": path_parts[-1],
+                "path": path_text,
+                "parent_id": parent_id,
+                "document": source,
+                "summary": summary,
+                "keywords": keywords,
+                "children": [],
+            }
+        )
+        if parent_id:
+            for item in knowledge_points:
+                if item["id"] == parent_id and node_id not in item["children"]:
+                    item["children"].append(node_id)
+                    break
+        return node_id
+
+    for item in question_bank:
+        raw_path = str(item.get("knowledge_path") or "").strip()
+        path_parts = [normalize_title(part) for part in raw_path.split("/") if normalize_title(part)]
+        if not path_parts:
+            fallback = normalize_title(item.get("knowledge_point") or "软件工程")
+            path_parts = [fallback]
+
+        summary = str(item.get("explanation") or item.get("reference_answer") or "").strip()
+        keywords = item.get("keywords") or _extract_keywords(
+            " ".join(
+                [
+                    str(item.get("prompt") or ""),
+                    str(item.get("reference_answer") or ""),
+                    str(item.get("knowledge_point") or ""),
+                ]
+            ),
+            str(item.get("knowledge_point") or ""),
+        )
+        source = str(item.get("source_document") or "")
+
+        for depth in range(1, len(path_parts) + 1):
+            ensure_node(path_parts[:depth], source, summary, keywords)
+
+    return knowledge_points
+
+
+def _load_manual_question_bank() -> List[dict]:
+    if not MANUAL_QUESTION_BANK_PATH.exists():
+        return []
+    try:
+        payload = json.loads(MANUAL_QUESTION_BANK_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        return []
+    return payload if isinstance(payload, list) else []
+
+
 def _build_from_semantic_chunks() -> tuple[List[dict], List[dict]]:
     semantic_chunks = load_semantic_chunks()
     knowledge_points: List[dict] = []
@@ -204,16 +272,24 @@ def _build_from_semantic_chunks() -> tuple[List[dict], List[dict]]:
 
 def build_assessment_assets(force: bool = False) -> dict:
     ASSESSMENT_DIR.mkdir(parents=True, exist_ok=True)
-    if not force and KNOWLEDGE_POINTS_PATH.exists() and QUESTION_BANK_PATH.exists():
+    if not force and KNOWLEDGE_POINTS_PATH.exists() and QUESTION_BANK_PATH.exists() and not MANUAL_QUESTION_BANK_PATH.exists():
         return {
             "knowledge_points_path": str(KNOWLEDGE_POINTS_PATH),
             "question_bank_path": str(QUESTION_BANK_PATH),
             "knowledge_point_count": len(load_knowledge_points()),
             "question_count": len(load_question_bank()),
             "status": "loaded",
+            "bank_source": "manual" if MANUAL_QUESTION_BANK_PATH.exists() else "semantic_generated",
         }
 
-    knowledge_points, question_bank = _build_from_semantic_chunks()
+    manual_question_bank = _load_manual_question_bank()
+    if manual_question_bank:
+        question_bank = manual_question_bank
+        knowledge_points = _build_knowledge_points_from_question_bank(question_bank)
+        source = "manual"
+    else:
+        knowledge_points, question_bank = _build_from_semantic_chunks()
+        source = "semantic_generated"
     KNOWLEDGE_POINTS_PATH.write_text(json.dumps(knowledge_points, ensure_ascii=False, indent=2), encoding="utf-8")
     QUESTION_BANK_PATH.write_text(json.dumps(question_bank, ensure_ascii=False, indent=2), encoding="utf-8")
     return {
@@ -222,6 +298,7 @@ def build_assessment_assets(force: bool = False) -> dict:
         "knowledge_point_count": len(knowledge_points),
         "question_count": len(question_bank),
         "status": "created",
+        "bank_source": source,
     }
 
 
@@ -232,9 +309,93 @@ def load_knowledge_points() -> List[dict]:
 
 
 def load_question_bank() -> List[dict]:
+    manual_question_bank = _load_manual_question_bank()
+    if manual_question_bank:
+        return manual_question_bank
     if not QUESTION_BANK_PATH.exists():
         build_assessment_assets(force=True)
     return json.loads(QUESTION_BANK_PATH.read_text(encoding="utf-8"))
+
+
+def _normalize_match_text(text: str) -> str:
+    text = normalize_title(str(text or ""))
+    text = re.sub(r"\s+", "", text)
+    text = re.sub(r"[^\w\u4e00-\u9fff]+", "", text)
+    return text.lower()
+
+
+def _expand_focus_terms(focus_points: List[str]) -> List[str]:
+    expanded = []
+    for item in focus_points:
+        raw = str(item or "").strip()
+        if not raw:
+            continue
+        candidates = [raw]
+        candidates.extend(re.split(r"[、，,；;>/-]+", raw))
+        for candidate in candidates:
+            normalized = normalize_title(candidate)
+            cleaned = _normalize_match_text(candidate)
+            for token in [normalized, cleaned]:
+                if token and token not in expanded:
+                    expanded.append(token)
+    return expanded
+
+
+def _score_question_match(item: dict, focus_terms: List[str], target: str) -> int:
+    knowledge_point = str(item.get("knowledge_point") or "")
+    knowledge_path = str(item.get("knowledge_path") or "")
+    chapter = str(item.get("chapter") or "")
+    keywords = [str(part or "") for part in (item.get("keywords") or [])]
+    tags = [str(part or "") for part in (item.get("tags") or [])]
+
+    normalized_fields = {
+        "knowledge_point": _normalize_match_text(knowledge_point),
+        "knowledge_path": _normalize_match_text(knowledge_path),
+        "chapter": _normalize_match_text(chapter),
+        "keywords": [_normalize_match_text(part) for part in keywords],
+        "tags": [_normalize_match_text(part) for part in tags],
+    }
+
+    score = 0
+    for focus in focus_terms:
+        if not focus:
+            continue
+        if focus == normalized_fields["knowledge_point"]:
+            score += 14
+        elif focus in normalized_fields["knowledge_point"]:
+            score += 10
+
+        if focus == normalized_fields["chapter"]:
+            score += 8
+        elif focus in normalized_fields["chapter"]:
+            score += 6
+
+        if focus in normalized_fields["knowledge_path"]:
+            score += 7
+
+        if any(focus == keyword for keyword in normalized_fields["keywords"]):
+            score += 5
+        elif any(focus in keyword for keyword in normalized_fields["keywords"]):
+            score += 3
+
+        if any(focus == tag for tag in normalized_fields["tags"]):
+            score += 4
+
+    normalized_target = _normalize_match_text(target)
+    if normalized_target:
+        if normalized_target == normalized_fields["knowledge_point"]:
+            score += 20
+        elif normalized_target in normalized_fields["knowledge_path"]:
+            score += 12
+        elif normalized_target == normalized_fields["chapter"]:
+            score += 10
+
+    if item.get("difficulty") == "basic":
+        score += 1
+    elif item.get("difficulty") == "improve":
+        score += 2
+
+    return score
 
 
 def _parse_profile_focus(profile: dict, mastery_records: List[dict]) -> List[str]:
@@ -261,26 +422,11 @@ def generate_personalized_questions(profile: dict, mastery_records: List[dict], 
     target = str(knowledge_point or "").strip()
     if target:
         focus_points = [target] + focus_points
+    focus_terms = _expand_focus_terms(focus_points)
 
     scored_questions = []
     for item in question_bank:
-        haystack = " ".join(
-            [
-                str(item.get("knowledge_point") or ""),
-                str(item.get("knowledge_path") or ""),
-                str(item.get("prompt") or ""),
-                " ".join(item.get("keywords") or []),
-                " ".join(item.get("tags") or []),
-            ]
-        )
-        score = 0
-        for focus in focus_points:
-            if focus and focus in haystack:
-                score += 4
-        if target and target in haystack:
-            score += 6
-        if item.get("difficulty") == "basic":
-            score += 1
+        score = _score_question_match(item, focus_terms, target)
         scored_questions.append((score, item))
 
     scored_questions.sort(key=lambda pair: (-pair[0], pair[1]["id"]))
@@ -325,4 +471,6 @@ def assessment_status() -> dict:
         **assets,
         "knowledge_points_exists": KNOWLEDGE_POINTS_PATH.exists(),
         "question_bank_exists": QUESTION_BANK_PATH.exists(),
+        "manual_question_bank_exists": MANUAL_QUESTION_BANK_PATH.exists(),
+        "manual_question_bank_path": str(MANUAL_QUESTION_BANK_PATH),
     }
