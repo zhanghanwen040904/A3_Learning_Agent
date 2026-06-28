@@ -4,12 +4,106 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9027e698-1010-4ba9-9a6d-825f65cb4ae8" name="更改" comment="这次更改了部分问题，学习资源中的图片可以正常显示，思维导图可以正常呈现，但不够美观。学习路径的生成出来的内容进行格式规定。智能问答可以正常问答，但是输出的标题顺序仍然需要调整，图片可以正常生成并输出，但是格式仍需要调整。">
+    <list default="true" id="9027e698-1010-4ba9-9a6d-825f65cb4ae8" name="更改" comment="删除了登录页面中右上角的AI学习助手字体，对话式画像中，减少了重复对话，同时修改了左侧会话栏中，每一次会话下面小字重复问题。画像摘要中信息与输入信息一直一致">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/software_A3/A3_Learning_Agent/backend/ai/agents/profile_agent.py" beforeDir="false" afterPath="$PROJECT_DIR$/software_A3/A3_Learning_Agent/backend/ai/agents/profile_agent.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/software_A3/A3_Learning_Agent/backend/api/profile_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/software_A3/A3_Learning_Agent/backend/api/profile_api.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/software_A3/A3_Learning_Agent/frontend/src/views/AuthView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/software_A3/A3_Learning_Agent/frontend/src/views/AuthView.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/A3_Learning_Agent/frontend/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/software_A3/A3_Learning_Agent/frontend/src/App.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/A3_Learning_Agent/frontend/src/router.js" beforeDir="false" afterPath="$PROJECT_DIR$/software_A3/A3_Learning_Agent/frontend/src/router.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/A3_Learning_Agent/frontend/src/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/software_A3/A3_Learning_Agent/frontend/src/styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/A3_Learning_Agent/frontend/src/views/ChatView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/software_A3/A3_Learning_Agent/frontend/src/views/ChatView.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/A3_Learning_Agent/frontend/src/views/PathView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/software_A3/A3_Learning_Agent/frontend/src/views/PathView.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/software_A3/A3_Learning_Agent/frontend/src/views/ProfileView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/software_A3/A3_Learning_Agent/frontend/src/views/ProfileView.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/A3_Learning_Agent/frontend/src/views/ResourceView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/software_A3/A3_Learning_Agent/frontend/src/views/ResourceView.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/Dockerfile.backend" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/Dockerfile.frontend" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/agents/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/agents/dag/knowledge_dag.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/agents/planner.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/agents/prompts/code_prompt.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/agents/prompts/doc_prompt.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/agents/prompts/planner_prompt.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/agents/prompts/quiz_prompt.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/agents/prompts/reviewer_prompt.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/agents/prompts/supervisor_prompt.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/agents/reviewer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/agents/state.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/agents/supervisor.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/agents/workers/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/agents/workers/code_agent.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/agents/workers/doc_agent.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/agents/workers/mindmap_agent.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/agents/workers/profile_agent.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/agents/workers/quiz_agent.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/agents/workers/video_script_agent.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/app/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/app/config.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/app/courses.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/app/database.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/app/llm_client.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/app/main.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/app/models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/app/routers/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/app/routers/auth.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/app/routers/chat.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/app/routers/course.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/app/routers/health.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/app/routers/profile.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/app/routers/resource.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/app/schemas.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/app/services/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/app/services/embedding_client.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/app/services/profile_manager.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/app/services/resource_generator.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/app/services/retriever.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/app/utils/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/app/utils/jwt_handler.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/docker-compose.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/docs/request.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/docs/模块拆解与实施计划.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/docs/需求分析文档.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/docs/项目方案与技术路线.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/frontend/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/frontend/package-lock.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/frontend/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/frontend/src/App.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/frontend/src/api/auth.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/frontend/src/api/chat.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/frontend/src/api/course.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/frontend/src/api/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/frontend/src/api/sse.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/frontend/src/assets/theme.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/frontend/src/components/AgentStatusBar.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/frontend/src/components/ChatPanel.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/frontend/src/components/CodeBlock.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/frontend/src/components/EvaluationPanel.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/frontend/src/components/MarkdownViewer.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/frontend/src/components/MindMapViewer.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/frontend/src/components/PathTree.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/frontend/src/components/ProfileCard.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/frontend/src/components/QuizCard.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/frontend/src/components/ResourcePanel.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/frontend/src/main.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/frontend/src/router/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/frontend/src/stores/course.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/frontend/src/stores/user.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/frontend/src/views/LoginView.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/frontend/src/views/MainLayout.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/frontend/vite.config.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/knowledge_base/computer_network/chunks.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/knowledge_base/computer_organization/chunks.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/knowledge_base/computer_organization/第一章-计算机组成概述.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/knowledge_base/computer_organization/第七章-总线系统.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/knowledge_base/computer_organization/第三章-运算方法与运算器.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/knowledge_base/computer_organization/第二章-数据信息的表示.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/knowledge_base/computer_organization/第五章-指令系统.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/knowledge_base/computer_organization/第六章-中央处理器.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/knowledge_base/computer_organization/第四章-存储系统.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/knowledge_base/computer_organization/计算机组成原理 (谭志虎) (z-library.sk, 1lib.sk, z-lib.sk).pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/knowledge_base/data_structure/chunks.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/knowledge_base/operating_system/chunks.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/requirements.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/software_A3/AptAdapt-master/scripts/test_pipeline.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,7 +111,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="348" />
+    <option name="cachedIndexableFilesCount" value="446" />
   </component>
   <component name="Git.Settings">
     <favorite-branches>
@@ -124,29 +218,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "WebServerToolWindowPanel.toolwindow.highlight.mappings": "true",
-    "WebServerToolWindowPanel.toolwindow.highlight.symlinks": "true",
-    "WebServerToolWindowPanel.toolwindow.show.date": "false",
-    "WebServerToolWindowPanel.toolwindow.show.permissions": "false",
-    "WebServerToolWindowPanel.toolwindow.show.size": "false",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "xuduo",
-    "last_opened_file_path": "D:/软件/pycharm_professional‌/my_pythonProgram",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.highlight.mappings&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.highlight.symlinks&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.show.date&quot;: &quot;false&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.show.permissions&quot;: &quot;false&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.show.size&quot;: &quot;false&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;xuduo&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/软件/pycharm_professional‌/my_pythonProgram&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\知识问答\software_A3\A3_Learning_Agent\backend" />
@@ -180,7 +274,8 @@
       <workItem from="1782199382663" duration="5375000" />
       <workItem from="1782278023268" duration="6250000" />
       <workItem from="1782369454165" duration="9024000" />
-      <workItem from="1782535577032" duration="8730000" />
+      <workItem from="1782535577032" duration="11878000" />
+      <workItem from="1782616556441" duration="6960000" />
     </task>
     <task id="LOCAL-00002" summary="这次更改了部分问题，学习资源中的图片可以正常显示，思维导图可以正常呈现，但不够美观。学习路径的生成出来的内容进行格式规定。智能问答可以正常问答，但是输出的标题顺序仍然需要调整，图片可以正常生成并输出，但是格式仍需要调整。">
       <option name="closed" value="true" />
@@ -206,7 +301,15 @@
       <option name="project" value="LOCAL" />
       <updated>1782203807520</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="删除了登录页面中右上角的AI学习助手字体，对话式画像中，减少了重复对话，同时修改了左侧会话栏中，每一次会话下面小字重复问题。画像摘要中信息与输入信息一直一致">
+      <option name="closed" value="true" />
+      <created>1782558864880</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1782558864881</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -238,6 +341,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="提交" />
     <MESSAGE value="这次更改了部分问题，学习资源中的图片可以正常显示，思维导图可以正常呈现，但不够美观。学习路径的生成出来的内容进行格式规定。智能问答可以正常问答，但是输出的标题顺序仍然需要调整，图片可以正常生成并输出，但是格式仍需要调整。" />
-    <option name="LAST_COMMIT_MESSAGE" value="这次更改了部分问题，学习资源中的图片可以正常显示，思维导图可以正常呈现，但不够美观。学习路径的生成出来的内容进行格式规定。智能问答可以正常问答，但是输出的标题顺序仍然需要调整，图片可以正常生成并输出，但是格式仍需要调整。" />
+    <MESSAGE value="删除了登录页面中右上角的AI学习助手字体，对话式画像中，减少了重复对话，同时修改了左侧会话栏中，每一次会话下面小字重复问题。画像摘要中信息与输入信息一直一致" />
+    <option name="LAST_COMMIT_MESSAGE" value="删除了登录页面中右上角的AI学习助手字体，对话式画像中，减少了重复对话，同时修改了左侧会话栏中，每一次会话下面小字重复问题。画像摘要中信息与输入信息一直一致" />
   </component>
 </project>

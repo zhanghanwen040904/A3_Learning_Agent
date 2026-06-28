@@ -3,7 +3,10 @@
     <el-card class="panel chat-card">
       <template #header>
         <div class="header-line">
-          <span>多模态智能答疑</span>
+          <div>
+            <strong>智能答疑</strong>
+            <p>切换模块不会中断当前问答，返回后仍会保留历史。</p>
+          </div>
           <div class="header-actions">
             <el-tag v-if="loading" type="warning">生成中，切换模块不会中断</el-tag>
             <el-button size="small" :disabled="loading" @click="clearHistory">清空历史</el-button>
@@ -17,7 +20,7 @@
           <div class="markdown-body" v-html="renderAnswerMarkdown(item, 'before')"></div>
 
           <template v-if="item.diagram_image">
-            <div class="section-label">二、图解说明</div>
+            <div class="section-label">图解说明</div>
             <figure class="diagram-card">
               <img :src="item.diagram_image" alt="图解知识图" />
             </figure>
@@ -30,20 +33,30 @@
               {{ source.source }} #{{ source.chunk_index }}
             </el-tag>
           </div>
+
           <video v-if="item.video && isPlayableVideo(item.video)" controls :src="item.video" class="video"></video>
         </div>
       </div>
 
-      <el-progress v-if="loading" :percentage="progress" striped striped-flow />
-      <el-steps v-if="loading" :active="activeStep" finish-status="success" simple>
-        <el-step title="检索知识库" />
-        <el-step title="生成回答" />
-        <el-step title="安全复核" />
-      </el-steps>
+      <div class="composer">
+        <el-progress v-if="loading" :percentage="progress" striped striped-flow />
+        <el-steps v-if="loading" :active="activeStep" finish-status="success" simple>
+          <el-step title="检索知识库" />
+          <el-step title="生成回答" />
+          <el-step title="安全复核" />
+        </el-steps>
 
-      <div class="input-line">
-        <el-input v-model="question" type="textarea" :rows="3" placeholder="请输入软件工程课程问题，例如：什么是监督学习？" />
-        <el-button type="primary" :loading="loading" @click="ask">提问</el-button>
+        <div class="input-line">
+          <el-input
+            v-model="question"
+            type="textarea"
+            :rows="2"
+            :autosize="{ minRows: 2, maxRows: 5 }"
+            placeholder="请输入课程问题，例如：需求分析和总体设计有什么区别？"
+            @keydown.enter.exact.prevent="ask"
+          />
+          <el-button type="primary" :loading="loading" @click="ask">提问</el-button>
+        </div>
       </div>
     </el-card>
   </div>
@@ -58,12 +71,13 @@ import { activeProfileSessionId, chatApi } from "../api";
 const md = new MarkdownIt({ html: true, linkify: true, breaks: true });
 const WELCOME_MESSAGE = {
   role: "assistant",
-  content: "我是软件工程课程多模态答疑助手，会先检索课程知识库，再基于大模型生成回答，并进行安全复核。",
+  content: "我是课程答疑助手，会先检索知识库，再结合当前画像生成答案。",
 };
-const STORAGE_PREFIX = "a3_tutor_chat_";
+const STORAGE_PREFIX = "a3_tutor_chat_v2_";
+
 const chatState = reactive({
   sessionId: "",
-  question: "软件工程中需求分析和总体设计有什么区别？",
+  question: "需求分析和总体设计有什么区别？",
   needVideo: false,
   loading: false,
   progress: 0,
@@ -71,7 +85,6 @@ const chatState = reactive({
   messages: [WELCOME_MESSAGE],
   pendingPromise: null,
   timer: null,
-  loaded: false,
 });
 
 const question = computed({
@@ -114,11 +127,9 @@ function loadLocal(sessionId) {
     const raw = localStorage.getItem(storageKey(sessionId));
     if (!raw) return false;
     const data = JSON.parse(raw);
-    const cleaned = cleanMessages(data.messages || []);
-    chatState.messages = cleaned.length ? cleaned : [WELCOME_MESSAGE];
+    chatState.messages = cleanMessages(data.messages || []);
     chatState.question = data.question || chatState.question;
     chatState.needVideo = Boolean(data.needVideo);
-    chatState.loading = Boolean(data.loading && chatState.pendingPromise);
     chatState.progress = Number(data.progress || 0);
     chatState.activeStep = Number(data.activeStep || 0);
     return true;
@@ -131,21 +142,21 @@ async function loadHistory() {
   const sessionId = activeProfileSessionId();
   if (chatState.loading && chatState.sessionId === sessionId) return;
   chatState.sessionId = sessionId;
-  const hasLocal = loadLocal(sessionId);
+  loadLocal(sessionId);
   try {
     const res = await chatApi.history();
     if (res.code === 200 && Array.isArray(res.data?.messages) && res.data.messages.length && !chatState.loading) {
-      const cleaned = cleanMessages(res.data.messages);
-      chatState.messages = cleaned.length ? cleaned : [WELCOME_MESSAGE];
+      chatState.messages = cleanMessages(res.data.messages);
       saveLocal();
-    } else if (!hasLocal && !chatState.messages.length) {
-      chatState.messages = [WELCOME_MESSAGE];
     }
-  } catch {
-    if (!hasLocal) chatState.messages = [WELCOME_MESSAGE];
-  } finally {
-    chatState.loaded = true;
-  }
+  } catch {}
+}
+
+function normalizeMarkdown(text) {
+  let source = String(text || "").trim();
+  const fenced = source.match(/^```(?:markdown|md|text)?\s*([\s\S]*?)\s*```$/i);
+  if (fenced) source = fenced[1].trim();
+  return source.replace(/^\s*```(?:markdown|md|text)?\s*$/gim, "").replace(/^\s*```\s*$/gm, "").trim();
 }
 
 function renderMarkdown(text) {
@@ -154,16 +165,13 @@ function renderMarkdown(text) {
 
 function splitAnswerAroundDiagram(text) {
   const source = normalizeMarkdown(text);
-  const heading = source.match(new RegExp("(?:^|\\n)#{1,6}\\s*\u4e8c[\u3001.\uff0e]\\s*\u56fe\u89e3\u8bf4\u660e\\s*"));
+  const heading = source.match(/(?:^|\n)#{1,6}\s*二[、.．]\s*图解说明\s*/);
   if (!heading) return { before: source, after: "" };
   const before = source.slice(0, heading.index).trim();
   const diagramStart = heading.index + heading[0].length;
   const rest = source.slice(diagramStart);
-  const next = rest.match(new RegExp("(?:^|\\n)#{1,6}\\s*(\u4e09|\u56db)[\u3001.\uff0e]\\s*"));
-  return {
-    before,
-    after: next ? rest.slice(next.index).trim() : "",
-  };
+  const next = rest.match(/(?:^|\n)#{1,6}\s*(三|四)[、.．]\s*/);
+  return { before, after: next ? rest.slice(next.index).trim() : "" };
 }
 
 function renderAnswerMarkdown(item, part = "all") {
@@ -184,30 +192,12 @@ function cleanMessages(list) {
   for (const item of Array.isArray(list) ? list : []) {
     const role = item?.role || "assistant";
     const content = normalizeMarkdown(item?.content || "");
-    if (looksMojibake(content)) continue;
-    if (role === "assistant" && !content) continue;
+    if (!content && role === "assistant") continue;
+    const next = { ...item, role, content };
     if (cleaned.length && cleaned[cleaned.length - 1].role === role && cleaned[cleaned.length - 1].content === content) continue;
-    cleaned.push({ ...item, role, content });
+    cleaned.push(next);
   }
   return cleaned.length ? cleaned : [WELCOME_MESSAGE];
-}
-
-function looksMojibake(text) {
-  const source = String(text || "");
-  const badCount = (source.match(/[\uFFFD\u951F\u93B4\u942D\u7487]/g) || []).length;
-  return badCount >= 3;
-}
-
-function normalizeMarkdown(text) {
-  let source = String(text || "").trim();
-  const fenced = source.match(/^```(?:markdown|md|text)?\s*([\s\S]*?)\s*```$/i);
-  if (fenced) source = fenced[1].trim();
-  source = source.replace(/^\s*```(?:markdown|md|text)?\s*$/gim, "").replace(/^\s*```\s*$/gm, "");
-  source = source
-    .split("\n")
-    .map((line) => (line.startsWith("    ") && !line.startsWith("        ") ? line.slice(4) : line))
-    .join("\n");
-  return source.trim();
 }
 
 function typewriter(target, fullText) {
@@ -215,41 +205,46 @@ function typewriter(target, fullText) {
     target.content = "";
     let index = 0;
     const timer = setInterval(() => {
-      target.content += fullText.slice(index, index + 6);
-      index += 6;
+      target.content += fullText.slice(index, index + 8);
+      index += 8;
       saveLocal();
       if (index >= fullText.length) {
         target.content = fullText;
-        saveLocal();
         clearInterval(timer);
+        saveLocal();
         resolve();
       }
-    }, 18);
+    }, 16);
   });
 }
 
 async function ask() {
   if (!chatState.question.trim() || chatState.loading) return;
   const askedQuestion = chatState.question;
-  const sessionId = activeProfileSessionId();
   const historyBeforeQuestion = cleanMessages(chatState.messages);
-  chatState.sessionId = sessionId;
+
   chatState.loading = true;
   chatState.progress = 10;
   chatState.activeStep = 0;
   chatState.messages.push({ role: "user", content: askedQuestion });
-  const assistantMsg = { role: "assistant", content: "正在检索课程知识库并生成可视化答疑...", sources: [] };
+  const assistantMsg = { role: "assistant", content: "正在检索知识库并生成答案...", sources: [] };
   chatState.messages.push(assistantMsg);
   chatState.question = "";
   saveLocal();
+
   if (chatState.timer) clearInterval(chatState.timer);
   chatState.timer = setInterval(() => {
     chatState.progress = Math.min(chatState.progress + 7, 94);
     chatState.activeStep = chatState.progress > 65 ? 2 : chatState.progress > 35 ? 1 : 0;
     saveLocal();
   }, 500);
-  const requestBody = { question: askedQuestion, need_video: chatState.needVideo, messages: historyBeforeQuestion };
-  chatState.pendingPromise = chatApi.answer(requestBody);
+
+  chatState.pendingPromise = chatApi.answer({
+    question: askedQuestion,
+    need_video: chatState.needVideo,
+    messages: historyBeforeQuestion,
+  });
+
   try {
     const res = await chatState.pendingPromise;
     if (res.code === 200) {
@@ -261,7 +256,7 @@ async function ask() {
       await chatApi.saveHistory({ messages: chatState.messages });
     } else {
       assistantMsg.content = res.msg || "答疑失败";
-      ElMessage.error(res.msg);
+      ElMessage.error(res.msg || "答疑失败");
     }
   } catch (error) {
     assistantMsg.content = error?.message || "答疑异常，请稍后重试";
@@ -294,11 +289,7 @@ onMounted(async () => {
 watch(
   () => activeProfileSessionId(),
   async (nextSession, previousSession) => {
-    if (nextSession === previousSession) return;
-    if (chatState.loading) {
-      saveLocal();
-      return;
-    }
+    if (nextSession === previousSession || chatState.loading) return;
     await loadHistory();
   }
 );
@@ -307,22 +298,21 @@ watch(
 <style scoped>
 .chat-page {
   display: grid;
-  height: calc(100vh - 76px);
+  height: calc(100vh - 56px);
   min-height: 0;
-  overflow: hidden;
 }
 
 .chat-card {
-  min-height: 0;
   height: 100%;
+  min-height: 0;
 }
 
 .chat-card :deep(.el-card__body) {
-  display: flex;
-  height: calc(100vh - 76px - 56px - 56px);
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  height: calc(100vh - 145px);
   min-height: 0;
-  flex-direction: column;
-  gap: 14px;
+  gap: 16px;
 }
 
 .header-line,
@@ -333,57 +323,86 @@ watch(
   justify-content: space-between;
 }
 
+.header-line strong {
+  color: #37352f;
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.header-line p {
+  margin: 6px 0 0;
+  color: #6e6e73;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
 }
 
 .chat-window {
-  flex: 1;
+  min-height: 0;
   overflow: auto;
-  padding: 18px;
-  border-radius: 18px;
-  background: linear-gradient(180deg, #f8fbff 0%, #eef5ff 100%);
+  padding: 8px 0 18px;
+  background: #ffffff;
 }
 
 .bubble {
-  max-width: min(980px, 82%);
-  margin-bottom: 14px;
-  padding: 16px 18px;
-  border-radius: 18px;
+  max-width: 100%;
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  border: 0;
+  border-radius: 8px;
+  color: #37352f;
+  transition: background-color 0.2s ease;
 }
 
 .bubble.assistant {
-  background: #fff;
-  border: 1px solid #dbeafe;
+  background: #f7f7f8;
 }
 
 .bubble.user {
-  margin-left: auto;
-  background: #dbeafe;
+  margin-left: 48px;
+  background: #ffffff;
+}
+
+.bubble.assistant:last-child::after {
+  display: inline-flex;
+  gap: 5px;
+  width: 34px;
+  height: 12px;
+  margin-left: 8px;
+  vertical-align: middle;
+  content: "";
+  background:
+    radial-gradient(circle, #6e6e73 45%, transparent 47%) 0 50% / 8px 8px no-repeat,
+    radial-gradient(circle, #6e6e73 45%, transparent 47%) 13px 50% / 8px 8px no-repeat,
+    radial-gradient(circle, #6e6e73 45%, transparent 47%) 26px 50% / 8px 8px no-repeat;
+  animation: dot-breathe 1.2s ease-in-out infinite;
 }
 
 .section-label {
   margin: 14px 0 10px;
-  font-size: 20px;
+  color: #37352f;
+  font-size: 16px;
   font-weight: 700;
-  color: #111827;
 }
 
 .diagram-card {
   margin: 8px 0 12px;
   padding: 14px;
-  border: 1px solid #cfe2ff;
-  border-radius: 18px;
-  background: #f8fbff;
+  border: 1px solid #ececec;
+  border-radius: 8px;
+  background: #f7f7f8;
 }
 
 .diagram-card img {
   display: block;
   width: 100%;
   max-width: 100%;
-  border-radius: 14px;
+  border-radius: 8px;
 }
 
 .source-list {
@@ -392,12 +411,54 @@ watch(
   gap: 8px;
   margin-top: 12px;
   padding-top: 10px;
-  border-top: 1px dashed #cbd5e1;
+  border-top: 1px dashed #d9d9de;
 }
 
 .video {
   width: 100%;
   margin-top: 12px;
-  border-radius: 14px;
+  border-radius: 8px;
+}
+
+.composer {
+  position: sticky;
+  bottom: 0;
+  display: grid;
+  gap: 10px;
+  padding-top: 8px;
+  background: #ffffff;
+}
+
+.input-line {
+  align-items: center;
+}
+
+.input-line .el-input {
+  flex: 1;
+}
+
+.input-line :deep(.el-textarea__inner) {
+  min-height: 48px !important;
+  padding: 13px 16px;
+  border-radius: 24px;
+  line-height: 1.5;
+  resize: none;
+}
+
+.input-line .el-button {
+  min-width: 72px;
+  height: 48px;
+  border-radius: 24px;
+}
+
+@keyframes dot-breathe {
+  0%,
+  80%,
+  100% {
+    opacity: 0.35;
+  }
+  40% {
+    opacity: 1;
+  }
 }
 </style>
