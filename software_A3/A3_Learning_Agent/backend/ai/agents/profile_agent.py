@@ -17,15 +17,30 @@ from .base_agent import XunfeiAgentSpec
 PROFILE_FIELDS = [
     "major",
     "target_course",
+    "knowledge_base",
+    "cognitive_style",
+    "error_prone_points",
+    "study_goal",
+    "learning_history",
+    "course_progress",
+    "study_time_prefer",
+    "preferred_resource",
     "knowledge_level",
     "study_style",
     "weak_points",
-    "study_goal",
-    "study_time_prefer",
-    "course_progress",
     "challenge_scene",
-    "preferred_resource",
     "profile_summary",
+]
+
+CORE_PROFILE_DIMENSIONS = [
+    "knowledge_base",
+    "cognitive_style",
+    "error_prone_points",
+    "study_goal",
+    "learning_history",
+    "course_progress",
+    "study_time_prefer",
+    "preferred_resource",
 ]
 
 DEFAULT_VALUE = "待进一步观察"
@@ -33,34 +48,42 @@ DEFAULT_VALUE = "待进一步观察"
 FIELD_ALIASES = {
     "major": ["专业背景", "专业", "方向"],
     "target_course": ["目标课程", "课程", "章节"],
+    "knowledge_base": ["知识基础", "基础情况", "基础水平", "知识水平"],
+    "cognitive_style": ["认知风格", "学习方式", "学习风格", "学习偏好"],
+    "error_prone_points": ["易错点", "易错点偏好", "知识短板", "薄弱点", "不会", "容易卡住"],
+    "study_goal": ["学习目标", "目标", "希望达到"],
+    "learning_history": ["学习历史", "学习经历", "历史表现", "做过", "学过"],
+    "course_progress": ["课程进度", "学到哪里", "当前进度"],
+    "study_time_prefer": ["时间节奏", "时间偏好", "学习时间", "效率最高"],
+    "preferred_resource": ["资源偏好", "想优先看到", "喜欢的资源"],
     "knowledge_level": ["基础情况", "知识基础", "基础水平"],
     "study_style": ["学习方式", "学习风格", "学习偏好"],
     "weak_points": ["知识短板", "薄弱点", "不会", "容易卡住"],
-    "study_goal": ["学习目标", "目标", "希望达到"],
-    "study_time_prefer": ["时间偏好", "学习时间", "效率最高"],
-    "course_progress": ["课程进度", "学到哪里", "当前进度"],
     "challenge_scene": ["困难场景", "最常卡住", "跟不上"],
-    "preferred_resource": ["资源偏好", "想优先看到", "喜欢的资源"],
 }
 
 PROFILE_ANALYZE_PROMPT_TEMPLATE = """
 你是学习画像分析师。请从学生自然语言对话中抽取结构化学习画像。
 必须严格只返回 JSON，不要 markdown，不要解释。
 JSON 字段必须完全一致：
-{{"major":"","target_course":"","knowledge_level":"","study_style":"","weak_points":"","study_goal":"","study_time_prefer":"","course_progress":"","challenge_scene":"","preferred_resource":"","profile_summary":""}}
+{{"major":"","target_course":"","knowledge_base":"","cognitive_style":"","error_prone_points":"","study_goal":"","learning_history":"","course_progress":"","study_time_prefer":"","preferred_resource":"","knowledge_level":"","study_style":"","weak_points":"","challenge_scene":"","profile_summary":""}}
 
 字段要求：
-- major：学生专业或方向
-- target_course：本次主要学习课程或章节
-- knowledge_level：当前基础水平
-- study_style：偏好的学习方式
-- weak_points：当前薄弱知识点
-- study_goal：希望达到的结果
-- study_time_prefer：时间偏好与学习节奏
-- course_progress：当前课程进度
-- challenge_scene：最常卡住的场景
-- preferred_resource：偏好的资源类型
-- profile_summary：用 1 句话概括学生画像
+- major：学生专业或方向，作为画像上下文
+- target_course：本次主要学习课程或章节，作为画像上下文
+- knowledge_base：知识基础，描述已掌握内容、基础水平和先修知识状态
+- cognitive_style：认知风格，描述偏好图解、案例、代码、视频、练习、抽象/实践等学习加工方式
+- error_prone_points：易错点偏好，描述常错知识点、题型、概念混淆、文档/图表/代码等易错场景
+- study_goal：学习目标，描述考试、作业、项目、实验、复习结果等目标
+- learning_history：学习历史，描述已学章节、历史表现、作业实验、测试结果、已使用资源等
+- course_progress：课程进度，描述当前学到的位置、近期任务和节点
+- study_time_prefer：时间节奏，描述可投入时间、学习节奏和高效时段
+- preferred_resource：资源偏好，描述更需要的资源类型，如图解、案例、分层练习、视频、代码实操等
+- knowledge_level：兼容字段，等同于 knowledge_base
+- study_style：兼容字段，等同于 cognitive_style
+- weak_points：兼容字段，等同于 error_prone_points
+- challenge_scene：兼容字段，描述困难场景，可从 error_prone_points 中归纳
+- profile_summary：用 1 句话概括八维动态学习画像
 
 如果信息不足，请根据对话合理归纳为“{default_value}”，不要增加新字段。
 
@@ -77,7 +100,7 @@ PROFILE_CHAT_PROMPT_TEMPLATE = """
 
 必须严格只返回 JSON，不要 markdown，不要解释。JSON 字段必须完全一致：
 {{
-  "profile": {{"major":"","target_course":"","knowledge_level":"","study_style":"","weak_points":"","study_goal":"","study_time_prefer":"","course_progress":"","challenge_scene":"","preferred_resource":"","profile_summary":""}},
+  "profile": {{"major":"","target_course":"","knowledge_base":"","cognitive_style":"","error_prone_points":"","study_goal":"","learning_history":"","course_progress":"","study_time_prefer":"","preferred_resource":"","knowledge_level":"","study_style":"","weak_points":"","challenge_scene":"","profile_summary":""}},
   "missing_fields": [],
   "next_question": "",
   "confidence": 0.0,
@@ -90,7 +113,7 @@ PROFILE_CHAT_PROMPT_TEMPLATE = """
 - 如果学生一句话包含多个维度，要一次性抽取多个字段；
 - 如果回答模糊，例如“公式都不会”，要追问是哪类公式、哪个课程环节；
 - 每次只问 1 个最关键问题，语气自然简洁；
-- 至少 6 个核心维度清晰后，is_complete 才可为 true。
+- 八维画像中至少 6 个核心维度清晰后，is_complete 才可为 true；后续对话出现新学习历史、测试结果或资源偏好时，要随学随新地更新已有画像。
 
 当前画像草稿：
 {base_profile}
@@ -114,7 +137,7 @@ class ProfileAgent:
             goal=self.goal,
             tools=["langchain_prompt", "spark_llm"],
             input_schema="学生自然语言对话文本",
-            output_schema='{"major":"","target_course":"","knowledge_level":"","study_style":"","weak_points":"","study_goal":"","study_time_prefer":"","course_progress":"","challenge_scene":"","preferred_resource":"","profile_summary":""}',
+            output_schema='{"major":"","target_course":"","knowledge_base":"","cognitive_style":"","error_prone_points":"","study_goal":"","learning_history":"","course_progress":"","study_time_prefer":"","preferred_resource":"","knowledge_level":"","study_style":"","weak_points":"","challenge_scene":"","profile_summary":""}',
         )
         self.analyze_chain = (PROFILE_ANALYZE_PROMPT | SparkLLM() | LangChainStrOutputParser()) if PROFILE_ANALYZE_PROMPT is not None and LangChainStrOutputParser is not None else None
         self.chat_chain = (PROFILE_CHAT_PROMPT | SparkLLM() | LangChainStrOutputParser()) if PROFILE_CHAT_PROMPT is not None and LangChainStrOutputParser is not None else None
@@ -134,7 +157,7 @@ class ProfileAgent:
 
     def _parse_profile(self, raw: str) -> Dict[str, str]:
         data = parse_json_with_fallback(raw)
-        return {field: str(data.get(field) or DEFAULT_VALUE) for field in PROFILE_FIELDS}
+        return self._normalize_profile({field: str(data.get(field) or DEFAULT_VALUE) for field in PROFILE_FIELDS})
 
     def chat_extract(self, messages: List[Dict[str, str]], current_profile: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """基于完整多轮对话，调用大模型动态抽取画像并生成下一轮追问。"""
@@ -158,6 +181,8 @@ class ProfileAgent:
         merged_profile = self._merge_profile(model_profile, base_profile)
         missing_fields = self._missing_fields(merged_profile)
         next_question = str(data.get("next_question") or self._next_question_for_missing(missing_fields)).strip()
+        if self._question_targets_filled_field(next_question, merged_profile, missing_fields):
+            next_question = self._next_question_for_missing(missing_fields)
         is_complete = bool(data.get("is_complete")) and len(missing_fields) <= 4
         if not next_question:
             next_question = self._next_question_for_missing(missing_fields)
@@ -184,8 +209,26 @@ class ProfileAgent:
         for field in PROFILE_FIELDS:
             value = str(profile.get(field) or DEFAULT_VALUE).strip()
             normalized[field] = value or DEFAULT_VALUE
+        self._sync_dimension_aliases(normalized)
         normalized["profile_summary"] = self._build_summary(normalized)
         return normalized
+
+    def _sync_dimension_aliases(self, profile: Dict[str, str]) -> Dict[str, str]:
+        alias_pairs = [
+            ("knowledge_base", "knowledge_level"),
+            ("cognitive_style", "study_style"),
+            ("error_prone_points", "weak_points"),
+        ]
+        for primary, legacy in alias_pairs:
+            primary_value = profile.get(primary) or DEFAULT_VALUE
+            legacy_value = profile.get(legacy) or DEFAULT_VALUE
+            if primary_value == DEFAULT_VALUE and legacy_value != DEFAULT_VALUE:
+                profile[primary] = legacy_value
+            if legacy_value == DEFAULT_VALUE and profile.get(primary) != DEFAULT_VALUE:
+                profile[legacy] = profile[primary]
+        if (profile.get("challenge_scene") or DEFAULT_VALUE) == DEFAULT_VALUE and profile.get("error_prone_points") != DEFAULT_VALUE:
+            profile["challenge_scene"] = profile["error_prone_points"]
+        return profile
 
     def _messages_to_dialogue(self, messages: List[Dict[str, str]]) -> str:
         lines = []
@@ -197,23 +240,42 @@ class ProfileAgent:
         return "\n".join(lines)
 
     def _missing_fields(self, profile: Dict[str, str]) -> List[str]:
-        return [field for field in PROFILE_FIELDS if field != "profile_summary" and (not profile.get(field) or profile.get(field) == DEFAULT_VALUE)]
+        return [field for field in CORE_PROFILE_DIMENSIONS if not profile.get(field) or profile.get(field) == DEFAULT_VALUE]
 
     def _confidence_by_profile(self, profile: Dict[str, str]) -> float:
-        filled = len([field for field in PROFILE_FIELDS if field != "profile_summary" and profile.get(field) and profile.get(field) != DEFAULT_VALUE])
-        return round(filled / max(len(PROFILE_FIELDS) - 1, 1), 2)
+        filled = len([field for field in CORE_PROFILE_DIMENSIONS if profile.get(field) and profile.get(field) != DEFAULT_VALUE])
+        return round(filled / max(len(CORE_PROFILE_DIMENSIONS), 1), 2)
+
+    def _question_targets_filled_field(self, question: str, profile: Dict[str, str], missing_fields: List[str]) -> bool:
+        if not question:
+            return False
+        field_keywords = {
+            "knowledge_base": ["知识基础", "基础如何", "哪些概念", "哪些内容已经掌握"],
+            "cognitive_style": ["哪种方式", "学习方式", "认知风格", "图解", "案例"],
+            "error_prone_points": ["容易出错", "混淆", "易错", "卡住"],
+            "study_goal": ["学习结果", "学习目标", "希望", "考试", "作业"],
+            "learning_history": ["之前学过", "学习历史", "作业", "实验", "测试"],
+            "course_progress": ["学到哪里", "课程进度", "近期"],
+            "study_time_prefer": ["每天", "多久", "时间段", "效率"],
+            "preferred_resource": ["资源", "材料", "优先看到"],
+        }
+        for field, keywords in field_keywords.items():
+            if field in missing_fields:
+                continue
+            value = profile.get(field) or DEFAULT_VALUE
+            if value != DEFAULT_VALUE and any(keyword in question for keyword in keywords):
+                return True
+        return False
 
     def _next_question_for_missing(self, missing_fields: List[str]) -> str:
         questions = {
-            "major": "你现在的专业或主要学习方向是什么？",
-            "target_course": "这次你主要想围绕哪门课程或哪个章节来学习？",
-            "knowledge_level": "你目前对这门课的基础大概如何？哪些内容已经掌握，哪些还不稳定？",
-            "weak_points": "你现在最容易卡住的知识点或题型是什么？可以举一个具体例子。",
-            "study_goal": "你希望在什么时间内达到什么学习结果？例如考试、作业、实验或项目。",
-            "study_style": "你更喜欢哪种学习方式？比如图解、案例、视频、代码实操或分层练习。",
+            "knowledge_base": "你目前对这门课的知识基础如何？哪些概念、方法或章节已经掌握，哪些还不稳定？",
+            "cognitive_style": "你更容易通过哪种方式理解知识？例如图解、案例、代码实操、短视频、类比讲解或分层练习。",
+            "error_prone_points": "你最容易出错或混淆的知识点、题型或学习场景是什么？可以举一个具体例子。",
+            "study_goal": "你希望在什么时间内达到什么学习结果？例如考试、作业、实验、项目或复习目标。",
+            "learning_history": "你之前学过哪些相关章节、做过哪些作业/实验/测试？效果如何？",
+            "course_progress": "这门课你目前学到哪里了？近期有没有作业、实验、考试或项目节点？",
             "study_time_prefer": "你每天大概能投入多久学习？通常哪个时间段效率更高？",
-            "course_progress": "这门课你目前学到哪里了？有没有作业、实验或考试节点？",
-            "challenge_scene": "你通常在哪种学习场景最困难？例如看公式、做题、写代码或听课跟不上。",
             "preferred_resource": "后续生成资源时，你最希望优先看到哪几类学习材料？",
         }
         for field in missing_fields:
@@ -256,20 +318,25 @@ class ProfileAgent:
             result["major"] = self._guess_major(text)
         if result["target_course"] == DEFAULT_VALUE:
             result["target_course"] = self._guess_course(text)
-        if result["knowledge_level"] == DEFAULT_VALUE:
-            result["knowledge_level"] = self._guess_knowledge_level(text)
-        if result["study_style"] == DEFAULT_VALUE:
-            result["study_style"] = self._guess_style(text)
+        if result["knowledge_base"] == DEFAULT_VALUE:
+            result["knowledge_base"] = self._guess_knowledge_level(text)
+        if result["course_progress"] == DEFAULT_VALUE:
+            result["course_progress"] = self._guess_course_progress(text)
+        if result["cognitive_style"] == DEFAULT_VALUE:
+            result["cognitive_style"] = self._guess_style(text)
         if result["preferred_resource"] == DEFAULT_VALUE:
             result["preferred_resource"] = self._guess_resource(text)
         if result["study_time_prefer"] == DEFAULT_VALUE:
             result["study_time_prefer"] = self._guess_time(text)
         if result["study_goal"] == DEFAULT_VALUE:
             result["study_goal"] = self._guess_goal(text)
-        if result["weak_points"] == DEFAULT_VALUE:
-            result["weak_points"] = self._guess_weak_point(text)
+        if result["error_prone_points"] == DEFAULT_VALUE:
+            result["error_prone_points"] = self._guess_weak_point(text)
         if result["challenge_scene"] == DEFAULT_VALUE:
             result["challenge_scene"] = self._guess_challenge_scene(text)
+        if result["learning_history"] == DEFAULT_VALUE:
+            result["learning_history"] = self._guess_learning_history(text)
+        self._sync_dimension_aliases(result)
 
         result["profile_summary"] = self._build_summary(result)
         return result
@@ -358,10 +425,60 @@ class ProfileAgent:
                 return item
         return DEFAULT_VALUE
 
+    def _extract_learned_topics(self, text: str) -> str:
+        patterns = [
+            r"(?:之前|已经|已|曾经)?(?:学过|学习过|学习了|掌握了|了解了)([^。；;\n]{2,60})",
+            r"(?:已掌握|已经掌握|比较熟悉)([^。；;\n]{2,60})",
+        ]
+        topics = []
+        for pattern in patterns:
+            for match in re.finditer(pattern, text):
+                value = self._clean_topic_phrase(match.group(1))
+                if value and value not in topics:
+                    topics.append(value)
+        return "、".join(topics[:3]) if topics else DEFAULT_VALUE
+
+    def _extract_unstable_topics(self, text: str) -> str:
+        patterns = [
+            r"但([^。；;\n]{2,60}?)(?:混淆|不稳定|不熟|不会|不太会|薄弱|卡住)",
+            r"([^。；;\n]{2,60}?)(?:之间的关系|关系)(?:经常)?(?:容易)?(?:混淆|不清楚)",
+        ]
+        topics = []
+        for pattern in patterns:
+            for match in re.finditer(pattern, text):
+                value = self._clean_topic_phrase(match.group(1))
+                if value and value not in topics:
+                    topics.append(value)
+        return "、".join(topics[:3]) if topics else DEFAULT_VALUE
+
+    def _clean_topic_phrase(self, value: str) -> str:
+        value = str(value or "").strip()
+        value = re.split(r"但|但是|不过|然而", value)[0]
+        value = re.sub(r"^(?:和|及|了|但|但是|目前|我|对|这门课的)", "", value)
+        value = re.sub(r"(?:之间的关系|之间关系|的关系|之间)$", "", value)
+        value = value.replace("，", "、").replace("和", "、")
+        return value.strip(" 、，,。；;") or DEFAULT_VALUE
+
+    def _guess_course_progress(self, text: str) -> str:
+        learned = self._extract_learned_topics(text)
+        if learned != DEFAULT_VALUE:
+            return f"已学到{learned}"
+        match = re.search(r"(?:当前|现在)?(?:学到|进度到)([^。；;\n]{2,40})", text)
+        if match:
+            value = self._clean_topic_phrase(match.group(1))
+            return value if value != DEFAULT_VALUE else DEFAULT_VALUE
+        return DEFAULT_VALUE
+
     def _guess_knowledge_level(self, text: str) -> str:
-        if any(item in text for item in ["\u5f88\u591a\u5b9a\u4e49\u4e0d\u592a\u4f1a", "\u5f88\u591a\u5b9a\u4e49\u4e0d\u4f1a", "\u5b9a\u4e49\u4e0d\u592a\u4f1a", "\u5b9a\u4e49\u4e0d\u4f1a"]):
-            return "\u5b9a\u4e49\u7406\u89e3\u8584\u5f31"
-        candidates = ["\u96f6\u57fa\u7840", "\u521a\u5165\u95e8", "\u57fa\u7840\u8584\u5f31", "\u57fa\u7840\u8f83\u5f31", "\u57fa\u7840\u4e00\u822c", "\u57fa\u7840\u4e0d\u592a\u597d", "\u57fa\u7840\u4e0d\u597d", "\u4e00\u822c", "\u8fd8\u53ef\u4ee5", "\u6709\u4e00\u5b9a\u57fa\u7840", "\u57fa\u7840\u8f83\u597d", "\u6bd4\u8f83\u719f\u6089", "\u638c\u63e1\u8f83\u597d"]
+        if any(item in text for item in ["很多定义不太会", "很多定义不会", "定义不太会", "定义不会"]):
+            return "定义理解薄弱"
+        learned = self._extract_learned_topics(text)
+        unstable = self._extract_unstable_topics(text)
+        if learned != DEFAULT_VALUE and unstable != DEFAULT_VALUE:
+            return f"已学习{learned}，但{unstable}仍不稳定"
+        if learned != DEFAULT_VALUE:
+            return f"已学习{learned}"
+        candidates = ["零基础", "刚入门", "基础薄弱", "基础较弱", "基础一般", "基础不太好", "基础不好", "一般", "还可以", "有一定基础", "基础较好", "比较熟悉", "掌握较好"]
         for item in candidates:
             if item in text:
                 return item
@@ -392,9 +509,15 @@ class ProfileAgent:
         return "\u3001".join(parts) if parts else DEFAULT_VALUE
 
     def _guess_goal(self, text: str) -> str:
-        score = re.search(r"(?:\u62ff\u5230|\u8003\u5230|\u8fbe\u5230)?\s*(\d{2,3})\s*\u5206", text)
+        score = re.search(r"(?:拿到|考到|达到)?\s*(\d{2,3})\s*分", text)
         if score:
-            return f"\u62ff\u5230{score.group(1)}\u5206"
+            return f"拿到{score.group(1)}分"
+        match = re.search(r"(?:希望|想要|目标是|目标)([^。；;\n]{2,60})", text)
+        if match:
+            value = match.group(1).strip()
+            return value.strip("，,。；; ") or DEFAULT_VALUE
+        if "期末复习" in text:
+            return "期末复习"
         return DEFAULT_VALUE
 
     def _guess_weak_point(self, text: str) -> str:
@@ -409,26 +532,48 @@ class ProfileAgent:
         tags = [item for item in ["\u770b\u56fe", "\u770b\u516c\u5f0f", "\u5199\u4ee3\u7801", "\u505a\u9898", "\u542c\u8bfe", "\u5efa\u6a21", "\u753b\u56fe", "\u9700\u6c42\u5efa\u6a21"] if item in text]
         return "\u3001".join(tags) if tags else DEFAULT_VALUE
 
+    def _guess_learning_history(self, text: str) -> str:
+        tags = []
+        learned = self._extract_learned_topics(text)
+        if learned != DEFAULT_VALUE:
+            tags.append(f"之前学过{learned}")
+        patterns = [
+            r"(?:已经|已|之前|曾经)(?:学习|学过|完成|做过|练过)([^。；;\n]{2,40})",
+            r"(?:作业|实验|测试|考试|项目)(?:[^。；;\n]{0,30})(?:做过|完成|得分|错题|反馈)",
+        ]
+        for pattern in patterns:
+            for match in re.finditer(pattern, text):
+                value = match.group(0).strip()
+                if value and value not in tags:
+                    tags.append(value)
+        return "、".join(tags[:3]) if tags else DEFAULT_VALUE
+
     def _build_summary(self, profile: Dict[str, str]) -> str:
         major = profile.get("major") or DEFAULT_VALUE
         course = profile.get("target_course") or DEFAULT_VALUE
-        weak = profile.get("weak_points") or DEFAULT_VALUE
-        style = profile.get("study_style") or DEFAULT_VALUE
+        knowledge = profile.get("knowledge_base") or profile.get("knowledge_level") or DEFAULT_VALUE
+        weak = profile.get("error_prone_points") or profile.get("weak_points") or DEFAULT_VALUE
+        style = profile.get("cognitive_style") or profile.get("study_style") or DEFAULT_VALUE
         goal = profile.get("study_goal") or DEFAULT_VALUE
+        history = profile.get("learning_history") or DEFAULT_VALUE
         time = profile.get("study_time_prefer") or DEFAULT_VALUE
 
         parts = []
         if major != DEFAULT_VALUE:
-            parts.append(f"{major}\u65b9\u5411\u5b66\u751f")
+            parts.append(f"{major}方向学生")
         if course != DEFAULT_VALUE:
-            parts.append(f"\u5f53\u524d\u805a\u7126{course}")
-        if goal != DEFAULT_VALUE:
-            parts.append(f"\u76ee\u6807\u662f{goal}")
+            parts.append(f"当前聚焦{course}")
+        if knowledge != DEFAULT_VALUE:
+            parts.append(f"知识基础为{knowledge}")
         if weak != DEFAULT_VALUE:
-            parts.append(f"\u4e3b\u8981\u77ed\u677f\u662f{weak}")
+            parts.append(f"易错点集中在{weak}")
+        if goal != DEFAULT_VALUE:
+            parts.append(f"目标是{goal}")
+        if history != DEFAULT_VALUE:
+            parts.append(f"学习历史包含{history}")
         if time != DEFAULT_VALUE:
-            parts.append(f"\u503e\u5411\u4e8e{time}\u5b66\u4e60")
+            parts.append(f"倾向于{time}学习")
         if style != DEFAULT_VALUE:
-            parts.append(f"\u504f\u597d{style}")
+            parts.append(f"认知风格偏好{style}")
 
-        return "\u3001".replace("\u3001", "\uff0c").join(parts) if parts else DEFAULT_VALUE
+        return "，".join(parts) if parts else DEFAULT_VALUE

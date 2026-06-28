@@ -189,6 +189,10 @@ def ensure_extended_tables() -> None:
     profile_extra_columns = {
         "major": "VARCHAR(120) NULL",
         "target_course": "VARCHAR(120) NULL",
+        "knowledge_base": "TEXT NULL",
+        "cognitive_style": "TEXT NULL",
+        "error_prone_points": "TEXT NULL",
+        "learning_history": "TEXT NULL",
         "challenge_scene": "TEXT NULL",
         "preferred_resource": "TEXT NULL",
         "profile_summary": "TEXT NULL",

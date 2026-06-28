@@ -326,30 +326,45 @@ def _call_spark_http(prompt: str) -> str:
     raise RuntimeError(f"Spark HTTP接口未返回有效内容：{data}")
 
 
-def _call_anthropic_compatible(prompt: str) -> str:
-    import requests
-
+def _anthropic_candidate_urls() -> list[str]:
     base_url = str(config.ANTHROPIC_BASE_URL or "").rstrip("/")
-    url = base_url if base_url.endswith("/messages") else f"{base_url}/messages"
-    payload = {
-        "model": config.ANTHROPIC_MODEL or config.ANTHROPIC_SMALL_FAST_MODEL,
-        "max_tokens": 4096,
-        "temperature": 0.5,
-        "messages": [{"role": "user", "content": prompt}],
-    }
-    response = requests.post(
-        url,
-        headers={
-            "x-api-key": config.ANTHROPIC_AUTH_TOKEN,
+    if not base_url:
+        return []
+    candidates = []
+    if base_url.endswith("/messages") or base_url.endswith("/chat/completions"):
+        candidates.append(base_url)
+    elif base_url.endswith("/v1"):
+        candidates.extend([f"{base_url}/messages", f"{base_url}/chat/completions"])
+    else:
+        candidates.extend([f"{base_url}/v1/messages", f"{base_url}/messages", f"{base_url}/v1/chat/completions"])
+    result = []
+    for url in candidates:
+        if url not in result:
+            result.append(url)
+    return result
+
+
+def _anthropic_header_variants() -> list[dict[str, str]]:
+    token = config.ANTHROPIC_AUTH_TOKEN
+    return [
+        {
+            "x-api-key": token,
             "anthropic-version": "2023-06-01",
             "Content-Type": "application/json",
         },
-        json=payload,
-        timeout=config.AI_TIMEOUT,
-    )
-    if response.status_code >= 400:
-        raise RuntimeError(_extract_http_error(response))
-    data = response.json()
+        {
+            "Authorization": f"Bearer {token}",
+            "anthropic-version": "2023-06-01",
+            "Content-Type": "application/json",
+        },
+        {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+        },
+    ]
+
+
+def _extract_chat_text(data: dict) -> str:
     content = data.get("content")
     if isinstance(content, list):
         parts = []
@@ -362,11 +377,56 @@ def _call_anthropic_compatible(prompt: str) -> str:
         text = "".join(parts).strip()
         if text:
             return text
+    if isinstance(data.get("choices"), list) and data["choices"]:
+        choice = data["choices"][0]
+        message = choice.get("message") or {}
+        content = message.get("content") or choice.get("text") or ""
+        if content:
+            return str(content).strip()
     if data.get("completion"):
         return str(data["completion"]).strip()
     if data.get("answer") or data.get("content"):
         return str(data.get("answer") or data.get("content")).strip()
-    raise RuntimeError(f"Anthropic兼容接口未返回有效内容：{data}")
+    if isinstance(data.get("data"), dict):
+        nested = data["data"]
+        if nested.get("answer") or nested.get("content"):
+            return str(nested.get("answer") or nested.get("content")).strip()
+    return ""
+
+
+def _call_anthropic_compatible(prompt: str) -> str:
+    import requests
+
+    model = config.ANTHROPIC_MODEL or config.ANTHROPIC_SMALL_FAST_MODEL
+    anthropic_payload = {
+        "model": model,
+        "max_tokens": 4096,
+        "temperature": 0.5,
+        "messages": [{"role": "user", "content": prompt}],
+    }
+    openai_payload = {
+        "model": model,
+        "temperature": 0.5,
+        "max_tokens": 4096,
+        "messages": [{"role": "user", "content": prompt}],
+    }
+    errors = []
+    for url in _anthropic_candidate_urls():
+        payload = openai_payload if url.endswith("/chat/completions") else anthropic_payload
+        for headers in _anthropic_header_variants():
+            try:
+                response = requests.post(url, headers=headers, json=payload, timeout=config.AI_TIMEOUT)
+                if response.status_code >= 400:
+                    errors.append(f"{url} -> {_extract_http_error(response)}")
+                    continue
+                data = response.json()
+                text = _extract_chat_text(data)
+                if text:
+                    return text
+                errors.append(f"{url} -> 未返回有效内容：{data}")
+            except Exception as exc:
+                errors.append(f"{url} -> {exc}")
+    raise RuntimeError("; ".join(errors[-6:]) or "settings.json大模型接口不可用")
 
 
 def _has_anthropic_compatible_config() -> bool:
@@ -376,7 +436,7 @@ def _has_anthropic_compatible_config() -> bool:
 def spark_chat(prompt: str) -> str:
     """同步调用当前配置的大模型生成文本。
 
-    功能：优先使用 settings.json 中的 Anthropic 兼容大模型；未配置时回退到原有讯飞星火配置。
+    功能：根据 AI_PROVIDER 选择大模型；AI_PROVIDER=anthropic/settings/claude 时只使用 settings.json/环境变量中的 Anthropic 兼容接口，否则使用讯飞星火。
     输入：prompt，自然语言提示词。
     输出：成功时返回模型文本；失败时返回 JSON 字符串格式的标准错误信息。
     """
@@ -384,11 +444,16 @@ def spark_chat(prompt: str) -> str:
         return json.dumps(_standard_error("prompt不能为空"), ensure_ascii=False)
     if config.MOCK_AI:
         return _mock_spark_response(prompt)
-    if _has_anthropic_compatible_config():
+
+    use_anthropic = config.AI_PROVIDER in {"anthropic", "settings", "claude"}
+    if use_anthropic:
+        if not _has_anthropic_compatible_config():
+            return json.dumps(_standard_error("settings.json大模型配置不完整"), ensure_ascii=False)
         try:
             return _retry_call(lambda: _call_anthropic_compatible(prompt))
         except Exception as exc:
             return json.dumps(_standard_error("settings.json大模型调用失败", str(exc)), ensure_ascii=False)
+
     if _is_http_chat_url():
         if not config.XFYUN_API_KEY:
             return json.dumps(_standard_error("讯飞星火HTTP APIPassword未配置"), ensure_ascii=False)

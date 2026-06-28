@@ -12,7 +12,7 @@
             :autosize="{ minRows: 1, maxRows: 6 }"
             resize="none"
             :disabled="sending"
-            placeholder="说说你的专业、课程、基础、薄弱点和目标，我会逐步帮你建立综合画像"
+            placeholder="说说你的专业、学习目标、学习历史、知识基础、易错点和资源偏好，我会自动构建八维动态画像"
             @keydown.enter.exact.prevent="sendMessage"
             @keydown.ctrl.enter.prevent="sendMessage"
           />
@@ -25,20 +25,23 @@
       </div>
     </div>
 
-    <div class="chat-stage" v-else>
+    <div :class="['chat-stage', { 'visual-only-stage': showVisualization }]" v-else>
       <div class="stage-header">
         <div>
           <h1>{{ activeSessionTitle }}</h1>
-          <p>通过多轮自然对话持续补全当前会话，并自动汇总为综合学习画像。</p>
+          <p>通过多轮自然语言对话自动抽取八维学生画像，并结合后续学习历史随学随新。</p>
         </div>
 
         <div class="stage-badges">
+          <el-button size="small" round @click="toggleVisualization">
+            {{ showVisualization ? "返回对话" : "画像可视化" }}
+          </el-button>
           <el-tag round>{{ modelEnabled ? "大模型分析中" : "本地辅助模式" }}</el-tag>
           <el-tag round type="info">{{ Math.round(confidence * 100) }}% 完整度</el-tag>
         </div>
       </div>
 
-      <div ref="messageBoxRef" class="message-stream">
+      <div v-if="!showVisualization" ref="messageBoxRef" class="message-stream">
         <div
           v-for="(item, index) in messages"
           :key="index"
@@ -69,6 +72,53 @@
         </div>
       </div>
 
+      <div v-if="showVisualization" class="profile-visual-panel">
+        <div class="radar-card">
+          <div class="visual-card-header">
+            <div>
+              <span class="eyebrow">八维画像雷达图</span>
+              <strong>{{ completedCount }}/{{ prompts.length }} 维已识别</strong>
+            </div>
+            <el-tag round :type="completedCount >= 6 ? 'success' : 'warning'">
+              {{ completedCount >= 6 ? '画像可用' : '继续补全' }}
+            </el-tag>
+          </div>
+          <div ref="radarRef" class="profile-radar"></div>
+        </div>
+
+        <div class="dimension-card-grid">
+          <div
+            v-for="item in dimensionCards"
+            :key="item.id"
+            :class="['dimension-card', { filled: item.filled }]"
+          >
+            <div class="dimension-card-top">
+              <span>{{ item.label }}</span>
+              <strong>{{ item.score }}</strong>
+            </div>
+            <p>{{ item.value }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="showVisualization" class="profile-timeline-card">
+        <div class="visual-card-header compact">
+          <div>
+            <span class="eyebrow">随学随新轨迹</span>
+            <strong>画像更新时间线</strong>
+          </div>
+        </div>
+        <div class="profile-timeline">
+          <div v-for="event in profileTimeline" :key="event.id" class="timeline-item">
+            <span class="timeline-dot"></span>
+            <div>
+              <strong>{{ event.title }}</strong>
+              <p>{{ event.desc }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="summary-strip">
         <div class="summary-main">
           <span class="summary-label">综合画像</span>
@@ -88,7 +138,7 @@
         </div>
       </div>
 
-      <div class="composer-card">
+      <div v-if="!showVisualization" class="composer-card">
         <el-input
           ref="inputRef"
           v-model="draft"
@@ -122,13 +172,19 @@
 
 <script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from "vue";
+import * as echarts from "echarts/core";
+import { RadarChart } from "echarts/charts";
+import { GridComponent, LegendComponent, TooltipComponent } from "echarts/components";
+import { CanvasRenderer } from "echarts/renderers";
 import { Loading } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { ACTIVE_PROFILE_SESSION_KEY, profileApi, setActiveProfileSessionId } from "../api";
 
+echarts.use([RadarChart, GridComponent, LegendComponent, TooltipComponent, CanvasRenderer]);
+
 const DEFAULT_VALUE = "待进一步观察";
 const STORAGE_PREFIX = "a3_learning_agent_profile_conversation_v5";
-const WELCOME_MESSAGE = "你好，我是学习画像助手。你可以像和 GPT 对话一样，直接告诉我你的专业、课程、基础、薄弱点、目标和偏好的学习方式；我会在多轮对话中持续提取信息，并把所有会话汇总成你的综合学习画像。";
+const WELCOME_MESSAGE = "你好，我是学习画像助手。你可以直接用自然语言告诉我你的专业、学习目标、学习历史、课程进度、易错点和资源偏好；我会自动抽取八维动态学习画像，并在后续学习中随学随新。";
 const LEGACY_WELCOME_MESSAGES = [
   WELCOME_MESSAGE,
   "你好，我是大模型画像助手。你可以直接用一段自然语言描述学习情况，我会自动抽取专业、目标、基础、薄弱点、偏好等画像维度，并根据缺失信息动态追问。",
@@ -136,15 +192,13 @@ const LEGACY_WELCOME_MESSAGES = [
 ];
 
 const prompts = [
-  { id: "major", label: "专业背景" },
-  { id: "target_course", label: "目标课程" },
-  { id: "knowledge_level", label: "基础情况" },
-  { id: "weak_points", label: "薄弱点" },
+  { id: "knowledge_base", label: "知识基础" },
+  { id: "cognitive_style", label: "认知风格" },
+  { id: "error_prone_points", label: "易错点偏好" },
   { id: "study_goal", label: "学习目标" },
-  { id: "study_style", label: "学习方式" },
-  { id: "study_time_prefer", label: "时间偏好" },
+  { id: "learning_history", label: "学习历史" },
   { id: "course_progress", label: "课程进度" },
-  { id: "challenge_scene", label: "困难场景" },
+  { id: "study_time_prefer", label: "时间节奏" },
   { id: "preferred_resource", label: "资源偏好" },
 ];
 
@@ -153,6 +207,7 @@ const sending = ref(false);
 const draft = ref("");
 const inputRef = ref(null);
 const messageBoxRef = ref(null);
+const radarRef = ref(null);
 const messages = ref([]);
 const profile = reactive({});
 const aggregateProfile = reactive({});
@@ -161,9 +216,11 @@ const nextQuestion = ref("先用一段自然语言告诉我你的学习情况吧
 const confidence = ref(0);
 const isComplete = ref(false);
 const modelEnabled = ref(false);
+const showVisualization = ref(false);
 const sessions = ref([]);
 const activeSessionId = ref("");
 let saveTimer = null;
+let radarChart = null;
 
 const showHome = computed(() => {
   const meaningfulMessages = messages.value.filter((item) => item.role === "user");
@@ -180,12 +237,18 @@ const statusText = computed(() => {
   return `已识别 ${completedCount.value}/${prompts.length} 个画像维度`;
 });
 
+const valueOfProfile = (primary, legacy) => aggregateProfile[primary] || profile[primary] || (legacy ? aggregateProfile[legacy] || profile[legacy] : "") || DEFAULT_VALUE;
+
 const previewProfile = computed(() => {
   const merged = {};
   for (const prompt of prompts) {
-    merged[prompt.id] = aggregateProfile[prompt.id] || profile[prompt.id] || DEFAULT_VALUE;
+    merged[prompt.id] = valueOfProfile(prompt.id);
   }
-  merged.major = aggregateProfile.major || profile.major || DEFAULT_VALUE;
+  merged.major = valueOfProfile("major");
+  merged.target_course = valueOfProfile("target_course");
+  merged.knowledge_base = valueOfProfile("knowledge_base", "knowledge_level");
+  merged.cognitive_style = valueOfProfile("cognitive_style", "study_style");
+  merged.error_prone_points = valueOfProfile("error_prone_points", "weak_points");
   merged.profile_summary = aggregateProfile.profile_summary || profile.profile_summary || DEFAULT_VALUE;
   return merged;
 });
@@ -193,22 +256,98 @@ const previewProfile = computed(() => {
 const previewSummary = computed(() => {
   const major = previewProfile.value.major;
   const course = previewProfile.value.target_course;
-  const weak = previewProfile.value.weak_points;
-  const style = previewProfile.value.study_style;
+  const knowledge = previewProfile.value.knowledge_base;
+  const weak = previewProfile.value.error_prone_points;
+  const style = previewProfile.value.cognitive_style;
+  const goal = previewProfile.value.study_goal;
 
   const parts = [];
   if (major !== DEFAULT_VALUE) parts.push(`${major}方向学生`);
   if (course !== DEFAULT_VALUE) parts.push(`当前聚焦${course}`);
-  if (weak !== DEFAULT_VALUE) parts.push(`主要薄弱点是${weak}`);
-  if (style !== DEFAULT_VALUE) parts.push(`偏好${style}`);
+  if (knowledge !== DEFAULT_VALUE) parts.push(`知识基础：${knowledge}`);
+  if (weak !== DEFAULT_VALUE) parts.push(`易错点：${weak}`);
+  if (goal !== DEFAULT_VALUE) parts.push(`目标：${goal}`);
+  if (style !== DEFAULT_VALUE) parts.push(`认知风格：${style}`);
 
-  return parts.join("；") || "完成几轮对话后，这里会自动生成一句综合学习画像摘要。";
+  return parts.join("；") || "完成几轮对话后，这里会自动生成一句八维动态学习画像摘要。";
+});
+
+const dimensionScores = computed(() => prompts.map((item) => {
+  const value = previewProfile.value[item.id];
+  if (!value || value === DEFAULT_VALUE) return 15;
+  const lengthScore = Math.min(100, 45 + String(value).length * 4);
+  return Math.max(55, lengthScore);
+}));
+
+const dimensionCards = computed(() => prompts.map((item, index) => {
+  const value = previewProfile.value[item.id];
+  const filled = Boolean(value && value !== DEFAULT_VALUE);
+  return {
+    ...item,
+    value: filled ? value : "等待通过对话补全",
+    filled,
+    score: filled ? `${dimensionScores.value[index]}%` : "未识别",
+  };
+}));
+
+const profileTimeline = computed(() => {
+  const userTurns = messages.value.filter((item) => item.role === "user").length;
+  return [
+    { id: "start", title: "自然语言输入", desc: userTurns ? `已完成 ${userTurns} 轮学习情况描述` : "等待学生用自然语言描述学习情况" },
+    { id: "extract", title: "八维画像抽取", desc: `已识别 ${completedCount.value}/${prompts.length} 个核心维度` },
+    { id: "refresh", title: "随学随新", desc: "后续学习历史、测试结果和资源反馈会持续更新画像" },
+  ];
 });
 
 const activeSessionTitle = computed(() => {
   const current = sessions.value.find((item) => Number(item.id) === Number(activeSessionId.value));
   return current?.title || "新的学习会话";
 });
+
+function toggleVisualization() {
+  showVisualization.value = !showVisualization.value;
+  if (showVisualization.value) {
+    renderRadar();
+  } else {
+    nextTick(() => {
+      scrollToBottom();
+      focusInput();
+    });
+  }
+}
+
+function renderRadar() {
+  nextTick(() => {
+    if (!showVisualization.value || !radarRef.value) return;
+    if (!radarChart) {
+      radarChart = echarts.init(radarRef.value);
+    }
+    radarChart.setOption({
+      tooltip: { trigger: "item" },
+      radar: {
+        radius: "68%",
+        center: ["50%", "52%"],
+        indicator: prompts.map((item) => ({ name: item.label, max: 100 })),
+        axisName: { color: "#4b5563", fontSize: 12 },
+        splitLine: { lineStyle: { color: "#e5e7eb" } },
+        splitArea: { areaStyle: { color: ["#ffffff", "#f8fafc"] } },
+        axisLine: { lineStyle: { color: "#d1d5db" } },
+      },
+      series: [{
+        type: "radar",
+        data: [{ value: dimensionScores.value, name: "画像完整度" }],
+        areaStyle: { color: "rgba(59, 130, 246, 0.18)" },
+        lineStyle: { color: "#2563eb", width: 2 },
+        itemStyle: { color: "#2563eb" },
+      }],
+    });
+    radarChart.resize();
+  });
+}
+
+function resizeRadar() {
+  radarChart?.resize();
+}
 
 function timeLabel() {
   return new Date().toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" });
@@ -564,6 +703,10 @@ watch(aggregateProfile, () => {
   schedulePersist();
 }, { deep: true });
 
+watch(dimensionScores, () => {
+  renderRadar();
+}, { deep: true });
+
 onMounted(async () => {
   const saved = localStorage.getItem(ACTIVE_PROFILE_SESSION_KEY);
   if (saved) activeSessionId.value = Number(saved);
@@ -572,6 +715,8 @@ onMounted(async () => {
   await loadConversationRemote();
   await loadAggregateProfile();
   bindGlobalSidebarEvents();
+  window.addEventListener("resize", resizeRadar);
+  renderRadar();
   scrollToBottom();
   focusInput();
 });
@@ -579,20 +724,25 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   persistState();
   window.clearTimeout(saveTimer);
+  window.removeEventListener("resize", resizeRadar);
+  radarChart?.dispose();
+  radarChart = null;
   unbindGlobalSidebarEvents();
 });
 </script>
 
 <style scoped>
 .portrait-page {
-  min-height: 100vh;
+  height: 100vh;
   padding: 32px 40px;
+  overflow: hidden;
   background: #ffffff;
 }
 
 .chat-home,
 .chat-stage {
-  min-height: calc(100vh - 64px);
+  height: calc(100vh - 64px);
+  min-height: 0;
 }
 
 .chat-home {
@@ -649,6 +799,16 @@ onBeforeUnmount(() => {
   margin: 0 auto;
 }
 
+.visual-only-stage {
+  width: min(1120px, 100%);
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.visual-only-stage .profile-visual-panel {
+  flex: 0 0 auto;
+}
+
 .stage-header {
   display: flex;
   align-items: flex-start;
@@ -677,9 +837,9 @@ onBeforeUnmount(() => {
 
 .message-stream {
   flex: 1;
-  min-height: 420px;
-  max-height: calc(100vh - 360px);
-  overflow: auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
   padding: 8px 0 24px;
 }
 
@@ -773,6 +933,147 @@ onBeforeUnmount(() => {
 .typing-dots span:nth-child(2) { animation-delay: 0.15s; }
 .typing-dots span:nth-child(3) { animation-delay: 0.3s; }
 
+.profile-visual-panel {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.radar-card,
+.profile-timeline-card,
+.dimension-card {
+  border: 1px solid #ececec;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+}
+
+.radar-card {
+  min-width: 0;
+  padding: 14px;
+}
+
+.visual-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.visual-card-header.compact {
+  margin-bottom: 8px;
+}
+
+.visual-card-header strong,
+.dimension-card-top strong {
+  display: block;
+  color: #111827;
+  font-size: 14px;
+}
+
+.eyebrow {
+  display: block;
+  margin-bottom: 4px;
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.profile-radar {
+  width: 100%;
+  height: 230px;
+}
+
+.dimension-card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.dimension-card {
+  min-height: 108px;
+  padding: 12px;
+  background: #fafafa;
+}
+
+.dimension-card.filled {
+  background: #f8fbff;
+  border-color: #dbeafe;
+}
+
+.dimension-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.dimension-card-top span {
+  color: #111827;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.dimension-card-top strong {
+  color: #2563eb;
+  font-size: 12px;
+}
+
+.dimension-card p {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: #4b5563;
+  font-size: 12px;
+  line-height: 1.6;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.profile-timeline-card {
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  background: #fbfbfc;
+}
+
+.profile-timeline {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.timeline-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+}
+
+.timeline-dot {
+  width: 9px;
+  height: 9px;
+  flex: 0 0 auto;
+  margin-top: 6px;
+  border-radius: 999px;
+  background: #2563eb;
+  box-shadow: 0 0 0 4px #dbeafe;
+}
+
+.timeline-item strong {
+  display: block;
+  color: #111827;
+  font-size: 13px;
+}
+
+.timeline-item p {
+  margin: 4px 0 0;
+  color: #6b7280;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
 .summary-strip {
   display: flex;
   align-items: flex-start;
@@ -862,6 +1163,19 @@ onBeforeUnmount(() => {
   .summary-strip,
   .composer-footer {
     flex-direction: column;
+  }
+
+  .profile-visual-panel,
+  .profile-timeline {
+    grid-template-columns: 1fr;
+  }
+
+  .dimension-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .profile-radar {
+    height: 220px;
   }
 
   .message-bubble {

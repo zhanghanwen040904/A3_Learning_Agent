@@ -15,15 +15,30 @@ profile_agent = ProfileAgent()
 PROFILE_FIELDS = [
     "major",
     "target_course",
+    "knowledge_base",
+    "cognitive_style",
+    "error_prone_points",
+    "study_goal",
+    "learning_history",
+    "course_progress",
+    "study_time_prefer",
+    "preferred_resource",
     "knowledge_level",
     "study_style",
     "weak_points",
-    "study_goal",
-    "study_time_prefer",
-    "course_progress",
     "challenge_scene",
-    "preferred_resource",
     "profile_summary",
+]
+
+CORE_PROFILE_DIMENSIONS = [
+    "knowledge_base",
+    "cognitive_style",
+    "error_prone_points",
+    "study_goal",
+    "learning_history",
+    "course_progress",
+    "study_time_prefer",
+    "preferred_resource",
 ]
 
 DEFAULT_VALUE = "待进一步观察"
@@ -56,12 +71,30 @@ def _profile_session_id_from_payload(payload: Optional[dict] = None):
         return None
 
 
+def _sync_profile_aliases(profile: dict) -> dict:
+    alias_pairs = [
+        ("knowledge_base", "knowledge_level"),
+        ("cognitive_style", "study_style"),
+        ("error_prone_points", "weak_points"),
+    ]
+    for primary, legacy in alias_pairs:
+        primary_value = profile.get(primary) or DEFAULT_VALUE
+        legacy_value = profile.get(legacy) or DEFAULT_VALUE
+        if primary_value == DEFAULT_VALUE and legacy_value != DEFAULT_VALUE:
+            profile[primary] = legacy_value
+        if legacy_value == DEFAULT_VALUE and profile.get(primary) != DEFAULT_VALUE:
+            profile[legacy] = profile[primary]
+    if (profile.get("challenge_scene") or DEFAULT_VALUE) == DEFAULT_VALUE and profile.get("error_prone_points") != DEFAULT_VALUE:
+        profile["challenge_scene"] = profile["error_prone_points"]
+    return profile
+
+
 def _profile_only(data: Optional[dict] = None) -> dict:
     data = data or {}
     profile = {field: str(data.get(field) or DEFAULT_VALUE) for field in PROFILE_FIELDS}
+    _sync_profile_aliases(profile)
     profile["profile_summary"] = profile_agent._build_summary(profile)
     return profile
-
 
 def _empty_profile(session_id=None):
     data = {"profile_session_id": session_id}
