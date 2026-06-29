@@ -413,14 +413,18 @@ def _parse_profile_focus(profile: dict, mastery_records: List[dict]) -> List[str
     return merged
 
 
-def generate_personalized_questions(profile: dict, mastery_records: List[dict], count: int = DEFAULT_COUNT, knowledge_point: str = "") -> dict:
+def generate_personalized_questions(profile: dict, mastery_records: List[dict], count: int = DEFAULT_COUNT, knowledge_point: str = "", knowledge_points: List[str] | None = None) -> dict:
     build_assessment_assets()
     question_bank = load_question_bank()
-    knowledge_points = load_knowledge_points()
+    knowledge_points_tree = load_knowledge_points()
     focus_points = _parse_profile_focus(profile, mastery_records)
 
+    stage_points = [str(item or "").strip() for item in (knowledge_points or []) if str(item or "").strip()]
     target = str(knowledge_point or "").strip()
-    if target:
+    if stage_points:
+        focus_points = stage_points + focus_points
+        target = stage_points[0]
+    elif target:
         focus_points = [target] + focus_points
     focus_terms = _expand_focus_terms(focus_points)
 
@@ -459,7 +463,7 @@ def generate_personalized_questions(profile: dict, mastery_records: List[dict], 
     return {
         "focus_points": focus_points,
         "recommended_knowledge_points": recommended_paths,
-        "knowledge_tree": knowledge_points,
+        "knowledge_tree": knowledge_points_tree,
         "questions": selected,
         "question_count": len(selected),
     }

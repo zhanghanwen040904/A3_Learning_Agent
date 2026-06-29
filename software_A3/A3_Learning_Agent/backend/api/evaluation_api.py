@@ -1,4 +1,5 @@
 import json
+import re
 
 from flask import Blueprint, request
 
@@ -86,7 +87,10 @@ def generate_questions():
         mastery = _get_mastery(request.user_id)
         count = int(payload.get("count") or 5)
         knowledge_point = str(payload.get("knowledge_point") or "")
-        result = generate_personalized_questions(profile, mastery, count=count, knowledge_point=knowledge_point)
+        knowledge_points = payload.get("knowledge_points") or []
+        if isinstance(knowledge_points, str):
+            knowledge_points = [item.strip() for item in re.split(r"[、，,；;]", knowledge_points) if item.strip()]
+        result = generate_personalized_questions(profile, mastery, count=count, knowledge_point=knowledge_point, knowledge_points=knowledge_points)
         result["profile_snapshot"] = {
             "weak_points": profile.get("weak_points", ""),
             "study_goal": profile.get("study_goal", ""),

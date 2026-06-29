@@ -394,6 +394,7 @@ async function generateQuestions() {
     const res = await evaluationApi.questions({
       count: generator.count,
       knowledge_point: generator.knowledgePoint,
+      knowledge_points: stageContext.value.active ? stageContext.value.points : [],
     });
     if (res.code === 200) {
       activeQuestionIndex.value = 0;
