@@ -28,6 +28,16 @@
       </div>
     </el-card>
 
+    <el-card v-if="stageContext.active" class="panel stage-assessment-card">
+      <div>
+        <el-tag type="success">第 {{ stageContext.stageIndex + 1 }} 阶段测评</el-tag>
+        <h3>{{ stageContext.title }}</h3>
+        <p>本次测试围绕学习路径当前阶段知识点出题，答题结果会作为用户画像的掌握度与薄弱点反馈依据。</p>
+        <el-space wrap><el-tag v-for="p in stageContext.points" :key="p" type="info">{{ p }}</el-tag></el-space>
+      </div>
+      <el-button v-if="stageContext.fromPath" @click="router.push('/path')">返回学习路径</el-button>
+    </el-card>
+
     <el-card class="panel">
       <template #header>按画像生成检测题</template>
 
@@ -259,8 +269,12 @@
 
 <script setup>
 import { computed, onMounted, reactive, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import { evaluationApi } from "../api";
+
+const route = useRoute();
+const router = useRouter();
 
 const summary = reactive({
   avg_score: 0,
@@ -281,6 +295,13 @@ const activeQuestionIndex = ref(0);
 const questions = ref([]);
 const recommendedPoints = ref([]);
 const recentScores = ref([]);
+const stageContext = computed(() => ({
+  active: route.query.stage !== undefined,
+  fromPath: route.query.from === "path",
+  stageIndex: Number(route.query.stage || 0),
+  title: String(route.query.title || "阶段测评"),
+  points: String(route.query.points || "").split(/[、,，]/).filter(Boolean),
+}));
 
 const generator = reactive({
   mode: "single",
@@ -311,6 +332,30 @@ function scoreClass(score) {
   if (value >= 85) return "score-good";
   if (value >= 70) return "score-mid";
   return "score-low";
+}
+
+function saveStageRecordIfFinished() {
+  if (!stageContext.value.active || !questions.value.length || answeredCount.value < questions.value.length) return;
+  const scores = questions.value.map((item) => Number(item.result?.score || 0));
+  const avgScore = Math.round(scores.reduce((sum, item) => sum + item, 0) / scores.length);
+  const weakPoints = questions.value
+    .flatMap((item) => [item.result?.common_mistake, ...(item.result?.missed_keywords || [])])
+    .filter(Boolean)
+    .slice(0, 5);
+  const record = {
+    stageIndex: stageContext.value.stageIndex,
+    stageTitle: stageContext.value.title,
+    points: stageContext.value.points,
+    avgScore,
+    weakPoints,
+    completed: true,
+    completedAt: new Date().toLocaleString(),
+  };
+  let records = [];
+  try { records = JSON.parse(localStorage.getItem("a3_stage_assessment_records") || "[]"); } catch { records = []; }
+  records = [record, ...records.filter((item) => Number(item.stageIndex) !== record.stageIndex)].slice(0, 20);
+  localStorage.setItem("a3_stage_assessment_records", JSON.stringify(records));
+  ElMessage.success("阶段测评记录已同步到学习路径");
 }
 
 async function loadSummary() {
@@ -394,6 +439,7 @@ async function submitQuestion(question) {
       recentScores.value = [res.data.score, ...recentScores.value].slice(0, 6);
       ElMessage.success(`判题完成，得到 ${res.data.score} 分`);
       await loadSummary();
+      saveStageRecordIfFinished();
 
       if (generator.mode === "single" && activeQuestionIndex.value < questions.value.length - 1) {
         setTimeout(() => {
@@ -410,6 +456,9 @@ async function submitQuestion(question) {
 }
 
 onMounted(async () => {
+  if (stageContext.value.active) {
+    generator.knowledgePoint = stageContext.value.points.join('、') || stageContext.value.title;
+  }
   await loadSummary();
   await generateQuestions();
 });
@@ -426,6 +475,24 @@ onMounted(async () => {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+}
+
+.stage-assessment-card :deep(.el-card__body) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.stage-assessment-card h3 {
+  margin: 10px 0 8px;
+  color: #0f172a;
+}
+
+.stage-assessment-card p {
+  margin: 0 0 10px;
+  color: #475569;
+  line-height: 1.7;
 }
 
 .option-list {
