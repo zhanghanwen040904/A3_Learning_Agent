@@ -169,20 +169,24 @@ def _normalize_resource(resource: dict) -> dict:
 def _attach_resources_to_stages(stages: list[dict], resources: list[dict]) -> list[dict]:
     if not stages:
         return stages
-    used = set()
-    for index, stage in enumerate(stages):
-        scored = sorted(
-            [(resource, _resource_score(resource, stage)) for resource in resources],
-            key=lambda item: (item[1], -_resource_order(item[0])),
-            reverse=True,
-        )
-        matched = [resource for resource, score in scored if score > 0]
-        if not matched:
-            matched = [resource for offset, resource in enumerate(resources) if offset % len(stages) == index]
-        stage["resources"] = sorted(matched[:6], key=_resource_order)
-        used.update(resource.get("id") for resource in stage["resources"])
-    if resources and not any(stage["resources"] for stage in stages):
-        stages[0]["resources"] = sorted(resources[:6], key=_resource_order)
+    for stage in stages:
+        stage["resources"] = []
+    if resources:
+        assigned_ids = set()
+        for resource in sorted(resources, key=_resource_order):
+            ranked = sorted(
+                [(index, stage, _resource_score(resource, stage)) for index, stage in enumerate(stages)],
+                key=lambda item: (item[2], -len(item[1].get("resources") or []), -item[0]),
+                reverse=True,
+            )
+            best_index, best_stage, best_score = ranked[0]
+            if best_score <= 0:
+                best_index = len(assigned_ids) % len(stages)
+                best_stage = stages[best_index]
+            best_stage["resources"].append(resource)
+            assigned_ids.add(resource.get("id"))
+        for stage in stages:
+            stage["resources"] = sorted(stage["resources"][:6], key=_resource_order)
     for index, stage in enumerate(stages):
         stage["status"] = "current" if index == 0 else "pending"
         stage.pop("raw", None)
@@ -288,18 +292,13 @@ def integrated_learning_path():
         )
         resource_rows = mysql_db.query_all(
             """
-            SELECT sr.*
-            FROM study_resource sr
-            INNER JOIN (
-                SELECT resource_type, MAX(id) AS max_id
-                FROM study_resource
-                WHERE user_id=%s AND profile_session_id=%s
-                GROUP BY resource_type
-            ) latest ON sr.resource_type = latest.resource_type AND sr.id = latest.max_id
-            WHERE sr.user_id=%s AND sr.profile_session_id=%s
-            ORDER BY FIELD(sr.resource_type, 'doc', 'mindmap', 'quiz', 'code', 'video', 'reading'), sr.id DESC
+            SELECT *
+            FROM study_resource
+            WHERE user_id=%s AND profile_session_id=%s
+            ORDER BY id DESC
+            LIMIT 36
             """,
-            (request.user_id, session_id, request.user_id, session_id),
+            (request.user_id, session_id),
         )
         resources = [_normalize_resource(item) for item in resource_rows]
         stages = _parse_path_stages(path.get("path_content") if path else "") or _fallback_stages(resources)
