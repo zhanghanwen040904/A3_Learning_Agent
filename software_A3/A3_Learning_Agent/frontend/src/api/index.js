@@ -84,6 +84,7 @@ export const resourceApi = {
 export const pathApi = {
   generate: (data = {}) => http.post("/path/generate", withProfileSession(data)),
   list: () => http.get("/path/", { params: profileSessionParams() }),
+  integrated: () => http.get("/path/integrated", { params: profileSessionParams() }),
 };
 
 export const chatApi = {
