@@ -10,6 +10,10 @@ knowledge_bp = Blueprint("knowledge", __name__)
 SUPPORTED_IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".webp", ".gif"}
 
 
+def _compact_image_token(value: str) -> str:
+    return "".join(ch for ch in str(value or "").lower() if ch.isalnum() or "\u4e00" <= ch <= "\u9fff")
+
+
 def _candidate_image_paths(raw_path: str) -> list[Path]:
     """Resolve image paths emitted by the packaged RAG data.
 
@@ -59,6 +63,27 @@ def _resolve_image_path(raw_path: str) -> Path | None:
         inside_image_root = image_path == image_root or image_root in image_path.parents
         if image_path.exists() and image_path.suffix.lower() in SUPPORTED_IMAGE_SUFFIXES and inside_image_root:
             return image_path
+
+    normalized = raw_path.strip().replace("\\", "/")
+    parts = [part for part in normalized.split("/") if part]
+    folder_hint = _compact_image_token(parts[-2]) if len(parts) >= 2 else ""
+    file_hint = _compact_image_token(Path(parts[-1]).stem if parts else normalized)
+    if file_hint and image_root.exists():
+        best: tuple[int, Path] | None = None
+        for image_path in image_root.rglob("*"):
+            if not image_path.is_file() or image_path.suffix.lower() not in SUPPORTED_IMAGE_SUFFIXES:
+                continue
+            score = 0
+            if file_hint == _compact_image_token(image_path.stem):
+                score += 20
+            elif file_hint in _compact_image_token(image_path.stem):
+                score += 10
+            if folder_hint and folder_hint in _compact_image_token(image_path.parent.name):
+                score += 8
+            if score and (best is None or score > best[0]):
+                best = (score, image_path.resolve())
+        if best:
+            return best[1]
     return None
 
 

@@ -61,9 +61,66 @@ class StructuredResourceAgent:
             goal=self.goal,
             tools=["langchain_prompt", "spark_llm", "retrieve_knowledge"],
             input_schema="结构化学生画像 + 资源规划 + RAG教材片段 + 可选返工意见",
-            output_schema='{"title":"","content":"","knowledge_points":[],"personalization":"","format":"markdown"}',
+            output_schema=(
+                '{"title":"","content":"","knowledge_points":[],"personalization":"",'
+                '"format":"markdown"}'
+            ),
         )
         self.chain = build_langchain_chain(RESOURCE_PROMPT)
+
+    @staticmethod
+    def _is_model_error(raw: str) -> bool:
+        text = str(raw or "")
+        if "调用失败" in text or "AppIdNoAuthError" in text or "NoAuth" in text:
+            return True
+        try:
+            data = json.loads(text)
+        except Exception:
+            return False
+        return isinstance(data, dict) and data.get("success") is False
+
+    def _fallback_resource(
+        self,
+        context: Dict[str, Any],
+        knowledge_text: str,
+    ) -> Dict[str, Any]:
+        weak_points = (
+            context.get("weak_points")
+            or context.get("error_prone_points")
+            or context.get("study_goal")
+            or "课程核心知识"
+        )
+        points = self._context_points(context)
+        excerpt = str(knowledge_text or "").strip()[:420]
+        if not excerpt:
+            excerpt = "请结合课程知识库中的对应章节，按概念、流程、案例和练习逐步学习。"
+        content = f"""# {self.default_title}
+
+## 学习目标
+围绕“{weak_points}”完成本阶段学习，先理解核心概念，再通过案例和练习巩固。
+
+## 课程依据
+{excerpt}
+
+## 学习建议
+- 先阅读阶段目标，明确本资源解决的问题。
+- 对照知识点梳理输入、过程、输出和常见误区。
+- 结合练习题、图解或代码案例完成迁移应用。
+
+## 自测任务
+请用自己的话说明本阶段核心概念，并举出一个软件工程课程中的应用场景。"""
+        return {
+            "resource_type": self.resource_type,
+            "title": self.default_title,
+            "content": content,
+            "knowledge_points": points,
+            "personalization": (
+                f"围绕学生薄弱点“{weak_points}”，结合课程知识库内容进行兜底组织，"
+                "避免展示模型接口错误。"
+            ),
+            "format": "markdown",
+            "agent_name": self.__class__.__name__,
+        }
 
     def generate(
         self,
@@ -87,8 +144,19 @@ class StructuredResourceAgent:
             raw = self.chain.invoke(variables)
         else:
             raw = SparkLLM().invoke(RESOURCE_PROMPT_TEMPLATE.format(**variables))
+        if self._is_model_error(raw):
+            return self._fallback_resource(context, knowledge_text)
         data = parse_json_with_fallback(raw)
-        content = str(data.get("content") or raw or "资源生成失败")
+        if self.resource_type == "doc" and data.get("resourcetype"):
+            data = {
+                "title": data.get("resourcetitle") or data.get("title") or self.default_title,
+                "content": data,
+                "knowledge_points": data.get("weakpoints") or self._context_points(context),
+                "personalization": "依据学生画像、学习目标与课程知识库片段生成结构化讲解文档。",
+                "format": "json",
+            }
+        content_value = data.get("content") or raw or "资源生成失败"
+        content = json.dumps(content_value, ensure_ascii=False, indent=2) if isinstance(content_value, (dict, list)) else str(content_value)
         points = data.get("knowledge_points") or self._context_points(context)
         if not isinstance(points, list):
             points = [str(points)]
@@ -99,7 +167,10 @@ class StructuredResourceAgent:
             "knowledge_points": [str(item) for item in points if str(item).strip()],
             "personalization": str(
                 data.get("personalization")
-                or f"围绕学生薄弱点“{context.get('weak_points', '待观察')}”，按其学习偏好“{context.get('study_style', '综合学习')}”组织内容。"
+                or (
+                    f"围绕学生薄弱点“{context.get('weak_points', '待观察')}”，"
+                    f"按其学习偏好“{context.get('study_style', '综合学习')}”组织内容。"
+                )
             ),
             "format": str(data.get("format") or "markdown"),
             "agent_name": self.__class__.__name__,

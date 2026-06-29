@@ -7,6 +7,21 @@ class DocumentAgent(StructuredResourceAgent):
     goal = "把教材知识转化为适合学生当前基础的递进式专业课程讲解"
     default_title = "个性化课程讲解文档"
     requirements = """
-必须包含：学习目标、前置知识、概念讲解、与学生专业相关的案例、易错点、三问自测和总结。
-讲解难度必须匹配画像；关键事实须能由课程知识库支持；正文不少于500字。
+必须返回适合前端结构化渲染的 JSON 内容，不要返回 Markdown 正文。
+顶层仍按公共协议返回 {"title":"...","content":{...},"knowledge_points":[],"personalization":"...","format":"json"}。
+content 必须是对象，字段包括：
+- resourcetype: 固定为 doc
+- resourcetitle: 文档标题
+- knowledgelevel: 学生当前知识基础
+- studystyle: 学习偏好
+- weakpoints: 薄弱点数组
+- studygoal: 学习目标
+- studytimepreferred: 学习时间偏好
+- courseprogress: 当前课程进度或教材章节
+- challengescene: 挑战场景
+- preferredresourcetype: 固定为 doc
+- profilesummary: {major, minor, weakpoint, studygoal}
+- studentcontext: {currentclass, currentunit, currentchapter, currentsection, currentpage}
+- learningresources: [{title, source, sectionpath, pages, chunkid, content, images}]
+内容必须来自课程知识库依据，learningresources 至少包含 1 个知识片段；不要把 JSON 外层写成代码块。
 """.strip()

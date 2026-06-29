@@ -143,6 +143,8 @@ def _append_images_to_resource(resource: dict) -> dict:
     resource["metadata"] = metadata
 
     content = str(resource.get("content") or "")
+    if resource.get("resource_type") == "mindmap":
+        return resource
     if not IMAGE_PATTERN.search(content):
         lines = ["", "## 知识库配图"]
         lines.extend(f"- {image['caption']}：{image['path']}" for image in existing_images[:4])

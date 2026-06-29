@@ -120,7 +120,6 @@ import {
   FolderOpened,
   MoreFilled,
   Monitor,
-  Notebook,
   Plus,
   Reading,
   RefreshRight,
@@ -132,7 +131,6 @@ const route = useRoute();
 
 const primaryNav = [
   { path: "/profile", label: "对话画像", icon: ChatDotRound },
-  { path: "/resources", label: "学习资源", icon: Notebook },
   { path: "/path", label: "学习路径", icon: Connection },
   { path: "/chat", label: "智能答疑", icon: Reading },
   { path: "/evaluation", label: "学习评估", icon: DataAnalysis },
