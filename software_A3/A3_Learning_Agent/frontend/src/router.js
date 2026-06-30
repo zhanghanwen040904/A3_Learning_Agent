@@ -6,7 +6,6 @@ import EvaluationView from "./views/EvaluationView.vue";
 import KnowledgeView from "./views/KnowledgeView.vue";
 import PathView from "./views/PathView.vue";
 import ProfileView from "./views/ProfileView.vue";
-import ResourceView from "./views/ResourceView.vue";
 import StudentPortraitView from "./views/StudentPortraitView.vue";
 import SystemStatusView from "./views/SystemStatusView.vue";
 
@@ -18,7 +17,7 @@ const routes = [
   { path: "/student-portrait", component: StudentPortraitView, meta: { title: "学生画像", requiresAuth: true } },
   { path: "/resources", redirect: "/path", meta: { title: "学习路径", requiresAuth: true } },
   { path: "/path", component: PathView, meta: { title: "学习路径", requiresAuth: true } },
-  { path: "/resource", component: ResourceView, meta: { title: "学习资源", requiresAuth: true } },
+  { path: "/resource", redirect: "/path", meta: { title: "学习路径", requiresAuth: true } },
   { path: "/chat", component: ChatView, meta: { title: "智能答疑", requiresAuth: true } },
   { path: "/evaluation", component: EvaluationView, meta: { title: "学习评估", requiresAuth: true } },
   { path: "/knowledge", component: KnowledgeView, meta: { title: "知识库管理", requiresAuth: true } },

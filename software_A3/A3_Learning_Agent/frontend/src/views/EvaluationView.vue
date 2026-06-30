@@ -395,6 +395,8 @@ async function generateQuestions() {
       count: generator.count,
       knowledge_point: generator.knowledgePoint,
       knowledge_points: stageContext.value.active ? stageContext.value.points : [],
+      stage_index: stageContext.value.active ? stageContext.value.stageIndex : null,
+      stage_title: stageContext.value.active ? stageContext.value.title : "",
     });
     if (res.code === 200) {
       activeQuestionIndex.value = 0;

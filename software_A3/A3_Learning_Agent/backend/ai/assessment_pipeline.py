@@ -1,4 +1,4 @@
-import json
+﻿import json
 import re
 from pathlib import Path
 from typing import Dict, List
@@ -341,7 +341,7 @@ def _expand_focus_terms(focus_points: List[str]) -> List[str]:
     return expanded
 
 
-def _score_question_match(item: dict, focus_terms: List[str], target: str) -> int:
+def _score_question_match(item: dict, focus_terms: List[str], target: str, preferred_difficulties: List[str] | None = None) -> int:
     knowledge_point = str(item.get("knowledge_point") or "")
     knowledge_path = str(item.get("knowledge_path") or "")
     chapter = str(item.get("chapter") or "")
@@ -390,7 +390,10 @@ def _score_question_match(item: dict, focus_terms: List[str], target: str) -> in
         elif normalized_target == normalized_fields["chapter"]:
             score += 10
 
-    if item.get("difficulty") == "basic":
+    preferred_difficulties = preferred_difficulties or []
+    if item.get("difficulty") in preferred_difficulties:
+        score += 6
+    elif item.get("difficulty") == "basic":
         score += 1
     elif item.get("difficulty") == "improve":
         score += 2
@@ -413,14 +416,27 @@ def _parse_profile_focus(profile: dict, mastery_records: List[dict]) -> List[str
     return merged
 
 
-def generate_personalized_questions(profile: dict, mastery_records: List[dict], count: int = DEFAULT_COUNT, knowledge_point: str = "", knowledge_points: List[str] | None = None) -> dict:
+def _difficulty_preferences(stage_index: int | None) -> List[str]:
+    if stage_index is None:
+        return []
+    if stage_index <= 0:
+        return ["basic"]
+    if stage_index == 1:
+        return ["improve", "basic"]
+    return ["application", "improve", "advanced"]
+
+
+def generate_personalized_questions(profile: dict, mastery_records: List[dict], count: int = DEFAULT_COUNT, knowledge_point: str = "", knowledge_points: List[str] | None = None, stage_index: int | None = None, stage_title: str = "") -> dict:
     build_assessment_assets()
     question_bank = load_question_bank()
     knowledge_points_tree = load_knowledge_points()
     focus_points = _parse_profile_focus(profile, mastery_records)
 
     stage_points = [str(item or "").strip() for item in (knowledge_points or []) if str(item or "").strip()]
+    stage_title = str(stage_title or "").strip()
     target = str(knowledge_point or "").strip()
+    if stage_title:
+        focus_points = [stage_title] + focus_points
     if stage_points:
         focus_points = stage_points + focus_points
         target = stage_points[0]
@@ -428,12 +444,20 @@ def generate_personalized_questions(profile: dict, mastery_records: List[dict], 
         focus_points = [target] + focus_points
     focus_terms = _expand_focus_terms(focus_points)
 
+    difficulty_preferences = _difficulty_preferences(stage_index)
     scored_questions = []
     for item in question_bank:
-        score = _score_question_match(item, focus_terms, target)
+        score = _score_question_match(item, focus_terms, target, difficulty_preferences)
         scored_questions.append((score, item))
 
     scored_questions.sort(key=lambda pair: (-pair[0], pair[1]["id"]))
+    if stage_index is not None:
+        positive = [pair for pair in scored_questions if pair[0] > 0]
+        rest = [pair for pair in scored_questions if pair[0] <= 0]
+        if len(positive) > count:
+            offset = (int(stage_index) * count) % len(positive)
+            positive = positive[offset:] + positive[:offset]
+            scored_questions = positive + rest
     selected: List[dict] = []
     used_paths = set()
     for score, item in scored_questions:
