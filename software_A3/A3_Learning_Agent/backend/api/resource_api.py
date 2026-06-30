@@ -170,6 +170,13 @@ def generate_resources():
         if dialogue and not content_audit(dialogue):
             return fail("资源生成输入未通过内容审核", 403)
 
+        latest_path = mysql_db.query_one(
+            "SELECT path_content FROM study_path WHERE user_id=%s AND profile_session_id=%s ORDER BY create_time DESC LIMIT 1",
+            (user_id, session_id),
+        )
+        if latest_path and not payload.get("path_content"):
+            payload["path_content"] = latest_path.get("path_content")
+
         result = agent_manager.run_pipeline(dialogue, stored_profile=profile, request_data=payload)
         batch_id = mysql_db.insert(
             "generation_batch",
@@ -196,6 +203,10 @@ def generate_resources():
                         "retry_count": item.get("retry_count", 0),
                         "duration_ms": item.get("duration_ms", 0),
                         "video_url": item.get("video_url"),
+                        "stage_id": item.get("stage_id"),
+                        "stage_index": item.get("stage_index"),
+                        "stage_title": item.get("stage_title"),
+                        "stage_points": item.get("stage_points", []),
                     }
                 )
                 resource_id = mysql_db.insert(
@@ -333,7 +344,7 @@ def _persist_stream_result(result: dict, user_id: int, session_id: int) -> dict:
         content = str(item.get("content", ""))
         if content and content_audit(content):
             metadata = _safe_json_loads(item.get("metadata"), {})
-            metadata.update({"format": item.get("format"), "quality": item.get("quality"), "retry_count": item.get("retry_count", 0), "duration_ms": item.get("duration_ms", 0), "video_url": item.get("video_url")})
+            metadata.update({"format": item.get("format"), "quality": item.get("quality"), "retry_count": item.get("retry_count", 0), "duration_ms": item.get("duration_ms", 0), "video_url": item.get("video_url"), "stage_id": item.get("stage_id"), "stage_index": item.get("stage_index"), "stage_title": item.get("stage_title"), "stage_points": item.get("stage_points", [])})
             resource_id = mysql_db.insert(
                 "study_resource",
                 {
@@ -434,6 +445,12 @@ def generate_resources_stream():
                 if dialogue and not content_audit(dialogue):
                     push({"type": "error", "message": "资源生成输入未通过内容审核"})
                     return
+                latest_path = mysql_db.query_one(
+                    "SELECT path_content FROM study_path WHERE user_id=%s AND profile_session_id=%s ORDER BY create_time DESC LIMIT 1",
+                    (user_id, session_id),
+                )
+                if latest_path and not payload.get("path_content"):
+                    payload["path_content"] = latest_path.get("path_content")
                 result = agent_manager.run_pipeline(dialogue, stored_profile=profile, request_data=payload, event_callback=push)
                 saved = _persist_stream_result(result, user_id, session_id)
                 push({"type": "result", "message": "资源生成成功", "result": saved})

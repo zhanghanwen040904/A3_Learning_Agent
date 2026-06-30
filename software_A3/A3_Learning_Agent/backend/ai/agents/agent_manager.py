@@ -1,9 +1,9 @@
-import json
+﻿import json
 import time
 import uuid
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Dict, Optional, List
 
 from ai.rag import build_resource_context, retrieve_knowledge_items
 from ai.spark_api import content_audit
@@ -85,6 +85,39 @@ class AgentManager:
         ]
         return " ".join(str(part) for part in parts if part).strip() or "软件工程 学习资源"
 
+    @staticmethod
+    def _extract_stage_points(text: str) -> List[str]:
+        known = ["需求分析", "总体设计", "详细设计", "软件测试", "软件生命周期", "软件过程", "可行性研究", "软件维护", "编码实现", "数据流图", "用例图", "模块划分", "调试"]
+        points = [item for item in known if item in str(text or "")]
+        return points[:5] or [str(text or "课程核心知识")[:24] or "课程核心知识"]
+
+    def _parse_stage_specs(self, path_content: str, context: Dict[str, Any]) -> List[Dict[str, Any]]:
+        import re
+        content = str(path_content or "")
+        stage_pattern = r"\n(?=##\s*(?:阶段[一二三四五六七八九十\d]+|第\d+阶段))"
+        blocks = [item for item in re.split(stage_pattern, content) if re.match(r"^##\s*(?:阶段[一二三四五六七八九十\d]+|第\d+阶段)", item.strip())]
+        stages = []
+        for index, block in enumerate(blocks):
+            first_line = block.strip().splitlines()[0] if block.strip() else ""
+            title = re.sub(r"^##\s*(?:阶段[一二三四五六七八九十\d]+|第\d+阶段)[：:、.．\s]*", "", first_line).strip(" #*_`>-：:") or f"学习阶段{index + 1}"
+            stages.append({"stage_index": index + 1, "stage_id": f"stage_{index + 1}", "stage_title": title, "stage_goal": block[:260], "stage_points": self._extract_stage_points(block)})
+        if stages:
+            return stages[:4]
+        points = self._extract_stage_points(" ".join(str(context.get(key) or "") for key in ["weak_points", "study_goal", "current_need"]))
+        return [
+            {"stage_index": 1, "stage_id": "stage_1", "stage_title": "基础概念澄清", "stage_goal": "理解核心概念、阶段产物和输入输出关系。", "stage_points": points[:2] or points},
+            {"stage_index": 2, "stage_id": "stage_2", "stage_title": "方法关系建构", "stage_goal": "建立相关方法、流程和阶段之间的关系。", "stage_points": points},
+            {"stage_index": 3, "stage_id": "stage_3", "stage_title": "练习与应用巩固", "stage_goal": "通过练习、案例和应用任务完成迁移。", "stage_points": points},
+        ]
+
+    def _stage_context(self, context: Dict[str, Any], stage: Dict[str, Any]) -> Dict[str, Any]:
+        merged = dict(context)
+        merged.update(stage)
+        merged["weak_points"] = stage.get("stage_points") or context.get("weak_points")
+        merged["study_goal"] = f"{stage.get('stage_title')}：{stage.get('stage_goal')}"
+        merged["current_need"] = f"请只围绕{stage.get('stage_title')}生成本阶段资源，知识点：{'、'.join(stage.get('stage_points') or [])}"
+        return merged
+
     def run_pipeline(
         self,
         dialogue_text: str = "",
@@ -154,63 +187,73 @@ class AgentManager:
         result["plan"] = plan
         trace("PlannerAgent", "completed", "已规划六类互补资源的主题、难度和目标", int((time.perf_counter() - start) * 1000))
         task_plans = {item["resource_type"]: item for item in plan.get("resource_tasks", [])}
+        stage_specs = self._parse_stage_specs((request_data or {}).get("path_content") or "", context)
+        resource_types = list(self.resource_agents.keys()) if (request_data or {}).get("full_generation") else ["doc", "mindmap"]
 
-        def generate_one(resource_type: str) -> Dict[str, Any]:
+        def generate_one(resource_type: str, stage: Dict[str, Any]) -> Dict[str, Any]:
             agent = self.resource_agents[resource_type]
             agent_name = agent.__class__.__name__
-            emit({"type": "agent", "agent": agent_name, "status": "running", "message": f"正在生成 {resource_type} 类型个性化资源"})
+            stage_context = self._stage_context(context, stage)
+            emit({"type": "agent", "agent": agent_name, "status": "running", "message": f"正在为{stage.get('stage_title')}生成 {resource_type} 类型资源"})
             started = time.perf_counter()
-            task_plan = task_plans.get(resource_type, {"resource_type": resource_type, "goal": context.get("current_need")})
-            resource = agent.generate(context, result["knowledge"], task_plan)
+            task_plan = {**task_plans.get(resource_type, {"resource_type": resource_type, "goal": stage_context.get("current_need")}), "stage": stage}
+            stage_query = " ".join([stage.get("stage_title", ""), stage.get("stage_goal", ""), " ".join(stage.get("stage_points") or [])])
+            stage_knowledge_context = build_resource_context(stage_query or query, top_k=6)
+            stage_sources = retrieve_knowledge_items(stage_query or query, top_k=6)
+            resource = agent.generate(stage_context, json.dumps(stage_knowledge_context, ensure_ascii=False, indent=2), task_plan)
             emit({"type": "agent", "agent": "QualityAgent", "status": "running", "message": f"正在审核 {agent_name} 生成结果"})
-            quality = self.quality_agent.evaluate(resource, context, sources)
+            quality = self.quality_agent.evaluate(resource, stage_context, stage_sources)
             retries = 0
             if not quality.get("passed"):
                 retries = 1
                 feedback = "；".join(quality.get("problems") or []) or "请提升准确性、清晰度和个性化程度"
                 emit({"type": "agent", "agent": agent_name, "status": "running", "message": f"质量评分未达标，正在根据反馈返工：{feedback}"})
-                resource = agent.generate(context, result["knowledge"], task_plan, feedback=feedback)
+                resource = agent.generate(stage_context, json.dumps(stage_knowledge_context, ensure_ascii=False, indent=2), task_plan, feedback=feedback)
                 emit({"type": "agent", "agent": "QualityAgent", "status": "running", "message": f"正在复审 {agent_name} 返工结果"})
-                quality = self.quality_agent.evaluate(resource, context, sources)
+                quality = self.quality_agent.evaluate(resource, stage_context, stage_sources)
             resource["quality"] = quality
             resource["quality_score"] = quality.get("total", 0)
             resource["retry_count"] = retries
+            resource["stage_id"] = stage.get("stage_id")
+            resource["stage_index"] = stage.get("stage_index")
+            resource["stage_title"] = stage.get("stage_title")
+            resource["stage_points"] = stage.get("stage_points") or []
+            metadata = resource.get("metadata")
+            if not isinstance(metadata, dict):
+                metadata = {}
+            resource["metadata"] = {**metadata, "stage": stage}
             resource["sources"] = [
-                {
-                    "source": item.get("source"),
-                    "chunk_index": item.get("chunk_index"),
-                    "score": item.get("score"),
-                    "retrieval_mode": item.get("retrieval_mode"),
-                }
-                for item in sources
+                {"source": item.get("source"), "chunk_index": item.get("chunk_index"), "score": item.get("score"), "retrieval_mode": item.get("retrieval_mode")}
+                for item in stage_sources
             ]
             resource["duration_ms"] = int((time.perf_counter() - started) * 1000)
             return resource
 
-        with ThreadPoolExecutor(max_workers=6) as executor:
+        with ThreadPoolExecutor(max_workers=3) as executor:
             futures = {
-                executor.submit(generate_one, resource_type): resource_type
-                for resource_type in self.resource_agents
+                executor.submit(generate_one, resource_type, stage): (resource_type, stage)
+                for stage in stage_specs
+                for resource_type in resource_types
             }
             for future in as_completed(futures):
-                resource_type = futures[future]
+                resource_type, stage = futures[future]
                 agent_name = self.resource_agents[resource_type].__class__.__name__
                 try:
                     resource = future.result()
-                    result["resources"][resource_type] = resource
+                    key = f"{stage.get('stage_id')}:{resource_type}"
+                    result["resources"][key] = resource
                     trace(
                         agent_name,
                         "completed" if resource.get("quality", {}).get("passed") else "warning",
-                        f"{resource.get('title', resource_type)} 生成完成，质量评分 {resource.get('quality_score', 0)}",
+                        f"{stage.get('stage_title')} - {resource.get('title', resource_type)} 生成完成，质量评分 {resource.get('quality_score', 0)}",
                         resource.get("duration_ms", 0),
                         resource.get("retry_count", 0),
                     )
                 except Exception as exc:
                     result["errors"].append(f"{agent_name} 失败：{exc}")
                     trace(agent_name, "failed", str(exc))
-
         emit({"type": "agent", "agent": "SafetyAgent", "status": "running", "message": "正在进行内容安全与防幻觉复核"})
-        result["resource_list"] = [result["resources"][key] for key in self.resource_agents if key in result["resources"]]
+        result["resource_list"] = list(result["resources"].values())
         all_content = "\n".join(str(item.get("content") or "") for item in result["resource_list"])
         result["safety"] = self.safety_agent.review(all_content, sources)
         trace(

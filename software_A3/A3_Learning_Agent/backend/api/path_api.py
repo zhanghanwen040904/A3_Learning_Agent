@@ -1,4 +1,4 @@
-import json
+﻿import json
 import re
 
 from flask import Blueprint, request
@@ -78,11 +78,11 @@ def _stage_duration(block: str, index: int) -> str:
 
 def _parse_path_stages(path_content: str) -> list[dict]:
     content = normalize_markdown(path_content)
-    blocks = [item for item in re.split(r"\n(?=##\s*阶段[一二三四五六七八九十\d]+)", content) if re.match(r"^##\s*阶段", item.strip())]
+    blocks = [item for item in re.split(r"\n(?=##\s*(?:阶段[一二三四五六七八九十\d]+|第\d+阶段))", content) if re.match(r"^##\s*(?:阶段[一二三四五六七八九十\d]+|第\d+阶段)", item.strip())]
     stages = []
     for index, block in enumerate(blocks):
         first_line = block.strip().splitlines()[0] if block.strip() else ""
-        title = _clean_text(re.sub(r"^##\s*阶段[一二三四五六七八九十\d]+[：:、.．\s]*", "", first_line)) or f"学习阶段{index + 1}"
+        title = _clean_text(re.sub(r"^##\s*(?:阶段[一二三四五六七八九十\d]+|第\d+阶段)[：:、.．\s]*", "", first_line)) or f"学习阶段{index + 1}"
         stages.append(
             {
                 "index": index + 1,
@@ -158,6 +158,15 @@ def _normalize_resource(resource: dict) -> dict:
     if _is_model_error_text(item.get("content")):
         item["content"] = _friendly_resource_content(item)
     item["metadata"] = _safe_json(item.get("metadata"), {})
+    stage_meta = item["metadata"].get("stage") if isinstance(item.get("metadata"), dict) else None
+    if isinstance(stage_meta, dict):
+        item["stage_id"] = item.get("stage_id") or stage_meta.get("stage_id")
+        item["stage_index"] = item.get("stage_index") or stage_meta.get("stage_index")
+        item["stage_title"] = item.get("stage_title") or stage_meta.get("stage_title")
+        item["stage_points"] = item.get("stage_points") or stage_meta.get("stage_points")
+    for key in ("stage_id", "stage_index", "stage_title", "stage_points"):
+        if not item.get(key) and isinstance(item.get("metadata"), dict):
+            item[key] = item["metadata"].get(key)
     item["sources"] = mysql_db.query_all(
         "SELECT source_name AS source, chunk_index, relevance_score AS score, retrieval_mode FROM resource_source WHERE resource_id=%s",
         (item["id"],),
@@ -173,7 +182,17 @@ def _attach_resources_to_stages(stages: list[dict], resources: list[dict]) -> li
         stage["resources"] = []
     if resources:
         assigned_ids = set()
+        stage_by_index = {stage.get("index"): stage for stage in stages}
         for resource in sorted(resources, key=_resource_order):
+            stage_index = resource.get("stage_index")
+            try:
+                stage_index = int(stage_index) if stage_index is not None else None
+            except Exception:
+                stage_index = None
+            if stage_index in stage_by_index:
+                stage_by_index[stage_index]["resources"].append(resource)
+                assigned_ids.add(resource.get("id"))
+                continue
             ranked = sorted(
                 [(index, stage, _resource_score(resource, stage)) for index, stage in enumerate(stages)],
                 key=lambda item: (item[2], -len(item[1].get("resources") or []), -item[0]),
