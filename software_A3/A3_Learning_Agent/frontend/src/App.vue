@@ -132,7 +132,6 @@ const route = useRoute();
 const primaryNav = [
   { path: "/student-portrait", label: "学生画像", icon: User },
   { path: "/path", label: "学习路径", icon: Connection },
-  { path: "/resource", label: "学习资源", icon: Reading },
   { path: "/chat", label: "智能答疑", icon: Reading },
   { path: "/evaluation", label: "学习评估", icon: DataAnalysis },
 ];

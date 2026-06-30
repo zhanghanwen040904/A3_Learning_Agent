@@ -90,7 +90,21 @@ def generate_questions():
         knowledge_points = payload.get("knowledge_points") or []
         if isinstance(knowledge_points, str):
             knowledge_points = [item.strip() for item in re.split(r"[、，,；;]", knowledge_points) if item.strip()]
-        result = generate_personalized_questions(profile, mastery, count=count, knowledge_point=knowledge_point, knowledge_points=knowledge_points)
+        stage_index = payload.get("stage_index")
+        try:
+            stage_index = int(stage_index) if stage_index is not None and stage_index != "" else None
+        except Exception:
+            stage_index = None
+        stage_title = str(payload.get("stage_title") or "")
+        result = generate_personalized_questions(
+            profile,
+            mastery,
+            count=count,
+            knowledge_point=knowledge_point,
+            knowledge_points=knowledge_points,
+            stage_index=stage_index,
+            stage_title=stage_title,
+        )
         result["profile_snapshot"] = {
             "weak_points": profile.get("weak_points", ""),
             "study_goal": profile.get("study_goal", ""),
