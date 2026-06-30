@@ -188,7 +188,18 @@ class AgentManager:
         trace("PlannerAgent", "completed", "已规划六类互补资源的主题、难度和目标", int((time.perf_counter() - start) * 1000))
         task_plans = {item["resource_type"]: item for item in plan.get("resource_tasks", [])}
         stage_specs = self._parse_stage_specs((request_data or {}).get("path_content") or "", context)
-        resource_types = list(self.resource_agents.keys()) if (request_data or {}).get("full_generation") else ["doc", "mindmap"]
+        default_resource_types = ["doc", "mindmap"]
+        full_resource_types = list(self.resource_agents.keys())
+        use_full_generation = bool((request_data or {}).get("full_generation"))
+        allow_quality_retry = use_full_generation
+
+        def resource_types_for_stage(stage: Dict[str, Any]) -> list[str]:
+            if use_full_generation:
+                return full_resource_types
+            types = list(default_resource_types)
+            if stage.get("stage_index") == len(stage_specs):
+                types.append("reading")
+            return types
 
         def generate_one(resource_type: str, stage: Dict[str, Any]) -> Dict[str, Any]:
             agent = self.resource_agents[resource_type]
@@ -204,7 +215,7 @@ class AgentManager:
             emit({"type": "agent", "agent": "QualityAgent", "status": "running", "message": f"正在审核 {agent_name} 生成结果"})
             quality = self.quality_agent.evaluate(resource, stage_context, stage_sources)
             retries = 0
-            if not quality.get("passed"):
+            if allow_quality_retry and not quality.get("passed"):
                 retries = 1
                 feedback = "；".join(quality.get("problems") or []) or "请提升准确性、清晰度和个性化程度"
                 emit({"type": "agent", "agent": agent_name, "status": "running", "message": f"质量评分未达标，正在根据反馈返工：{feedback}"})
@@ -233,7 +244,7 @@ class AgentManager:
             futures = {
                 executor.submit(generate_one, resource_type, stage): (resource_type, stage)
                 for stage in stage_specs
-                for resource_type in resource_types
+                for resource_type in resource_types_for_stage(stage)
             }
             for future in as_completed(futures):
                 resource_type, stage = futures[future]
