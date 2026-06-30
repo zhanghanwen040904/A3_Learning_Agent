@@ -111,7 +111,6 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { ElMessage, ElMessageBox } from "element-plus";
 import {
-  ChatDotRound,
   Connection,
   Cpu,
   DataAnalysis,
@@ -123,6 +122,7 @@ import {
   Plus,
   Reading,
   RefreshRight,
+  User,
 } from "@element-plus/icons-vue";
 import { activeProfileSessionId, profileApi, setActiveProfileSessionId } from "./api";
 
@@ -130,8 +130,9 @@ const router = useRouter();
 const route = useRoute();
 
 const primaryNav = [
-  { path: "/profile", label: "对话画像", icon: ChatDotRound },
+  { path: "/student-portrait", label: "学生画像", icon: User },
   { path: "/path", label: "学习路径", icon: Connection },
+  { path: "/resource", label: "学习资源", icon: Reading },
   { path: "/chat", label: "智能答疑", icon: Reading },
   { path: "/evaluation", label: "学习评估", icon: DataAnalysis },
 ];
@@ -174,18 +175,12 @@ async function loadRecentSessions() {
 async function createNewChat() {
   creatingSession.value = true;
   try {
-    const res = await profileApi.createSession();
-    if (res.code !== 200) {
-      ElMessage.error(res.msg || "新建会话失败");
-      return;
-    }
-    setActiveProfileSessionId(res.data.id);
-    activeSessionId.value = String(res.data.id);
-    await loadRecentSessions();
+    setActiveProfileSessionId("");
+    activeSessionId.value = "";
     if (route.path !== "/profile") {
       await router.push("/profile");
     } else {
-      window.dispatchEvent(new CustomEvent("a3-profile-session-created", { detail: { id: res.data.id } }));
+      window.dispatchEvent(new CustomEvent("a3-profile-session-created", { detail: { id: "" } }));
     }
   } finally {
     creatingSession.value = false;

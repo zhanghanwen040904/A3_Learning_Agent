@@ -1,4 +1,5 @@
 ﻿import json
+import re
 from typing import Optional
 
 from flask import Blueprint, request
@@ -43,6 +44,16 @@ CORE_PROFILE_DIMENSIONS = [
 
 DEFAULT_VALUE = "待进一步观察"
 AGGREGATE_PROFILE_SESSION_ID = 0
+DIMENSION_LABELS = {
+    "knowledge_base": "知识基础",
+    "cognitive_style": "认知风格",
+    "error_prone_points": "易错点偏好",
+    "study_goal": "学习目标",
+    "learning_history": "学习历史",
+    "course_progress": "课程进度",
+    "study_time_prefer": "时间节奏",
+    "preferred_resource": "资源偏好",
+}
 
 
 def _json_dumps(value) -> str:
@@ -243,11 +254,273 @@ def _cached_aggregate_profile(user_id: int) -> Optional[dict]:
     return {"user_id": user_id, "profile_session_id": AGGREGATE_PROFILE_SESSION_ID, **_profile_only(row)}
 
 
+def _normalize_text(value) -> str:
+    text = str(value or "").strip()
+    return "" if text in ("", DEFAULT_VALUE, "None", "null", "undefined") else text
+
+
+def _contains_any(text: str, keywords: list[str]) -> bool:
+    return any(keyword in text for keyword in keywords)
+
+
+def _score_level(score: int) -> str:
+    if score >= 85:
+        return "高"
+    if score >= 65:
+        return "中"
+    return "低"
+
+
+def _clamp_score(score: int) -> int:
+    return max(0, min(100, int(score)))
+
+
+def _portrait_dimension_scores(user_id: int, profile: dict) -> dict:
+    quiz_rows = mysql_db.query_all(
+        "SELECT score, knowledge_point, create_time FROM quiz_result WHERE user_id=%s ORDER BY create_time DESC LIMIT 50",
+        (user_id,),
+    )
+    mastery_rows = mysql_db.query_all(
+        "SELECT knowledge_point, mastery_score, weak_reason FROM mastery_record WHERE user_id=%s ORDER BY mastery_score ASC, update_time DESC LIMIT 50",
+        (user_id,),
+    )
+    event_rows = mysql_db.query_all(
+        "SELECT event_type, knowledge_point, detail, create_time FROM learning_event WHERE user_id=%s ORDER BY create_time DESC LIMIT 50",
+        (user_id,),
+    )
+    resource_feedback_rows = mysql_db.query_all(
+        "SELECT rating, comment FROM resource_feedback WHERE user_id=%s ORDER BY create_time DESC LIMIT 30",
+        (user_id,),
+    )
+    session_rows = mysql_db.query_all(
+        "SELECT id, title, create_time FROM profile_session WHERE user_id=%s ORDER BY create_time DESC LIMIT 50",
+        (user_id,),
+    )
+    resource_rows = mysql_db.query_all(
+        "SELECT resource_type, title FROM study_resource WHERE user_id=%s ORDER BY create_time DESC LIMIT 50",
+        (user_id,),
+    )
+
+    quiz_scores = [int(item.get("score") or 0) for item in quiz_rows]
+    avg_quiz_score = round(sum(quiz_scores) / len(quiz_scores), 1) if quiz_scores else 0
+    weak_mastery = [item for item in mastery_rows if int(item.get("mastery_score") or 0) < 70]
+    strong_mastery = [item for item in mastery_rows if int(item.get("mastery_score") or 0) >= 85]
+    avg_mastery = round(sum(int(item.get("mastery_score") or 0) for item in mastery_rows) / len(mastery_rows), 1) if mastery_rows else 0
+    session_count = len(session_rows)
+    quiz_count = len(quiz_rows)
+    resource_count = len(resource_rows)
+    feedback_count = len(resource_feedback_rows)
+
+    profile_text = {key: _normalize_text(profile.get(key)) for key in DIMENSION_LABELS}
+    profile_text["major"] = _normalize_text(profile.get("major"))
+    profile_text["target_course"] = _normalize_text(profile.get("target_course"))
+
+    goal_text = profile_text["study_goal"]
+    history_text = profile_text["learning_history"]
+    progress_text = profile_text["course_progress"]
+    knowledge_text = profile_text["knowledge_base"]
+    style_text = profile_text["cognitive_style"]
+    weak_text = profile_text["error_prone_points"]
+    time_text = profile_text["study_time_prefer"]
+    resource_text = profile_text["preferred_resource"]
+
+    quantified_goal = bool(re.search(r"\d+|期末|考研|通过|拿到|达到|冲刺|目标", goal_text))
+    progress_markers = bool(re.search(r"第.{0,4}[章节单元]|已学|正在学|完成|复习|进度|阶段", progress_text + history_text))
+    time_markers = _contains_any(time_text, ["早上", "上午", "中午", "下午", "晚上", "夜间", "周末", "碎片", "固定", "睡前"])
+    style_markers = _contains_any(style_text + resource_text, ["图解", "视频", "代码", "案例", "刷题", "自学", "讲解", "练习", "思维导图"])
+    history_markers = _contains_any(history_text, ["学过", "做过", "之前", "上学期", "这学期", "复习", "接触过", "基础"])
+    weak_markers = _contains_any(weak_text, ["不会", "模糊", "薄弱", "容易错", "混淆", "卡住", "困难"])
+    resource_markers = _contains_any(resource_text, ["视频", "文档", "题目", "代码", "案例", "动画", "讲义", "思维导图"])
+
+    scores = {}
+
+    knowledge_score = 15
+    reasons = []
+    if knowledge_text:
+        knowledge_score += 25
+        reasons.append("已从对话中识别出知识基础描述")
+    if mastery_rows:
+        knowledge_score += min(40, round(avg_mastery * 0.4))
+        reasons.append(f"结合 {len(mastery_rows)} 条知识点掌握记录，平均掌握度 {avg_mastery}")
+    elif quiz_rows:
+        knowledge_score += min(25, round(avg_quiz_score * 0.25))
+        reasons.append(f"结合 {quiz_count} 次练习结果，平均得分 {avg_quiz_score}")
+    if weak_mastery:
+        knowledge_score -= min(15, len(weak_mastery) * 3)
+        reasons.append(f"检测到 {len(weak_mastery)} 个薄弱知识点")
+    scores["knowledge_base"] = {
+        "score": _clamp_score(knowledge_score),
+        "level": _score_level(_clamp_score(knowledge_score)),
+        "reason": "；".join(reasons) or "当前主要依据对话信息判断，缺少练习数据支撑。",
+    }
+
+    style_score = 20
+    reasons = []
+    if style_text:
+        style_score += 35
+        reasons.append("已识别明确的认知风格描述")
+    if resource_text:
+        style_score += 15
+        reasons.append("资源偏好可辅助推断学习风格")
+    if style_markers:
+        style_score += 15
+        reasons.append("对话中出现了图解、视频、刷题、代码等偏好线索")
+    if session_count >= 3:
+        style_score += min(15, session_count * 2)
+        reasons.append(f"已累计 {session_count} 个会话，风格判断更稳定")
+    scores["cognitive_style"] = {
+        "score": _clamp_score(style_score),
+        "level": _score_level(_clamp_score(style_score)),
+        "reason": "；".join(reasons) or "当前只识别到少量风格线索，仍需更多自然对话。",
+    }
+
+    weak_score = 15
+    reasons = []
+    if weak_text:
+        weak_score += 30
+        reasons.append("已识别出学生主动提到的薄弱点")
+    if weak_markers:
+        weak_score += 10
+    if weak_mastery:
+        weak_score += min(30, len(weak_mastery) * 8)
+        reasons.append(f"练习结果中有 {len(weak_mastery)} 个掌握度偏低的知识点")
+    if quiz_rows and avg_quiz_score < 75:
+        weak_score += 15
+        reasons.append(f"平均练习得分 {avg_quiz_score}，说明仍存在明显薄弱环节")
+    scores["error_prone_points"] = {
+        "score": _clamp_score(weak_score),
+        "level": _score_level(_clamp_score(weak_score)),
+        "reason": "；".join(reasons) or "当前主要依据少量对话判断，尚未形成稳定错因画像。",
+    }
+
+    goal_score = 20
+    reasons = []
+    if goal_text:
+        goal_score += 35
+        reasons.append("已识别明确学习目标")
+    if quantified_goal:
+        goal_score += 20
+        reasons.append("目标中含有量化表述或阶段性目标")
+    if profile_text["target_course"]:
+        goal_score += 10
+        reasons.append("已识别目标课程")
+    if profile_text["major"]:
+        goal_score += 10
+        reasons.append("已识别专业背景，可帮助目标聚焦")
+    scores["study_goal"] = {
+        "score": _clamp_score(goal_score),
+        "level": _score_level(_clamp_score(goal_score)),
+        "reason": "；".join(reasons) or "当前尚未识别出清晰、可执行的学习目标。",
+    }
+
+    history_score = 15
+    reasons = []
+    if history_text:
+        history_score += 35
+        reasons.append("已识别学习经历描述")
+    if history_markers:
+        history_score += 10
+        reasons.append("对话中包含过往课程/基础/复习经历")
+    if session_count:
+        history_score += min(20, session_count * 3)
+        reasons.append(f"累计 {session_count} 个对话会话")
+    if quiz_count:
+        history_score += min(20, quiz_count * 3)
+        reasons.append(f"已有 {quiz_count} 次练习记录")
+    scores["learning_history"] = {
+        "score": _clamp_score(history_score),
+        "level": _score_level(_clamp_score(history_score)),
+        "reason": "；".join(reasons) or "目前学习历史信息还比较少。",
+    }
+
+    progress_score = 15
+    reasons = []
+    if progress_text:
+        progress_score += 30
+        reasons.append("已识别课程进度描述")
+    if progress_markers:
+        progress_score += 15
+        reasons.append("出现章节、阶段、完成情况等进度线索")
+    if quiz_count:
+        progress_score += min(20, quiz_count * 2)
+        reasons.append("已有练习数据可辅助判断进度")
+    if resource_count:
+        progress_score += min(20, resource_count * 2)
+        reasons.append(f"已生成/使用 {resource_count} 份学习资源")
+    if strong_mastery:
+        progress_score += min(10, len(strong_mastery) * 3)
+        reasons.append(f"已有 {len(strong_mastery)} 个较强知识点")
+    scores["course_progress"] = {
+        "score": _clamp_score(progress_score),
+        "level": _score_level(_clamp_score(progress_score)),
+        "reason": "；".join(reasons) or "当前课程进度主要依赖对话描述，行为证据仍较少。",
+    }
+
+    time_score = 15
+    reasons = []
+    if time_text:
+        time_score += 45
+        reasons.append("已识别固定学习时段/节奏描述")
+    if time_markers:
+        time_score += 15
+        reasons.append("出现早晚、周末、碎片化等时间节奏关键词")
+    if session_count >= 2:
+        time_score += min(15, session_count * 2)
+        reasons.append("多轮会话有助于稳定识别节奏偏好")
+    scores["study_time_prefer"] = {
+        "score": _clamp_score(time_score),
+        "level": _score_level(_clamp_score(time_score)),
+        "reason": "；".join(reasons) or "尚未积累出明确的学习时间规律。",
+    }
+
+    resource_score = 15
+    reasons = []
+    if resource_text:
+        resource_score += 35
+        reasons.append("已识别资源形式偏好")
+    if resource_markers:
+        resource_score += 15
+        reasons.append("出现视频、文档、代码、题目等资源关键词")
+    if resource_count:
+        resource_score += min(20, resource_count * 2)
+        reasons.append(f"已有 {resource_count} 份资源使用/生成记录")
+    if feedback_count:
+        avg_rating = round(sum(int(item.get("rating") or 0) for item in resource_feedback_rows) / feedback_count, 1)
+        resource_score += min(15, feedback_count * 3)
+        reasons.append(f"已有 {feedback_count} 条资源反馈，平均评分 {avg_rating}")
+    scores["preferred_resource"] = {
+        "score": _clamp_score(resource_score),
+        "level": _score_level(_clamp_score(resource_score)),
+        "reason": "；".join(reasons) or "当前对资源偏好的判断还较初步。",
+    }
+
+    return {
+        "dimensions": scores,
+        "overall_score": round(sum(item["score"] for item in scores.values()) / max(len(scores), 1), 1),
+        "evidence": {
+            "session_count": session_count,
+            "quiz_count": quiz_count,
+            "avg_quiz_score": avg_quiz_score,
+            "mastery_count": len(mastery_rows),
+            "resource_count": resource_count,
+            "feedback_count": feedback_count,
+            "event_count": len(event_rows),
+        },
+        "method": "综合对话画像、练习成绩、知识点掌握记录、资源使用和学习行为事件进行评分。",
+    }
+
+
+def _aggregate_profile_payload(user_id: int, profile: dict) -> dict:
+    payload = dict(profile or {})
+    payload["portrait_scoring"] = _portrait_dimension_scores(user_id, payload)
+    return payload
+
+
 @profile_bp.get("/sessions")
 @login_required
 def list_sessions():
     try:
-        session = _active_session(request.user_id, create_if_missing=True)
+        session = _active_session(request.user_id, create_if_missing=False)
         rows = mysql_db.query_all(
             """
             SELECT ps.*, sp.profile_summary, sp.major, sp.target_course, sp.update_time AS profile_update_time
@@ -363,7 +636,28 @@ def chat_profile():
 
         result = profile_agent.chat_extract(messages, current_profile)
         result["profile_session_id"] = session["id"]
+
+        profile_data = {
+            "user_id": request.user_id,
+            "profile_session_id": session["id"],
+            **{field: result.get("profile", {}).get(field, DEFAULT_VALUE) for field in PROFILE_FIELDS},
+        }
+        mysql_db.upsert_by_unique_key("student_profile", profile_data, update_fields=["profile_session_id", *PROFILE_FIELDS])
+
+        session_title = (
+            profile_data.get("profile_summary")
+            or profile_data.get("target_course")
+            or profile_data.get("major")
+            or session.get("title")
+        )
+        if session_title:
+            mysql_db.update("profile_session", {"title": str(session_title)[:120]}, "id=%s AND user_id=%s", (session["id"], request.user_id))
+
         _save_conversation_payload(request.user_id, session["id"], {"messages": messages})
+        result["aggregate_profile"] = _aggregate_profile_payload(
+            request.user_id,
+            _refresh_aggregate_profile(request.user_id, transient_profile=result.get("profile")),
+        )
         return success(result, "画像对话分析成功")
     except Exception as exc:
         return fail("画像对话分析失败", 500, {"error": str(exc)})
@@ -402,7 +696,10 @@ def create_profile():
             _save_conversation_payload(request.user_id, session_id, conversation)
 
         _delete_session_outputs(request.user_id, session_id)
-        aggregate_profile = _refresh_aggregate_profile(request.user_id, transient_profile=profile)
+        aggregate_profile = _aggregate_profile_payload(
+            request.user_id,
+            _refresh_aggregate_profile(request.user_id, transient_profile=profile),
+        )
         return success({**data, "aggregate_profile": aggregate_profile}, "画像创建成功")
     except Exception as exc:
         return fail("画像创建失败", 500, {"error": str(exc)})
@@ -435,7 +732,10 @@ def update_profile():
             mysql_db.insert("student_profile", {"user_id": request.user_id, "profile_session_id": session_id, **data})
 
         _delete_session_outputs(request.user_id, session_id)
-        aggregate_profile = _refresh_aggregate_profile(request.user_id, transient_profile=data)
+        aggregate_profile = _aggregate_profile_payload(
+            request.user_id,
+            _refresh_aggregate_profile(request.user_id, transient_profile=data),
+        )
         return success({"user_id": request.user_id, "profile_session_id": session_id, **data, "aggregate_profile": aggregate_profile}, "画像更新成功")
     except Exception as exc:
         return fail("画像更新失败", 500, {"error": str(exc)})
@@ -461,7 +761,7 @@ def get_aggregate_profile():
         profile = _cached_aggregate_profile(request.user_id)
         if not profile:
             profile = _refresh_aggregate_profile(request.user_id)
-        return success(profile, "综合画像读取成功")
+        return success(_aggregate_profile_payload(request.user_id, profile), "综合画像读取成功")
     except Exception as exc:
         return fail("综合画像读取失败", 500, {"error": str(exc)})
 
