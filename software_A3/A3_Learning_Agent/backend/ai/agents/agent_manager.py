@@ -91,6 +91,17 @@ class AgentManager:
         points = [item for item in known if item in str(text or "")]
         return points[:5] or [str(text or "课程核心知识")[:24] or "课程核心知识"]
 
+    @staticmethod
+    def _extract_stage_goal(block: str) -> str:
+        import re
+        for label in ["目标", "学习任务"]:
+            match = re.search(rf"\*\*{label}[：:]?\*\*\s*([^\n]+)", block)
+            if match:
+                return match.group(1).strip(" #*_`>-：:")[:180]
+        lines = [line.strip(" #*_`>-：:") for line in str(block or "").splitlines()[1:] if line.strip()]
+        useful = [line for line in lines if not line.startswith(("推荐资源", "练习方式", "评估指标"))]
+        return (useful[0] if useful else "围绕当前阶段知识点完成学习任务。")[:180]
+
     def _parse_stage_specs(self, path_content: str, context: Dict[str, Any]) -> List[Dict[str, Any]]:
         import re
         content = str(path_content or "")
@@ -100,7 +111,9 @@ class AgentManager:
         for index, block in enumerate(blocks):
             first_line = block.strip().splitlines()[0] if block.strip() else ""
             title = re.sub(r"^##\s*(?:阶段[一二三四五六七八九十\d]+|第\d+阶段)[：:、.．\s]*", "", first_line).strip(" #*_`>-：:") or f"学习阶段{index + 1}"
-            stages.append({"stage_index": index + 1, "stage_id": f"stage_{index + 1}", "stage_title": title, "stage_goal": block[:260], "stage_points": self._extract_stage_points(block)})
+            stage_points = self._extract_stage_points(f"{title}\n{block}")
+            stage_goal = self._extract_stage_goal(block)
+            stages.append({"stage_index": index + 1, "stage_id": f"stage_{index + 1}", "stage_title": title, "stage_goal": stage_goal, "stage_points": stage_points})
         if stages:
             return stages[:4]
         points = self._extract_stage_points(" ".join(str(context.get(key) or "") for key in ["weak_points", "study_goal", "current_need"]))
@@ -115,7 +128,16 @@ class AgentManager:
         merged.update(stage)
         merged["weak_points"] = stage.get("stage_points") or context.get("weak_points")
         merged["study_goal"] = f"{stage.get('stage_title')}：{stage.get('stage_goal')}"
-        merged["current_need"] = f"请只围绕{stage.get('stage_title')}生成本阶段资源，知识点：{'、'.join(stage.get('stage_points') or [])}"
+        merged["current_need"] = (
+            f"只生成第{stage.get('stage_index')}阶段《{stage.get('stage_title')}》的资源。"
+            f"本阶段目标：{stage.get('stage_goal')}。"
+            f"本阶段知识点：{'、'.join(stage.get('stage_points') or [])}。"
+            "不要复述其他阶段目标，不要把整条学习路径合并成通用内容。"
+        )
+        merged["stage_unique_instruction"] = (
+            f"当前资源必须突出第{stage.get('stage_index')}阶段，与其他阶段区分开："
+            f"标题、案例、讲解重点、自测问题都要围绕《{stage.get('stage_title')}》。"
+        )
         return merged
 
     def run_pipeline(
@@ -207,7 +229,12 @@ class AgentManager:
             stage_context = self._stage_context(context, stage)
             emit({"type": "agent", "agent": agent_name, "status": "running", "message": f"正在为{stage.get('stage_title')}生成 {resource_type} 类型资源"})
             started = time.perf_counter()
-            task_plan = {**task_plans.get(resource_type, {"resource_type": resource_type, "goal": stage_context.get("current_need")}), "stage": stage}
+            task_plan = {
+                **task_plans.get(resource_type, {"resource_type": resource_type, "goal": stage_context.get("current_need")}),
+                "stage": stage,
+                "stage_unique_instruction": stage_context.get("stage_unique_instruction"),
+                "goal": stage_context.get("current_need"),
+            }
             stage_query = " ".join([stage.get("stage_title", ""), stage.get("stage_goal", ""), " ".join(stage.get("stage_points") or [])])
             stage_knowledge_context = build_resource_context(stage_query or query, top_k=6)
             stage_sources = retrieve_knowledge_items(stage_query or query, top_k=6)
