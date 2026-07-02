@@ -155,10 +155,10 @@ function byCreateTime(a, b) {
   const bTime = b?.create_time ? new Date(b.create_time).getTime() : 0;
 
   if (aTime && bTime && aTime !== bTime) {
-    return aTime - bTime;
+    return bTime - aTime;
   }
 
-  return Number(a?.id || 0) - Number(b?.id || 0);
+  return Number(b?.id || 0) - Number(a?.id || 0);
 }
 
 async function loadRecentSessions() {
@@ -171,16 +171,33 @@ async function loadRecentSessions() {
   }
 }
 
+function isEmptyNewSession(item) {
+  return String(item?.title || "").trim() === "新对话" && Number(item?.message_count || 0) === 0 && !item?.profile_summary;
+}
+
 async function createNewChat() {
   creatingSession.value = true;
   try {
-    setActiveProfileSessionId("");
-    activeSessionId.value = "";
+    await loadRecentSessions();
+    const emptySession = recentSessions.value.find(isEmptyNewSession);
+    if (emptySession?.id) {
+      await openSession(emptySession.id);
+      return;
+    }
+    const res = await profileApi.createSession({ title: "新对话" });
+    if (res.code !== 200 || !res.data?.id) {
+      ElMessage.error(res.msg || "新建对话失败");
+      return;
+    }
+    const id = String(res.data.id);
+    setActiveProfileSessionId(id);
+    activeSessionId.value = id;
+    await loadRecentSessions();
     if (route.path !== "/profile") {
       await router.push("/profile");
-    } else {
-      window.dispatchEvent(new CustomEvent("a3-profile-session-created", { detail: { id: "" } }));
     }
+    window.dispatchEvent(new CustomEvent("a3-profile-session-created", { detail: { id } }));
+    window.dispatchEvent(new CustomEvent("a3-profile-session-refresh"));
   } finally {
     creatingSession.value = false;
   }
@@ -520,28 +537,44 @@ function syncActiveSession() {
 }
 
 :global(.recent-actions-popper) {
-  border-radius: 18px !important;
-  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.16) !important;
+  overflow: hidden;
+  border: 1px solid rgba(226, 232, 240, 0.95) !important;
+  border-radius: 14px !important;
+  background: rgba(255, 255, 255, 0.98) !important;
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.14) !important;
+  backdrop-filter: blur(10px);
+}
+
+:global(.recent-actions-popper .el-popper__arrow::before) {
+  border-color: rgba(226, 232, 240, 0.95) !important;
+  background: #ffffff !important;
 }
 
 :global(.recent-actions-menu) {
-  min-width: 168px;
-  padding: 10px !important;
+  min-width: 132px;
+  padding: 6px !important;
 }
 
 :global(.recent-action-item) {
   display: flex !important;
   align-items: center;
-  gap: 10px;
-  height: 42px;
-  border-radius: 10px;
+  gap: 8px;
+  height: 36px;
+  padding: 0 10px !important;
+  border-radius: 9px;
   color: #111827 !important;
-  font-size: 15px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 36px;
 }
 
 :global(.recent-action-item .el-icon) {
   margin-right: 0;
-  font-size: 18px;
+  font-size: 16px;
+}
+
+:global(.recent-action-item:hover) {
+  background: #f3f4f6 !important;
 }
 
 :global(.recent-action-item.danger) {
@@ -549,7 +582,8 @@ function syncActiveSession() {
 }
 
 :global(.recent-action-item.danger:hover) {
-  background: #fee2e2 !important;
+  background: #fef2f2 !important;
+  color: #b91c1c !important;
 }
 
 .recent-empty {

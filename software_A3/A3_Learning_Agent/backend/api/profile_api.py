@@ -523,14 +523,20 @@ def list_sessions():
         session = _active_session(request.user_id, create_if_missing=False)
         rows = mysql_db.query_all(
             """
-            SELECT ps.*, sp.profile_summary, sp.major, sp.target_course, sp.update_time AS profile_update_time
+            SELECT ps.*, sp.profile_summary, sp.major, sp.target_course, sp.update_time AS profile_update_time,
+                   pc.messages AS conversation_messages
             FROM profile_session ps
             LEFT JOIN student_profile sp ON sp.user_id = ps.user_id AND sp.profile_session_id = ps.id
+            LEFT JOIN profile_conversation pc ON pc.user_id = ps.user_id AND pc.profile_session_id = ps.id
             WHERE ps.user_id=%s
             ORDER BY ps.is_active DESC, ps.update_time DESC, ps.id DESC
             """,
             (request.user_id,),
         )
+        for row in rows:
+            messages = _json_loads(row.get("conversation_messages"), [])
+            row["message_count"] = len(messages) if isinstance(messages, list) else 0
+            row.pop("conversation_messages", None)
         return success({"sessions": rows, "active_session_id": session["id"] if session else None}, "查询成功")
     except Exception as exc:
         return fail("画像会话查询失败", 500, {"error": str(exc)})
