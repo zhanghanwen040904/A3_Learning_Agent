@@ -113,6 +113,29 @@ def _empty_profile(session_id=None):
     return data
 
 
+def _user_personal_info(user_id: int) -> dict:
+    row = mysql_db.query_one("SELECT major, target_course, education_level, school, personal_info FROM `user` WHERE id=%s", (user_id,)) or {}
+    extra = _json_loads(row.get("personal_info"), {})
+    if not isinstance(extra, dict):
+        extra = {}
+    return {
+        "major": row.get("major") or extra.get("major") or "",
+        "target_course": row.get("target_course") or extra.get("target_course") or "",
+        "education_level": row.get("education_level") or extra.get("education_level") or "",
+        "school": row.get("school") or extra.get("school") or "",
+        **{k: v for k, v in extra.items() if k not in {"major", "target_course", "education_level", "school"}},
+    }
+
+
+def _merge_personal_info(profile: dict, personal: Optional[dict] = None) -> dict:
+    personal = personal or {}
+    merged = dict(profile or {})
+    for key in ["major", "target_course"]:
+        if personal.get(key) and (not merged.get(key) or merged.get(key) == DEFAULT_VALUE):
+            merged[key] = personal[key]
+    return merged
+
+
 def _session_belongs_to_user(user_id: int, session_id: int) -> bool:
     return bool(mysql_db.query_one("SELECT id FROM profile_session WHERE id=%s AND user_id=%s", (session_id, user_id)))
 
@@ -234,6 +257,7 @@ def _aggregate_profile_data(user_id: int, transient_profile: Optional[dict] = No
     if transient_profile:
         merged = profile_agent._merge_profile(merged, _profile_only(transient_profile))
 
+    merged = _merge_personal_info(merged, _user_personal_info(user_id))
     merged = _profile_only(merged)
     return {"user_id": user_id, "profile_session_id": AGGREGATE_PROFILE_SESSION_ID, **merged}
 
@@ -516,6 +540,35 @@ def _aggregate_profile_payload(user_id: int, profile: dict) -> dict:
     return payload
 
 
+@profile_bp.get("/user-info")
+@login_required
+def get_user_info():
+    try:
+        return success(_user_personal_info(request.user_id), "个人信息读取成功")
+    except Exception as exc:
+        return fail("个人信息读取失败", 500, {"error": str(exc)})
+
+
+@profile_bp.post("/user-info")
+@login_required
+def save_user_info():
+    try:
+        payload = request.get_json(silent=True) or {}
+        data = {
+            "major": str(payload.get("major") or "").strip()[:120] or None,
+            "target_course": str(payload.get("target_course") or "").strip()[:120] or None,
+            "education_level": str(payload.get("education_level") or "").strip()[:80] or None,
+            "school": str(payload.get("school") or "").strip()[:160] or None,
+        }
+        extra = payload.get("personal_info") if isinstance(payload.get("personal_info"), dict) else {}
+        data["personal_info"] = _json_dumps({**extra, **{k: v for k, v in data.items() if k != "personal_info" and v}})
+        mysql_db.update("user", data, "id=%s", (request.user_id,))
+        _refresh_aggregate_profile(request.user_id, transient_profile=_merge_personal_info({}, data))
+        return success(_user_personal_info(request.user_id), "个人信息已保存")
+    except Exception as exc:
+        return fail("个人信息保存失败", 500, {"error": str(exc)})
+
+
 @profile_bp.get("/sessions")
 @login_required
 def list_sessions():
@@ -630,7 +683,8 @@ def chat_profile():
         _set_active_session(request.user_id, session["id"])
 
         messages = payload.get("messages") or []
-        current_profile = payload.get("current_profile") or {}
+        personal_info = _user_personal_info(request.user_id)
+        current_profile = _merge_personal_info(payload.get("current_profile") or {}, personal_info)
         if not isinstance(messages, list) or not messages:
             return fail("缺少有效的多轮对话 messages", 400)
 
@@ -641,6 +695,7 @@ def chat_profile():
             return fail("学生对话未通过内容审核", 403)
 
         result = profile_agent.chat_extract(messages, current_profile)
+        result["profile"] = _merge_personal_info(result.get("profile", {}), personal_info)
         result["profile_session_id"] = session["id"]
 
         profile_data = {
@@ -689,8 +744,9 @@ def create_profile():
             return fail("学生对话未通过内容审核", 403)
 
         profile_payload = payload.get("profile") if isinstance(payload.get("profile"), dict) else None
-        analyzed_profile = profile_agent.analyze(dialogue)
-        profile = profile_agent._merge_profile(profile_payload or {}, analyzed_profile)
+        personal_info = _user_personal_info(request.user_id)
+        analyzed_profile = _merge_personal_info(profile_agent.analyze(dialogue), personal_info)
+        profile = profile_agent._merge_profile(_merge_personal_info(profile_payload or {}, personal_info), analyzed_profile)
         data = {"user_id": request.user_id, "profile_session_id": session_id, **{field: profile.get(field, DEFAULT_VALUE) for field in PROFILE_FIELDS}}
         mysql_db.upsert_by_unique_key("student_profile", data, update_fields=["profile_session_id", *PROFILE_FIELDS])
 
@@ -755,7 +811,8 @@ def get_my_profile():
         if not session:
             return success(_empty_profile(), "暂无画像")
         profile = mysql_db.query_one("SELECT * FROM student_profile WHERE user_id=%s AND profile_session_id=%s", (request.user_id, session["id"]))
-        return success(profile or _empty_profile(session["id"]), "查询成功")
+        personal_info = _user_personal_info(request.user_id)
+        return success(_merge_personal_info(profile or _empty_profile(session["id"]), personal_info), "查询成功")
     except Exception as exc:
         return fail("画像查询失败", 500, {"error": str(exc)})
 
@@ -767,6 +824,7 @@ def get_aggregate_profile():
         profile = _cached_aggregate_profile(request.user_id)
         if not profile:
             profile = _refresh_aggregate_profile(request.user_id)
+        profile = _merge_personal_info(profile, _user_personal_info(request.user_id))
         return success(_aggregate_profile_payload(request.user_id, profile), "综合画像读取成功")
     except Exception as exc:
         return fail("综合画像读取失败", 500, {"error": str(exc)})

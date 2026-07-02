@@ -60,6 +60,8 @@ export const authApi = {
 };
 
 export const profileApi = {
+  userInfo: () => http.get("/profile/user-info"),
+  saveUserInfo: (data) => http.post("/profile/user-info", data),
   sessions: () => http.get("/profile/sessions"),
   createSession: (data = {}) => http.post("/profile/sessions", data),
   activateSession: (id) => http.post(`/profile/sessions/${id}/activate`),
