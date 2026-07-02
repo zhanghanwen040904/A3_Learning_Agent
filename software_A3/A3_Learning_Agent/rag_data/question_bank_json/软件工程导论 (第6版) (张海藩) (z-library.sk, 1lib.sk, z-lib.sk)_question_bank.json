@@ -1,0 +1,3769 @@
+{
+  "stage": "question_bank_json",
+  "version": "v12_question_bank_llm_prefer",
+  "course": "软件工程",
+  "source_file": "C:\\Users\\ASUS\\Desktop\\新建文件夹\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk).pdf",
+  "usage_contract": {
+    "description": "练习题资源生成应优先读取本文件；题目-知识点关联采用“大模型结果优先，规则兜底”。quiz 推荐不做复杂评分，按 related_knowledge_titles、section_path、题干关键词三级规则筛题。筛不到题时再让大模型补题。",
+    "recommended_quiz_flow": [
+      "1. 根据当前知识点 title / section_path 在 questions 中筛选题目。",
+      "2. 第一优先级：related_knowledge_titles 直接命中当前知识点。",
+      "3. 第二优先级：section_path 命中当前章节或当前知识点。",
+      "4. 第三优先级：题干 content 命中当前知识点关键词。",
+      "5. 如果仍为空，再调用大模型补题，并标记 generated_by_llm=true。"
+    ]
+  },
+  "questions": [
+    {
+      "question_id": "question_a41da211f016",
+      "course": "软件工程",
+      "source_file": "C:\\Users\\ASUS\\Desktop\\新建文件夹\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk).pdf",
+      "section_path": [
+        "软件工程",
+        "软件工程学概述",
+        "习 题 1"
+      ],
+      "learning_location": {
+        "unit": "软件工程",
+        "chapter": "软件工程学概述",
+        "section": "习 题 1",
+        "subsection": "",
+        "path": [
+          "软件工程",
+          "软件工程学概述",
+          "习 题 1"
+        ],
+        "path_text": "软件工程 / 软件工程学概述 / 习 题 1",
+        "pages": [
+          48
+        ]
+      },
+      "pages": [
+        48
+      ],
+      "question_type": "short_answer",
+      "difficulty_level": "进阶",
+      "stem": "1. 什么是软件危机？它有哪些典型表现？为什么会出现软件危机？",
+      "options": [],
+      "content": "1. 什么是软件危机？它有哪些典型表现？为什么会出现软件危机？",
+      "answer": "",
+      "analysis": "",
+      "related_knowledge_titles": [
+        "软件危机的表现",
+        "软件危机的原因",
+        "软件过程的表现",
+        "微软过程模型定义与特点",
+        "科学有效的软件过程应定义一组适合于所承担项目的表现"
+      ],
+      "primary_knowledge_titles": [
+        "其的表现",
+        "软件过程的表现",
+        "微软过程模型定义与特点",
+        "科学有效的软件过程应定义一组适合于所承担项目的表现",
+        "软件危机",
+        "软件危机的表现",
+        "软件危机的原因"
+      ],
+      "prerequisite_knowledge_titles": [],
+      "knowledge_points": [
+        "软件危机的表现",
+        "软件危机的原因",
+        "软件过程的表现",
+        "微软过程模型定义与特点",
+        "科学有效的软件过程应定义一组适合于所承担项目的表现"
+      ],
+      "related_knowledge_ids": [],
+      "related_knowledge_node_ids": [
+        "knode_f687e35d1f4c",
+        "knode_cfab5844d488",
+        "knode_7d6293ab1fbb",
+        "knode_b39ba9b785a9",
+        "knode_a9741609a005"
+      ],
+      "related_knowledge": [
+        {
+          "node_id": "knode_f687e35d1f4c",
+          "title": "软件危机的表现",
+          "node_type": "feature_group",
+          "score": 17,
+          "confidence": 0.95,
+          "match_reasons": [
+            "llm_question_linking:assesses",
+            "题目询问'有哪些典型表现'，该知识点节点标题为'软件危机的表现'，且内容详细列出了典型表现，完全匹配。"
+          ],
+          "pages": [
+            17,
+            18,
+            19
+          ],
+          "source_chunk_ids": [
+            "chunk_7620020e6790",
+            "chunk_de45a5ae2596",
+            "chunk_b704d4cdcc2c",
+            "chunk_40ef9f0287cd",
+            "chunk_2cc8b8dd5f78"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.1 软 件 危 机",
+            "1.1.1 软件危机的介绍"
+          ],
+          "source": "llm_question_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.1 软 件 危 机",
+            "subsection": "1.1.1 软件危机的介绍",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.1 软 件 危 机",
+              "1.1.1 软件危机的介绍"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.1 软 件 危 机 / 1.1.1 软件危机的介绍",
+            "pages": [
+              17,
+              18,
+              19
+            ]
+          }
+        },
+        {
+          "node_id": "knode_cfab5844d488",
+          "title": "软件危机的原因",
+          "node_type": "cause_group",
+          "score": 17,
+          "confidence": 0.95,
+          "match_reasons": [
+            "llm_question_linking:assesses",
+            "题目询问'为什么会出现软件危机'，该知识点节点标题为'软件危机的原因'，内容解释了产生原因，完全匹配。"
+          ],
+          "pages": [
+            19
+          ],
+          "source_chunk_ids": [
+            "chunk_7f48f3b00877",
+            "chunk_06a86e42b6a2"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.1 软 件 危 机",
+            "1.1.2 产生软件危机的原因"
+          ],
+          "source": "llm_question_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.1 软 件 危 机",
+            "subsection": "1.1.2 产生软件危机的原因",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.1 软 件 危 机",
+              "1.1.2 产生软件危机的原因"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.1 软 件 危 机 / 1.1.2 产生软件危机的原因",
+            "pages": [
+              19
+            ]
+          }
+        },
+        {
+          "node_id": "knode_7d6293ab1fbb",
+          "title": "软件过程的表现",
+          "node_type": "feature_group",
+          "score": 16,
+          "confidence": 0.889,
+          "match_reasons": [
+            "question_contains_alias:表现",
+            "question_contains_keyword:表现",
+            "feature_intent_match",
+            "near_page_distance:1",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            47
+          ],
+          "source_chunk_ids": [
+            "chunk_23edeba1f160"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.5 小 结"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.5 小 结",
+            "subsection": "",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.5 小 结"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.5 小 结",
+            "pages": [
+              47
+            ]
+          }
+        },
+        {
+          "node_id": "knode_b39ba9b785a9",
+          "title": "微软过程模型定义与特点",
+          "node_type": "feature_group",
+          "score": 16,
+          "confidence": 0.889,
+          "match_reasons": [
+            "question_contains_alias:表现",
+            "question_contains_keyword:表现",
+            "feature_intent_match",
+            "near_page_distance:1",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            46,
+            47
+          ],
+          "source_chunk_ids": [
+            "chunk_3c8a6184827a"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.4 软 件 过 程",
+            "1.4.8 微软过程"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.4 软 件 过 程",
+            "subsection": "1.4.8 微软过程",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.4 软 件 过 程",
+              "1.4.8 微软过程"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.4 软 件 过 程 / 1.4.8 微软过程",
+            "pages": [
+              46,
+              47
+            ]
+          }
+        },
+        {
+          "node_id": "knode_a9741609a005",
+          "title": "科学有效的软件过程应定义一组适合于所承担项目的表现",
+          "node_type": "feature_group",
+          "score": 16,
+          "confidence": 0.889,
+          "match_reasons": [
+            "question_contains_alias:表现",
+            "question_contains_keyword:表现",
+            "feature_intent_match",
+            "near_page_distance:1",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            47
+          ],
+          "source_chunk_ids": [
+            "chunk_23edeba1f160"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.5 小 结"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.5 小 结",
+            "subsection": "",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.5 小 结"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.5 小 结",
+            "pages": [
+              47
+            ]
+          }
+        }
+      ],
+      "confidence": 1.0,
+      "requires_image": false,
+      "generated_by_llm": false,
+      "metadata": {
+        "node_id": "node_4c2d9ccc683f",
+        "chapter_id": "chapter_429b280b7253",
+        "extract_method": "rule_from_pdf_text",
+        "bbox": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "llm_question_judge": {
+          "is_question": true,
+          "question_type": "short_answer",
+          "confidence": 1.0,
+          "reason": "位于习题章节，明确要求学生回答关于软件危机的问题。"
+        },
+        "question_keep_method": "llm_question_judge",
+        "post_cleaned": true,
+        "post_clean_version": "v11_optimized_transform",
+        "image_count": 0,
+        "image_attach_method": "same_page_or_nearby_page_by_page_number",
+        "question_mentions_image": false,
+        "knowledge_attach_method": "llm_question_linking_preferred",
+        "knowledge_relation_count": 8,
+        "final_standard_cleaned": true,
+        "final_standard_version": "v11_final_standard",
+        "post_cleaned_knowledge_relations": true,
+        "post_clean_relation_version": "v11_final_standard",
+        "llm_question_linking_used": true,
+        "llm_question_linking_applied": {
+          "question_relations_added": 0,
+          "image_relations_added": 0,
+          "knowledge_relations_added": 2,
+          "ignored": []
+        },
+        "knowledge_attach_note": "LLM question-knowledge links were kept; rule linking only filled compatibility fields."
+      }
+    },
+    {
+      "question_id": "question_a4d82b72bea8",
+      "course": "软件工程",
+      "source_file": "C:\\Users\\ASUS\\Desktop\\新建文件夹\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk).pdf",
+      "section_path": [
+        "软件工程",
+        "软件工程学概述",
+        "习 题 1"
+      ],
+      "learning_location": {
+        "unit": "软件工程",
+        "chapter": "软件工程学概述",
+        "section": "习 题 1",
+        "subsection": "",
+        "path": [
+          "软件工程",
+          "软件工程学概述",
+          "习 题 1"
+        ],
+        "path_text": "软件工程 / 软件工程学概述 / 习 题 1",
+        "pages": [
+          48
+        ]
+      },
+      "pages": [
+        48
+      ],
+      "question_type": "short_answer",
+      "difficulty_level": "应用",
+      "stem": "1.1 给手下的软件工程师们观看，告诉他们及早发现并改正错误的重要性时，有人不同意这个观点，认为要求在错误进入软件之前就清除它们是不现实的，并举例说：“如果一个故障是编码错误造成的，那么，一个人怎么能在设计阶段清除它呢？”应该怎么反驳他？",
+      "options": [],
+      "content": "1.1 给手下的软件工程师们观看，告诉他们及早发现并改正错误的重要性时，有人不同意这个观点，认为要求在错误进入软件之前就清除它们是不现实的，并举例说：“如果一个故障是编码错误造成的，那么，一个人怎么能在设计阶段清除它呢？”应该怎么反驳他？",
+      "answer": "",
+      "analysis": "",
+      "related_knowledge_titles": [
+        "敏捷过程",
+        "软件过程定义",
+        "软件过程模型定义",
+        "一方面，可以把微软的过程",
+        "多年的实践经验证明，微软的过程"
+      ],
+      "primary_knowledge_titles": [
+        "敏捷过程",
+        "软件过程定义",
+        "软件过程模型定义",
+        "一方面，可以把微软的过程",
+        "多年的实践经验证明，微软的过程"
+      ],
+      "prerequisite_knowledge_titles": [],
+      "knowledge_points": [
+        "敏捷过程",
+        "软件过程定义",
+        "软件过程模型定义",
+        "一方面，可以把微软的过程",
+        "多年的实践经验证明，微软的过程"
+      ],
+      "related_knowledge_ids": [
+        "chunk_0f836741bdb6"
+      ],
+      "related_knowledge_node_ids": [
+        "knode_b9f91faa548a",
+        "knode_80caad56291a",
+        "knode_953357f1115d",
+        "knode_1a443b13b3e3",
+        "knode_a1a82a441891"
+      ],
+      "related_knowledge": [
+        {
+          "node_id": "knode_b9f91faa548a",
+          "title": "敏捷过程",
+          "node_type": "process_group",
+          "score": 17,
+          "confidence": 0.944,
+          "match_reasons": [
+            "question_contains_alias:阶段",
+            "question_contains_keyword:阶段",
+            "process_intent_match",
+            "same_page:[48]",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            42,
+            43,
+            48
+          ],
+          "source_chunk_ids": [
+            "chunk_efa8c39e13fa",
+            "chunk_ceef8de80ea4"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.4 软 件 过 程",
+            "1.4.7 敏捷过程与极限编程"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.4 软 件 过 程",
+            "subsection": "1.4.7 敏捷过程与极限编程",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.4 软 件 过 程",
+              "1.4.7 敏捷过程与极限编程"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.4 软 件 过 程 / 1.4.7 敏捷过程与极限编程",
+            "pages": [
+              42,
+              43,
+              48
+            ]
+          }
+        },
+        {
+          "node_id": "knode_80caad56291a",
+          "title": "软件过程定义",
+          "node_type": "process_group",
+          "score": 17,
+          "confidence": 0.944,
+          "match_reasons": [
+            "question_contains_alias:阶段",
+            "question_contains_keyword:阶段",
+            "process_intent_match",
+            "same_page:[48]",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            48
+          ],
+          "source_chunk_ids": [
+            "chunk_bf52611dfc32"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.5 小 结"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.5 小 结",
+            "subsection": "",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.5 小 结"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.5 小 结",
+            "pages": [
+              48
+            ]
+          }
+        },
+        {
+          "node_id": "knode_953357f1115d",
+          "title": "软件过程模型定义",
+          "node_type": "process_group",
+          "score": 17,
+          "confidence": 0.944,
+          "match_reasons": [
+            "question_contains_alias:阶段",
+            "question_contains_keyword:阶段",
+            "process_intent_match",
+            "same_page:[48]",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            48
+          ],
+          "source_chunk_ids": [
+            "chunk_15e6a5eab2b0"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.5 小 结"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.5 小 结",
+            "subsection": "",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.5 小 结"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.5 小 结",
+            "pages": [
+              48
+            ]
+          }
+        },
+        {
+          "node_id": "knode_1a443b13b3e3",
+          "title": "一方面，可以把微软的过程",
+          "node_type": "process_group",
+          "score": 17,
+          "confidence": 0.944,
+          "match_reasons": [
+            "question_contains_alias:阶段",
+            "question_contains_keyword:阶段",
+            "process_intent_match",
+            "same_page:[48]",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            48
+          ],
+          "source_chunk_ids": [
+            "chunk_8e8b6b9c52b2"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.5 小 结"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.5 小 结",
+            "subsection": "",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.5 小 结"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.5 小 结",
+            "pages": [
+              48
+            ]
+          }
+        },
+        {
+          "node_id": "knode_a1a82a441891",
+          "title": "多年的实践经验证明，微软的过程",
+          "node_type": "process_group",
+          "score": 17,
+          "confidence": 0.944,
+          "match_reasons": [
+            "question_contains_alias:阶段",
+            "question_contains_keyword:阶段",
+            "process_intent_match",
+            "same_page:[48]",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            48
+          ],
+          "source_chunk_ids": [
+            "chunk_8e8b6b9c52b2"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.5 小 结"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.5 小 结",
+            "subsection": "",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.5 小 结"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.5 小 结",
+            "pages": [
+              48
+            ]
+          }
+        }
+      ],
+      "confidence": 0.95,
+      "requires_image": false,
+      "generated_by_llm": false,
+      "metadata": {
+        "node_id": "node_4c2d9ccc683f",
+        "chapter_id": "chapter_429b280b7253",
+        "extract_method": "rule_from_pdf_text",
+        "bbox": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "llm_question_judge": {
+          "is_question": true,
+          "question_type": "short_answer",
+          "confidence": 1.0,
+          "reason": "位于习题章节，要求反驳特定观点，属于思考/问答题。"
+        },
+        "question_keep_method": "llm_question_judge",
+        "post_cleaned": true,
+        "post_clean_version": "v11_optimized_transform",
+        "image_count": 0,
+        "image_attach_method": "same_page_or_nearby_page_by_page_number",
+        "question_mentions_image": false,
+        "knowledge_attach_method": "rule_fallback_after_llm",
+        "knowledge_relation_count": 8,
+        "final_standard_cleaned": true,
+        "final_standard_version": "v11_final_standard",
+        "post_cleaned_knowledge_relations": true,
+        "post_clean_relation_version": "v11_final_standard",
+        "llm_question_linking_used": true,
+        "llm_question_linking_applied": {
+          "question_relations_added": 0,
+          "image_relations_added": 0,
+          "knowledge_relations_added": 0,
+          "ignored": []
+        },
+        "knowledge_attach_version": "v12_question_bank_llm_prefer",
+        "knowledge_attach_candidate_count": 857
+      }
+    },
+    {
+      "question_id": "question_003a78740292",
+      "course": "软件工程",
+      "source_file": "C:\\Users\\ASUS\\Desktop\\新建文件夹\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk).pdf",
+      "section_path": [
+        "软件工程",
+        "软件工程学概述",
+        "习 题 1"
+      ],
+      "learning_location": {
+        "unit": "软件工程",
+        "chapter": "软件工程学概述",
+        "section": "习 题 1",
+        "subsection": "",
+        "path": [
+          "软件工程",
+          "软件工程学概述",
+          "习 题 1"
+        ],
+        "path_text": "软件工程 / 软件工程学概述 / 习 题 1",
+        "pages": [
+          48
+        ]
+      },
+      "pages": [
+        48
+      ],
+      "question_type": "short_answer",
+      "difficulty_level": "基础",
+      "stem": "3. 什么是软件工程？它有哪些本质特性？怎样用软件工程消除软件危机？",
+      "options": [],
+      "content": "3. 什么是软件工程？它有哪些本质特性？怎样用软件工程消除软件危机？",
+      "answer": "",
+      "analysis": "",
+      "related_knowledge_titles": [
+        "软件危机",
+        "瀑布模型",
+        "增量模型",
+        "螺旋模型",
+        "喷泉模型"
+      ],
+      "primary_knowledge_titles": [
+        "软件危机",
+        "软件工程",
+        "软件工程学概述",
+        "消除软件危机的途径",
+        "软件危机的定义与背景"
+      ],
+      "prerequisite_knowledge_titles": [],
+      "knowledge_points": [
+        "软件危机",
+        "瀑布模型",
+        "增量模型",
+        "螺旋模型",
+        "喷泉模型"
+      ],
+      "related_knowledge_ids": [
+        "chunk_0f836741bdb6",
+        "chunk_553261bdefaa",
+        "chunk_e3474ccf4f4a",
+        "chunk_f1fe750cb6f1",
+        "chunk_ceef8de80ea4"
+      ],
+      "related_knowledge_node_ids": [
+        "knode_0ff7bd3a9487",
+        "chunk_0f836741bdb6",
+        "chunk_553261bdefaa",
+        "chunk_e3474ccf4f4a",
+        "chunk_f1fe750cb6f1"
+      ],
+      "related_knowledge": [
+        {
+          "node_id": "knode_0ff7bd3a9487",
+          "title": "软件危机",
+          "node_type": "concept",
+          "score": 18,
+          "confidence": 0.98,
+          "match_reasons": [
+            "question_contains_node_title",
+            "question_contains_keyword:软件危机",
+            "question_contains_keyword:软件工程",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            17,
+            18,
+            19
+          ],
+          "source_chunk_ids": [
+            "chunk_a8087614e087",
+            "chunk_1f4054bcb7ba",
+            "chunk_7620020e6790",
+            "chunk_de45a5ae2596",
+            "chunk_b704d4cdcc2c",
+            "chunk_40ef9f0287cd",
+            "chunk_2cc8b8dd5f78",
+            "chunk_7f48f3b00877",
+            "chunk_06a86e42b6a2"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.1 软 件 危 机"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.1 软 件 危 机",
+            "subsection": "",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.1 软 件 危 机"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.1 软 件 危 机",
+            "pages": [
+              17,
+              18,
+              19
+            ]
+          }
+        },
+        {
+          "knowledge_id": "chunk_0f836741bdb6",
+          "node_id": "chunk_0f836741bdb6",
+          "title": "瀑布模型",
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.5 小 结"
+          ],
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.5 小 结",
+            "subsection": "",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.5 小 结"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.5 小 结",
+            "pages": [
+              48
+            ]
+          },
+          "pages": [
+            48
+          ],
+          "content_preview": "瀑布模型历史悠久、广为人知，它的优势在于它是规范的、文档驱动的方法；这种模型的问题是，最终开发出的软件产品可能并不是用户真正需要的。",
+          "confidence": 0.5,
+          "match_score": 30.0,
+          "match_reasons": [
+            "same_chapter_path_2",
+            "same_page"
+          ],
+          "source": "knowledge_points_json"
+        },
+        {
+          "knowledge_id": "chunk_553261bdefaa",
+          "node_id": "chunk_553261bdefaa",
+          "title": "增量模型",
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.5 小 结"
+          ],
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.5 小 结",
+            "subsection": "",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.5 小 结"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.5 小 结",
+            "pages": [
+              48
+            ]
+          },
+          "pages": [
+            48
+          ],
+          "content_preview": "增量模型具有可在软件开发的早期阶段使投资获得明显回报和较易维护的优点，但是，要求软件具有开放的结构是使用这种模型时固有的困难。",
+          "confidence": 0.5,
+          "match_score": 30.0,
+          "match_reasons": [
+            "same_chapter_path_2",
+            "same_page"
+          ],
+          "source": "knowledge_points_json"
+        },
+        {
+          "knowledge_id": "chunk_e3474ccf4f4a",
+          "node_id": "chunk_e3474ccf4f4a",
+          "title": "螺旋模型",
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.5 小 结"
+          ],
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.5 小 结",
+            "subsection": "",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.5 小 结"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.5 小 结",
+            "pages": [
+              48
+            ]
+          },
+          "pages": [
+            48
+          ],
+          "content_preview": "风险驱动的螺旋模型适用于内部开发的大型软件项目，但是，只有在开发人员具有风险分析和排除风险的经验及专门知识时，使用这种模型才会获得成功。",
+          "confidence": 0.5,
+          "match_score": 30.0,
+          "match_reasons": [
+            "same_chapter_path_2",
+            "same_page"
+          ],
+          "source": "knowledge_points_json"
+        },
+        {
+          "knowledge_id": "chunk_f1fe750cb6f1",
+          "node_id": "chunk_f1fe750cb6f1",
+          "title": "喷泉模型",
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.5 小 结"
+          ],
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.5 小 结",
+            "subsection": "",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.5 小 结"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.5 小 结",
+            "pages": [
+              48
+            ]
+          },
+          "pages": [
+            48
+          ],
+          "content_preview": "喷泉模型较好地体现了面向对象软件开发过程无缝迭代的特性，是典型的面向对象的软件过程模型之一。",
+          "confidence": 0.5,
+          "match_score": 30.0,
+          "match_reasons": [
+            "same_chapter_path_2",
+            "same_page"
+          ],
+          "source": "knowledge_points_json"
+        }
+      ],
+      "confidence": 1.0,
+      "requires_image": false,
+      "generated_by_llm": false,
+      "metadata": {
+        "node_id": "node_4c2d9ccc683f",
+        "chapter_id": "chapter_429b280b7253",
+        "extract_method": "rule_from_pdf_text",
+        "bbox": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "llm_question_judge": {
+          "is_question": true,
+          "question_type": "short_answer",
+          "confidence": 1.0,
+          "reason": "位于习题章节，明确要求学生回答关于软件工程定义及消除软件危机的问题。"
+        },
+        "question_keep_method": "llm_question_judge",
+        "post_cleaned": true,
+        "post_clean_version": "v11_optimized_transform",
+        "image_count": 0,
+        "image_attach_method": "same_page_or_nearby_page_by_page_number",
+        "question_mentions_image": false,
+        "knowledge_attach_method": "rule_fallback_after_llm",
+        "knowledge_relation_count": 8,
+        "final_standard_cleaned": true,
+        "final_standard_version": "v11_final_standard",
+        "post_cleaned_knowledge_relations": true,
+        "post_clean_relation_version": "v11_final_standard",
+        "llm_question_linking_used": true,
+        "llm_question_linking_applied": {
+          "question_relations_added": 0,
+          "image_relations_added": 0,
+          "knowledge_relations_added": 0,
+          "ignored": []
+        },
+        "knowledge_attach_version": "v12_question_bank_llm_prefer",
+        "knowledge_attach_candidate_count": 857
+      }
+    },
+    {
+      "question_id": "question_f7471fa024e0",
+      "course": "软件工程",
+      "source_file": "C:\\Users\\ASUS\\Desktop\\新建文件夹\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk).pdf",
+      "section_path": [
+        "软件工程",
+        "软件工程学概述",
+        "习 题 1"
+      ],
+      "learning_location": {
+        "unit": "软件工程",
+        "chapter": "软件工程学概述",
+        "section": "习 题 1",
+        "subsection": "",
+        "path": [
+          "软件工程",
+          "软件工程学概述",
+          "习 题 1"
+        ],
+        "path_text": "软件工程 / 软件工程学概述 / 习 题 1",
+        "pages": [
+          48
+        ]
+      },
+      "pages": [
+        48
+      ],
+      "question_type": "short_answer",
+      "difficulty_level": "进阶",
+      "stem": "4.简述结构化范型和面向对象范型的要点，并分析它们的优缺点。",
+      "options": [],
+      "content": "4.简述结构化范型和面向对象范型的要点，并分析它们的优缺点。",
+      "answer": "",
+      "analysis": "",
+      "related_knowledge_titles": [
+        "面向对象",
+        "微软过程模型的缺点",
+        "生命周期方法学的局限",
+        "瀑布模型的缺点",
+        "传统方法学的局限"
+      ],
+      "primary_knowledge_titles": [
+        "面向对象",
+        "微软过程模型的缺点",
+        "生命周期方法学的局限",
+        "瀑布模型的缺点",
+        "传统方法学的局限"
+      ],
+      "prerequisite_knowledge_titles": [],
+      "knowledge_points": [
+        "面向对象",
+        "微软过程模型的缺点",
+        "生命周期方法学的局限",
+        "瀑布模型的缺点",
+        "传统方法学的局限"
+      ],
+      "related_knowledge_ids": [
+        "chunk_0f836741bdb6"
+      ],
+      "related_knowledge_node_ids": [
+        "knode_f6ad3b6f6f54",
+        "knode_6b3d908e66d3",
+        "knode_17a7689ccab1",
+        "knode_775122f1b6d3",
+        "knode_573d400e101e"
+      ],
+      "related_knowledge": [
+        {
+          "node_id": "knode_f6ad3b6f6f54",
+          "title": "面向对象",
+          "node_type": "concept",
+          "score": 20,
+          "confidence": 0.98,
+          "match_reasons": [
+            "question_contains_node_title",
+            "question_contains_keyword:面向对象",
+            "software_structure_intent_match",
+            "near_page_distance:1",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            27,
+            47
+          ],
+          "source_chunk_ids": [
+            "chunk_f78465a60831",
+            "chunk_f02f34fcff51",
+            "chunk_cd89d4a7a3f8"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.2 软 件 工 程",
+            "1.2.3 软件工程方法学"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.2 软 件 工 程",
+            "subsection": "1.2.3 软件工程方法学",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.2 软 件 工 程",
+              "1.2.3 软件工程方法学"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.2 软 件 工 程 / 1.2.3 软件工程方法学",
+            "pages": [
+              27,
+              47
+            ]
+          }
+        },
+        {
+          "node_id": "knode_6b3d908e66d3",
+          "title": "微软过程模型的缺点",
+          "node_type": "disadvantage_group",
+          "score": 16,
+          "confidence": 0.889,
+          "match_reasons": [
+            "question_contains_alias:缺点",
+            "question_contains_keyword:缺点",
+            "disadvantage_intent_match",
+            "near_page_distance:1",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            46,
+            47
+          ],
+          "source_chunk_ids": [
+            "chunk_d3d35643a0f3"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.4 软 件 过 程",
+            "1.4.8 微软过程"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.4 软 件 过 程",
+            "subsection": "1.4.8 微软过程",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.4 软 件 过 程",
+              "1.4.8 微软过程"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.4 软 件 过 程 / 1.4.8 微软过程",
+            "pages": [
+              46,
+              47
+            ]
+          }
+        },
+        {
+          "node_id": "knode_17a7689ccab1",
+          "title": "生命周期方法学的局限",
+          "node_type": "disadvantage_group",
+          "score": 16,
+          "confidence": 0.889,
+          "match_reasons": [
+            "question_contains_alias:缺点",
+            "question_contains_keyword:缺点",
+            "disadvantage_intent_match",
+            "near_page_distance:1",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            47
+          ],
+          "source_chunk_ids": [
+            "chunk_ebf8e2bcceeb"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.5 小 结"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.5 小 结",
+            "subsection": "",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.5 小 结"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.5 小 结",
+            "pages": [
+              47
+            ]
+          }
+        },
+        {
+          "node_id": "knode_775122f1b6d3",
+          "title": "瀑布模型的缺点",
+          "node_type": "disadvantage_group",
+          "score": 15,
+          "confidence": 0.833,
+          "match_reasons": [
+            "question_contains_alias:缺点",
+            "question_contains_keyword:缺点",
+            "disadvantage_intent_match",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            32
+          ],
+          "source_chunk_ids": [
+            "chunk_2aab680d60d1"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.4 软 件 过 程",
+            "1.4.1 瀑布模型"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.4 软 件 过 程",
+            "subsection": "1.4.1 瀑布模型",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.4 软 件 过 程",
+              "1.4.1 瀑布模型"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.4 软 件 过 程 / 1.4.1 瀑布模型",
+            "pages": [
+              32
+            ]
+          }
+        },
+        {
+          "node_id": "knode_573d400e101e",
+          "title": "传统方法学的局限",
+          "node_type": "disadvantage_group",
+          "score": 15,
+          "confidence": 0.833,
+          "match_reasons": [
+            "question_contains_alias:缺点",
+            "question_contains_keyword:缺点",
+            "disadvantage_intent_match",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            26
+          ],
+          "source_chunk_ids": [
+            "chunk_f47ee66b70c4"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.2 软 件 工 程",
+            "1.2.3 软件工程方法学"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.2 软 件 工 程",
+            "subsection": "1.2.3 软件工程方法学",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.2 软 件 工 程",
+              "1.2.3 软件工程方法学"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.2 软 件 工 程 / 1.2.3 软件工程方法学",
+            "pages": [
+              26
+            ]
+          }
+        }
+      ],
+      "confidence": 1.0,
+      "requires_image": false,
+      "generated_by_llm": false,
+      "metadata": {
+        "node_id": "node_4c2d9ccc683f",
+        "chapter_id": "chapter_429b280b7253",
+        "extract_method": "rule_from_pdf_text",
+        "bbox": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "llm_question_judge": {
+          "is_question": true,
+          "question_type": "short_answer",
+          "confidence": 1.0,
+          "reason": "位于习题章节，要求简述并分析优缺点，属于简答题。"
+        },
+        "question_keep_method": "llm_question_judge",
+        "post_cleaned": true,
+        "post_clean_version": "v11_optimized_transform",
+        "image_count": 0,
+        "image_attach_method": "same_page_or_nearby_page_by_page_number",
+        "question_mentions_image": false,
+        "knowledge_attach_method": "rule_fallback_after_llm",
+        "knowledge_relation_count": 8,
+        "final_standard_cleaned": true,
+        "final_standard_version": "v11_final_standard",
+        "post_cleaned_knowledge_relations": true,
+        "post_clean_relation_version": "v11_final_standard",
+        "llm_question_linking_used": true,
+        "llm_question_linking_applied": {
+          "question_relations_added": 0,
+          "image_relations_added": 0,
+          "knowledge_relations_added": 0,
+          "ignored": []
+        },
+        "knowledge_attach_version": "v12_question_bank_llm_prefer",
+        "knowledge_attach_candidate_count": 857
+      }
+    },
+    {
+      "question_id": "question_425729e488c8",
+      "course": "软件工程",
+      "source_file": "C:\\Users\\ASUS\\Desktop\\新建文件夹\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk).pdf",
+      "section_path": [
+        "软件工程",
+        "软件工程学概述",
+        "习 题 1"
+      ],
+      "learning_location": {
+        "unit": "软件工程",
+        "chapter": "软件工程学概述",
+        "section": "习 题 1",
+        "subsection": "",
+        "path": [
+          "软件工程",
+          "软件工程学概述",
+          "习 题 1"
+        ],
+        "path_text": "软件工程 / 软件工程学概述 / 习 题 1",
+        "pages": [
+          49
+        ]
+      },
+      "pages": [
+        49
+      ],
+      "question_type": "calculation",
+      "difficulty_level": "应用",
+      "stem": "基于上述假设可以比较计算机硬件和软件成本的变化趋势。要求计算：",
+      "options": [],
+      "content": "基于上述假设可以比较计算机硬件和软件成本的变化趋势。要求计算：",
+      "answer": "",
+      "analysis": "",
+      "related_knowledge_titles": [
+        "微软过程",
+        "敏捷过程"
+      ],
+      "primary_knowledge_titles": [
+        "微软过程",
+        "敏捷过程"
+      ],
+      "prerequisite_knowledge_titles": [],
+      "knowledge_points": [
+        "微软过程",
+        "敏捷过程"
+      ],
+      "related_knowledge_ids": [],
+      "related_knowledge_node_ids": [
+        "knode_f810b308f272",
+        "knode_b9f91faa548a"
+      ],
+      "related_knowledge": [
+        {
+          "node_id": "knode_f810b308f272",
+          "title": "微软过程",
+          "node_type": "concept",
+          "score": 11,
+          "confidence": 0.6,
+          "match_reasons": [
+            "llm_question_linking:assesses",
+            "题目要求基于假设比较计算机硬件和软件成本的变化趋势，这通常涉及软件过程模型（如微软过程、敏捷过程等）中关于成本与进度权衡的知识点。候选知识点中'微软过程'明确提到了'用创造性工作平衡产品特性和成本'，且该题位于讨论软件过程模型的章节（Page 49），与微软过程、敏捷过程等概念紧密相关。虽然题目本身是计算题，但其背景知"
+          ],
+          "pages": [
+            46,
+            47
+          ],
+          "source_chunk_ids": [
+            "chunk_3c8a6184827a",
+            "chunk_3e92f396cde8",
+            "chunk_595c5888dcc4",
+            "chunk_e8bbf4cbc228",
+            "chunk_d43742320b2d"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.4 软 件 过 程",
+            "1.4.8 微软过程"
+          ],
+          "source": "llm_question_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.4 软 件 过 程",
+            "subsection": "1.4.8 微软过程",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.4 软 件 过 程",
+              "1.4.8 微软过程"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.4 软 件 过 程 / 1.4.8 微软过程",
+            "pages": [
+              46,
+              47
+            ]
+          }
+        },
+        {
+          "node_id": "knode_b9f91faa548a",
+          "title": "敏捷过程",
+          "node_type": "process_group",
+          "score": 10,
+          "confidence": 0.55,
+          "match_reasons": [
+            "llm_question_linking:assesses",
+            "题目涉及软件成本变化趋势，这与敏捷过程强调的快速迭代、早期交付以平衡成本的特性有关。候选知识点'敏捷过程'位于同一章节附近，且与微软过程并列讨论。"
+          ],
+          "pages": [
+            42,
+            43,
+            48
+          ],
+          "source_chunk_ids": [
+            "chunk_efa8c39e13fa",
+            "chunk_ceef8de80ea4"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.4 软 件 过 程",
+            "1.4.7 敏捷过程与极限编程"
+          ],
+          "source": "llm_question_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.4 软 件 过 程",
+            "subsection": "1.4.7 敏捷过程与极限编程",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.4 软 件 过 程",
+              "1.4.7 敏捷过程与极限编程"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.4 软 件 过 程 / 1.4.7 敏捷过程与极限编程",
+            "pages": [
+              42,
+              43,
+              48
+            ]
+          }
+        }
+      ],
+      "confidence": 0.95,
+      "requires_image": false,
+      "generated_by_llm": false,
+      "metadata": {
+        "node_id": "node_4c2d9ccc683f",
+        "chapter_id": "chapter_429b280b7253",
+        "extract_method": "rule_from_pdf_text",
+        "bbox": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "llm_question_judge": {
+          "is_question": true,
+          "question_type": "calculation",
+          "confidence": 0.9,
+          "reason": "位于习题章节，明确要求‘要求计算’，属于计算题。"
+        },
+        "question_keep_method": "llm_question_judge",
+        "post_cleaned": true,
+        "post_clean_version": "v11_optimized_transform",
+        "image_count": 0,
+        "image_attach_method": "same_page_or_nearby_page_by_page_number",
+        "question_mentions_image": false,
+        "knowledge_attach_method": "llm_question_linking_preferred",
+        "knowledge_relation_count": 1,
+        "final_standard_cleaned": true,
+        "final_standard_version": "v11_final_standard",
+        "post_cleaned_knowledge_relations": true,
+        "post_clean_relation_version": "v11_final_standard",
+        "llm_question_linking_used": true,
+        "llm_question_linking_applied": {
+          "question_relations_added": 0,
+          "image_relations_added": 0,
+          "knowledge_relations_added": 2,
+          "ignored": []
+        },
+        "knowledge_attach_note": "LLM question-knowledge links were kept; rule linking only filled compatibility fields."
+      }
+    },
+    {
+      "question_id": "question_57800a1bab54",
+      "course": "软件工程",
+      "source_file": "C:\\Users\\ASUS\\Desktop\\新建文件夹\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk).pdf",
+      "section_path": [
+        "软件工程",
+        "软件工程学概述",
+        "习 题 1"
+      ],
+      "learning_location": {
+        "unit": "软件工程",
+        "chapter": "软件工程学概述",
+        "section": "习 题 1",
+        "subsection": "",
+        "path": [
+          "软件工程",
+          "软件工程学概述",
+          "习 题 1"
+        ],
+        "path_text": "软件工程 / 软件工程学概述 / 习 题 1",
+        "pages": [
+          49
+        ]
+      },
+      "pages": [
+        49
+      ],
+      "question_type": "short_answer",
+      "difficulty_level": "基础",
+      "stem": "6. 什么是软件过程？它与软件工程方法学有何关系？",
+      "options": [],
+      "content": "6. 什么是软件过程？它与软件工程方法学有何关系？",
+      "answer": "",
+      "analysis": "",
+      "related_knowledge_titles": [
+        "软件工程方法学",
+        "敏捷过程",
+        "微软的过程",
+        "开发的阶段",
+        "软件过程定义"
+      ],
+      "primary_knowledge_titles": [
+        "软件工程方法学",
+        "敏捷过程",
+        "微软的过程",
+        "开发的阶段",
+        "软件过程定义"
+      ],
+      "prerequisite_knowledge_titles": [],
+      "knowledge_points": [
+        "软件工程方法学",
+        "敏捷过程",
+        "微软的过程",
+        "开发的阶段",
+        "软件过程定义"
+      ],
+      "related_knowledge_ids": [
+        "knode_3d5c5e7ecc17"
+      ],
+      "related_knowledge_node_ids": [
+        "knode_167ac7b0a202",
+        "knode_b9f91faa548a",
+        "knode_d90ccf980f3d",
+        "knode_308cd7335be9",
+        "knode_80caad56291a"
+      ],
+      "related_knowledge": [
+        {
+          "node_id": "knode_167ac7b0a202",
+          "title": "软件工程方法学",
+          "node_type": "solution_group",
+          "score": 19,
+          "confidence": 0.98,
+          "match_reasons": [
+            "question_contains_node_title",
+            "question_contains_keyword:软件工程方法学",
+            "solution_intent_match",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            27
+          ],
+          "source_chunk_ids": [
+            "chunk_f02f34fcff51"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.2 软 件 工 程",
+            "1.2.3 软件工程方法学"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.2 软 件 工 程",
+            "subsection": "1.2.3 软件工程方法学",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.2 软 件 工 程",
+              "1.2.3 软件工程方法学"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.2 软 件 工 程 / 1.2.3 软件工程方法学",
+            "pages": [
+              27
+            ]
+          }
+        },
+        {
+          "node_id": "knode_b9f91faa548a",
+          "title": "敏捷过程",
+          "node_type": "process_group",
+          "score": 16,
+          "confidence": 0.889,
+          "match_reasons": [
+            "question_contains_alias:过程",
+            "question_contains_keyword:过程",
+            "process_intent_match",
+            "near_page_distance:1",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            42,
+            43,
+            48
+          ],
+          "source_chunk_ids": [
+            "chunk_efa8c39e13fa",
+            "chunk_ceef8de80ea4"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.4 软 件 过 程",
+            "1.4.7 敏捷过程与极限编程"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.4 软 件 过 程",
+            "subsection": "1.4.7 敏捷过程与极限编程",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.4 软 件 过 程",
+              "1.4.7 敏捷过程与极限编程"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.4 软 件 过 程 / 1.4.7 敏捷过程与极限编程",
+            "pages": [
+              42,
+              43,
+              48
+            ]
+          }
+        },
+        {
+          "node_id": "knode_d90ccf980f3d",
+          "title": "微软的过程",
+          "node_type": "process_group",
+          "score": 16,
+          "confidence": 0.889,
+          "match_reasons": [
+            "question_contains_alias:过程",
+            "question_contains_keyword:过程",
+            "process_intent_match",
+            "near_page_distance:2",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            45,
+            46,
+            47
+          ],
+          "source_chunk_ids": [
+            "chunk_a447ea4db1b2",
+            "chunk_abebb6a30969",
+            "chunk_3c8a6184827a"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.4 软 件 过 程",
+            "1.4.8 微软过程"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.4 软 件 过 程",
+            "subsection": "1.4.8 微软过程",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.4 软 件 过 程",
+              "1.4.8 微软过程"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.4 软 件 过 程 / 1.4.8 微软过程",
+            "pages": [
+              45,
+              46,
+              47
+            ]
+          }
+        },
+        {
+          "node_id": "knode_308cd7335be9",
+          "title": "开发的阶段",
+          "node_type": "process_group",
+          "score": 16,
+          "confidence": 0.889,
+          "match_reasons": [
+            "question_contains_alias:过程",
+            "question_contains_keyword:过程",
+            "process_intent_match",
+            "near_page_distance:2",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            46,
+            47
+          ],
+          "source_chunk_ids": [
+            "chunk_595c5888dcc4"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.4 软 件 过 程",
+            "1.4.8 微软过程"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.4 软 件 过 程",
+            "subsection": "1.4.8 微软过程",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.4 软 件 过 程",
+              "1.4.8 微软过程"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.4 软 件 过 程 / 1.4.8 微软过程",
+            "pages": [
+              46,
+              47
+            ]
+          }
+        },
+        {
+          "node_id": "knode_80caad56291a",
+          "title": "软件过程定义",
+          "node_type": "process_group",
+          "score": 16,
+          "confidence": 0.889,
+          "match_reasons": [
+            "question_contains_alias:过程",
+            "question_contains_keyword:过程",
+            "process_intent_match",
+            "near_page_distance:1",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            48
+          ],
+          "source_chunk_ids": [
+            "chunk_bf52611dfc32"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.5 小 结"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.5 小 结",
+            "subsection": "",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.5 小 结"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.5 小 结",
+            "pages": [
+              48
+            ]
+          }
+        }
+      ],
+      "confidence": 1.0,
+      "requires_image": false,
+      "generated_by_llm": false,
+      "metadata": {
+        "node_id": "node_4c2d9ccc683f",
+        "chapter_id": "chapter_429b280b7253",
+        "extract_method": "rule_from_pdf_text",
+        "bbox": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "llm_question_judge": {
+          "is_question": true,
+          "question_type": "short_answer",
+          "confidence": 1.0,
+          "reason": "位于习题章节，明确要求学生回答关于软件过程定义及关系的问题。"
+        },
+        "question_keep_method": "llm_question_judge",
+        "post_cleaned": true,
+        "post_clean_version": "v11_optimized_transform",
+        "image_count": 0,
+        "image_attach_method": "same_page_or_nearby_page_by_page_number",
+        "question_mentions_image": false,
+        "knowledge_attach_method": "rule_fallback_after_llm",
+        "knowledge_relation_count": 8,
+        "final_standard_cleaned": true,
+        "final_standard_version": "v11_final_standard",
+        "post_cleaned_knowledge_relations": true,
+        "post_clean_relation_version": "v11_final_standard",
+        "llm_question_linking_used": true,
+        "llm_question_linking_applied": {
+          "question_relations_added": 0,
+          "image_relations_added": 0,
+          "knowledge_relations_added": 0,
+          "ignored": []
+        },
+        "knowledge_attach_version": "v12_question_bank_llm_prefer",
+        "knowledge_attach_candidate_count": 857
+      }
+    },
+    {
+      "question_id": "question_3af67060242f",
+      "course": "软件工程",
+      "source_file": "C:\\Users\\ASUS\\Desktop\\新建文件夹\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk).pdf",
+      "section_path": [
+        "软件工程",
+        "软件工程学概述",
+        "习 题 1"
+      ],
+      "learning_location": {
+        "unit": "软件工程",
+        "chapter": "软件工程学概述",
+        "section": "习 题 1",
+        "subsection": "",
+        "path": [
+          "软件工程",
+          "软件工程学概述",
+          "习 题 1"
+        ],
+        "path_text": "软件工程 / 软件工程学概述 / 习 题 1",
+        "pages": [
+          49
+        ]
+      },
+      "pages": [
+        49
+      ],
+      "question_type": "short_answer",
+      "difficulty_level": "进阶",
+      "stem": "7. 什么是软件生命周期模型？试比较瀑布模型、快速原型模型、增量模型和螺旋模型的优缺点，说明每种模型的适用范围。",
+      "options": [],
+      "content": "7. 什么是软件生命周期模型？试比较瀑布模型、快速原型模型、增量模型和螺旋模型的优缺点，说明每种模型的适用范围。",
+      "answer": "",
+      "analysis": "",
+      "related_knowledge_titles": [
+        "快速原型模型",
+        "生命周期",
+        "瀑布模型",
+        "增量模型",
+        "螺旋模型"
+      ],
+      "primary_knowledge_titles": [
+        "生命周期",
+        "瀑布模型",
+        "增量模型",
+        "螺旋模型",
+        "软件生命周期",
+        "快速原型模型"
+      ],
+      "prerequisite_knowledge_titles": [],
+      "knowledge_points": [
+        "快速原型模型",
+        "生命周期",
+        "瀑布模型",
+        "增量模型",
+        "螺旋模型"
+      ],
+      "related_knowledge_ids": [],
+      "related_knowledge_node_ids": [
+        "knode_955d8410d010",
+        "knode_979884025b1d",
+        "knode_40c771bf2c9a",
+        "knode_1a33b42e71d5",
+        "knode_9fa8ef437c42"
+      ],
+      "related_knowledge": [
+        {
+          "node_id": "knode_955d8410d010",
+          "title": "快速原型模型",
+          "node_type": "model",
+          "score": 17,
+          "confidence": 0.95,
+          "match_reasons": [
+            "llm_question_linking:assesses",
+            "题目明确要求比较'快速原型模型'的优缺点及适用范围，直接考查该知识点。"
+          ],
+          "pages": [
+            48
+          ],
+          "source_chunk_ids": [
+            "chunk_431d1a5e3f67"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.5 小 结"
+          ],
+          "source": "llm_question_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.5 小 结",
+            "subsection": "",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.5 小 结"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.5 小 结",
+            "pages": [
+              48
+            ]
+          }
+        },
+        {
+          "node_id": "knode_979884025b1d",
+          "title": "生命周期",
+          "node_type": "concept",
+          "score": 16,
+          "confidence": 0.889,
+          "match_reasons": [
+            "question_contains_node_title",
+            "question_contains_keyword:生命周期",
+            "near_page_distance:2",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            47
+          ],
+          "source_chunk_ids": [
+            "chunk_7af1e57b75b9"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.5 小 结"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.5 小 结",
+            "subsection": "",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.5 小 结"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.5 小 结",
+            "pages": [
+              47
+            ]
+          }
+        },
+        {
+          "node_id": "knode_40c771bf2c9a",
+          "title": "瀑布模型",
+          "node_type": "model",
+          "score": 16,
+          "confidence": 0.889,
+          "match_reasons": [
+            "question_contains_node_title",
+            "question_contains_keyword:瀑布模型",
+            "near_page_distance:1",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            48
+          ],
+          "source_chunk_ids": [
+            "chunk_0f836741bdb6"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.5 小 结"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.5 小 结",
+            "subsection": "",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.5 小 结"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.5 小 结",
+            "pages": [
+              48
+            ]
+          }
+        },
+        {
+          "node_id": "knode_1a33b42e71d5",
+          "title": "增量模型",
+          "node_type": "model",
+          "score": 16,
+          "confidence": 0.889,
+          "match_reasons": [
+            "question_contains_node_title",
+            "question_contains_keyword:增量模型",
+            "near_page_distance:1",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            48
+          ],
+          "source_chunk_ids": [
+            "chunk_553261bdefaa"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.5 小 结"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.5 小 结",
+            "subsection": "",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.5 小 结"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.5 小 结",
+            "pages": [
+              48
+            ]
+          }
+        },
+        {
+          "node_id": "knode_9fa8ef437c42",
+          "title": "螺旋模型",
+          "node_type": "model",
+          "score": 16,
+          "confidence": 0.889,
+          "match_reasons": [
+            "question_contains_node_title",
+            "question_contains_keyword:螺旋模型",
+            "near_page_distance:1",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            48
+          ],
+          "source_chunk_ids": [
+            "chunk_e3474ccf4f4a"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.5 小 结"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.5 小 结",
+            "subsection": "",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.5 小 结"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.5 小 结",
+            "pages": [
+              48
+            ]
+          }
+        }
+      ],
+      "confidence": 1.0,
+      "requires_image": false,
+      "generated_by_llm": false,
+      "metadata": {
+        "node_id": "node_4c2d9ccc683f",
+        "chapter_id": "chapter_429b280b7253",
+        "extract_method": "rule_from_pdf_text",
+        "bbox": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "llm_question_judge": {
+          "is_question": true,
+          "question_type": "short_answer",
+          "confidence": 1.0,
+          "reason": "位于习题章节，要求比较模型优缺点，属于简答题。"
+        },
+        "question_keep_method": "llm_question_judge",
+        "post_cleaned": true,
+        "post_clean_version": "v11_optimized_transform",
+        "image_count": 0,
+        "image_attach_method": "same_page_or_nearby_page_by_page_number",
+        "question_mentions_image": false,
+        "knowledge_attach_method": "llm_question_linking_preferred",
+        "knowledge_relation_count": 8,
+        "final_standard_cleaned": true,
+        "final_standard_version": "v11_final_standard",
+        "post_cleaned_knowledge_relations": true,
+        "post_clean_relation_version": "v11_final_standard",
+        "llm_question_linking_used": true,
+        "llm_question_linking_applied": {
+          "question_relations_added": 0,
+          "image_relations_added": 0,
+          "knowledge_relations_added": 1,
+          "ignored": []
+        },
+        "knowledge_attach_note": "LLM question-knowledge links were kept; rule linking only filled compatibility fields."
+      }
+    },
+    {
+      "question_id": "question_775382bd3699",
+      "course": "软件工程",
+      "source_file": "C:\\Users\\ASUS\\Desktop\\新建文件夹\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk).pdf",
+      "section_path": [
+        "软件工程",
+        "软件工程学概述",
+        "习 题 1"
+      ],
+      "learning_location": {
+        "unit": "软件工程",
+        "chapter": "软件工程学概述",
+        "section": "习 题 1",
+        "subsection": "",
+        "path": [
+          "软件工程",
+          "软件工程学概述",
+          "习 题 1"
+        ],
+        "path_text": "软件工程 / 软件工程学概述 / 习 题 1",
+        "pages": [
+          49
+        ]
+      },
+      "pages": [
+        49
+      ],
+      "question_type": "short_answer",
+      "difficulty_level": "进阶",
+      "stem": "8. 为什么说喷泉模型较好地体现了面向对象软件开发过程无缝和迭代的特性？",
+      "options": [],
+      "content": "8. 为什么说喷泉模型较好地体现了面向对象软件开发过程无缝和迭代的特性？",
+      "answer": "",
+      "analysis": "",
+      "related_knowledge_titles": [
+        "软件过程的表现",
+        "微软过程模型定义与特点",
+        "科学有效的软件过程应定义一组适合于所承担项目的表现",
+        "传统方法学开发流程特点",
+        "喷泉模型"
+      ],
+      "primary_knowledge_titles": [
+        "软件过程的表现",
+        "微软过程模型定义与特点",
+        "科学有效的软件过程应定义一组适合于所承担项目的表现",
+        "传统方法学开发流程特点",
+        "该阶段的任务不是具体解决的表现",
+        "喷泉模型"
+      ],
+      "prerequisite_knowledge_titles": [],
+      "knowledge_points": [
+        "软件过程的表现",
+        "微软过程模型定义与特点",
+        "科学有效的软件过程应定义一组适合于所承担项目的表现",
+        "传统方法学开发流程特点",
+        "喷泉模型"
+      ],
+      "related_knowledge_ids": [],
+      "related_knowledge_node_ids": [
+        "knode_7d6293ab1fbb",
+        "knode_b39ba9b785a9",
+        "knode_a9741609a005",
+        "knode_9a8f1c0311b5",
+        "knode_9497449279a8"
+      ],
+      "related_knowledge": [
+        {
+          "node_id": "knode_7d6293ab1fbb",
+          "title": "软件过程的表现",
+          "node_type": "feature_group",
+          "score": 25,
+          "confidence": 0.98,
+          "match_reasons": [
+            "question_contains_alias:体现",
+            "question_contains_alias:过程",
+            "question_contains_keyword:体现",
+            "question_contains_keyword:过程",
+            "feature_intent_match",
+            "near_page_distance:2",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            47
+          ],
+          "source_chunk_ids": [
+            "chunk_23edeba1f160"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.5 小 结"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.5 小 结",
+            "subsection": "",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.5 小 结"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.5 小 结",
+            "pages": [
+              47
+            ]
+          }
+        },
+        {
+          "node_id": "knode_b39ba9b785a9",
+          "title": "微软过程模型定义与特点",
+          "node_type": "feature_group",
+          "score": 25,
+          "confidence": 0.98,
+          "match_reasons": [
+            "question_contains_alias:体现",
+            "question_contains_alias:过程",
+            "question_contains_keyword:体现",
+            "question_contains_keyword:过程",
+            "feature_intent_match",
+            "near_page_distance:2",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            46,
+            47
+          ],
+          "source_chunk_ids": [
+            "chunk_3c8a6184827a"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.4 软 件 过 程",
+            "1.4.8 微软过程"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.4 软 件 过 程",
+            "subsection": "1.4.8 微软过程",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.4 软 件 过 程",
+              "1.4.8 微软过程"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.4 软 件 过 程 / 1.4.8 微软过程",
+            "pages": [
+              46,
+              47
+            ]
+          }
+        },
+        {
+          "node_id": "knode_a9741609a005",
+          "title": "科学有效的软件过程应定义一组适合于所承担项目的表现",
+          "node_type": "feature_group",
+          "score": 25,
+          "confidence": 0.98,
+          "match_reasons": [
+            "question_contains_alias:体现",
+            "question_contains_alias:过程",
+            "question_contains_keyword:体现",
+            "question_contains_keyword:过程",
+            "feature_intent_match",
+            "near_page_distance:2",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            47
+          ],
+          "source_chunk_ids": [
+            "chunk_23edeba1f160"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.5 小 结"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.5 小 结",
+            "subsection": "",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.5 小 结"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.5 小 结",
+            "pages": [
+              47
+            ]
+          }
+        },
+        {
+          "node_id": "knode_9a8f1c0311b5",
+          "title": "传统方法学开发流程特点",
+          "node_type": "feature_group",
+          "score": 24,
+          "confidence": 0.98,
+          "match_reasons": [
+            "question_contains_alias:体现",
+            "question_contains_alias:过程",
+            "question_contains_keyword:体现",
+            "question_contains_keyword:过程",
+            "feature_intent_match",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            25,
+            26
+          ],
+          "source_chunk_ids": [
+            "chunk_7f7ba22767ca"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.2 软 件 工 程",
+            "1.2.3 软件工程方法学"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.2 软 件 工 程",
+            "subsection": "1.2.3 软件工程方法学",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.2 软 件 工 程",
+              "1.2.3 软件工程方法学"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.2 软 件 工 程 / 1.2.3 软件工程方法学",
+            "pages": [
+              25,
+              26
+            ]
+          }
+        },
+        {
+          "node_id": "knode_9497449279a8",
+          "title": "喷泉模型",
+          "node_type": "model",
+          "score": 17,
+          "confidence": 0.95,
+          "match_reasons": [
+            "llm_question_linking:assesses",
+            "题目直接询问喷泉模型的特点，该知识点节点明确包含喷泉模型的定义及其体现面向对象无缝迭代特性的描述，与题目内容完全匹配。"
+          ],
+          "pages": [
+            48
+          ],
+          "source_chunk_ids": [
+            "chunk_f1fe750cb6f1"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.5 小 结"
+          ],
+          "source": "llm_question_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.5 小 结",
+            "subsection": "",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.5 小 结"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.5 小 结",
+            "pages": [
+              48
+            ]
+          }
+        }
+      ],
+      "confidence": 1.0,
+      "requires_image": false,
+      "generated_by_llm": false,
+      "metadata": {
+        "node_id": "node_4c2d9ccc683f",
+        "chapter_id": "chapter_429b280b7253",
+        "extract_method": "rule_from_pdf_text",
+        "bbox": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "llm_question_judge": {
+          "is_question": true,
+          "question_type": "short_answer",
+          "confidence": 1.0,
+          "reason": "位于习题章节，要求解释原因，属于简答题。"
+        },
+        "question_keep_method": "llm_question_judge",
+        "post_cleaned": true,
+        "post_clean_version": "v11_optimized_transform",
+        "image_count": 0,
+        "image_attach_method": "same_page_or_nearby_page_by_page_number",
+        "question_mentions_image": false,
+        "knowledge_attach_method": "llm_question_linking_preferred",
+        "knowledge_relation_count": 8,
+        "final_standard_cleaned": true,
+        "final_standard_version": "v11_final_standard",
+        "post_cleaned_knowledge_relations": true,
+        "post_clean_relation_version": "v11_final_standard",
+        "llm_question_linking_used": true,
+        "llm_question_linking_applied": {
+          "question_relations_added": 0,
+          "image_relations_added": 0,
+          "knowledge_relations_added": 1,
+          "ignored": []
+        },
+        "knowledge_attach_note": "LLM question-knowledge links were kept; rule linking only filled compatibility fields."
+      }
+    },
+    {
+      "question_id": "question_9901d8b77d9c",
+      "course": "软件工程",
+      "source_file": "C:\\Users\\ASUS\\Desktop\\新建文件夹\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk).pdf",
+      "section_path": [
+        "软件工程",
+        "软件工程学概述",
+        "习 题 1"
+      ],
+      "learning_location": {
+        "unit": "软件工程",
+        "chapter": "软件工程学概述",
+        "section": "习 题 1",
+        "subsection": "",
+        "path": [
+          "软件工程",
+          "软件工程学概述",
+          "习 题 1"
+        ],
+        "path_text": "软件工程 / 软件工程学概述 / 习 题 1",
+        "pages": [
+          49
+        ]
+      },
+      "pages": [
+        49
+      ],
+      "question_type": "short_answer",
+      "difficulty_level": "进阶",
+      "stem": "10. Rational 统一过程主要适用于何种项目？",
+      "options": [],
+      "content": "10. Rational 统一过程主要适用于何种项目？",
+      "answer": "",
+      "analysis": "",
+      "related_knowledge_titles": [
+        "Rational 统一过程",
+        "Rational统一过程(RUP)",
+        "年首次推出的 Rational 统一的过程",
+        "Rational 统一过程 (RUP) 定义",
+        "在 Rational 统一的过程"
+      ],
+      "primary_knowledge_titles": [
+        "Rational 统一过程",
+        "Rational统一过程(RUP)",
+        "年首次推出的 Rational 统一的过程",
+        "Rational 统一过程 (RUP) 定义",
+        "在 Rational 统一的过程"
+      ],
+      "prerequisite_knowledge_titles": [],
+      "knowledge_points": [
+        "Rational 统一过程",
+        "Rational统一过程(RUP)",
+        "年首次推出的 Rational 统一的过程",
+        "Rational 统一过程 (RUP) 定义",
+        "在 Rational 统一的过程"
+      ],
+      "related_knowledge_ids": [
+        "knode_a3d5c27f0371"
+      ],
+      "related_knowledge_node_ids": [
+        "knode_4d3e53bcebc5",
+        "knode_e69f715a7d28",
+        "knode_3a5717d4df23",
+        "knode_5a54ce6d65db",
+        "knode_11f150c5428b"
+      ],
+      "related_knowledge": [
+        {
+          "node_id": "knode_4d3e53bcebc5",
+          "title": "Rational 统一过程",
+          "node_type": "process_group",
+          "score": 34,
+          "confidence": 0.98,
+          "match_reasons": [
+            "question_contains_node_title",
+            "question_contains_alias:过程",
+            "question_contains_keyword:Rational 统一过程",
+            "question_contains_keyword:过程",
+            "question_contains_keyword:Rational",
+            "question_contains_keyword:统一过程",
+            "process_intent_match",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            41
+          ],
+          "source_chunk_ids": [
+            "chunk_4fc0cdb39dc9"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.4 软 件 过 程",
+            "1.4.6 Rational 统一过程"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.4 软 件 过 程",
+            "subsection": "1.4.6 Rational 统一过程",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.4 软 件 过 程",
+              "1.4.6 Rational 统一过程"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.4 软 件 过 程 / 1.4.6 Rational 统一过程",
+            "pages": [
+              41
+            ]
+          }
+        },
+        {
+          "node_id": "knode_e69f715a7d28",
+          "title": "Rational统一过程(RUP)",
+          "node_type": "process_group",
+          "score": 22,
+          "confidence": 0.98,
+          "match_reasons": [
+            "question_contains_alias:过程",
+            "question_contains_keyword:过程",
+            "question_contains_keyword:Rational",
+            "question_contains_keyword:统一过程",
+            "process_intent_match",
+            "near_page_distance:1",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            48
+          ],
+          "source_chunk_ids": [
+            "chunk_bca5d142f81b"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.5 小 结"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.5 小 结",
+            "subsection": "",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.5 小 结"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.5 小 结",
+            "pages": [
+              48
+            ]
+          }
+        },
+        {
+          "node_id": "knode_3a5717d4df23",
+          "title": "年首次推出的 Rational 统一的过程",
+          "node_type": "process_group",
+          "score": 22,
+          "confidence": 0.98,
+          "match_reasons": [
+            "question_contains_alias:过程",
+            "question_contains_keyword:过程",
+            "question_contains_keyword:Rational",
+            "question_contains_keyword:统一过程",
+            "process_intent_match",
+            "near_page_distance:1",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            48
+          ],
+          "source_chunk_ids": [
+            "chunk_bca5d142f81b"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.5 小 结"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.5 小 结",
+            "subsection": "",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.5 小 结"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.5 小 结",
+            "pages": [
+              48
+            ]
+          }
+        },
+        {
+          "node_id": "knode_5a54ce6d65db",
+          "title": "Rational 统一过程 (RUP) 定义",
+          "node_type": "process_group",
+          "score": 21,
+          "confidence": 0.98,
+          "match_reasons": [
+            "question_contains_alias:过程",
+            "question_contains_keyword:过程",
+            "question_contains_keyword:Rational",
+            "question_contains_keyword:统一过程",
+            "process_intent_match",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            38,
+            39
+          ],
+          "source_chunk_ids": [
+            "chunk_731b431b9a62"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.4 软 件 过 程",
+            "1.4.6 Rational 统一过程"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.4 软 件 过 程",
+            "subsection": "1.4.6 Rational 统一过程",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.4 软 件 过 程",
+              "1.4.6 Rational 统一过程"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.4 软 件 过 程 / 1.4.6 Rational 统一过程",
+            "pages": [
+              38,
+              39
+            ]
+          }
+        },
+        {
+          "node_id": "knode_11f150c5428b",
+          "title": "在 Rational 统一的过程",
+          "node_type": "process_group",
+          "score": 18,
+          "confidence": 0.98,
+          "match_reasons": [
+            "question_contains_alias:过程",
+            "question_contains_keyword:过程",
+            "question_contains_keyword:Rational",
+            "process_intent_match",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            39
+          ],
+          "source_chunk_ids": [
+            "chunk_9e00286d72cf"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.4 软 件 过 程",
+            "1.4.6 Rational 统一过程"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.4 软 件 过 程",
+            "subsection": "1.4.6 Rational 统一过程",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.4 软 件 过 程",
+              "1.4.6 Rational 统一过程"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.4 软 件 过 程 / 1.4.6 Rational 统一过程",
+            "pages": [
+              39
+            ]
+          }
+        }
+      ],
+      "confidence": 1.0,
+      "requires_image": false,
+      "generated_by_llm": false,
+      "metadata": {
+        "node_id": "node_4c2d9ccc683f",
+        "chapter_id": "chapter_429b280b7253",
+        "extract_method": "rule_from_pdf_text",
+        "bbox": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "llm_question_judge": {
+          "is_question": true,
+          "question_type": "short_answer",
+          "confidence": 1.0,
+          "reason": "位于习题章节，要求说明适用范围，属于简答题。"
+        },
+        "question_keep_method": "llm_question_judge",
+        "post_cleaned": true,
+        "post_clean_version": "v11_optimized_transform",
+        "image_count": 0,
+        "image_attach_method": "same_page_or_nearby_page_by_page_number",
+        "question_mentions_image": false,
+        "knowledge_attach_method": "rule_fallback_after_llm",
+        "knowledge_relation_count": 8,
+        "final_standard_cleaned": true,
+        "final_standard_version": "v11_final_standard",
+        "post_cleaned_knowledge_relations": true,
+        "post_clean_relation_version": "v11_final_standard",
+        "llm_question_linking_used": true,
+        "llm_question_linking_applied": {
+          "question_relations_added": 0,
+          "image_relations_added": 0,
+          "knowledge_relations_added": 0,
+          "ignored": []
+        },
+        "knowledge_attach_version": "v12_question_bank_llm_prefer",
+        "knowledge_attach_candidate_count": 857
+      }
+    },
+    {
+      "question_id": "question_0137419d69a1",
+      "course": "软件工程",
+      "source_file": "C:\\Users\\ASUS\\Desktop\\新建文件夹\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk).pdf",
+      "section_path": [
+        "软件工程",
+        "软件工程学概述",
+        "习 题 1"
+      ],
+      "learning_location": {
+        "unit": "软件工程",
+        "chapter": "软件工程学概述",
+        "section": "习 题 1",
+        "subsection": "",
+        "path": [
+          "软件工程",
+          "软件工程学概述",
+          "习 题 1"
+        ],
+        "path_text": "软件工程 / 软件工程学概述 / 习 题 1",
+        "pages": [
+          49
+        ]
+      },
+      "pages": [
+        49
+      ],
+      "question_type": "short_answer",
+      "difficulty_level": "进阶",
+      "stem": "11. 说明敏捷过程的适用范围。",
+      "options": [],
+      "content": "11. 说明敏捷过程的适用范围。",
+      "answer": "",
+      "analysis": "",
+      "related_knowledge_titles": [
+        "敏捷过程",
+        "敏捷过程与极限编程的关系",
+        "微软的过程",
+        "开发的阶段",
+        "软件过程定义"
+      ],
+      "primary_knowledge_titles": [
+        "敏捷过程",
+        "敏捷过程与极限编程的关系",
+        "微软的过程",
+        "开发的阶段",
+        "软件过程定义"
+      ],
+      "prerequisite_knowledge_titles": [],
+      "knowledge_points": [
+        "敏捷过程",
+        "敏捷过程与极限编程的关系",
+        "微软的过程",
+        "开发的阶段",
+        "软件过程定义"
+      ],
+      "related_knowledge_ids": [
+        "knode_3d5c5e7ecc17"
+      ],
+      "related_knowledge_node_ids": [
+        "knode_b9f91faa548a",
+        "knode_f4e194387772",
+        "knode_d90ccf980f3d",
+        "knode_308cd7335be9",
+        "knode_80caad56291a"
+      ],
+      "related_knowledge": [
+        {
+          "node_id": "knode_b9f91faa548a",
+          "title": "敏捷过程",
+          "node_type": "process_group",
+          "score": 32,
+          "confidence": 0.98,
+          "match_reasons": [
+            "question_contains_node_title",
+            "question_contains_alias:过程",
+            "question_contains_keyword:敏捷过程",
+            "question_contains_keyword:过程",
+            "question_contains_keyword:捷过程",
+            "process_intent_match",
+            "near_page_distance:1",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            42,
+            43,
+            48
+          ],
+          "source_chunk_ids": [
+            "chunk_efa8c39e13fa",
+            "chunk_ceef8de80ea4"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.4 软 件 过 程",
+            "1.4.7 敏捷过程与极限编程"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.4 软 件 过 程",
+            "subsection": "1.4.7 敏捷过程与极限编程",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.4 软 件 过 程",
+              "1.4.7 敏捷过程与极限编程"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.4 软 件 过 程 / 1.4.7 敏捷过程与极限编程",
+            "pages": [
+              42,
+              43,
+              48
+            ]
+          }
+        },
+        {
+          "node_id": "knode_f4e194387772",
+          "title": "敏捷过程与极限编程的关系",
+          "node_type": "process_group",
+          "score": 18,
+          "confidence": 0.98,
+          "match_reasons": [
+            "question_contains_alias:过程",
+            "question_contains_keyword:过程",
+            "question_contains_keyword:捷过程",
+            "process_intent_match",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            41,
+            42
+          ],
+          "source_chunk_ids": [
+            "chunk_a9cf949ac184"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.4 软 件 过 程",
+            "1.4.7 敏捷过程与极限编程"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.4 软 件 过 程",
+            "subsection": "1.4.7 敏捷过程与极限编程",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.4 软 件 过 程",
+              "1.4.7 敏捷过程与极限编程"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.4 软 件 过 程 / 1.4.7 敏捷过程与极限编程",
+            "pages": [
+              41,
+              42
+            ]
+          }
+        },
+        {
+          "node_id": "knode_d90ccf980f3d",
+          "title": "微软的过程",
+          "node_type": "process_group",
+          "score": 16,
+          "confidence": 0.889,
+          "match_reasons": [
+            "question_contains_alias:过程",
+            "question_contains_keyword:过程",
+            "process_intent_match",
+            "near_page_distance:2",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            45,
+            46,
+            47
+          ],
+          "source_chunk_ids": [
+            "chunk_a447ea4db1b2",
+            "chunk_abebb6a30969",
+            "chunk_3c8a6184827a"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.4 软 件 过 程",
+            "1.4.8 微软过程"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.4 软 件 过 程",
+            "subsection": "1.4.8 微软过程",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.4 软 件 过 程",
+              "1.4.8 微软过程"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.4 软 件 过 程 / 1.4.8 微软过程",
+            "pages": [
+              45,
+              46,
+              47
+            ]
+          }
+        },
+        {
+          "node_id": "knode_308cd7335be9",
+          "title": "开发的阶段",
+          "node_type": "process_group",
+          "score": 16,
+          "confidence": 0.889,
+          "match_reasons": [
+            "question_contains_alias:过程",
+            "question_contains_keyword:过程",
+            "process_intent_match",
+            "near_page_distance:2",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            46,
+            47
+          ],
+          "source_chunk_ids": [
+            "chunk_595c5888dcc4"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.4 软 件 过 程",
+            "1.4.8 微软过程"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.4 软 件 过 程",
+            "subsection": "1.4.8 微软过程",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.4 软 件 过 程",
+              "1.4.8 微软过程"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.4 软 件 过 程 / 1.4.8 微软过程",
+            "pages": [
+              46,
+              47
+            ]
+          }
+        },
+        {
+          "node_id": "knode_80caad56291a",
+          "title": "软件过程定义",
+          "node_type": "process_group",
+          "score": 16,
+          "confidence": 0.889,
+          "match_reasons": [
+            "question_contains_alias:过程",
+            "question_contains_keyword:过程",
+            "process_intent_match",
+            "near_page_distance:1",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            48
+          ],
+          "source_chunk_ids": [
+            "chunk_bf52611dfc32"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.5 小 结"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.5 小 结",
+            "subsection": "",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.5 小 结"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.5 小 结",
+            "pages": [
+              48
+            ]
+          }
+        }
+      ],
+      "confidence": 1.0,
+      "requires_image": false,
+      "generated_by_llm": false,
+      "metadata": {
+        "node_id": "node_4c2d9ccc683f",
+        "chapter_id": "chapter_429b280b7253",
+        "extract_method": "rule_from_pdf_text",
+        "bbox": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "llm_question_judge": {
+          "is_question": true,
+          "question_type": "short_answer",
+          "confidence": 1.0,
+          "reason": "位于习题章节，要求说明适用范围，属于简答题。"
+        },
+        "question_keep_method": "llm_question_judge",
+        "post_cleaned": true,
+        "post_clean_version": "v11_optimized_transform",
+        "image_count": 0,
+        "image_attach_method": "same_page_or_nearby_page_by_page_number",
+        "question_mentions_image": false,
+        "knowledge_attach_method": "rule_fallback_after_llm",
+        "knowledge_relation_count": 8,
+        "final_standard_cleaned": true,
+        "final_standard_version": "v11_final_standard",
+        "post_cleaned_knowledge_relations": true,
+        "post_clean_relation_version": "v11_final_standard",
+        "llm_question_linking_used": true,
+        "llm_question_linking_applied": {
+          "question_relations_added": 0,
+          "image_relations_added": 0,
+          "knowledge_relations_added": 0,
+          "ignored": []
+        },
+        "knowledge_attach_version": "v12_question_bank_llm_prefer",
+        "knowledge_attach_candidate_count": 857
+      }
+    },
+    {
+      "question_id": "question_8479463ccf1a",
+      "course": "软件工程",
+      "source_file": "C:\\Users\\ASUS\\Desktop\\新建文件夹\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk).pdf",
+      "section_path": [
+        "软件工程",
+        "软件工程学概述",
+        "习 题 1"
+      ],
+      "learning_location": {
+        "unit": "软件工程",
+        "chapter": "软件工程学概述",
+        "section": "习 题 1",
+        "subsection": "",
+        "path": [
+          "软件工程",
+          "软件工程学概述",
+          "习 题 1"
+        ],
+        "path_text": "软件工程 / 软件工程学概述 / 习 题 1",
+        "pages": [
+          49
+        ]
+      },
+      "pages": [
+        49
+      ],
+      "question_type": "short_answer",
+      "difficulty_level": "进阶",
+      "stem": "12. 说明微软过程的适用范围。",
+      "options": [],
+      "content": "12. 说明微软过程的适用范围。",
+      "answer": "",
+      "analysis": "",
+      "related_knowledge_titles": [
+        "微软过程",
+        "敏捷过程",
+        "微软的过程",
+        "开发的阶段",
+        "软件过程定义"
+      ],
+      "primary_knowledge_titles": [
+        "微软过程",
+        "敏捷过程",
+        "微软的过程",
+        "开发的阶段",
+        "软件过程定义"
+      ],
+      "prerequisite_knowledge_titles": [],
+      "knowledge_points": [
+        "微软过程",
+        "敏捷过程",
+        "微软的过程",
+        "开发的阶段",
+        "软件过程定义"
+      ],
+      "related_knowledge_ids": [
+        "knode_3d5c5e7ecc17"
+      ],
+      "related_knowledge_node_ids": [
+        "knode_f810b308f272",
+        "knode_b9f91faa548a",
+        "knode_d90ccf980f3d",
+        "knode_308cd7335be9",
+        "knode_80caad56291a"
+      ],
+      "related_knowledge": [
+        {
+          "node_id": "knode_f810b308f272",
+          "title": "微软过程",
+          "node_type": "concept",
+          "score": 19,
+          "confidence": 0.98,
+          "match_reasons": [
+            "question_contains_node_title",
+            "question_contains_keyword:微软过程",
+            "question_contains_keyword:过程",
+            "near_page_distance:2",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            46,
+            47
+          ],
+          "source_chunk_ids": [
+            "chunk_3c8a6184827a",
+            "chunk_3e92f396cde8",
+            "chunk_595c5888dcc4",
+            "chunk_e8bbf4cbc228",
+            "chunk_d43742320b2d"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.4 软 件 过 程",
+            "1.4.8 微软过程"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.4 软 件 过 程",
+            "subsection": "1.4.8 微软过程",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.4 软 件 过 程",
+              "1.4.8 微软过程"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.4 软 件 过 程 / 1.4.8 微软过程",
+            "pages": [
+              46,
+              47
+            ]
+          }
+        },
+        {
+          "node_id": "knode_b9f91faa548a",
+          "title": "敏捷过程",
+          "node_type": "process_group",
+          "score": 16,
+          "confidence": 0.889,
+          "match_reasons": [
+            "question_contains_alias:过程",
+            "question_contains_keyword:过程",
+            "process_intent_match",
+            "near_page_distance:1",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            42,
+            43,
+            48
+          ],
+          "source_chunk_ids": [
+            "chunk_efa8c39e13fa",
+            "chunk_ceef8de80ea4"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.4 软 件 过 程",
+            "1.4.7 敏捷过程与极限编程"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.4 软 件 过 程",
+            "subsection": "1.4.7 敏捷过程与极限编程",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.4 软 件 过 程",
+              "1.4.7 敏捷过程与极限编程"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.4 软 件 过 程 / 1.4.7 敏捷过程与极限编程",
+            "pages": [
+              42,
+              43,
+              48
+            ]
+          }
+        },
+        {
+          "node_id": "knode_d90ccf980f3d",
+          "title": "微软的过程",
+          "node_type": "process_group",
+          "score": 16,
+          "confidence": 0.889,
+          "match_reasons": [
+            "question_contains_alias:过程",
+            "question_contains_keyword:过程",
+            "process_intent_match",
+            "near_page_distance:2",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            45,
+            46,
+            47
+          ],
+          "source_chunk_ids": [
+            "chunk_a447ea4db1b2",
+            "chunk_abebb6a30969",
+            "chunk_3c8a6184827a"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.4 软 件 过 程",
+            "1.4.8 微软过程"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.4 软 件 过 程",
+            "subsection": "1.4.8 微软过程",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.4 软 件 过 程",
+              "1.4.8 微软过程"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.4 软 件 过 程 / 1.4.8 微软过程",
+            "pages": [
+              45,
+              46,
+              47
+            ]
+          }
+        },
+        {
+          "node_id": "knode_308cd7335be9",
+          "title": "开发的阶段",
+          "node_type": "process_group",
+          "score": 16,
+          "confidence": 0.889,
+          "match_reasons": [
+            "question_contains_alias:过程",
+            "question_contains_keyword:过程",
+            "process_intent_match",
+            "near_page_distance:2",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            46,
+            47
+          ],
+          "source_chunk_ids": [
+            "chunk_595c5888dcc4"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.4 软 件 过 程",
+            "1.4.8 微软过程"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.4 软 件 过 程",
+            "subsection": "1.4.8 微软过程",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.4 软 件 过 程",
+              "1.4.8 微软过程"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.4 软 件 过 程 / 1.4.8 微软过程",
+            "pages": [
+              46,
+              47
+            ]
+          }
+        },
+        {
+          "node_id": "knode_80caad56291a",
+          "title": "软件过程定义",
+          "node_type": "process_group",
+          "score": 16,
+          "confidence": 0.889,
+          "match_reasons": [
+            "question_contains_alias:过程",
+            "question_contains_keyword:过程",
+            "process_intent_match",
+            "near_page_distance:1",
+            "same_section_path_prefix:2"
+          ],
+          "pages": [
+            48
+          ],
+          "source_chunk_ids": [
+            "chunk_bf52611dfc32"
+          ],
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.5 小 结"
+          ],
+          "source": "rule_question_knowledge_linking",
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.5 小 结",
+            "subsection": "",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.5 小 结"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.5 小 结",
+            "pages": [
+              48
+            ]
+          }
+        }
+      ],
+      "confidence": 1.0,
+      "requires_image": false,
+      "generated_by_llm": false,
+      "metadata": {
+        "node_id": "node_4c2d9ccc683f",
+        "chapter_id": "chapter_429b280b7253",
+        "extract_method": "rule_from_pdf_text",
+        "bbox": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "llm_question_judge": {
+          "is_question": true,
+          "question_type": "short_answer",
+          "confidence": 1.0,
+          "reason": "位于习题章节，要求说明适用范围，属于简答题。"
+        },
+        "question_keep_method": "llm_question_judge",
+        "post_cleaned": true,
+        "post_clean_version": "v11_optimized_transform",
+        "image_count": 0,
+        "image_attach_method": "same_page_or_nearby_page_by_page_number",
+        "question_mentions_image": false,
+        "knowledge_attach_method": "rule_fallback_after_llm",
+        "knowledge_relation_count": 8,
+        "final_standard_cleaned": true,
+        "final_standard_version": "v11_final_standard",
+        "post_cleaned_knowledge_relations": true,
+        "post_clean_relation_version": "v11_final_standard",
+        "llm_question_linking_used": true,
+        "llm_question_linking_applied": {
+          "question_relations_added": 0,
+          "image_relations_added": 0,
+          "knowledge_relations_added": 0,
+          "ignored": []
+        },
+        "knowledge_attach_version": "v12_question_bank_llm_prefer",
+        "knowledge_attach_candidate_count": 857
+      }
+    },
+    {
+      "question_id": "question_f534821e0e9b",
+      "course": "软件工程",
+      "source_file": "C:\\Users\\ASUS\\Desktop\\新建文件夹\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk).pdf",
+      "section_path": [
+        "软件工程",
+        "软件工程学概述",
+        "习 题 1"
+      ],
+      "learning_location": {
+        "unit": "软件工程",
+        "chapter": "软件工程学概述",
+        "section": "习 题 1",
+        "subsection": "",
+        "path": [
+          "软件工程",
+          "软件工程学概述",
+          "习 题 1"
+        ],
+        "path_text": "软件工程 / 软件工程学概述 / 习 题 1",
+        "pages": [
+          49
+        ]
+      },
+      "pages": [
+        49
+      ],
+      "question_type": "calculation",
+      "difficulty_level": "应用",
+      "stem": "(2)假设在1985年一名程序员每天可开发出10条指令，程序员的平均工资是每月4 000美元。如果一条指令为一个字长，计算使存储器装满程序所需用的成本。",
+      "options": [],
+      "content": "(2)假设在1985年一名程序员每天可开发出10条指令，程序员的平均工资是每月4 000美元。如果一条指令为一个字长，计算使存储器装满程序所需用的成本。",
+      "answer": "",
+      "analysis": "",
+      "related_knowledge_titles": [
+        "的优点",
+        "瀑布模型",
+        "增量模型",
+        "螺旋模型",
+        "喷泉模型"
+      ],
+      "primary_knowledge_titles": [
+        "软件生命周期概念"
+      ],
+      "prerequisite_knowledge_titles": [],
+      "knowledge_points": [
+        "的优点",
+        "瀑布模型",
+        "增量模型",
+        "螺旋模型",
+        "喷泉模型"
+      ],
+      "related_knowledge_ids": [
+        "knode_3d5c5e7ecc17",
+        "chunk_0f836741bdb6",
+        "chunk_553261bdefaa",
+        "chunk_e3474ccf4f4a",
+        "chunk_f1fe750cb6f1",
+        "chunk_ceef8de80ea4"
+      ],
+      "related_knowledge_node_ids": [
+        "knode_3d5c5e7ecc17",
+        "chunk_0f836741bdb6",
+        "chunk_553261bdefaa",
+        "chunk_e3474ccf4f4a",
+        "chunk_f1fe750cb6f1"
+      ],
+      "related_knowledge": [
+        {
+          "knowledge_id": "knode_3d5c5e7ecc17",
+          "node_id": "knode_3d5c5e7ecc17",
+          "title": "的优点",
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.4 软 件 过 程",
+            "1.4.8 微软过程"
+          ],
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.4 软 件 过 程",
+            "subsection": "1.4.8 微软过程",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.4 软 件 过 程",
+              "1.4.8 微软过程"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.4 软 件 过 程 / 1.4.8 微软过程",
+            "pages": [
+              46,
+              47
+            ]
+          },
+          "pages": [
+            46,
+            47
+          ],
+          "content_preview": "优点：综合了 RUP 和敏捷过程的优点，适合有限资源和时间的商业项目。",
+          "confidence": 0.3667,
+          "match_score": 22.0,
+          "match_reasons": [
+            "same_chapter_path_2",
+            "near_page:2"
+          ],
+          "source": "detailed_knowledge_tree_json"
+        },
+        {
+          "knowledge_id": "chunk_0f836741bdb6",
+          "node_id": "chunk_0f836741bdb6",
+          "title": "瀑布模型",
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.5 小 结"
+          ],
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.5 小 结",
+            "subsection": "",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.5 小 结"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.5 小 结",
+            "pages": [
+              48
+            ]
+          },
+          "pages": [
+            48
+          ],
+          "content_preview": "瀑布模型历史悠久、广为人知，它的优势在于它是规范的、文档驱动的方法；这种模型的问题是，最终开发出的软件产品可能并不是用户真正需要的。",
+          "confidence": 0.3667,
+          "match_score": 22.0,
+          "match_reasons": [
+            "same_chapter_path_2",
+            "near_page:1"
+          ],
+          "source": "knowledge_points_json"
+        },
+        {
+          "knowledge_id": "chunk_553261bdefaa",
+          "node_id": "chunk_553261bdefaa",
+          "title": "增量模型",
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.5 小 结"
+          ],
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.5 小 结",
+            "subsection": "",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.5 小 结"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.5 小 结",
+            "pages": [
+              48
+            ]
+          },
+          "pages": [
+            48
+          ],
+          "content_preview": "增量模型具有可在软件开发的早期阶段使投资获得明显回报和较易维护的优点，但是，要求软件具有开放的结构是使用这种模型时固有的困难。",
+          "confidence": 0.3667,
+          "match_score": 22.0,
+          "match_reasons": [
+            "same_chapter_path_2",
+            "near_page:1"
+          ],
+          "source": "knowledge_points_json"
+        },
+        {
+          "knowledge_id": "chunk_e3474ccf4f4a",
+          "node_id": "chunk_e3474ccf4f4a",
+          "title": "螺旋模型",
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.5 小 结"
+          ],
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.5 小 结",
+            "subsection": "",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.5 小 结"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.5 小 结",
+            "pages": [
+              48
+            ]
+          },
+          "pages": [
+            48
+          ],
+          "content_preview": "风险驱动的螺旋模型适用于内部开发的大型软件项目，但是，只有在开发人员具有风险分析和排除风险的经验及专门知识时，使用这种模型才会获得成功。",
+          "confidence": 0.3667,
+          "match_score": 22.0,
+          "match_reasons": [
+            "same_chapter_path_2",
+            "near_page:1"
+          ],
+          "source": "knowledge_points_json"
+        },
+        {
+          "knowledge_id": "chunk_f1fe750cb6f1",
+          "node_id": "chunk_f1fe750cb6f1",
+          "title": "喷泉模型",
+          "section_path": [
+            "软件工程",
+            "软件工程学概述",
+            "1.5 小 结"
+          ],
+          "learning_location": {
+            "unit": "软件工程",
+            "chapter": "软件工程学概述",
+            "section": "1.5 小 结",
+            "subsection": "",
+            "path": [
+              "软件工程",
+              "软件工程学概述",
+              "1.5 小 结"
+            ],
+            "path_text": "软件工程 / 软件工程学概述 / 1.5 小 结",
+            "pages": [
+              48
+            ]
+          },
+          "pages": [
+            48
+          ],
+          "content_preview": "喷泉模型较好地体现了面向对象软件开发过程无缝迭代的特性，是典型的面向对象的软件过程模型之一。",
+          "confidence": 0.3667,
+          "match_score": 22.0,
+          "match_reasons": [
+            "same_chapter_path_2",
+            "near_page:1"
+          ],
+          "source": "knowledge_points_json"
+        }
+      ],
+      "confidence": 0.95,
+      "requires_image": false,
+      "generated_by_llm": false,
+      "metadata": {
+        "node_id": "node_4c2d9ccc683f",
+        "chapter_id": "chapter_429b280b7253",
+        "extract_method": "v12_rule_from_pdf_text",
+        "question_likelihood_score": 10,
+        "bbox": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "llm_question_judge": {
+          "is_question": true,
+          "question_type": "calculation",
+          "confidence": 0.95,
+          "reason": "文本位于“习题”章节，且包含明确的计算任务（计算成本），属于典型的课后计算题。"
+        },
+        "question_keep_method": "llm_question_judge",
+        "post_cleaned": true,
+        "post_clean_version": "v11_optimized_transform",
+        "image_count": 0,
+        "image_attach_method": "same_page_or_nearby_page_by_page_number",
+        "question_mentions_image": false,
+        "knowledge_attach_method": "rule_fallback_after_llm",
+        "knowledge_relation_count": 4,
+        "final_standard_cleaned": true,
+        "final_standard_version": "v11_final_standard",
+        "post_cleaned_knowledge_relations": true,
+        "post_clean_relation_version": "v11_final_standard",
+        "llm_question_linking_used": true,
+        "llm_question_linking_applied": {
+          "question_relations_added": 0,
+          "image_relations_added": 0,
+          "knowledge_relations_added": 0,
+          "ignored": []
+        },
+        "knowledge_attach_version": "v12_question_bank_llm_prefer",
+        "knowledge_attach_candidate_count": 857
+      }
+    }
+  ],
+  "stats": {
+    "question_count": 12,
+    "linked_question_count": 12,
+    "unlinked_question_count": 0
+  }
+}

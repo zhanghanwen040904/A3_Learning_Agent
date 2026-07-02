@@ -5,11 +5,13 @@ from typing import Dict, List
 
 from config import config
 from .structured_course_data import load_semantic_chunks, normalize_title, split_sentences, summarize_text
+from .rag import generated_kb_dir, questions_json_dir, knowledge_points_dir
 
 ASSESSMENT_DIR = Path(config.RAG_SOURCE_DIR).parent / "assessment"
 KNOWLEDGE_POINTS_PATH = ASSESSMENT_DIR / "knowledge_points.json"
 QUESTION_BANK_PATH = ASSESSMENT_DIR / "question_bank.json"
 MANUAL_QUESTION_BANK_PATH = Path(config.RAG_SOURCE_DIR).parent / "manual_question_bank" / "manual_question_bank_system.json"
+GENERATED_QUESTION_BANK_DIR = generated_kb_dir() / "question_bank_json"
 
 DEFAULT_COUNT = 5
 DOMAIN_TERMS = [
@@ -303,15 +305,126 @@ def build_assessment_assets(force: bool = False) -> dict:
 
 
 def load_knowledge_points() -> List[dict]:
+    rag_knowledge_points = _load_rag_knowledge_points()
+    if rag_knowledge_points:
+        return rag_knowledge_points
     if not KNOWLEDGE_POINTS_PATH.exists():
         build_assessment_assets(force=True)
     return json.loads(KNOWLEDGE_POINTS_PATH.read_text(encoding="utf-8"))
+
+
+def _load_rag_knowledge_points() -> List[dict]:
+    items: List[dict] = []
+    folder = knowledge_points_dir()
+    if not folder.exists():
+        return items
+    for path in sorted(folder.glob("*.json")):
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        rows = payload.get("knowledge_points") or payload.get("items") or payload if isinstance(payload, list) else []
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            title = normalize_title(row.get("title") or row.get("name") or "")
+            content = str(row.get("content") or row.get("description") or row.get("source_text") or "").strip()
+            section_path = row.get("section_path") or []
+            if not isinstance(section_path, list):
+                section_path = [str(section_path)] if section_path else []
+            if not title:
+                continue
+            items.append(
+                {
+                    "id": row.get("knowledge_id") or row.get("node_id") or row.get("chunk_id") or f"kp-{_slug(title)}",
+                    "name": title,
+                    "path": "/".join(section_path) if section_path else title,
+                    "parent_id": row.get("parent_id"),
+                    "document": row.get("source_file") or path.name,
+                    "summary": str(row.get("content_preview") or content[:120]).strip(),
+                    "keywords": row.get("keywords") or _extract_keywords(content, title),
+                    "children": row.get("children") or [],
+                }
+            )
+    return items
+
+
+def _normalize_generated_question_item(item: dict) -> dict:
+    related_titles = item.get("related_knowledge_titles") or item.get("knowledge_points") or []
+    primary_titles = item.get("primary_knowledge_titles") or related_titles
+    prerequisite_titles = item.get("prerequisite_knowledge_titles") or []
+    pages = item.get("pages") or []
+    section_path = item.get("section_path") or []
+    stem = str(item.get("stem") or item.get("content") or item.get("prompt") or "").strip()
+    return {
+        "id": item.get("question_id") or item.get("id") or f"generated-{len(stem)}",
+        "question_id": item.get("question_id") or item.get("id") or "",
+        "knowledge_point": (primary_titles[0] if primary_titles else (related_titles[0] if related_titles else "")),
+        "knowledge_path": "/".join(section_path) if isinstance(section_path, list) else str(section_path or ""),
+        "chapter": section_path[1] if isinstance(section_path, list) and len(section_path) > 1 else "",
+        "source_document": item.get("source_file") or "",
+        "question_type": item.get("question_type") or "",
+        "difficulty": item.get("difficulty_level") or item.get("difficulty") or "basic",
+        "prompt": stem,
+        "stem": stem,
+        "options": item.get("options") or [],
+        "reference_answer": item.get("answer") or "",
+        "explanation": item.get("analysis") or "",
+        "common_mistake": item.get("common_mistake") or "",
+        "scoring_points": item.get("scoring_points") or [],
+        "keywords": item.get("keywords") or [],
+        "pages": pages,
+        "tags": item.get("tags") or [],
+        "knowledge_type": item.get("knowledge_type") or "",
+        "chunk_id": item.get("chunk_id") or "",
+        "related_knowledge_titles": related_titles,
+        "primary_knowledge_titles": primary_titles,
+        "prerequisite_knowledge_titles": prerequisite_titles,
+        "related_knowledge": item.get("related_knowledge") or [],
+        "confidence": item.get("confidence") or 0,
+        "requires_image": bool(item.get("requires_image")),
+        "generated_by_llm": bool(item.get("generated_by_llm")),
+        "section_path": section_path if isinstance(section_path, list) else [],
+    }
+
+
+def _load_generated_question_bank() -> List[dict]:
+    questions_dir = questions_json_dir()
+    if questions_dir.exists():
+        items: List[dict] = []
+        for path in sorted(questions_dir.glob("*.json")):
+            try:
+                payload = json.loads(path.read_text(encoding="utf-8"))
+            except Exception:
+                continue
+            rows = payload.get("questions") or payload.get("items") or payload if isinstance(payload, list) else []
+            for item in rows:
+                if isinstance(item, dict):
+                    items.append(_normalize_generated_question_item(item))
+        if items:
+            return items
+
+    if not GENERATED_QUESTION_BANK_DIR.exists():
+        return []
+    items: List[dict] = []
+    for path in sorted(GENERATED_QUESTION_BANK_DIR.glob("*.json")):
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        for item in payload.get("questions", []) if isinstance(payload, dict) else []:
+            if isinstance(item, dict):
+                items.append(_normalize_generated_question_item(item))
+    return items
 
 
 def load_question_bank() -> List[dict]:
     manual_question_bank = _load_manual_question_bank()
     if manual_question_bank:
         return manual_question_bank
+    generated_question_bank = _load_generated_question_bank()
+    if generated_question_bank:
+        return generated_question_bank
     if not QUESTION_BANK_PATH.exists():
         build_assessment_assets(force=True)
     return json.loads(QUESTION_BANK_PATH.read_text(encoding="utf-8"))
@@ -347,6 +460,9 @@ def _score_question_match(item: dict, focus_terms: List[str], target: str, prefe
     chapter = str(item.get("chapter") or "")
     keywords = [str(part or "") for part in (item.get("keywords") or [])]
     tags = [str(part or "") for part in (item.get("tags") or [])]
+    related_titles = [str(part or "") for part in (item.get("related_knowledge_titles") or [])]
+    primary_titles = [str(part or "") for part in (item.get("primary_knowledge_titles") or [])]
+    prerequisite_titles = [str(part or "") for part in (item.get("prerequisite_knowledge_titles") or [])]
 
     normalized_fields = {
         "knowledge_point": _normalize_match_text(knowledge_point),
@@ -354,6 +470,9 @@ def _score_question_match(item: dict, focus_terms: List[str], target: str, prefe
         "chapter": _normalize_match_text(chapter),
         "keywords": [_normalize_match_text(part) for part in keywords],
         "tags": [_normalize_match_text(part) for part in tags],
+        "related_titles": [_normalize_match_text(part) for part in related_titles],
+        "primary_titles": [_normalize_match_text(part) for part in primary_titles],
+        "prerequisite_titles": [_normalize_match_text(part) for part in prerequisite_titles],
     }
 
     score = 0
@@ -380,11 +499,25 @@ def _score_question_match(item: dict, focus_terms: List[str], target: str, prefe
 
         if any(focus == tag for tag in normalized_fields["tags"]):
             score += 4
+        if any(focus == title for title in normalized_fields["primary_titles"]):
+            score += 18
+        elif any(focus in title for title in normalized_fields["primary_titles"]):
+            score += 12
+        if any(focus == title for title in normalized_fields["related_titles"]):
+            score += 10
+        elif any(focus in title for title in normalized_fields["related_titles"]):
+            score += 6
+        if any(focus == title for title in normalized_fields["prerequisite_titles"]):
+            score += 5
 
     normalized_target = _normalize_match_text(target)
     if normalized_target:
-        if normalized_target == normalized_fields["knowledge_point"]:
+        if any(normalized_target == title for title in normalized_fields["primary_titles"]):
+            score += 24
+        elif normalized_target == normalized_fields["knowledge_point"]:
             score += 20
+        elif any(normalized_target in title for title in normalized_fields["primary_titles"]):
+            score += 16
         elif normalized_target in normalized_fields["knowledge_path"]:
             score += 12
         elif normalized_target == normalized_fields["chapter"]:
@@ -427,8 +560,10 @@ def _difficulty_preferences(stage_index: int | None) -> List[str]:
 
 
 def generate_personalized_questions(profile: dict, mastery_records: List[dict], count: int = DEFAULT_COUNT, knowledge_point: str = "", knowledge_points: List[str] | None = None, stage_index: int | None = None, stage_title: str = "") -> dict:
-    build_assessment_assets()
     question_bank = load_question_bank()
+    if not question_bank:
+        build_assessment_assets()
+        question_bank = load_question_bank()
     knowledge_points_tree = load_knowledge_points()
     focus_points = _parse_profile_focus(profile, mastery_records)
 

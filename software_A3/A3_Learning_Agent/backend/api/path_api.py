@@ -6,6 +6,7 @@ from flask import Blueprint, request
 from ai.agents import SafetyAgent
 from ai.rag import retrieve_knowledge, retrieve_knowledge_items
 from ai.spark_api import content_audit, spark_chat
+from api.resource_api import _append_images_to_resource
 from db import mysql_db
 from utils import fail, success
 from utils.auth_decorator import login_required
@@ -158,6 +159,7 @@ def _normalize_resource(resource: dict) -> dict:
     if _is_model_error_text(item.get("content")):
         item["content"] = _friendly_resource_content(item)
     item["metadata"] = _safe_json(item.get("metadata"), {})
+    item = _append_images_to_resource(item)
     stage_meta = item["metadata"].get("stage") if isinstance(item.get("metadata"), dict) else None
     if isinstance(stage_meta, dict):
         item["stage_id"] = item.get("stage_id") or stage_meta.get("stage_id")
@@ -365,3 +367,6 @@ def list_my_paths():
 @login_required
 def list_paths(user_id: int):
     return list_my_paths()
+
+
+

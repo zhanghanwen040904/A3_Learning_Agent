@@ -8,7 +8,7 @@ from flask import Blueprint, Response, request, stream_with_context
 
 from ai.agents import agent_manager
 from ai.rag import generated_kb_dir
-from ai.spark_api import content_audit
+from ai.spark_api import content_audit, spark_chat
 from db import mysql_db
 from utils import fail, success
 from utils.auth_decorator import login_required
@@ -18,6 +18,20 @@ from utils.profile_session import resolve_profile_session
 resource_bp = Blueprint("resource", __name__)
 IMAGE_PATTERN = re.compile(r"(?:[A-Za-z]:\\[^\n\r，,；;）)]+|images[\\/][^\n\r，,；;）)]+)\.(?:png|jpg|jpeg|webp|gif)", re.IGNORECASE)
 IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".webp", ".gif"}
+FORBIDDEN_DOC_FIELDS = {
+    "query",
+    "knowledge_base_dir",
+    "retrieved_chunks",
+    "knowledge_tree",
+    "images",
+    "generation_rules",
+    "debug",
+    "prompt",
+    "raw_request",
+    "raw_response",
+    "system_prompt",
+    "user_prompt",
+}
 
 
 def _safe_json_loads(value, default):
@@ -29,6 +43,275 @@ def _safe_json_loads(value, default):
         return json.loads(value)
     except Exception:
         return default
+
+
+def _normalize_compare_text(value: str) -> str:
+    text = str(value or "").strip().lower()
+    text = text.replace("　", " ")
+    text = re.sub(r"[\s\-_—–·•，。！？；：、,.!?;:()\[\]{}<>《》“”\"'`~]+", "", text)
+    return text
+
+
+def _safe_list(value):
+    return value if isinstance(value, list) else []
+
+
+def _dedupe_list(items, key_fn):
+    seen = set()
+    result = []
+    for item in items or []:
+        if not item:
+            continue
+        key = key_fn(item)
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        result.append(item)
+    return result
+
+
+def _pick_text(mapping: dict, *keys, default=""):
+    if not isinstance(mapping, dict):
+        return default
+    for key in keys:
+        value = mapping.get(key)
+        if value not in (None, "", [], {}):
+            return value
+    return default
+
+
+def _normalize_section_path(value):
+    if isinstance(value, list):
+        return [str(item).strip() for item in value if str(item).strip()]
+    if isinstance(value, str) and value.strip():
+        return [part.strip() for part in re.split(r"[>/|｜]", value) if part.strip()]
+    return []
+
+
+def _normalize_learning_location(value, section_path=None, pages=None):
+    path = _normalize_section_path(section_path)
+    base = value if isinstance(value, dict) else {}
+    unit = str(base.get("unit") or (path[0] if len(path) > 0 else "")).strip()
+    chapter = str(base.get("chapter") or (path[1] if len(path) > 1 else "")).strip()
+    section = str(base.get("section") or (path[2] if len(path) > 2 else "")).strip()
+    subsection = str(base.get("subsection") or (path[3] if len(path) > 3 else "")).strip()
+    normalized_pages = pages if isinstance(pages, list) else _safe_list(base.get("pages"))
+    return {
+        "unit": unit,
+        "chapter": chapter,
+        "section": section,
+        "subsection": subsection,
+        "path": [item for item in [unit, chapter, section, subsection] if item],
+        "path_text": " > ".join([item for item in [unit, chapter, section, subsection] if item]),
+        "pages": normalized_pages,
+    }
+
+
+def _safe_evidence_item(item):
+    if not isinstance(item, dict):
+        return None
+    title = str(_pick_text(item, "title")).strip()
+    section_path = _normalize_section_path(_pick_text(item, "section_path", "sectionpath"))
+    learning_location = _normalize_learning_location(
+        _pick_text(item, "learning_location"),
+        section_path=section_path,
+        pages=_safe_list(_pick_text(item, "pages")),
+    )
+    content_preview = str(_pick_text(item, "content_preview", "content", default="")).strip()
+    if not title and not content_preview:
+        return None
+    return {
+        "title": title or "未命名知识点",
+        "content_preview": content_preview[:220],
+        "section_path": section_path,
+        "learning_location": learning_location,
+        "pages": _safe_list(_pick_text(item, "pages")),
+        "source_file": str(_pick_text(item, "source_file", "source", default="")).strip(),
+    }
+
+
+def _build_student_context(evidence_items):
+    first = evidence_items[0] if evidence_items else {}
+    location = _normalize_learning_location(
+        _pick_text(first, "learning_location"),
+        section_path=_pick_text(first, "section_path"),
+        pages=_pick_text(first, "pages", default=[]),
+    )
+    return {
+        "currentunit": location.get("unit", ""),
+        "currentchapter": location.get("chapter", ""),
+        "currentsection": location.get("section", ""),
+        "currentpage": location.get("pages", []),
+        "path": location.get("path", []),
+        "path_text": location.get("path_text", ""),
+    }
+
+
+def _sanitize_core_concepts(payload, evidence_items):
+    concepts = []
+    for item in _safe_list(payload.get("core_concepts")):
+        if not isinstance(item, dict):
+            continue
+        name = str(_pick_text(item, "name", "title")).strip()
+        if not name:
+            continue
+        concepts.append(
+            {
+                "name": name,
+                "definition": str(_pick_text(item, "definition", "content", default="")).strip(),
+                "why_it_matters": str(_pick_text(item, "why_it_matters", default="")).strip(),
+                "example": str(_pick_text(item, "example", default="")).strip(),
+                "common_misunderstanding": str(_pick_text(item, "common_misunderstanding", default="")).strip(),
+            }
+        )
+    if not concepts:
+        for evidence in evidence_items[:6]:
+            concepts.append(
+                {
+                    "name": evidence["title"],
+                    "definition": evidence["content_preview"],
+                    "why_it_matters": "",
+                    "example": "",
+                    "common_misunderstanding": "",
+                }
+            )
+    return _dedupe_list(concepts, lambda item: _normalize_compare_text(item.get("name")))
+
+
+def _sanitize_explanations(payload, evidence_items):
+    items = []
+    for item in _safe_list(payload.get("knowledge_explanation")):
+        if not isinstance(item, dict):
+            continue
+        title = str(_pick_text(item, "title", "name")).strip()
+        explanation = str(_pick_text(item, "explanation", "content", default="")).strip()
+        if not title and not explanation:
+            continue
+        items.append(
+            {
+                "title": title or "知识点讲解",
+                "explanation": explanation,
+                "process": [str(step).strip() for step in _safe_list(item.get("process")) if str(step).strip()],
+                "input_output": item.get("input_output") if isinstance(item.get("input_output"), dict) else None,
+                "example": str(_pick_text(item, "example", default="")).strip(),
+                "exam_focus": str(_pick_text(item, "exam_focus", default="")).strip(),
+            }
+        )
+    if not items:
+        for evidence in evidence_items[:6]:
+            items.append(
+                {
+                    "title": evidence["title"],
+                    "explanation": evidence["content_preview"],
+                    "process": [],
+                    "input_output": None,
+                    "example": "",
+                    "exam_focus": "",
+                }
+            )
+    return _dedupe_list(items, lambda item: _normalize_compare_text(item.get("title")))
+
+
+def _sanitize_mistakes(payload, evidence_items):
+    mistakes = []
+    for item in _safe_list(payload.get("mistakes")):
+        if not isinstance(item, dict):
+            continue
+        title = str(_pick_text(item, "mistake_title", "mistake", "title")).strip()
+        if not title:
+            continue
+        mistakes.append(
+            {
+                "mistake_title": title,
+                "mistake": title,
+                "reason": str(_pick_text(item, "reason", default="")).strip(),
+                "correction": str(_pick_text(item, "correction", default="")).strip(),
+                "example": str(_pick_text(item, "example", default="")).strip(),
+            }
+        )
+    if not mistakes and evidence_items:
+        merged = " ".join(item.get("content_preview", "") for item in evidence_items)
+        if "可行性研究" in merged:
+            mistakes = [
+                {"mistake_title": "把可行性研究等同于需求分析", "mistake": "把可行性研究等同于需求分析", "reason": "两者阶段目标不同，可行性研究先判断项目是否值得做、能否做。", "correction": "先评估技术、经济、操作可行性，再进入需求分析。", "example": ""},
+                {"mistake_title": "只关注技术可行性", "mistake": "只关注技术可行性", "reason": "教材通常同时强调经济可行性和操作可行性。", "correction": "至少从技术、经济、操作三个维度综合判断。", "example": ""},
+                {"mistake_title": "误以为此阶段要完成详细设计", "mistake": "误以为此阶段要完成详细设计", "reason": "可行性研究用于决策支持，不负责详细设计。", "correction": "本阶段输出应是可行性分析结论与建议。", "example": ""},
+            ]
+    return _dedupe_list(mistakes, lambda item: _normalize_compare_text(item.get("mistake_title") or item.get("mistake")))
+
+
+def _sanitize_learningresources(evidence_items):
+    return _dedupe_list(
+        [
+            {
+                "title": item["title"],
+                "content_preview": item["content_preview"],
+                "section_path": item["section_path"],
+                "learning_location": item["learning_location"],
+                "pages": item["pages"],
+                "source_file": item["source_file"],
+            }
+            for item in evidence_items
+        ],
+        lambda item: "{}|{}".format(
+            _normalize_compare_text(item.get("title")),
+            _normalize_compare_text(" > ".join(item.get("section_path") or [])),
+        ),
+    )
+
+
+def _sanitize_doc_payload(resource: dict) -> dict:
+    payload = _extract_resource_json(resource)
+    if not payload:
+        content = str(resource.get("content") or "").strip()
+        if content:
+            resource["content"] = "未检索到对应知识库片段。"
+        return resource
+
+    for key in list(payload.keys()):
+        if key in FORBIDDEN_DOC_FIELDS:
+            payload.pop(key, None)
+
+    metadata = _safe_json_loads(resource.get("metadata"), {})
+    evidence_source = _safe_list(metadata.get("evidence"))
+    payload_evidence = _safe_list(payload.get("learningresources"))
+    evidence_items = _dedupe_list(
+        [item for item in [_safe_evidence_item(raw) for raw in (evidence_source or payload_evidence)] if item],
+        lambda item: "{}|{}".format(
+            _normalize_compare_text(item.get("title")),
+            _normalize_compare_text(" > ".join(item.get("section_path") or [])),
+        ),
+    )
+
+    if not evidence_items:
+        empty_payload = {
+            "resourcetype": "doc",
+            "resourcetitle": str(payload.get("resourcetitle") or resource.get("title") or "课程讲解文档"),
+            "overview": {"title": str(resource.get("title") or "课程讲解文档"), "content": "未检索到对应知识库片段。"},
+            "studentcontext": {"currentunit": "", "currentchapter": "", "currentsection": "", "currentpage": []},
+            "core_concepts": [],
+            "knowledge_explanation": [],
+            "mistakes": [],
+            "learningresources": [],
+            "summary": {"one_sentence": "未检索到对应知识库片段。", "key_takeaways": []},
+            "self_check": [],
+        }
+        metadata["debug"] = {"empty_retrieval": True}
+        resource["metadata"] = metadata
+        resource["content"] = json.dumps(empty_payload, ensure_ascii=False)
+        return resource
+
+    payload["studentcontext"] = _build_student_context(evidence_items)
+    payload["learningresources"] = _sanitize_learningresources(evidence_items)
+    payload["core_concepts"] = _sanitize_core_concepts(payload, evidence_items)
+    payload["knowledge_explanation"] = _sanitize_explanations(payload, evidence_items)
+    payload["mistakes"] = _sanitize_mistakes(payload, evidence_items)
+    if isinstance(payload.get("summary"), dict):
+        key_takeaways = _dedupe_list(_safe_list(payload["summary"].get("key_takeaways")), lambda item: _normalize_compare_text(item))
+        payload["summary"]["key_takeaways"] = [str(item).strip() for item in key_takeaways if str(item).strip()]
+    resource["metadata"] = metadata
+    resource["content"] = json.dumps(payload, ensure_ascii=False)
+    return resource
 
 
 def _normalize_image_ref(path: Path) -> str:
@@ -70,58 +353,208 @@ def _chapter_score(folder_name: str, text: str) -> int:
     return score
 
 
-def _pick_resource_images(resource: dict, limit: int = 4) -> list[dict]:
-    metadata = _safe_json_loads(resource.get("metadata"), {})
-    existing_text = "\n".join(
-        [
-            str(resource.get("content") or ""),
-            str(resource.get("personalization") or ""),
-            json.dumps(metadata, ensure_ascii=False),
-        ]
-    )
-    if IMAGE_PATTERN.search(existing_text):
-        return metadata.get("images") if isinstance(metadata.get("images"), list) else []
 
+def _extract_resource_json(resource: dict) -> dict:
+    content = str(resource.get("content") or "").strip()
+    if not content:
+        return {}
+    content = re.sub(r"^\s*```(?:json)?\s*", "", content, flags=re.IGNORECASE)
+    content = re.sub(r"\s*```\s*$", "", content)
+    start = content.find("{")
+    end = content.rfind("}")
+    if start < 0 or end <= start:
+        return {}
+    try:
+        data = json.loads(content[start : end + 1])
+        return data if isinstance(data, dict) else {}
+    except Exception:
+        return {}
+
+
+def _normalize_learning_image(raw_image, fallback_caption: str = "image") -> dict | None:
+    if isinstance(raw_image, str) and raw_image.strip():
+        return {"path": raw_image.strip(), "caption": fallback_caption}
+    if isinstance(raw_image, dict):
+        path = str(raw_image.get("path") or "").strip()
+        if path:
+            return {
+                "path": path,
+                "caption": str(raw_image.get("caption") or fallback_caption or "image").strip(),
+            }
+    return None
+
+
+def _extract_group_candidates(resource: dict) -> list[dict]:
+    data = _extract_resource_json(resource)
+    groups = []
+    for item in data.get("learningresources") or []:
+        if not isinstance(item, dict):
+            continue
+        title = str(item.get("title") or item.get("source") or "image").strip()
+        section = str(item.get("sectionpath") or "").strip()
+        source = str(item.get("source") or "").strip()
+        content = str(item.get("content") or "").strip()
+        images = []
+        for raw_image in item.get("images") or []:
+            normalized = _normalize_learning_image(raw_image, title or "image")
+            if normalized:
+                images.append(normalized)
+        if images:
+            groups.append(
+                {
+                    "label": title or "image",
+                    "section": section,
+                    "source": source,
+                    "content": content[:400],
+                    "images": images[:3],
+                }
+            )
+    return groups
+
+
+def _looks_irrelevant_image_text(text: str) -> bool:
+    low = str(text or "").lower()
+    noise_tokens = [
+        "contact",
+        "contacts",
+        "fax",
+        "postal code",
+        "company",
+        "mobile phone",
+        "address",
+        "country/region",
+        "autonumber",
+        "work phone",
+        "city",
+        "state/province",
+    ]
+    return any(token in low for token in noise_tokens)
+
+
+def _group_score(resource: dict, group: dict) -> int:
     knowledge_points = _safe_json_loads(resource.get("knowledge_points"), [])
     if not isinstance(knowledge_points, list):
         knowledge_points = [str(knowledge_points)]
-    sources = resource.get("sources") or []
-    source_text = " ".join(str(item.get("source") or item.get("source_name") or "") for item in sources if isinstance(item, dict))
-    search_text = " ".join(
+    group_text = " ".join(
+        [
+            str(group.get("label") or ""),
+            str(group.get("section") or ""),
+            str(group.get("source") or ""),
+            str(group.get("content") or ""),
+            " ".join(str(img.get("caption") or "") for img in group.get("images") or []),
+            " ".join(str(img.get("path") or "") for img in group.get("images") or []),
+        ]
+    ).lower()
+    target_text = " ".join(
         [
             str(resource.get("title") or ""),
             str(resource.get("resource_type") or ""),
-            str(resource.get("content") or "")[:500],
             " ".join(str(item) for item in knowledge_points),
-            source_text,
         ]
-    )
+    ).lower()
+    score = 0
+    for point in knowledge_points:
+        point = str(point or "").strip().lower()
+        if point and point in group_text:
+            score += 10
+    for token in re.findall(r"[\u4e00-\u9fa5A-Za-z0-9]{2,}", target_text):
+        if token and token in group_text:
+            score += 2
+    if _looks_irrelevant_image_text(group_text):
+        score -= 20
+    return score
 
-    image_root = generated_kb_dir() / "images"
-    if not image_root.exists():
+
+def _select_groups_with_llm(resource: dict, groups: list[dict]) -> list[dict]:
+    if not groups:
+        return []
+    ranked = sorted(groups, key=lambda item: _group_score(resource, item), reverse=True)
+    candidates = []
+    for index, group in enumerate(ranked[:6], start=1):
+        candidates.append(
+            {
+                "id": index,
+                "label": group["label"],
+                "section": group["section"],
+                "source": group["source"],
+                "content": group["content"],
+                "image_count": len(group["images"]),
+                "paths": [img["path"] for img in group["images"]],
+            }
+        )
+    knowledge_points = _safe_json_loads(resource.get("knowledge_points"), [])
+    if not isinstance(knowledge_points, list):
+        knowledge_points = [str(knowledge_points)]
+    prompt = (
+        "You review textbook image groups for a learning resource. "
+        "Keep only image groups that directly explain the current knowledge points. "
+        "If one image is insufficient and two images together are required to explain the same concept, set mode to pair. "
+        "Delete unrelated screenshots, form pages, decorative images, or images unrelated to the knowledge points. "
+        "Return strict JSON only.\n\n"
+        f"resource_title: {resource.get('title', '')}\n"
+        f"resource_type: {resource.get('resource_type', '')}\n"
+        f"knowledge_points: {json.dumps(knowledge_points, ensure_ascii=False)}\n"
+        f"candidate_groups: {json.dumps(candidates, ensure_ascii=False)}\n\n"
+        '{"keep_ids":[1,2],"group_mode":{"1":"pair","2":"single"}}'
+    )
+    try:
+        raw = spark_chat(prompt)
+        start = raw.find("{")
+        end = raw.rfind("}")
+        if start < 0 or end <= start:
+            return ranked[:2]
+        data = json.loads(raw[start : end + 1])
+        keep_ids = set()
+        for item in data.get("keep_ids", []):
+            try:
+                keep_ids.add(int(item))
+            except Exception:
+                continue
+        modes = data.get("group_mode") or {}
+        selected = []
+        for index, group in enumerate(ranked[:6], start=1):
+            if index not in keep_ids:
+                continue
+            mode = str(modes.get(str(index)) or modes.get(index) or "single").lower()
+            keep_count = 2 if mode == "pair" else 1
+            selected.append({**group, "images": group["images"][:keep_count]})
+        return selected or ranked[:2]
+    except Exception:
+        return ranked[:2]
+
+
+def _strip_image_hint_sections(content: str) -> str:
+    text = str(content or "")
+    text = re.sub(r"\n+##\s*閰嶅浘寤鸿[\s\S]*?(?=\n##\s+|\Z)", "\n", text, flags=re.IGNORECASE)
+    text = re.sub(r"\n+##\s*鐭ヨ瘑搴撻厤鍥綶\s\S]*?(?=\n##\s+|\Z)", "\n", text, flags=re.IGNORECASE)
+    text = re.sub(r"\n+閰嶅浘寤鸿[:锛歖[\s\S]*?(?=\n##\s+|\Z)", "\n", text, flags=re.IGNORECASE)
+    return re.sub(r"\n{3,}", "\n\n", text).strip()
+
+def _pick_resource_images(resource: dict, limit: int = 4) -> list[dict]:
+    groups = _extract_group_candidates(resource)
+    if not groups:
         return []
 
-    chapter_dirs = [path for path in image_root.iterdir() if path.is_dir()]
-    scored_dirs = sorted(
-        ((path, _chapter_score(path.name, search_text)) for path in chapter_dirs),
-        key=lambda item: item[1],
-        reverse=True,
-    )
-    selected_dirs = [path for path, score in scored_dirs if score >= 4][:2]
-    if not selected_dirs:
-        return []
-
+    selected_groups = _select_groups_with_llm(resource, groups)
     images = []
     seen = set()
-    for folder in selected_dirs:
-        for image_path in sorted(folder.iterdir()):
-            if not image_path.is_file() or image_path.suffix.lower() not in IMAGE_SUFFIXES:
+    for group in selected_groups:
+        for image in group.get("images") or []:
+            path = str(image.get("path") or "").strip()
+            caption = str(image.get("caption") or group.get("label") or "image").strip()
+            if not path or path in seen:
                 continue
-            ref = _normalize_image_ref(image_path)
-            if ref in seen:
+            if _looks_irrelevant_image_text(f"{caption} {path}"):
                 continue
-            seen.add(ref)
-            images.append({"caption": f"{folder.name} 教材配图", "path": ref})
+            seen.add(path)
+            images.append(
+                {
+                    "caption": caption,
+                    "path": path,
+                    "group_label": str(group.get("label") or ""),
+                    "group_size": len(group.get("images") or []),
+                }
+            )
             if len(images) >= limit:
                 return images
     return images
@@ -129,22 +562,14 @@ def _pick_resource_images(resource: dict, limit: int = 4) -> list[dict]:
 
 def _append_images_to_resource(resource: dict) -> dict:
     images = _pick_resource_images(resource)
-    if not images:
-        return resource
-
     metadata = _safe_json_loads(resource.get("metadata"), {})
-    existing_images = metadata.get("images") if isinstance(metadata.get("images"), list) else []
-    known = {str(item.get("path") or "") for item in existing_images if isinstance(item, dict)}
-    for image in images:
-        if image["path"] not in known:
-            existing_images.append(image)
-            known.add(image["path"])
-    metadata["images"] = existing_images
+    metadata["images"] = images
     resource["metadata"] = metadata
-
-    content = str(resource.get("content") or "")
-    if resource.get("resource_type") == "mindmap":
-        return resource
+    if resource.get("resource_type") == "doc":
+        resource = _sanitize_doc_payload(resource)
+    if resource.get("resource_type") != "mindmap":
+        resource["content"] = _strip_image_hint_sections(str(resource.get("content") or ""))
+    return resource
     if not IMAGE_PATTERN.search(content):
         lines = ["", "## 知识库配图"]
         lines.extend(f"- {image['caption']}：{image['path']}" for image in existing_images[:4])

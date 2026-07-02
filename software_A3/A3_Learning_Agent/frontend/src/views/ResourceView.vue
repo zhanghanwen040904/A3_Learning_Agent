@@ -184,6 +184,70 @@
           <div class="mindmap" v-html="mindmapSvgs[item.id || item.resource_type]"></div>
         </div>
 
+        <template v-else-if="item.resource_type === 'doc'">
+          <div class="doc-view">
+            <div class="doc-section">
+              <h4>当前学习位置</h4>
+              <div v-if="docLocation(item).pathText" class="doc-location">
+                <span>{{ docLocation(item).unit || "未识别单元" }}</span>
+                <span>{{ docLocation(item).chapter || "未识别章节" }}</span>
+                <span>{{ docLocation(item).section || "未识别小节" }}</span>
+                <span v-if="docLocation(item).pagesText">第 {{ docLocation(item).pagesText }} 页</span>
+              </div>
+              <div v-else class="doc-empty">未检索到对应知识库片段。</div>
+            </div>
+
+            <div class="doc-section">
+              <h4>核心概念讲解</h4>
+              <div v-if="docConcepts(item).length" class="doc-grid">
+                <div v-for="concept in docConcepts(item)" :key="concept.name" class="doc-card">
+                  <strong>{{ concept.name }}</strong>
+                  <p>{{ concept.definition }}</p>
+                  <small v-if="concept.why_it_matters">{{ concept.why_it_matters }}</small>
+                </div>
+              </div>
+              <div v-else class="doc-empty">未检索到对应知识库片段。</div>
+            </div>
+
+            <div class="doc-section">
+              <h4>知识点详细讲解</h4>
+              <div v-if="docExplanations(item).length" class="doc-stack">
+                <div v-for="entry in docExplanations(item)" :key="entry.title" class="doc-card">
+                  <strong>{{ entry.title }}</strong>
+                  <p>{{ entry.explanation }}</p>
+                </div>
+              </div>
+              <div v-else class="doc-empty">未检索到对应知识库片段。</div>
+            </div>
+
+            <div class="doc-section">
+              <h4>常见误区与纠正</h4>
+              <div v-if="docMistakes(item).length" class="doc-stack">
+                <div v-for="mistake in docMistakes(item)" :key="mistake.mistake_title" class="doc-card">
+                  <strong>{{ mistake.mistake_title }}</strong>
+                  <p>{{ mistake.reason }}</p>
+                  <small v-if="mistake.correction">纠正：{{ mistake.correction }}</small>
+                </div>
+              </div>
+              <div v-else class="doc-empty">未检索到对应知识库片段。</div>
+            </div>
+
+            <div class="doc-section">
+              <h4>课程知识库依据</h4>
+              <div v-if="docEvidence(item).length" class="doc-stack">
+                <div v-for="evidence in docEvidence(item)" :key="docEvidenceKey(evidence)" class="doc-card">
+                  <strong>{{ evidence.title }}</strong>
+                  <small>{{ evidence.section_path.join(" > ") || "未识别章节路径" }}</small>
+                  <small v-if="evidence.pages?.length">页码：{{ evidence.pages.join("、") }}</small>
+                  <small v-if="evidence.source_file">来源：{{ evidence.source_file }}</small>
+                  <p>{{ evidence.content_preview }}</p>
+                </div>
+              </div>
+              <div v-else class="doc-empty">未检索到对应知识库片段。</div>
+            </div>
+          </div>
+        </template>
+
         <template v-else-if="item.resource_type === 'video'">
           <video v-if="playableVideo(item)" controls :src="videoUrl(item)" class="video"></video>
           <div class="markdown-body" v-html="renderMarkdown(item.content)"></div>
@@ -385,6 +449,90 @@ function parseJsonLike(text) {
       return null;
     }
   }
+}
+function normalizeCompareText(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[\s\-_—–·•，。！？；：、,.!?;:()[\]{}<>《》“”"'`~]+/g, "");
+}
+function dedupeBy(items, keyFn) {
+  const seen = new Set();
+  return (items || []).filter((item) => {
+    const key = keyFn(item);
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+function docPayload(item) {
+  const parsed = parseJsonLike(item.content);
+  return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : null;
+}
+function docLocation(item) {
+  const payload = docPayload(item) || {};
+  const context = payload.studentcontext || {};
+  const path = Array.isArray(context.path) ? context.path : [];
+  const unit = context.currentunit || path[0] || "";
+  const chapter = context.currentchapter || path[1] || "";
+  const section = context.currentsection || path[2] || "";
+  const currentPage = Array.isArray(context.currentpage) ? context.currentpage : context.currentpage ? [context.currentpage] : [];
+  return {
+    unit,
+    chapter,
+    section,
+    pages: currentPage,
+    pagesText: currentPage.join("、"),
+    pathText: [unit, chapter, section].filter(Boolean).join(" > "),
+  };
+}
+function docConcepts(item) {
+  const payload = docPayload(item) || {};
+  return dedupeBy(
+    (payload.core_concepts || []).map((entry) => ({
+      name: entry?.name || entry?.title || "",
+      definition: entry?.definition || entry?.content || "",
+      why_it_matters: entry?.why_it_matters || "",
+    })),
+    (entry) => normalizeCompareText(entry.name),
+  ).filter((entry) => entry.name);
+}
+function docExplanations(item) {
+  const payload = docPayload(item) || {};
+  return dedupeBy(
+    (payload.knowledge_explanation || []).map((entry) => ({
+      title: entry?.title || entry?.name || "",
+      explanation: entry?.explanation || entry?.content || "",
+    })),
+    (entry) => normalizeCompareText(entry.title),
+  ).filter((entry) => entry.title || entry.explanation);
+}
+function docMistakes(item) {
+  const payload = docPayload(item) || {};
+  return dedupeBy(
+    (payload.mistakes || []).map((entry) => ({
+      mistake_title: entry?.mistake_title || entry?.mistake || entry?.title || "",
+      reason: entry?.reason || "",
+      correction: entry?.correction || "",
+    })),
+    (entry) => normalizeCompareText(entry.mistake_title),
+  ).filter((entry) => entry.mistake_title);
+}
+function docEvidence(item) {
+  const payload = docPayload(item) || {};
+  return dedupeBy(
+    (payload.learningresources || []).map((entry) => ({
+      title: entry?.title || "",
+      content_preview: entry?.content_preview || "",
+      section_path: Array.isArray(entry?.section_path) ? entry.section_path : [],
+      pages: Array.isArray(entry?.pages) ? entry.pages : [],
+      source_file: entry?.source_file || "",
+    })),
+    (entry) => `${normalizeCompareText(entry.title)}|${normalizeCompareText((entry.section_path || []).join(">"))}`,
+  ).filter((entry) => entry.title || entry.content_preview);
+}
+function docEvidenceKey(entry) {
+  return `${entry.title}-${(entry.section_path || []).join("-")}-${(entry.pages || []).join("-")}`;
 }
 function extractMindmapSource(text) {
   const source = stripFences(text);
@@ -678,6 +826,18 @@ onBeforeUnmount(() => closeEventSource());
 .markdown-body { max-height: 650px; overflow: auto; line-height: 1.75; }
 .markdown-body :deep(pre) { overflow: auto; padding: 16px; border-radius: 12px; background: #0f172a; color: #e2e8f0; }
 .mindmap-shell { min-height: 620px; overflow: auto; border: 1px solid #bfdbfe; border-radius: 8px; background: #ffffff; box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.06), 0 14px 36px rgba(30, 64, 175, 0.08); }
+.doc-view { display: grid; gap: 18px; }
+.doc-section { padding: 16px; border: 1px solid #dbeafe; border-radius: 12px; background: #ffffff; }
+.doc-section h4 { margin: 0 0 12px; color: #1d4ed8; font-size: 16px; }
+.doc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.doc-stack { display: grid; gap: 12px; }
+.doc-card { display: grid; gap: 8px; padding: 14px; border: 1px solid #e2e8f0; border-radius: 10px; background: #f8fbff; }
+.doc-card strong { color: #0f172a; }
+.doc-card p { margin: 0; color: #334155; line-height: 1.7; }
+.doc-card small { color: #64748b; line-height: 1.6; }
+.doc-location { display: flex; flex-wrap: wrap; gap: 8px; }
+.doc-location span { padding: 6px 10px; border-radius: 999px; background: #eff6ff; color: #1d4ed8; }
+.doc-empty { color: #64748b; }
 .mindmap-toolbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-bottom: 1px solid #dbeafe; color: #1d4ed8; font-weight: 700; background: linear-gradient(90deg, #eff6ff 0%, #ffffff 100%); }
 .mindmap { min-width: 1280px; min-height: 560px; overflow: auto; padding: 42px; display: grid; place-items: center; background-color: #fbfdff; background-image: linear-gradient(#e6f0ff 1px, transparent 1px), linear-gradient(90deg, #e6f0ff 1px, transparent 1px); background-size: 28px 28px; }
 .mindmap :deep(svg) { max-width: none; min-width: 980px; height: auto; filter: drop-shadow(0 10px 22px rgba(37, 99, 235, 0.14)); }
