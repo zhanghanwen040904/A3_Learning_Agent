@@ -186,6 +186,16 @@ def ensure_extended_tables() -> None:
     for column, definition in study_resource_extra_columns.items():
         _add_column("study_resource", column, definition)
 
+    user_extra_columns = {
+        "major": "VARCHAR(120) NULL",
+        "target_course": "VARCHAR(120) NULL",
+        "education_level": "VARCHAR(80) NULL",
+        "school": "VARCHAR(160) NULL",
+        "personal_info": "JSON NULL",
+    }
+    for column, definition in user_extra_columns.items():
+        _add_column("user", column, definition)
+
     profile_extra_columns = {
         "major": "VARCHAR(120) NULL",
         "target_course": "VARCHAR(120) NULL",

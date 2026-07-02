@@ -27,6 +27,9 @@ RESOURCE_PROMPT_TEMPLATE = """
 【学生个性化上下文】
 {context}
 
+【阶段专属要求】
+必须严格围绕上下文中的 stage_index、stage_title、stage_goal、stage_points 与 stage_unique_instruction 生成；不要把其他阶段内容混入当前资源。
+
 【PlannerAgent任务计划】
 {task_plan}
 
@@ -123,8 +126,11 @@ class StructuredResourceAgent:
         }
 
     def _fallback_doc_resource(self, context: Dict[str, Any], knowledge_text: str) -> Dict[str, Any]:
-        points = self._context_points(context) or ["软件工程核心知识"]
-        topic = "、".join(points[:3])
+        stage_title = str(context.get("stage_title") or "").strip()
+        points = [str(item) for item in (self._context_points(context) or [stage_title or "软件工程核心知识"]) if str(item).strip()]
+        if not points:
+            points = ["软件工程核心知识"]
+        topic = stage_title or "、".join(points[:3])
         excerpt = str(knowledge_text or "").strip()[:520] or "课程知识库暂未提供足够片段，请结合教材相关章节理解概念、流程、案例和常见误区。"
         explanations = []
         for point in points[:3]:

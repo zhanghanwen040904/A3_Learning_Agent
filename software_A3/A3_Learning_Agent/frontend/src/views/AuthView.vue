@@ -97,7 +97,7 @@ const features = [
 
 function saveSession(data) {
   localStorage.setItem("token", data.token);
-  localStorage.setItem("user", JSON.stringify({ id: data.id, username: data.username }));
+  localStorage.setItem("user", JSON.stringify({ id: data.id, username: data.username, profile_completed: data.profile_completed }));
 }
 
 function validateLoginForm(target) {
@@ -119,6 +119,7 @@ async function login() {
     const res = await authApi.login(form);
     if (res.code === 200) {
       saveSession(res.data);
+      if (res.data.profile_completed) localStorage.removeItem("a3_need_complete_user_info");
       ElMessage.success("登录成功");
       router.push(route.query.redirect || "/profile");
     } else {
@@ -144,7 +145,8 @@ async function register() {
     const res = await authApi.register({ username: registerForm.username, password: registerForm.password });
     if (res.code === 200) {
       saveSession(res.data);
-      ElMessage.success("注册成功，已自动登录");
+      localStorage.setItem("a3_need_complete_user_info", "1");
+      ElMessage.success("注册成功，请完善个人信息");
       registerVisible.value = false;
       router.push("/profile");
     } else {

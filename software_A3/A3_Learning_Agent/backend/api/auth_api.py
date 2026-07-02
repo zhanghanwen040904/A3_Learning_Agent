@@ -8,6 +8,10 @@ from utils.jwt_utils import generate_token
 auth_bp = Blueprint("auth", __name__)
 
 
+def _profile_completed(user: dict) -> bool:
+    return bool(str(user.get("major") or "").strip() or str(user.get("target_course") or "").strip())
+
+
 @auth_bp.post("/register")
 def register():
     """用户注册接口。
@@ -33,7 +37,7 @@ def register():
 
         user_id = mysql_db.insert("user", {"username": username, "password": generate_password_hash(password)})
         token = generate_token(user_id, username)
-        return success({"id": user_id, "username": username, "token": token}, "注册成功")
+        return success({"id": user_id, "username": username, "token": token, "profile_completed": False}, "注册成功")
     except Exception as exc:
         return fail("注册失败", 500, {"error": str(exc)})
 
@@ -57,6 +61,6 @@ def login():
             return fail("用户名或密码错误", 401)
 
         token = generate_token(user["id"], user["username"])
-        return success({"id": user["id"], "username": user["username"], "token": token}, "登录成功")
+        return success({"id": user["id"], "username": user["username"], "token": token, "profile_completed": _profile_completed(user)}, "登录成功")
     except Exception as exc:
         return fail("登录失败", 500, {"error": str(exc)})
