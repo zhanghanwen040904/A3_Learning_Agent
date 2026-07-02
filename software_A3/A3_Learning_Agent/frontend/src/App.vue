@@ -86,16 +86,57 @@
         </div>
 
         <div class="sidebar-footer">
-          <div class="user-row">
+          <button class="user-row" type="button" @click="openUserInfoDialog(false)">
             <div class="user-avatar">{{ usernameInitial }}</div>
             <div class="user-copy">
               <strong>{{ username }}</strong>
-              <small>已登录</small>
+              <small>{{ userInfoSubtitle }}</small>
             </div>
-            <el-button class="logout-button" text @click="logout">退出登录</el-button>
-          </div>
+            <el-button class="logout-button" text @click.stop="logout">退出登录</el-button>
+          </button>
         </div>
       </el-aside>
+
+      <el-dialog
+        v-model="userInfoVisible"
+        :close-on-click-modal="!forceCompleteUserInfo"
+        :show-close="!forceCompleteUserInfo"
+        width="520px"
+        align-center
+        class="user-info-dialog"
+      >
+        <template #header>
+          <div class="user-info-title">
+            <div class="user-info-avatar">{{ usernameInitial }}</div>
+            <div>
+              <h3>完善个人信息</h3>
+              <p>这些信息会和当前账号绑定，用于后续自动构建学习画像。</p>
+            </div>
+          </div>
+        </template>
+
+        <el-form label-position="top" class="user-info-form">
+          <el-form-item label="专业">
+            <el-input v-model="userInfoForm.major" size="large" placeholder="例如：计算机科学与技术" />
+          </el-form-item>
+          <el-form-item label="目标课程">
+            <el-input v-model="userInfoForm.target_course" size="large" placeholder="例如：软件工程、数据结构" />
+          </el-form-item>
+          <div class="user-info-form-grid">
+            <el-form-item label="年级 / 学历">
+              <el-input v-model="userInfoForm.education_level" size="large" placeholder="例如：大一、本科" />
+            </el-form-item>
+            <el-form-item label="学校">
+              <el-input v-model="userInfoForm.school" size="large" placeholder="可选" />
+            </el-form-item>
+          </div>
+        </el-form>
+
+        <template #footer>
+          <el-button v-if="!forceCompleteUserInfo" @click="userInfoVisible = false">稍后</el-button>
+          <el-button type="primary" :loading="userInfoSaving" @click="saveUserInfo">保存信息</el-button>
+        </template>
+      </el-dialog>
 
       <el-container class="main-shell">
         <el-main :class="{ 'auth-main': isAuthPage, 'profile-main': route.path === '/profile' }">
@@ -107,7 +148,7 @@
 </template>
 
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { ElMessage, ElMessageBox } from "element-plus";
 import {
@@ -149,6 +190,11 @@ const isAuthPage = computed(() => route.path === "/auth");
 const recentSessions = ref([]);
 const creatingSession = ref(false);
 const activeSessionId = ref(activeProfileSessionId());
+const userInfoVisible = ref(false);
+const userInfoSaving = ref(false);
+const forceCompleteUserInfo = ref(false);
+const userInfoForm = reactive({ major: "", target_course: "", education_level: "", school: "" });
+const userInfoSubtitle = computed(() => userInfoForm.major || userInfoForm.target_course || "点击完善个人信息");
 
 function byCreateTime(a, b) {
   const aTime = a?.create_time ? new Date(a.create_time).getTime() : 0;
@@ -168,6 +214,64 @@ async function loadRecentSessions() {
     recentSessions.value = [...(res.data.sessions || [])]
       .sort(byCreateTime)
       .slice(0, 7);
+  }
+}
+
+function isUserInfoComplete(data = userInfoForm) {
+  return Boolean(String(data.major || "").trim() || String(data.target_course || "").trim());
+}
+
+async function loadUserInfo() {
+  if (isAuthPage.value) return;
+  const res = await profileApi.userInfo();
+  if (res.code === 200 && res.data) {
+    Object.assign(userInfoForm, {
+      major: res.data.major || "",
+      target_course: res.data.target_course || "",
+      education_level: res.data.education_level || "",
+      school: res.data.school || "",
+    });
+  }
+}
+
+async function openUserInfoDialog(force = false) {
+  forceCompleteUserInfo.value = force;
+  await loadUserInfo();
+  userInfoVisible.value = true;
+}
+
+async function saveUserInfo() {
+  if (!String(userInfoForm.major || "").trim() && !String(userInfoForm.target_course || "").trim()) {
+    ElMessage.warning("请至少填写专业或目标课程");
+    return;
+  }
+  userInfoSaving.value = true;
+  try {
+    const res = await profileApi.saveUserInfo(userInfoForm);
+    if (res.code !== 200) {
+      ElMessage.error(res.msg || "个人信息保存失败");
+      return;
+    }
+    Object.assign(userInfoForm, res.data || {});
+    localStorage.removeItem("a3_need_complete_user_info");
+    const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+    localStorage.setItem("user", JSON.stringify({ ...currentUser, profile_completed: true }));
+    forceCompleteUserInfo.value = false;
+    userInfoVisible.value = false;
+    window.dispatchEvent(new CustomEvent("a3-profile-session-refresh"));
+    ElMessage.success("个人信息已保存，后续画像会自动带入");
+  } finally {
+    userInfoSaving.value = false;
+  }
+}
+
+async function maybeOpenUserInfoOnboarding() {
+  if (isAuthPage.value) return;
+  await loadUserInfo();
+  const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  const needComplete = localStorage.getItem("a3_need_complete_user_info") === "1" || currentUser.profile_completed === false;
+  if (needComplete && !isUserInfoComplete()) {
+    await openUserInfoDialog(true);
   }
 }
 
@@ -320,11 +424,13 @@ async function logout() {
 
 watch(() => route.path, () => {
   loadRecentSessions();
+  maybeOpenUserInfoOnboarding();
 });
 
 onMounted(() => {
   activeSessionId.value = activeProfileSessionId();
   loadRecentSessions();
+  maybeOpenUserInfoOnboarding();
   window.addEventListener("a3-profile-session-refresh", loadRecentSessions);
   window.addEventListener("a3-profile-session-change", syncActiveSession);
   window.addEventListener("a3-profile-session-created", syncActiveSession);
@@ -602,9 +708,20 @@ function syncActiveSession() {
 
 .user-row {
   display: flex;
+  width: 100%;
   align-items: center;
   gap: 10px;
-  padding: 6px 8px;
+  padding: 8px;
+  border: none;
+  border-radius: 14px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.16s ease;
+}
+
+.user-row:hover {
+  background: #eef1f5;
 }
 
 .user-avatar {
@@ -653,6 +770,56 @@ function syncActiveSession() {
 .logout-button:hover {
   color: #ef4444;
   background: #fee2e2;
+}
+
+:global(.user-info-dialog .el-dialog) {
+  border-radius: 24px;
+}
+
+.user-info-title {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.user-info-avatar {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ef4444, #f97316);
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.user-info-title h3 {
+  margin: 0;
+  color: #111827;
+  font-size: 20px;
+}
+
+.user-info-title p {
+  margin: 5px 0 0;
+  color: #6b7280;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.user-info-form {
+  padding-top: 6px;
+}
+
+.user-info-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.user-info-form :deep(.el-input__wrapper) {
+  border-radius: 12px;
 }
 
 .main-shell {

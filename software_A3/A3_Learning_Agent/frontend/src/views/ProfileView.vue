@@ -12,7 +12,7 @@
             :autosize="{ minRows: 1, maxRows: 6 }"
             resize="none"
             :disabled="sending"
-            placeholder="说说你的专业、学习目标、学习历史、知识基础、易错点和资源偏好，我会自动构建八维动态画像"
+            placeholder="说说你的学习目标、学习历史、知识基础、易错点和资源偏好，我会自动构建八维动态画像"
             @keydown.enter.exact.prevent="sendMessage"
             @keydown.ctrl.enter.prevent="sendMessage"
           />
@@ -517,6 +517,46 @@ onBeforeUnmount(() => {
   color: #111827;
   font-size: 48px;
   font-weight: 500;
+}
+
+.personal-info-card {
+  width: min(840px, 100%);
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #ffffff, #f8fbff);
+}
+
+.personal-info-card :deep(.el-card__body) {
+  padding: 18px;
+}
+
+.personal-info-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.personal-info-head div {
+  display: grid;
+  gap: 4px;
+}
+
+.personal-info-head b {
+  color: #111827;
+  font-size: 15px;
+}
+
+.personal-info-head span {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.personal-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
 }
 
 .home-composer {
