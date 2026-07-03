@@ -1,17 +1,18 @@
-﻿import json
+import json
 import re
 from typing import Optional
 
 from flask import Blueprint, request
 
-from ai.agents import ProfileAgent
-from ai.spark_api import content_audit
+from ai.agents import ConversationAgent, ProfileAgent
+from ai.llm_api import audit_content
 from db import mysql_db
 from utils import fail, require_fields, success
 from utils.auth_decorator import login_required
 
 profile_bp = Blueprint("profile", __name__)
 profile_agent = ProfileAgent()
+conversation_agent = ConversationAgent()
 
 PROFILE_FIELDS = [
     "major",
@@ -191,6 +192,34 @@ def _save_conversation_payload(user_id: int, session_id: int, payload: dict) -> 
         "current_index": current_index,
     }
     mysql_db.upsert_by_unique_key("profile_conversation", data, update_fields=["messages", "answer_map", "extra_notes", "current_index"])
+
+
+def _persist_profile_result(user_id: int, session_id: int, session: dict, profile_result: dict) -> dict:
+    profile_data = {
+        "user_id": user_id,
+        "profile_session_id": session_id,
+        **{field: profile_result.get("profile", {}).get(field, DEFAULT_VALUE) for field in PROFILE_FIELDS},
+    }
+    mysql_db.upsert_by_unique_key("student_profile", profile_data, update_fields=["profile_session_id", *PROFILE_FIELDS])
+
+    session_title = (
+        profile_data.get("profile_summary")
+        or profile_data.get("target_course")
+        or profile_data.get("major")
+        or session.get("title")
+    )
+    if session_title:
+        mysql_db.update("profile_session", {"title": str(session_title)[:120]}, "id=%s AND user_id=%s", (session_id, user_id))
+
+    aggregate_profile = _aggregate_profile_payload(
+        user_id,
+        _refresh_aggregate_profile(user_id, transient_profile=profile_result.get("profile")),
+    )
+    return {
+        **profile_result,
+        "profile_session_id": session_id,
+        "aggregate_profile": aggregate_profile,
+    }
 
 
 def _delete_session_outputs(user_id: int, session_id: int) -> None:
@@ -691,37 +720,93 @@ def chat_profile():
         latest_user_text = "\n".join(str(item.get("content") or "") for item in messages if item.get("role") == "user")
         if not latest_user_text.strip():
             return fail("请先输入学生自然语言回答", 400)
-        if not content_audit(latest_user_text):
+        if not audit_content(latest_user_text):
             return fail("学生对话未通过内容审核", 403)
 
-        result = profile_agent.chat_extract(messages, current_profile)
-        result["profile"] = _merge_personal_info(result.get("profile", {}), personal_info)
-        result["profile_session_id"] = session["id"]
-
-        profile_data = {
-            "user_id": request.user_id,
-            "profile_session_id": session["id"],
-            **{field: result.get("profile", {}).get(field, DEFAULT_VALUE) for field in PROFILE_FIELDS},
-        }
-        mysql_db.upsert_by_unique_key("student_profile", profile_data, update_fields=["profile_session_id", *PROFILE_FIELDS])
-
-        session_title = (
-            profile_data.get("profile_summary")
-            or profile_data.get("target_course")
-            or profile_data.get("major")
-            or session.get("title")
-        )
-        if session_title:
-            mysql_db.update("profile_session", {"title": str(session_title)[:120]}, "id=%s AND user_id=%s", (session["id"], request.user_id))
-
+        conversation_result = conversation_agent.respond(messages, current_profile)
         _save_conversation_payload(request.user_id, session["id"], {"messages": messages})
-        result["aggregate_profile"] = _aggregate_profile_payload(
-            request.user_id,
-            _refresh_aggregate_profile(request.user_id, transient_profile=result.get("profile")),
-        )
-        return success(result, "画像对话分析成功")
+        result = {
+            **conversation_result,
+            "profile_session_id": session["id"],
+            "reply_type": "rich_answer",
+            "next_question": "",
+            "profile_sync_pending": True,
+        }
+        return success(result, "对话回答成功")
     except Exception as exc:
         return fail("画像对话分析失败", 500, {"error": str(exc)})
+
+
+@profile_bp.post("/chat/profile-sync")
+@login_required
+def chat_profile_sync():
+    try:
+        payload = request.get_json(silent=True) or {}
+        session = _resolve_session(request.user_id, payload, create_if_missing=True)
+        if not session:
+            return fail("画像会话不存在", 404)
+        _set_active_session(request.user_id, session["id"])
+
+        messages = payload.get("messages") or []
+        current_profile = payload.get("current_profile") or {}
+        if not isinstance(messages, list) or not messages:
+            return fail("缺少有效的多轮对话 messages", 400)
+
+        latest_user_text = "\n".join(str(item.get("content") or "") for item in messages if item.get("role") == "user")
+        if not latest_user_text.strip():
+            return fail("请先输入学生自然语言回答", 400)
+        if not audit_content(latest_user_text):
+            return fail("学生对话未通过内容审核", 403)
+
+        profile_result = profile_agent.chat_extract(messages, current_profile)
+        _save_conversation_payload(request.user_id, session["id"], {"messages": messages})
+        result = _persist_profile_result(request.user_id, session["id"], session, profile_result)
+        return success(result, "画像已完成静默更新")
+    except Exception as exc:
+        return fail("画像静默更新失败", 500, {"error": str(exc)})
+
+
+@profile_bp.post("/chat/enhance")
+@login_required
+def chat_enhance():
+    try:
+        payload = request.get_json(silent=True) or {}
+        session = _resolve_session(request.user_id, payload, create_if_missing=True)
+        if not session:
+            return fail("画像会话不存在", 404)
+
+        messages = payload.get("messages") or []
+        current_profile = payload.get("current_profile") or {}
+        assistant_reply = str(payload.get("assistant_reply") or "").strip()
+        need_diagram = bool(payload.get("need_diagram"))
+        need_quiz = bool(payload.get("need_quiz"))
+
+        if not isinstance(messages, list) or not messages:
+            return fail("缺少有效的多轮对话 messages", 400)
+        if not assistant_reply:
+            return fail("缺少主回答内容 assistant_reply", 400)
+        if not need_diagram and not need_quiz:
+            return success({
+                "diagram_image": "",
+                "quiz_items": [],
+                "need_diagram": False,
+                "need_quiz": False,
+                "profile_session_id": session["id"],
+            }, "当前无需增强内容")
+
+        result = conversation_agent.enhance(
+            messages=messages,
+            answer=assistant_reply,
+            profile=current_profile,
+            need_diagram=need_diagram,
+            need_quiz=need_quiz,
+        )
+        return success({
+            **result,
+            "profile_session_id": session["id"],
+        }, "增强内容生成成功")
+    except Exception as exc:
+        return fail("增强内容生成失败", 500, {"error": str(exc)})
 
 
 @profile_bp.post("/create")
@@ -740,7 +825,7 @@ def create_profile():
         session_id = session["id"]
         _set_active_session(request.user_id, session_id)
 
-        if not content_audit(dialogue):
+        if not audit_content(dialogue):
             return fail("学生对话未通过内容审核", 403)
 
         profile_payload = payload.get("profile") if isinstance(payload.get("profile"), dict) else None
@@ -782,7 +867,7 @@ def update_profile():
             return fail("画像会话不存在", 404)
         session_id = session["id"]
 
-        if not content_audit(learning_data):
+        if not audit_content(learning_data):
             return fail("学习数据未通过内容审核", 403)
 
         old_profile = mysql_db.query_one("SELECT * FROM student_profile WHERE user_id=%s AND profile_session_id=%s", (request.user_id, session_id)) or {}

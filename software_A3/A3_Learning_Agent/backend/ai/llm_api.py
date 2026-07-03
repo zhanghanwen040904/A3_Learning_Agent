@@ -1,21 +1,15 @@
-import base64
-import hashlib
-import hmac
-import json
-import ssl
+﻿import json
 import time
 from datetime import datetime
-from email.utils import formatdate
 from typing import Any, Callable, Dict, Optional
-from urllib.parse import urlencode, urlparse
 
 from config import config
 
 
-def _mock_spark_response(prompt: str) -> str:
-    """生成开发模式下的讯飞星火模拟响应。
+def _mock_llm_response(prompt: str) -> str:
+    """生成开发模式下的模型模拟响应。
 
-    功能：在未配置真实讯飞密钥时，根据提示词返回结构化模拟结果，便于联调画像、资源、路径和答疑流程。
+    功能：在未配置真实模型密钥时，根据提示词返回结构化模拟结果，便于联调画像、资源、路径和答疑流程。
     输入：prompt，智能体提示词。
     输出：可被业务模块解析的模拟文本。
     """
@@ -236,41 +230,6 @@ def _retry_call(func: Callable[[], Any], retry_times: Optional[int] = None) -> A
     raise last_error
 
 
-def _create_spark_auth_url() -> str:
-    """生成讯飞星火 WebSocket 鉴权地址。
-
-    功能：按照讯飞星火接口规范签名，生成带鉴权参数的访问 URL。
-    输入：config 中的 app_id、api_key、api_secret、spark_url。
-    输出：可直接连接的 WebSocket URL。
-    """
-    parsed = urlparse(config.XFYUN_SPARK_URL)
-    host = parsed.netloc
-    path = parsed.path
-    date = formatdate(timeval=None, localtime=False, usegmt=True)
-    signature_origin = f"host: {host}\ndate: {date}\nGET {path} HTTP/1.1"
-    signature_sha = hmac.new(
-        config.XFYUN_API_SECRET.encode("utf-8"),
-        signature_origin.encode("utf-8"),
-        digestmod=hashlib.sha256,
-    ).digest()
-    signature = base64.b64encode(signature_sha).decode("utf-8")
-    authorization_origin = (
-        f'api_key="{config.XFYUN_API_KEY}", algorithm="hmac-sha256", '
-        f'headers="host date request-line", signature="{signature}"'
-    )
-    authorization = base64.b64encode(authorization_origin.encode("utf-8")).decode("utf-8")
-    query = urlencode({"authorization": authorization, "date": date, "host": host})
-    return f"{config.XFYUN_SPARK_URL}?{query}"
-
-
-def _is_http_chat_url() -> bool:
-    return str(config.XFYUN_SPARK_URL or "").lower().startswith(("http://", "https://"))
-
-
-def _is_agent_chat_url() -> bool:
-    return "/agent/" in str(config.XFYUN_SPARK_URL or "").lower()
-
-
 def _extract_http_error(response) -> str:
     text = ""
     try:
@@ -282,26 +241,20 @@ def _extract_http_error(response) -> str:
     return f"HTTP {response.status_code}: {text or response.reason}"
 
 
-def _call_spark_http(prompt: str) -> str:
-    """Call Spark HTTP chat/completions compatible API.
-
-    Spark-X2-Flash WebApi exposes an OpenAI-like endpoint. In this mode
-    XFYUN_API_KEY stores the APIPassword shown in the console.
-    """
+def _call_bailian_compatible(prompt: str) -> str:
     import requests
 
     payload = {
-        "model": config.XFYUN_SPARK_DOMAIN or "spark-x",
-        "user": "a3_learning_agent",
+        "model": config.BAILIAN_MODEL or "qwen-plus",
         "messages": [{"role": "user", "content": prompt}],
         "temperature": 0.5,
         "max_tokens": 4096,
         "stream": False,
     }
     response = requests.post(
-        config.XFYUN_SPARK_URL,
+        config.BAILIAN_BASE_URL,
         headers={
-            "Authorization": f"Bearer {config.XFYUN_API_KEY}",
+            "Authorization": f"Bearer {config.BAILIAN_API_KEY}",
             "Content-Type": "application/json",
         },
         json=payload,
@@ -310,20 +263,10 @@ def _call_spark_http(prompt: str) -> str:
     if response.status_code >= 400:
         raise RuntimeError(_extract_http_error(response))
     data = response.json()
-
-    if isinstance(data.get("choices"), list) and data["choices"]:
-        choice = data["choices"][0]
-        message = choice.get("message") or {}
-        content = message.get("content") or choice.get("text") or ""
-        if content:
-            return str(content).strip()
-    if isinstance(data.get("data"), dict):
-        content = data["data"].get("content") or data["data"].get("answer")
-        if content:
-            return str(content).strip()
-    if data.get("content") or data.get("answer"):
-        return str(data.get("content") or data.get("answer")).strip()
-    raise RuntimeError(f"Spark HTTP接口未返回有效内容：{data}")
+    text = _extract_chat_text(data)
+    if text:
+        return text
+    raise RuntimeError(f"Bailian接口未返回有效内容：{data}")
 
 
 def _anthropic_candidate_urls() -> list[str]:
@@ -433,17 +376,26 @@ def _has_anthropic_compatible_config() -> bool:
     return bool(config.ANTHROPIC_AUTH_TOKEN and config.ANTHROPIC_BASE_URL and (config.ANTHROPIC_MODEL or config.ANTHROPIC_SMALL_FAST_MODEL))
 
 
-def spark_chat(prompt: str) -> str:
+def llm_chat(prompt: str) -> str:
     """同步调用当前配置的大模型生成文本。
 
-    功能：根据 AI_PROVIDER 选择大模型；AI_PROVIDER=anthropic/settings/claude 时只使用 settings.json/环境变量中的 Anthropic 兼容接口，否则使用讯飞星火。
+    功能：根据 AI_PROVIDER 选择当前启用的大模型，优先支持百炼，也兼容 settings.json 中的 Anthropic/OpenAI 兼容接口。
     输入：prompt，自然语言提示词。
     输出：成功时返回模型文本；失败时返回 JSON 字符串格式的标准错误信息。
     """
     if not prompt or not prompt.strip():
         return json.dumps(_standard_error("prompt不能为空"), ensure_ascii=False)
     if config.MOCK_AI:
-        return _mock_spark_response(prompt)
+        return _mock_llm_response(prompt)
+
+    use_bailian = config.AI_PROVIDER in {"bailian", "dashscope", "qwen"}
+    if use_bailian:
+        if not (config.BAILIAN_API_KEY and config.BAILIAN_BASE_URL and config.BAILIAN_MODEL):
+            return json.dumps(_standard_error("阿里云百炼配置不完整"), ensure_ascii=False)
+        try:
+            return _retry_call(lambda: _call_bailian_compatible(prompt))
+        except Exception as exc:
+            return json.dumps(_standard_error("阿里云百炼调用失败", str(exc)), ensure_ascii=False)
 
     use_anthropic = config.AI_PROVIDER in {"anthropic", "settings", "claude"}
     if use_anthropic:
@@ -453,74 +405,14 @@ def spark_chat(prompt: str) -> str:
             return _retry_call(lambda: _call_anthropic_compatible(prompt))
         except Exception as exc:
             return json.dumps(_standard_error("settings.json大模型调用失败", str(exc)), ensure_ascii=False)
-
-    if _is_http_chat_url():
-        if not config.XFYUN_API_KEY:
-            return json.dumps(_standard_error("讯飞星火HTTP APIPassword未配置"), ensure_ascii=False)
-        try:
-            return _retry_call(lambda: _call_spark_http(prompt))
-        except Exception as exc:
-            return json.dumps(_standard_error("讯飞星火HTTP调用失败", str(exc)), ensure_ascii=False)
-
-    if not all([config.XFYUN_APP_ID, config.XFYUN_API_KEY, config.XFYUN_API_SECRET]):
-        return json.dumps(_standard_error("讯飞星火WebSocket密钥未配置"), ensure_ascii=False)
-
-    def _call() -> str:
-        import websocket
-
-        answer_parts = []
-        error_holder = {"error": None}
-
-        def on_message(ws, message):
-            data = json.loads(message)
-            header = data.get("header", {})
-            code = header.get("code", 0)
-            if code != 0:
-                error_holder["error"] = data
-                ws.close()
-                return
-            choices = data.get("payload", {}).get("choices", {})
-            for item in choices.get("text", []):
-                answer_parts.append(item.get("content", ""))
-            if choices.get("status") == 2:
-                ws.close()
-
-        def on_error(ws, error):
-            error_holder["error"] = str(error)
-
-        def on_open(ws):
-            payload = {
-                "header": {"app_id": config.XFYUN_APP_ID, "uid": "a3_learning_agent"},
-                "parameter": {
-                    "chat": {
-                        "domain": config.XFYUN_SPARK_DOMAIN,
-                        "temperature": 0.5,
-                        "max_tokens": 4096,
-                    }
-                },
-                "payload": {"message": {"text": [{"role": "user", "content": prompt}]}}
-            }
-            ws.send(json.dumps(payload, ensure_ascii=False))
-
-        ws = websocket.WebSocketApp(
-            _create_spark_auth_url(),
-            on_open=on_open,
-            on_message=on_message,
-            on_error=on_error,
-        )
-        ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE}, ping_timeout=config.AI_TIMEOUT)
-        if error_holder["error"]:
-            raise RuntimeError(error_holder["error"])
-        return "".join(answer_parts).strip()
-
-    try:
-        return _retry_call(_call)
-    except Exception as exc:
-        return json.dumps(_standard_error("讯飞星火调用失败", str(exc)), ensure_ascii=False)
+    return json.dumps(
+        _standard_error(f"不支持的 AI_PROVIDER：{config.AI_PROVIDER}，当前请使用 bailian 或 settings"),
+        ensure_ascii=False,
+    )
 
 
-def see_dance_generate(text: str) -> str:
-    """同步调用讯飞 SeeDance 生成教学短视频。
+def generate_teaching_video(text: str) -> str:
+    """同步调用视频服务生成教学短视频。
 
     功能：根据知识点文本生成 40-90 秒教学短视频，默认提示词约束为 60 秒以内。
     输入：text，教学视频脚本或核心知识点文本。
@@ -531,7 +423,7 @@ def see_dance_generate(text: str) -> str:
     if config.MOCK_AI:
         return "https://example.com/mock-ai-intro-teaching-video.mp4"
     if not config.SEEDANCE_API_URL or not config.SEEDANCE_API_KEY:
-        return json.dumps(_standard_error("讯飞SeeDance配置未完成"), ensure_ascii=False)
+        return json.dumps(_standard_error("视频生成服务配置未完成"), ensure_ascii=False)
 
     def _call() -> str:
         import requests
@@ -556,13 +448,13 @@ def see_dance_generate(text: str) -> str:
     try:
         video_url = _retry_call(_call)
         if not video_url:
-            return json.dumps(_standard_error("讯飞SeeDance未返回视频URL"), ensure_ascii=False)
+            return json.dumps(_standard_error("视频生成服务未返回视频 URL"), ensure_ascii=False)
         return video_url
     except Exception as exc:
-        return json.dumps(_standard_error("讯飞SeeDance调用失败", str(exc)), ensure_ascii=False)
+        return json.dumps(_standard_error("视频生成服务调用失败", str(exc)), ensure_ascii=False)
 
 
-def _local_content_audit(text: str) -> bool:
+def _local_audit_content(text: str) -> bool:
     blocked_terms = [
         "违法犯罪",
         "暴力恐怖",
@@ -577,8 +469,8 @@ def _local_content_audit(text: str) -> bool:
     return bool(text and text.strip()) and not any(term in lowered for term in blocked_terms)
 
 
-def content_audit(text: str) -> bool:
-    """同步调用讯飞内容审核接口。
+def audit_content(text: str) -> bool:
+    """同步调用内容审核接口。
 
     功能：审核输入文本是否安全合规；未配置真实审核接口时使用本地基础审核兜底，避免正常课程文本被误拦截。
     输入：text，需要审核的文本。
@@ -587,9 +479,9 @@ def content_audit(text: str) -> bool:
     if not text or not text.strip():
         return False
     if config.MOCK_AI:
-        return _local_content_audit(text)
+        return _local_audit_content(text)
     if not config.CONTENT_AUDIT_API_URL or not config.CONTENT_AUDIT_API_KEY:
-        return _local_content_audit(text)
+        return _local_audit_content(text)
 
     def _call() -> bool:
         import requests
@@ -613,4 +505,5 @@ def content_audit(text: str) -> bool:
     try:
         return bool(_retry_call(_call))
     except Exception:
-        return _local_content_audit(text)
+        return _local_audit_content(text)
+

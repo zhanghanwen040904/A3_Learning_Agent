@@ -8,7 +8,11 @@ from flask import Blueprint, Response, request, stream_with_context
 
 from ai.agents import agent_manager
 from ai.rag import generated_kb_dir
+<<<<<<< HEAD
 from ai.spark_api import content_audit, spark_chat
+=======
+from ai.llm_api import audit_content
+>>>>>>> xiangmu/main
 from db import mysql_db
 from utils import fail, success
 from utils.auth_decorator import login_required
@@ -722,7 +726,7 @@ def generate_resources():
             return fail("当前画像为空，请先生成学生画像，再生成学习资源", 404)
 
         dialogue = str(payload.get("dialogue") or payload.get("learning_need") or "")
-        if dialogue and not content_audit(dialogue):
+        if dialogue and not audit_content(dialogue):
             return fail("资源生成输入未通过内容审核", 403)
 
         latest_path = mysql_db.query_one(
@@ -749,7 +753,7 @@ def generate_resources():
         for item in result.get("resource_list", []):
             item = _append_images_to_resource(item)
             content = str(item.get("content", ""))
-            if content and content_audit(content):
+            if content and audit_content(content):
                 metadata = _safe_json_loads(item.get("metadata"), {})
                 metadata.update(
                     {
@@ -897,7 +901,7 @@ def _persist_stream_result(result: dict, user_id: int, session_id: int) -> dict:
     for item in result.get("resource_list", []):
         item = _append_images_to_resource(item)
         content = str(item.get("content", ""))
-        if content and content_audit(content):
+        if content and audit_content(content):
             metadata = _safe_json_loads(item.get("metadata"), {})
             metadata.update({"format": item.get("format"), "quality": item.get("quality"), "retry_count": item.get("retry_count", 0), "duration_ms": item.get("duration_ms", 0), "video_url": item.get("video_url"), "stage_id": item.get("stage_id"), "stage_index": item.get("stage_index"), "stage_title": item.get("stage_title"), "stage_points": item.get("stage_points", [])})
             resource_id = mysql_db.insert(
@@ -997,7 +1001,7 @@ def generate_resources_stream():
                     push({"type": "error", "message": "当前画像为空，请先生成学生画像，再生成学习资源"})
                     return
                 dialogue = str(payload.get("dialogue") or payload.get("learning_need") or "")
-                if dialogue and not content_audit(dialogue):
+                if dialogue and not audit_content(dialogue):
                     push({"type": "error", "message": "资源生成输入未通过内容审核"})
                     return
                 latest_path = mysql_db.query_one(

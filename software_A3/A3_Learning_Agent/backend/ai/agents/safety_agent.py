@@ -1,17 +1,17 @@
 from typing import List
 
-from ai.spark_api import content_audit
-from .base_agent import XunfeiAgentSpec
+from ai.llm_api import audit_content
+from .base_agent import AgentSpec
 
 
 class SafetyAgent:
     def __init__(self):
         self.role = "内容安全与防幻觉复核员"
         self.goal = "检查生成内容是否基于课程资料，给出安全可信提示。"
-        self.agent = XunfeiAgentSpec(
+        self.agent = AgentSpec(
             role=self.role,
             goal=self.goal,
-            tools=["content_audit", "retrieve_knowledge"],
+            tools=["audit_content", "retrieve_knowledge"],
             input_schema="生成内容 + RAG来源片段",
             output_schema="安全状态 + 引用来源 + 风险提示",
         )
@@ -21,7 +21,7 @@ class SafetyAgent:
         problems = []
         if not sources:
             problems.append("缺少课程知识库依据")
-        if not content_audit(content):
+        if not audit_content(content):
             problems.append("内容安全审核未通过")
         passed = not problems
         return {
@@ -30,6 +30,6 @@ class SafetyAgent:
             "sources": source_names,
             "checks": {
                 "has_course_sources": bool(sources),
-                "content_audit_passed": content_audit(content),
+                "audit_content_passed": audit_content(content),
             },
         }

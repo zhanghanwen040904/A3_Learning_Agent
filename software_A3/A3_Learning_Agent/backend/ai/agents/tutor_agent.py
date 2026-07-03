@@ -1,4 +1,4 @@
-﻿import json
+import json
 
 try:
     from langchain_core.output_parsers import StrOutputParser as LangChainStrOutputParser
@@ -7,7 +7,7 @@ except ModuleNotFoundError:
     LangChainStrOutputParser = None
     LangChainPromptTemplate = None
 
-from ai.langchain_adapter import SparkLLM
+from ai.llm_adapter import PlatformLLM
 from ai.rag import retrieve_knowledge, retrieve_knowledge_items
 
 
@@ -42,7 +42,7 @@ class TutorAgent:
     def __init__(self):
         self.role = "多模态软件工程答疑老师"
         self.goal = "严格基于课程知识库回答学生问题，并输出结构清晰、层级固定、适合配图展示的答疑内容。"
-        self.chain = (TUTOR_PROMPT | SparkLLM() | LangChainStrOutputParser()) if TUTOR_PROMPT is not None and LangChainStrOutputParser is not None else None
+        self.chain = (TUTOR_PROMPT | PlatformLLM() | LangChainStrOutputParser()) if TUTOR_PROMPT is not None and LangChainStrOutputParser is not None else None
 
     def _fallback_answer(self, question: str, evidence: str) -> str:
         evidence_excerpt = (evidence or "知识库暂未检索到直接材料，请换一种问法或补充关键词。")[:240]
@@ -76,7 +76,7 @@ class TutorAgent:
         if self.chain is not None:
             answer = self.chain.invoke(variables)
         else:
-            answer = SparkLLM().invoke(TUTOR_PROMPT_TEMPLATE.format(**variables))
+            answer = PlatformLLM().invoke(TUTOR_PROMPT_TEMPLATE.format(**variables))
         if self._is_error_payload(answer):
             answer = self._fallback_answer(question, evidence)
         return {"answer": answer, "evidence": evidence, "sources": evidence_items}

@@ -8,9 +8,9 @@ except ModuleNotFoundError:
     LangChainStrOutputParser = None
     LangChainPromptTemplate = None
 
-from ai.langchain_adapter import SparkLLM
+from ai.llm_adapter import PlatformLLM
 from ai.langchain_parsers import parse_json_with_fallback
-from .base_agent import XunfeiAgentSpec
+from .base_agent import AgentSpec
 
 
 PLANNER_PROMPT_TEMPLATE = """
@@ -55,14 +55,14 @@ class PlannerAgent:
 
     def __init__(self):
         self.role = "个性化资源总规划师"
-        self.agent = XunfeiAgentSpec(
+        self.agent = AgentSpec(
             role=self.role,
             goal="依据学生画像和教材召回结果规划六类互补资源",
-            tools=["langchain_prompt", "spark_llm", "retrieve_knowledge"],
+            tools=["langchain_prompt", "platform_llm", "retrieve_knowledge"],
             input_schema="结构化学生上下文 + RAG来源",
             output_schema="核心主题 + 难度 + 六类任务计划",
         )
-        self.chain = (PLANNER_PROMPT | SparkLLM() | LangChainStrOutputParser()) if PLANNER_PROMPT is not None and LangChainStrOutputParser is not None else None
+        self.chain = (PLANNER_PROMPT | PlatformLLM() | LangChainStrOutputParser()) if PLANNER_PROMPT is not None and LangChainStrOutputParser is not None else None
 
     def plan(self, context: Dict[str, Any], sources: List[dict]) -> Dict[str, Any]:
         fallback = self._fallback_plan(context, sources)
@@ -74,7 +74,7 @@ class PlannerAgent:
             if self.chain is not None:
                 raw = self.chain.invoke(variables)
             else:
-                raw = SparkLLM().invoke(PLANNER_PROMPT_TEMPLATE.format(**variables))
+                raw = PlatformLLM().invoke(PLANNER_PROMPT_TEMPLATE.format(**variables))
             data = parse_json_with_fallback(raw)
             return self._normalize_plan(data, fallback)
         except Exception:

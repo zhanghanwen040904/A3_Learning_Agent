@@ -9,9 +9,9 @@ except ModuleNotFoundError:
     LangChainStrOutputParser = None
     LangChainPromptTemplate = None
 
-from ai.langchain_adapter import SparkLLM
+from ai.llm_adapter import PlatformLLM
 from ai.langchain_parsers import parse_json_with_fallback
-from .base_agent import XunfeiAgentSpec
+from .base_agent import AgentSpec
 
 
 FORBIDDEN_LABEL_RE = re.compile(
@@ -60,7 +60,7 @@ RESOURCE_PROMPT = (
 def build_langchain_chain(prompt: Any) -> Any:
     if prompt is None or LangChainStrOutputParser is None:
         return None
-    return prompt | SparkLLM() | LangChainStrOutputParser()
+    return prompt | PlatformLLM() | LangChainStrOutputParser()
 
 
 def _strip_labels(text: Any) -> str:
@@ -78,12 +78,21 @@ class StructuredResourceAgent:
     default_title = "个性化学习资源"
 
     def __init__(self):
-        self.agent = XunfeiAgentSpec(
+        self.agent = AgentSpec(
             role=self.role,
             goal=self.goal,
+<<<<<<< HEAD
             tools=["langchain_prompt", "spark_llm", "retrieve_knowledge"],
             input_schema="结构化学生画像 + 资源规划 + 教材知识片段 + 可选返工意见",
             output_schema='{"title":"","content":"","knowledge_points":[],"personalization":"","format":"markdown"}',
+=======
+            tools=["langchain_prompt", "platform_llm", "retrieve_knowledge"],
+            input_schema="结构化学生画像 + 资源规划 + RAG教材片段 + 可选返工意见",
+            output_schema=(
+                '{"title":"","content":"","knowledge_points":[],"personalization":"",'
+                '"format":"markdown"}'
+            ),
+>>>>>>> xiangmu/main
         )
         self.chain = build_langchain_chain(RESOURCE_PROMPT)
 
@@ -468,7 +477,14 @@ class StructuredResourceAgent:
             "requirements": self.requirements,
             "feedback": feedback or "首次生成，无返工意见",
         }
+<<<<<<< HEAD
         raw = self._invoke_model(variables)
+=======
+        if self.chain is not None:
+            raw = self.chain.invoke(variables)
+        else:
+            raw = PlatformLLM().invoke(RESOURCE_PROMPT_TEMPLATE.format(**variables))
+>>>>>>> xiangmu/main
         if self._is_model_error(raw):
             return self._fallback_doc_resource(context, knowledge_text) if self.resource_type == "doc" else self._fallback_resource(context, knowledge_text)
 

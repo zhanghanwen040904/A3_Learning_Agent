@@ -1,6 +1,6 @@
 from flask import Blueprint, request
 
-from ai.spark_api import content_audit, see_dance_generate, spark_chat
+from ai.llm_api import audit_content, generate_teaching_video, llm_chat
 from config import config
 from db import mysql_db
 from utils import fail, success
@@ -28,41 +28,43 @@ def status():
     try:
         db_status = mysql_db.query_one("SELECT DATABASE() AS database_name, VERSION() AS version") or {}
         tables = [
-            {"name": "user", "label": "用户登录表", "count": _table_count("user"), "usage": "保存注册用户和登录账号"},
-            {"name": "student_profile", "label": "学生画像表", "count": _table_count("student_profile"), "usage": "保存六维动态学习画像"},
-            {"name": "study_resource", "label": "学习资源表", "count": _table_count("study_resource"), "usage": "保存多智能体生成的文档、题库、思维导图、代码和视频任务"},
+            {"name": "user", "label": "用户表", "count": _table_count("user"), "usage": "保存注册用户与登录账号"},
+            {"name": "student_profile", "label": "学生画像表", "count": _table_count("student_profile"), "usage": "保存学生画像结果"},
+            {"name": "study_resource", "label": "学习资源表", "count": _table_count("study_resource"), "usage": "保存文档、题目、图解、代码、视频等资源"},
             {"name": "study_path", "label": "学习路径表", "count": _table_count("study_path"), "usage": "保存个性化学习路径"},
-            {"name": "quiz_result", "label": "练习结果表", "count": _table_count("quiz_result"), "usage": "保存练习答案、得分和反馈"},
-            {"name": "mastery_record", "label": "掌握度表", "count": _table_count("mastery_record"), "usage": "保存知识点掌握度，用于更新画像和路径"},
-            {"name": "learning_event", "label": "学习行为表", "count": _table_count("learning_event"), "usage": "保存答疑、练习、资源访问等学习行为"},
-            {"name": "resource_feedback", "label": "资源反馈表", "count": _table_count("resource_feedback"), "usage": "保存学生对资源的评分和反馈"},
-            {"name": "generation_batch", "label": "资源生成批次表", "count": _table_count("generation_batch"), "usage": "保存画像快照、资源计划、trace ID和批次状态"},
-            {"name": "agent_execution", "label": "智能体执行轨迹表", "count": _table_count("agent_execution"), "usage": "保存各智能体状态、评分、返工次数和耗时"},
-            {"name": "resource_source", "label": "资源来源关联表", "count": _table_count("resource_source"), "usage": "保存每项资源对应的RAG教材片段"},
+            {"name": "quiz_result", "label": "练习结果表", "count": _table_count("quiz_result"), "usage": "保存答题结果与反馈"},
+            {"name": "mastery_record", "label": "掌握度表", "count": _table_count("mastery_record"), "usage": "保存知识点掌握情况"},
+            {"name": "learning_event", "label": "学习行为表", "count": _table_count("learning_event"), "usage": "保存问答、练习、资源访问等记录"},
+            {"name": "resource_feedback", "label": "资源反馈表", "count": _table_count("resource_feedback"), "usage": "保存学生对资源的评价"},
+            {"name": "generation_batch", "label": "生成批次表", "count": _table_count("generation_batch"), "usage": "保存资源生成批次信息"},
+            {"name": "agent_execution", "label": "智能体执行表", "count": _table_count("agent_execution"), "usage": "保存智能体执行轨迹"},
+            {"name": "resource_source", "label": "资源来源表", "count": _table_count("resource_source"), "usage": "保存资源和知识片段关联"},
         ]
+
+        provider = (config.AI_PROVIDER or "bailian").lower()
         ai_status = {
             "mock_ai": config.MOCK_AI,
-            "mode": "模拟演示模式" if config.MOCK_AI else "真实讯飞模型模式",
-            "spark": {
-                "configured": bool(config.XFYUN_APP_ID and config.XFYUN_API_KEY and config.XFYUN_API_SECRET),
-                "app_id": _mask(config.XFYUN_APP_ID),
-                "api_key": _mask(config.XFYUN_API_KEY),
-                "api_secret": _mask(config.XFYUN_API_SECRET),
-                "domain": config.XFYUN_SPARK_DOMAIN,
-                "url": config.XFYUN_SPARK_URL,
+            "provider": provider,
+            "mode": "mock" if config.MOCK_AI else "live",
+            "primary_model": {
+                "configured": bool(config.BAILIAN_API_KEY and config.BAILIAN_BASE_URL and config.BAILIAN_MODEL),
+                "api_key": _mask(config.BAILIAN_API_KEY),
+                "base_url": config.BAILIAN_BASE_URL or "未配置",
+                "model": config.BAILIAN_MODEL or "未配置",
             },
-            "seedance": {
+            "video": {
                 "configured": bool(config.SEEDANCE_API_KEY and config.SEEDANCE_API_URL),
                 "api_key": _mask(config.SEEDANCE_API_KEY),
                 "url": config.SEEDANCE_API_URL or "未配置",
             },
-            "content_audit": {
+            "audit_content": {
                 "configured": bool(config.CONTENT_AUDIT_API_KEY and config.CONTENT_AUDIT_API_URL),
                 "fallback_enabled": not bool(config.CONTENT_AUDIT_API_KEY and config.CONTENT_AUDIT_API_URL),
                 "api_key": _mask(config.CONTENT_AUDIT_API_KEY),
                 "url": config.CONTENT_AUDIT_API_URL or "未配置，使用本地基础审核兜底",
             },
         }
+
         return success(
             {
                 "database": {
@@ -79,7 +81,7 @@ def status():
             "系统状态查询成功",
         )
     except Exception as exc:
-        return fail("系统状态查询失败，请检查 MySQL 是否启动以及 .env 数据库配置是否正确", 500, {"error": str(exc)})
+        return fail("系统状态查询失败，请检查数据库和 AI 配置", 500, {"error": str(exc)})
 
 
 @system_bp.post("/test-ai")
@@ -87,19 +89,20 @@ def status():
 def test_ai():
     try:
         payload = request.get_json(silent=True) or {}
-        prompt = str(payload.get("prompt") or "请用一句话说明你正在连接人工智能导论学习系统。")
-        spark_result = spark_chat(prompt)
-        audit_result = content_audit("人工智能导论课程学习")
-        seedance_result = "未测试"
+        prompt = str(payload.get("prompt") or "请用一句话说明你正在连接 A3 学习助手。")
+        llm_result = llm_chat(prompt)
+        audit_result = audit_content("人工智能导论课程学习")
+        video_result = "未测试"
         if payload.get("test_video"):
-            seedance_result = see_dance_generate("请生成一个30秒人工智能导论课程介绍视频")
+            video_result = generate_teaching_video("请生成一个 60 秒以内的课程介绍短视频。")
         return success(
             {
-                "mode": "模拟演示模式" if config.MOCK_AI else "真实讯飞模型模式",
+                "mode": "mock" if config.MOCK_AI else "live",
+                "provider": config.AI_PROVIDER,
                 "mock_ai": config.MOCK_AI,
-                "spark_result": spark_result,
-                "content_audit_passed": audit_result,
-                "seedance_result": seedance_result,
+                "llm_result": llm_result,
+                "audit_content_passed": audit_result,
+                "video_result": video_result,
             },
             "AI 连通性测试完成",
         )

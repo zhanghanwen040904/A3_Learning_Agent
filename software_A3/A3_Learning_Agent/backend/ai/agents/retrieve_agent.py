@@ -2,7 +2,7 @@ import json
 from typing import Any, Dict
 
 from ai.rag import retrieve_knowledge
-from .base_agent import XunfeiAgentSpec
+from .base_agent import AgentSpec
 
 
 class RetrieveAgent:
@@ -16,7 +16,7 @@ class RetrieveAgent:
     def __init__(self):
         self.role = "课程知识库检索员"
         self.goal = "根据学生薄弱知识点检索最相关的教材原文，过滤无关信息。"
-        self.agent = XunfeiAgentSpec(
+        self.agent = AgentSpec(
             role=self.role,
             goal=self.goal,
             tools=["retrieve_knowledge"],

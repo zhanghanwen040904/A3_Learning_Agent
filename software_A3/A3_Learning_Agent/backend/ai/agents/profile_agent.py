@@ -9,10 +9,10 @@ except ModuleNotFoundError:
     LangChainStrOutputParser = None
     LangChainPromptTemplate = None
 
-from ai.langchain_adapter import SparkLLM
+from ai.llm_adapter import PlatformLLM
 from ai.langchain_parsers import parse_json_with_fallback
 from config import config
-from .base_agent import XunfeiAgentSpec
+from .base_agent import AgentSpec
 
 PROFILE_FIELDS = [
     "major",
@@ -119,15 +119,15 @@ class ProfileAgent:
     def __init__(self):
         self.role = "学习画像分析师"
         self.goal = "从学生自然语言对话中抽取学习画像，并在问答场景下静默更新画像。"
-        self.agent = XunfeiAgentSpec(
+        self.agent = AgentSpec(
             role=self.role,
             goal=self.goal,
-            tools=["langchain_prompt", "spark_llm"],
+            tools=["langchain_prompt", "platform_llm"],
             input_schema="学生自然语言对话文本",
             output_schema='{"major":"","target_course":"","knowledge_base":"","cognitive_style":"","error_prone_points":"","study_goal":"","learning_history":"","course_progress":"","study_time_prefer":"","preferred_resource":"","knowledge_level":"","study_style":"","weak_points":"","challenge_scene":"","profile_summary":""}',
         )
-        self.analyze_chain = (PROFILE_ANALYZE_PROMPT | SparkLLM() | LangChainStrOutputParser()) if PROFILE_ANALYZE_PROMPT is not None and LangChainStrOutputParser is not None else None
-        self.chat_chain = (PROFILE_CHAT_PROMPT | SparkLLM() | LangChainStrOutputParser()) if PROFILE_CHAT_PROMPT is not None and LangChainStrOutputParser is not None else None
+        self.analyze_chain = (PROFILE_ANALYZE_PROMPT | PlatformLLM() | LangChainStrOutputParser()) if PROFILE_ANALYZE_PROMPT is not None and LangChainStrOutputParser is not None else None
+        self.chat_chain = (PROFILE_CHAT_PROMPT | PlatformLLM() | LangChainStrOutputParser()) if PROFILE_CHAT_PROMPT is not None and LangChainStrOutputParser is not None else None
 
     def analyze(self, dialogue_text: str) -> Dict[str, str]:
         parsed = self._extract_from_dialogue(dialogue_text)
@@ -138,7 +138,7 @@ class ProfileAgent:
         if self.analyze_chain is not None:
             raw = self.analyze_chain.invoke(variables)
         else:
-            raw = SparkLLM().invoke(PROFILE_ANALYZE_PROMPT_TEMPLATE.format(**variables))
+            raw = PlatformLLM().invoke(PROFILE_ANALYZE_PROMPT_TEMPLATE.format(**variables))
         model_result = self._parse_profile(raw)
         return self._merge_profile(model_result, parsed)
 
@@ -163,7 +163,7 @@ class ProfileAgent:
         if self.chat_chain is not None:
             raw = self.chat_chain.invoke(variables)
         else:
-            raw = SparkLLM().invoke(PROFILE_CHAT_PROMPT_TEMPLATE.format(**variables))
+            raw = PlatformLLM().invoke(PROFILE_CHAT_PROMPT_TEMPLATE.format(**variables))
 
         data = parse_json_with_fallback(raw)
         model_profile = self._normalize_profile(data.get("profile") or {})
@@ -191,7 +191,7 @@ class ProfileAgent:
             "is_complete": is_complete or len(missing_fields) <= 4,
             "reasoning_note": str(data.get("reasoning_note") or "已基于多轮上下文完成问题回答与后台画像更新。"),
             "model_enabled": True,
-            "source": "spark_chat",
+            "source": "llm_chat",
         }
 
     def _normalize_profile(self, profile: Dict[str, Any]) -> Dict[str, str]:
