@@ -2,8 +2,8 @@ import json
 from typing import Any, Dict
 
 from ai.json_utils import extract_json_object
-from ai.spark_api import spark_chat
-from .base_agent import XunfeiAgentSpec
+from ai.llm_api import llm_chat
+from .base_agent import AgentSpec
 
 
 class TextAgent:
@@ -17,10 +17,10 @@ class TextAgent:
     def __init__(self):
         self.role = "课程内容生成师"
         self.goal = "严格基于教材原文生成匹配学生水平的文本学习资源。"
-        self.agent = XunfeiAgentSpec(
+        self.agent = AgentSpec(
             role=self.role,
             goal=self.goal,
-            tools=["spark_chat", "retrieve_knowledge"],
+            tools=["llm_chat", "retrieve_knowledge"],
             input_schema="学生画像JSON + RAG检索教材原文",
             output_schema='{"doc":"","quiz":"","reading":""}',
         )
@@ -35,7 +35,7 @@ class TextAgent:
 教材原文：
 {knowledge_text}
 """.strip()
-        raw = spark_chat(prompt)
+        raw = llm_chat(prompt)
         return self._parse(raw)
 
     def _parse(self, raw: str) -> Dict[str, str]:

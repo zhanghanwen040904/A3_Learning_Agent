@@ -6,7 +6,7 @@ import re
 from flask import Blueprint, request
 
 from ai.agents import SafetyAgent, TutorAgent
-from ai.spark_api import content_audit, see_dance_generate
+from ai.llm_api import audit_content, generate_teaching_video
 from db import mysql_db
 from utils import fail, require_fields, success
 from utils.auth_decorator import login_required
@@ -291,8 +291,8 @@ def answer():
             return fail(f"缺少必填参数：{field}", 400)
 
         question = _clean_text(payload["question"])
-        if not content_audit(question):
-            return fail("问题未通过讯飞内容审核", 403)
+        if not audit_content(question):
+            return fail("问题未通过内容安全校验", 403)
 
         session_id = _session_id_for_request(request.user_id, payload)
         history = payload.get("messages")
@@ -304,12 +304,12 @@ def answer():
 
         result = tutor_agent.answer(question)
         answer_text = _clean_text(result["answer"], "当前回答编码异常，请重新生成一次。")
-        if not content_audit(answer_text):
-            return fail("答疑内容未通过讯飞内容审核", 403)
+        if not audit_content(answer_text):
+            return fail("答疑内容未通过内容安全校验", 403)
 
         video_url = ""
         if payload.get("need_video", False):
-            video_url = see_dance_generate(f"请基于以下答疑内容生成60秒以内教学短视频：{answer_text[:1200]}")
+            video_url = generate_teaching_video(f"请基于以下答疑内容生成60秒以内教学短视频：{answer_text[:1200]}")
 
         diagram_image = _build_diagram_image(answer_text, question)
         safety = safety_agent.review(answer_text, result.get("sources", []))

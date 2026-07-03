@@ -1,11 +1,11 @@
-﻿import json
+import json
 import re
 
 from flask import Blueprint, request
 
 from ai.agents import SafetyAgent
 from ai.rag import retrieve_knowledge, retrieve_knowledge_items
-from ai.spark_api import content_audit, spark_chat
+from ai.llm_api import audit_content, llm_chat
 from db import mysql_db
 from utils import fail, success
 from utils.auth_decorator import login_required
@@ -242,8 +242,8 @@ def generate_learning_path():
             return fail("未找到学生画像，无法生成学习路径", 404)
 
         profile_text = json.dumps(profile, ensure_ascii=False, default=str)
-        if not content_audit(profile_text):
-            return fail("画像内容未通过讯飞内容审核", 403)
+        if not audit_content(profile_text):
+            return fail("画像内容未通过内容安全校验", 403)
 
         query = str(profile.get("weak_points") or profile.get("study_goal") or "软件工程")
         knowledge = retrieve_knowledge(query, top_k=3)
@@ -282,9 +282,9 @@ def generate_learning_path():
 教材原文：
 {knowledge}
 """.strip()
-        path_content = normalize_markdown(spark_chat(prompt))
-        if not content_audit(path_content):
-            return fail("生成的学习路径未通过讯飞内容审核", 403)
+        path_content = normalize_markdown(llm_chat(prompt))
+        if not audit_content(path_content):
+            return fail("生成的学习路径未通过内容安全校验", 403)
 
         safety = safety_agent.review(path_content, sources)
         path_id = mysql_db.insert("study_path", {"user_id": user_id, "profile_session_id": session_id, "path_content": path_content, "status": "active"})

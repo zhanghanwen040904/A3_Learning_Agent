@@ -1,5 +1,6 @@
 from .agent_manager import AgentManager, agent_manager
 from .code_agent import CodeAgent
+from .conversation_agent import ConversationAgent
 from .document_agent import DocumentAgent
 from .evaluator_agent import EvaluatorAgent
 from .path_agent import PathAgent
@@ -20,6 +21,7 @@ __all__ = [
     "AgentManager",
     "agent_manager",
     "ProfileAgent",
+    "ConversationAgent",
     "RetrieveAgent",
     "TextAgent",
     "DocumentAgent",
