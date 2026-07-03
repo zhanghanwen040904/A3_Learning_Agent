@@ -2,18 +2,18 @@ import json
 from typing import Any, Dict
 
 from ai.rag import retrieve_knowledge
-from ai.spark_api import spark_chat
-from .base_agent import XunfeiAgentSpec
+from ai.llm_api import llm_chat
+from .base_agent import AgentSpec
 
 
 class PathAgent:
     def __init__(self):
         self.role = "个性化学习路径规划师"
         self.goal = "基于画像、掌握度和课程资料生成动态学习路径。"
-        self.agent = XunfeiAgentSpec(
+        self.agent = AgentSpec(
             role=self.role,
             goal=self.goal,
-            tools=["spark_chat", "retrieve_knowledge"],
+            tools=["llm_chat", "retrieve_knowledge"],
             input_schema="学生画像 + 掌握度 + 教材原文",
             output_schema="Markdown学习路径",
         )
@@ -33,4 +33,4 @@ class PathAgent:
 教材原文：
 {knowledge}
 """.strip()
-        return spark_chat(prompt)
+        return llm_chat(prompt)

@@ -1,3 +1,3 @@
-from .spark_api import content_audit, see_dance_generate, spark_chat
+from .llm_api import audit_content, generate_teaching_video, llm_chat
 
-__all__ = ["spark_chat", "see_dance_generate", "content_audit"]
+__all__ = ["llm_chat", "generate_teaching_video", "audit_content"]
