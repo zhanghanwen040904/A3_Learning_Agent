@@ -148,6 +148,7 @@ def _safe_student_item(item: dict, retrieval_source: str) -> dict:
         "knowledge_id": item.get("knowledge_id") or item.get("chunk_id") or "",
         "chunk_id": item.get("chunk_id") or item.get("knowledge_id") or "",
         "title": clean_text(item.get("title") or ""),
+        "normalized_title": clean_text(item.get("normalized_title") or item.get("title") or ""),
         "content": clean_text(item.get("content") or ""),
         "content_preview": clean_text(item.get("content_preview") or item.get("content") or "")[:220],
         "section_path": item.get("section_path") or [],
@@ -155,7 +156,11 @@ def _safe_student_item(item: dict, retrieval_source: str) -> dict:
         "pages": item.get("pages") or [],
         "source_file": item.get("source_file") or "",
         "knowledge_type": item.get("knowledge_type") or "",
+        "knowledge_level": item.get("knowledge_level") or "",
+        "is_primary_knowledge": bool(item.get("is_primary_knowledge")),
         "tags": item.get("tags") or [],
+        "parent_titles": item.get("parent_titles") or [],
+        "child_titles": item.get("child_titles") or [],
         "related_knowledge_titles": item.get("related_knowledge_titles") or [],
         "retrieval_source": retrieval_source,
     }
@@ -480,6 +485,113 @@ def _score_item(query_tokens: List[str], item: dict) -> float:
     return score
 
 
+def _profile_terms(profile: dict | None = None, stage: dict | None = None) -> List[str]:
+    profile = profile or {}
+    stage = stage or {}
+    values = [
+        profile.get("major"),
+        profile.get("course"),
+        profile.get("study_goal"),
+        profile.get("current_need"),
+        profile.get("course_progress"),
+        profile.get("weak_points"),
+        profile.get("error_prone_points"),
+        profile.get("challenge_scene"),
+        profile.get("selected_primary_knowledge_title"),
+        stage.get("stage_title"),
+        stage.get("stage_goal"),
+        " ".join(stage.get("stage_points") or []),
+    ]
+    terms = []
+    for value in values:
+        for token in _tokenize_query(str(value or "")):
+            if token and token not in terms:
+                terms.append(token)
+    return terms
+
+
+def _primary_bonus(item: dict) -> float:
+    bonus = 0.0
+    if item.get("is_primary_knowledge"):
+        bonus += 8.0
+    level = clean_text(item.get("knowledge_level") or "")
+    if level in {"core", "primary", "important", "??", "??"}:
+        bonus += 4.0
+    if item.get("parent_titles") or item.get("child_titles"):
+        bonus += 1.5
+    return bonus
+
+
+def _student_item_to_chunk(item: dict, index: int, score: float, retrieval_mode: str = "profile_keyword") -> dict:
+    return {
+        "source": Path(item.get("source_file") or "knowledge").name,
+        "chunk_index": index,
+        "content": item.get("content") or "",
+        "score": round(float(score), 4),
+        "retrieval_mode": retrieval_mode,
+        "metadata": {
+            "title": item.get("title") or "",
+            "normalized_title": item.get("normalized_title") or item.get("title") or "",
+            "source": item.get("source_file") or "",
+            "section_title": item.get("section_path", [""])[-1] if item.get("section_path") else "",
+            "section_path": item.get("section_path") or [],
+            "pages": item.get("pages") or [],
+            "chunk_id": item.get("chunk_id") or item.get("knowledge_id") or f"profile_{index}",
+            "knowledge_point": item.get("title") or "",
+            "knowledge_type": item.get("knowledge_type") or "",
+            "knowledge_level": item.get("knowledge_level") or "",
+            "is_primary_knowledge": bool(item.get("is_primary_knowledge")),
+            "tags": item.get("tags") or [],
+            "parent_titles": item.get("parent_titles") or [],
+            "child_titles": item.get("child_titles") or [],
+            "learning_location": item.get("learning_location") or {},
+            "content_preview": item.get("content_preview") or "",
+            "related_knowledge_titles": item.get("related_knowledge_titles") or [],
+            "retrieval_source": item.get("retrieval_source") or "student_knowledge_base_json",
+        },
+    }
+
+
+def select_profile_knowledge_items(query: str, profile: dict | None = None, stage: dict | None = None, top_k: int = 3) -> List[dict]:
+    items = _load_student_knowledge_items()
+    if not items:
+        items = _load_knowledge_points_items() or _load_textbook_knowledge_items()
+    if not items:
+        return []
+
+    terms = []
+    for token in _tokenize_query(query or "") + _profile_terms(profile, stage):
+        if token and token not in terms:
+            terms.append(token)
+
+    weak_points = clean_text((profile or {}).get("weak_points") or "")
+    stage_points = [clean_text(item) for item in ((stage or {}).get("stage_points") or []) if clean_text(item)]
+    scored = []
+    for index, item in enumerate(items):
+        score = _score_item(terms, item) + _primary_bonus(item)
+        title_norm = _normalize_string(item.get("normalized_title") or item.get("title") or "")
+        related_norm = [_normalize_string(v) for v in (item.get("related_knowledge_titles") or [])]
+        parent_norm = [_normalize_string(v) for v in (item.get("parent_titles") or [])]
+        child_norm = [_normalize_string(v) for v in (item.get("child_titles") or [])]
+        for point in stage_points:
+            point_norm = _normalize_string(point)
+            if point_norm and point_norm == title_norm:
+                score += 16.0
+            elif point_norm and (point_norm in related_norm or point_norm in parent_norm or point_norm in child_norm):
+                score += 7.0
+        weak_norm = _normalize_string(weak_points)
+        if weak_norm and weak_norm == title_norm:
+            score += 10.0
+        elif weak_norm and weak_norm in related_norm:
+            score += 4.0
+        if score <= 0:
+            continue
+        scored.append((score, index, item))
+
+    scored.sort(key=lambda row: (row[0], -row[1]), reverse=True)
+    return [_student_item_to_chunk(item, index, score) for score, index, item in scored[:top_k]]
+
+
 def _fallback_search(query: str, top_k: int = 3) -> List[dict]:
     query_tokens = _tokenize_query(query)
     items = _load_student_knowledge_items()
@@ -641,13 +753,15 @@ def _safe_context_chunk(item: dict) -> dict:
     }
 
 
-def build_resource_context(query: str, top_k: int = 6) -> dict:
-    items = retrieve_knowledge_items(query, top_k=top_k)
+def build_resource_context(query: str, top_k: int = 6, profile: dict | None = None, stage: dict | None = None) -> dict:
+    items = select_profile_knowledge_items(query, profile=profile, stage=stage, top_k=top_k)
     chunks = [_safe_context_chunk(item) for item in items]
     images = []
     for item in items:
         images.extend(_extract_image_lines(item.get("content", "")))
+    primary_knowledge = chunks[0] if chunks else {}
     return {
+        "primary_knowledge": primary_knowledge,
         "retrieved_chunks": chunks,
         "chapter_context": _load_chapter_index(),
         "images": _merge_images(images, limit=12),
@@ -656,6 +770,7 @@ def build_resource_context(query: str, top_k: int = 6) -> dict:
             "retrieved_count": len(chunks),
             "kb_root": str(generated_kb_dir()),
             "preferred_source": "student_knowledge_base_json",
+            "primary_knowledge_title": primary_knowledge.get("title") if primary_knowledge else "",
         },
     }
 

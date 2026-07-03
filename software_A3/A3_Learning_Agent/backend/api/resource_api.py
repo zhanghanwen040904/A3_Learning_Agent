@@ -147,6 +147,95 @@ def _build_student_context(evidence_items):
     }
 
 
+def _clean_explanation_text(text: str) -> str:
+    value = str(text or "").strip()
+    if not value:
+        return ""
+    value = re.sub(r"(?im)^\s*(标题|章节路径|章節路径|页码|教材页码|内容|知识点|学习步骤|考查重点|输入|输出|案例)\s*[：:]\s*", "", value)
+    value = re.sub(r"(?im)^\s*当前(主知识点|学习位置)\s*[：:]\s*", "", value)
+    value = re.sub(r"(?im)^\s*教材依据\d*\s*[：:]\s*", "", value)
+    value = re.sub(r"结合课程知识库内容可知[：:]?", "", value)
+    value = re.sub(r"(?im)^\s*软件工程\s*/\s*.+$", "", value)
+    value = re.sub(r"(?im)^\s*章节路径\s*[：:]?\s*.+$", "", value)
+    value = re.sub(r"(?im)^\s*页码\s*[：:]?\s*[\d,，、\-\s]+$", "", value)
+    value = re.sub(r"(?im)^\s*标题\s*[：:]?\s*.+$", "", value)
+    value = value.replace("该逻辑模型是以后设计和实现目标系统的基。", "该逻辑模型是以后设计和实现目标系统的基础。")
+    value = re.sub(r"软\s+件", "软件", value)
+    value = re.sub(r"问\s+题\s+定\s+义", "问题定义", value)
+    value = re.sub(r"可\s+行\s+性\s+研\s+究", "可行性研究", value)
+    value = re.sub(r"需\s+求\s+分\s+析", "需求分析", value)
+    value = re.sub(r"\s{2,}", " ", value)
+    value = re.sub(r"\n{3,}", "\n\n", value)
+    return value.strip(" \n：:")
+
+
+def _build_primary_evidence(evidence_items):
+    primary = evidence_items[0] if evidence_items else {}
+    support = []
+    for item in evidence_items[1:4]:
+        support.append(
+            {
+                "title": item.get("title", ""),
+                "content_preview": item.get("content_preview", ""),
+                "section_path": item.get("section_path", []),
+                "pages": item.get("pages", []),
+            }
+        )
+    return primary, support
+
+
+def _rewrite_main_explanation(payload, evidence_items):
+    primary, support = _build_primary_evidence(evidence_items)
+    if not primary:
+        return _clean_explanation_text(payload.get("main_explanation"))
+
+    primary_title = str(primary.get("title") or "").strip()
+    primary_content = _clean_explanation_text(primary.get("content_preview") or "")
+    support_blocks = []
+    for item in support:
+        title = str(item.get("title") or "").strip()
+        content = _clean_explanation_text(item.get("content_preview") or "")
+        if not title and not content:
+            continue
+        lines = []
+        if title:
+            lines.append(f"标题：{title}")
+        if item.get("section_path"):
+            lines.append(f"章节：{' / '.join(item.get('section_path') or [])}")
+        if item.get("pages"):
+            lines.append(f"页码：{'、'.join(str(x) for x in (item.get('pages') or []))}")
+        if content:
+            lines.append(f"内容：{content}")
+        support_blocks.append("\n".join(lines))
+
+    prompt = f"""
+你是软件工程教材讲解整理助手。
+请只依据教材片段，围绕一个主知识点生成一段适合学生阅读的自然讲解。
+
+要求：
+1. 只围绕“{primary_title}”展开，不要把多个知识点并列罗列成检索结果。
+2. 按这个逻辑组织内容：它在软件工程流程中的位置 -> 它要解决什么问题 -> 它依赖什么输入或会产出什么结果 -> 它为什么重要以及会影响哪些后续阶段。
+3. 语言要像老师讲解教材，连贯、自然、正式，不要出现“标题、章节路径、页码、内容”等标签。
+4. 不要照抄原文，不要把多个教材片段机械拼接，不要重复知识点名称。
+5. 如果教材中体现了先后顺序，要明确写出“先……再……最后……”这样的递进关系。
+6. 不要输出列表、JSON、调试信息、来源字段，只输出最终讲解正文。
+
+主知识点：
+标题：{primary_title}
+教材内容：{primary_content}
+
+补充教材片段：
+{chr(10).join(support_blocks) if support_blocks else "无"}
+""".strip()
+
+    try:
+        rewritten = spark_chat(prompt)
+        rewritten = _clean_explanation_text(rewritten)
+        return rewritten or primary_content
+    except Exception:
+        return primary_content
+
+
 def _sanitize_core_concepts(payload, evidence_items):
     concepts = []
     for item in _safe_list(payload.get("core_concepts")):
@@ -174,6 +263,19 @@ def _sanitize_core_concepts(payload, evidence_items):
                     "example": "",
                     "common_misunderstanding": "",
                 }
+            )
+    else:
+        primary, _ = _build_primary_evidence(evidence_items)
+        if primary and not any(_normalize_compare_text(item.get("name")) == _normalize_compare_text(primary.get("title")) for item in concepts):
+            concepts.insert(
+                0,
+                {
+                    "name": primary.get("title", ""),
+                    "definition": primary.get("content_preview", ""),
+                    "why_it_matters": "",
+                    "example": "",
+                    "common_misunderstanding": "",
+                },
             )
     return _dedupe_list(concepts, lambda item: _normalize_compare_text(item.get("name")))
 
@@ -209,6 +311,22 @@ def _sanitize_explanations(payload, evidence_items):
                     "exam_focus": "",
                 }
             )
+    else:
+        for item in items:
+            item["explanation"] = _clean_explanation_text(item.get("explanation"))
+    primary, _ = _build_primary_evidence(evidence_items)
+    if primary and not any(_normalize_compare_text(item.get("title")) == _normalize_compare_text(primary.get("title")) for item in items):
+        items.insert(
+            0,
+            {
+                "title": primary.get("title", ""),
+                "explanation": _clean_explanation_text(primary.get("content_preview", "")),
+                "process": [],
+                "input_output": None,
+                "example": "",
+                "exam_focus": "",
+            },
+        )
     return _dedupe_list(items, lambda item: _normalize_compare_text(item.get("title")))
 
 
@@ -306,6 +424,18 @@ def _sanitize_doc_payload(resource: dict) -> dict:
     payload["core_concepts"] = _sanitize_core_concepts(payload, evidence_items)
     payload["knowledge_explanation"] = _sanitize_explanations(payload, evidence_items)
     payload["mistakes"] = _sanitize_mistakes(payload, evidence_items)
+    payload["main_explanation"] = _rewrite_main_explanation(payload, evidence_items)
+    if not payload["main_explanation"] and evidence_items:
+        payload["main_explanation"] = str(evidence_items[0].get("content_preview") or "").strip()
+    primary_title = str(evidence_items[0].get("title") or "").strip() if evidence_items else ""
+    if primary_title and isinstance(payload.get("knowledge_explanation"), list):
+        for item in payload["knowledge_explanation"]:
+            if _normalize_compare_text(item.get("title")) == _normalize_compare_text(primary_title):
+                item["explanation"] = payload["main_explanation"]
+                break
+    payload["overview"] = payload.get("overview") if isinstance(payload.get("overview"), dict) else {}
+    payload["overview"]["title"] = str(_pick_text(payload["overview"], "title", default=(evidence_items[0].get("title") if evidence_items else resource.get("title") or "课程讲解文档"))).strip()
+    payload["overview"]["content"] = payload["main_explanation"].split("\n")[0].strip() if payload["main_explanation"] else "请结合教材依据理解当前知识点。"
     if isinstance(payload.get("summary"), dict):
         key_takeaways = _dedupe_list(_safe_list(payload["summary"].get("key_takeaways")), lambda item: _normalize_compare_text(item))
         payload["summary"]["key_takeaways"] = [str(item).strip() for item in key_takeaways if str(item).strip()]

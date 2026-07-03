@@ -97,7 +97,7 @@
                     <div class="doc-reading-content" :class="{collapsed:!resourceOpen(r)}" v-html="renderDoc(r,s)"></div>
                   </template>
                   <div v-else class="res-content" :class="{collapsed:!resourceOpen(r)}">{{resourceText(r)}}</div>
-                  <div v-if="isDoc(r)&&resourceOpen(r)&&stageResourceImages(s).length" class="image-gallery doc-image-gallery">
+                  <div v-if="false && isDoc(r)&&resourceOpen(r)&&stageResourceImages(s).length" class="image-gallery doc-image-gallery">
                     <div v-for="img in stageResourceImages(s)" :key="img.path||img" class="kb-image">
                       <img :src="imageUrl(img.path||img)" :alt="img.caption||'知识库配图'" loading="lazy" />
                       <p>{{img.caption||img.path||img}}</p>
@@ -194,13 +194,40 @@ function kps(r){if(Array.isArray(r.knowledge_points))return r.knowledge_points;t
 function score(r,text){return kps(r).reduce((n,p)=>n+(p&&text.includes(p)?5:0),0)+['需求分析','总体设计','详细设计','测试','生命周期','代码','练习'].reduce((n,k)=>n+(text.includes(k)&&`${r.title} ${r.content}`.includes(k)?2:0),0)}
 function resourceStageIndex(r){const meta=r.metadata||{};const idx=r.stage_index||meta.stage_index||meta.stage?.stage_index;const n=Number(idx);return Number.isFinite(n)?n:null}
 function matchRes(s,i,total){const exact=resources.value.filter(r=>resourceStageIndex(r)===i+1);const text=`${s.title} ${s.goal} ${s.points.join(' ')} ${s.raw}`;const m=resources.value.filter(r=>!resourceStageIndex(r)&&score(r,text)>0);const list=exact.length?exact:(m.length?m:resources.value.filter((r,idx)=>!resourceStageIndex(r)&&(total?idx%total===i:true)));const order=['doc','mindmap','quiz','code','video','reading'];return [...list].sort((a,b)=>order.indexOf(a.resource_type)-order.indexOf(b.resource_type))}
+function pickPrimaryDoc(docs, stage){
+  const stageText = [stage.title, stage.goal, ...(stage.points||[])].join(' ');
+  const scored = docs.map((doc, index) => {
+    const payload = resourceJson(doc) || {};
+    const mainTitle = cleanDocDisplayText(payload.main_explanation?.title || '');
+    const title = cleanDocDisplayText(doc.title || '');
+    const quality = qScore(doc);
+    let hit = 0;
+    (stage.points || []).forEach((point) => {
+      if (mainTitle.includes(point) || title.includes(point)) hit += 3;
+      if ((doc.content || '').includes(point)) hit += 1;
+    });
+    hit += score(doc, stageText);
+    return { doc, total: quality + hit - index * 0.01 };
+  });
+  scored.sort((a,b) => b.total - a.total);
+  return scored[0]?.doc || docs[0];
+}
 function mergedDocResource(items,stage){
-  const docs=items.filter(r=>r.resource_type==='doc');
-  if(!docs.length)return fallbackDocResource(stage);
-  const first=docs[0];
-  const jsonDocs=docs.map(resourceJson).filter(Boolean);
-  const content=jsonDocs.length?mergeDocJson(jsonDocs,docs,stage):fallbackDocJson(docs,stage);
-  return {...first,id:`merged-doc-${stage.title}`,title:`${stage.title}・综合讲解文档`,content:JSON.stringify(content),personalization:[...new Set(docs.map(r=>r.personalization).filter(Boolean))].join('；')||first.personalization,knowledge_points:[...new Set(docs.flatMap(r=>kps(r)))],quality_score:Math.round(docs.reduce((sum,r)=>sum+qScore(r),0)/docs.length),sources:docs.flatMap(r=>r.sources||[])}
+  const docs = items.filter(r=>r.resource_type==='doc');
+  if(!docs.length) return fallbackDocResource(stage);
+  const primary = pickPrimaryDoc(docs, stage);
+  const payload = resourceJson(primary);
+  if(!payload) return fallbackDocResource(stage);
+  return {
+    ...primary,
+    id:`merged-doc-${stage.title}`,
+    title: payload.resourcetitle || primary.title || `${stage.title}·综合讲解文档`,
+    content: JSON.stringify(payload),
+    personalization: primary.personalization,
+    knowledge_points: [...new Set([...(primary.knowledge_points||[]), ...(stage.points||[])])],
+    quality_score: qScore(primary),
+    sources: primary.sources || []
+  };
 }
 function fallbackDocResource(stage){
   const content=fallbackDocJson([],stage);
@@ -208,14 +235,39 @@ function fallbackDocResource(stage){
 }
 function mergeDocJson(jsonDocs,docs,stage){
   const first=jsonDocs[0]||{};
+  const fallback=fallbackDocJson(docs,stage);
   const points=[...new Set(docs.flatMap(r=>kps(r)).concat(stage.points||[]))].filter(Boolean);
-  return {...first,resourcetype:'doc',resourcetitle:`${stage.title}・综合讲解文档`,weakpoints:first.weakpoints?.length?first.weakpoints:points,studygoal:first.studygoal||stage.goal,overview:first.overview||fallbackDocJson(docs,stage).overview,core_concepts:jsonDocs.flatMap(d=>d.core_concepts||[]).slice(0,6),knowledge_explanation:jsonDocs.flatMap(d=>d.knowledge_explanation||[]).slice(0,8),mistakes:jsonDocs.flatMap(d=>d.mistakes||[]).slice(0,6),learningresources:jsonDocs.flatMap(d=>d.learningresources||[]),summary:first.summary||fallbackDocJson(docs,stage).summary,self_check:jsonDocs.flatMap(d=>d.self_check||[]).slice(0,5),lifecycle_position:first.lifecycle_position||fallbackDocJson(docs,stage).lifecycle_position,case_study:first.case_study||fallbackDocJson(docs,stage).case_study,learning_path:first.learning_path||fallbackDocJson(docs,stage).learning_path};
+  const firstMain=jsonDocs.map(d=>d.main_explanation).find(item=>item&&item.content)||null;
+  const mergedExplanations=uniqueByText(jsonDocs.flatMap(d=>d.knowledge_explanation||[]),item=>item.title).slice(0,2);
+  const mainTitle=cleanDocDisplayText(firstMain?.title||mergedExplanations[0]?.title||points[0]||stage.title||'核心知识讲解');
+  const mainContent=cleanDocDisplayText(firstMain?.content||mergedExplanations[0]?.explanation||'');
+  return {
+    ...first,
+    resourcetype:'doc',
+    resourcetitle:`${stage.title}・综合讲解文档`,
+    weakpoints:first.weakpoints?.length?first.weakpoints:points,
+    studygoal:first.studygoal||stage.goal,
+    overview:first.overview||fallback.overview,
+    main_explanation:{title:mainTitle,content:mainContent},
+    core_concepts:uniqueByText(jsonDocs.flatMap(d=>d.core_concepts||[]),item=>item.name).slice(0,3),
+    knowledge_explanation:mergedExplanations.filter(item=>cleanDocDisplayText(item.title)!==mainTitle).slice(0,2),
+    mistakes:uniqueByText(jsonDocs.flatMap(d=>d.mistakes||[]),item=>item.mistake).slice(0,3),
+    learningresources:jsonDocs.flatMap(d=>d.learningresources||[]),
+    summary:first.summary||fallback.summary,
+    self_check:uniqueByText(jsonDocs.flatMap(d=>d.self_check||[]),item=>item.question).slice(0,3),
+    lifecycle_position:first.lifecycle_position||fallback.lifecycle_position,
+    case_study:first.case_study||fallback.case_study,
+    learning_path:first.learning_path||fallback.learning_path,
+  };
 }
 function fallbackDocJson(docs,stage){
   const points=[...new Set(docs.flatMap(r=>kps(r)).concat(stage.points||[]))].filter(Boolean);
-  const topic=points.join('、')||stage.title||'软件工程核心知识';
-  const sourceText=docs.map(r=>resourceText(r)).filter(Boolean).join('\n').slice(0,900);
-  return {resourcetype:'doc',resourcetitle:`${stage.title}・综合讲解文档`,knowledgelevel:'待观察',studystyle:'综合学习',weakpoints:points,studygoal:stage.goal||`理解${topic}`,estimatedtime:'25分钟',overview:{title:'本阶段学习导入',content:`本阶段围绕${topic}展开。学习目标不是简单记住概念，而是理解它们在软件工程流程中的作用：解决什么问题、依赖什么输入、产生什么输出，并能结合案例分析常见质量风险。`},core_concepts:points.slice(0,4).map(p=>({name:p,definition:`${p}是本阶段需要重点掌握的软件工程知识点。`,why_it_matters:'它会影响需求、设计、实现、测试或维护等后续活动的质量。',example:`可结合课程项目分析${p}在当前阶段的作用。`,common_misunderstanding:'只记概念名称，不理解适用场景和阶段产物。'})),knowledge_explanation:points.slice(0,4).map(p=>({title:p,explanation:`${p}需要放在完整的软件工程活动中理解。它通常不是孤立知识点，而是和项目目标、阶段任务、输入输出和质量控制相关。学习时应先明确概念边界，再分析它解决的问题，最后通过课程案例理解它如何影响后续设计、实现、测试或维护。${sourceText?`课程资料提示：${sourceText}`:''}`,process:['明确概念边界','识别输入信息','理解处理活动','总结输出产物'],input_output:{input:'课程案例、需求描述、设计或实现信息',output:'概念理解、阶段产物或质量判断'},example:`以一个在线学习系统为例，可以用${p}判断当前阶段需要完成哪些任务以及可能产生哪些风险。`,exam_focus:'常考定义、作用、流程、输入输出和相近概念辨析。'})),lifecycle_position:{phase:'当前阶段',before:'前置课程概念和阶段资料',after:'后续设计、实现、测试、维护或质量评估',connection:`${topic}会连接软件生命周期中的前后活动，理解上下游关系有助于形成系统化认知。`},case_study:{title:'课程项目案例讲解',scenario:'假设团队正在开发一个在线学习系统，需要从需求理解、功能设计到测试验证逐步推进。',analysis:`在这个场景中，${topic}可以帮助团队明确当前阶段的关键任务。如果只停留在口头理解，容易出现概念混淆、阶段产物不清或测评答题时无法迁移的问题。通过把知识点转化为输入、过程和输出，学生可以更清楚地看到每个软件工程活动的价值。`,takeaway:'学习软件工程知识时，要始终追问它解决什么问题、输出什么产物、会影响哪些后续环节。'},mistakes:[{mistake:'只记概念名称',reason:'没有结合项目流程',correction:'从作用、输入输出和案例三个角度理解',example:'解释一个概念时同时说明它会产生什么阶段产物。'},{mistake:'混淆相近概念',reason:'没有比较适用场景',correction:'通过边界、目标和产物进行区分',example:'区分测试与调试、需求与设计等概念。'},{mistake:'忽略后续影响',reason:'只看当前阶段',correction:'分析它对后续环节的影响',example:'需求不清会导致测试用例难以设计。'}],learning_path:['先理解阶段目标和核心概念','再逐个学习知识点详细讲解','结合案例分析输入、过程和输出','最后完成自测并进入阶段评估'],summary:{key_takeaways:[`${topic}需要结合软件生命周期理解`,'学习重点是概念、流程、产物和易错点','通过案例和自测可以检验迁移应用能力'],one_sentence:`本阶段核心是把${topic}从概念记忆转化为软件工程场景中的应用能力。`},self_check:[{question:`请说明${points[0]||topic}解决什么问题？`,hint:'从目标、输入和输出角度回答。'},{question:'本阶段知识点会影响哪些后续阶段？',hint:'联系设计、测试、维护或质量评估。'},{question:'举一个课程案例说明本阶段知识点的作用。',hint:'用一个软件项目场景说明。'}],learningresources:docs.flatMap(r=>resourceJson(r)?.learningresources||[])};
+  const mainPoint=points[0]||stage.title||'软件工程核心知识';
+  return {resourcetype:'doc',resourcetitle:`${stage.title}・综合讲解文档`,knowledgelevel:'待观察',studystyle:'综合学习',weakpoints:points,studygoal:stage.goal||`理解${mainPoint}`,estimatedtime:'25分钟',overview:{title:'本阶段学习导入',content:`本阶段重点围绕${mainPoint}展开，目标不是背结论，而是理解它在软件工程流程中的作用、输入输出以及和后续活动的关系。`},main_explanation:{title:mainPoint,content:`${mainPoint}位于当前学习阶段的核心位置，理解它之前，首先要先看清它所属的大阶段以及这一阶段要完成的整体任务。只有把它放回完整的软件工程流程中，才能真正明白这个知识点为什么会出现。
+
+接下来要进一步看清它在本阶段中的具体作用。它不是单独存在的术语，而是承担着明确问题、组织信息、形成阶段结论或支撑后续决策的任务。因此，学习时不能只记名称，还要同时关注它依赖什么输入、通过什么活动推进、最后形成什么产物。
+
+更重要的是，这个知识点通常不会停留在本阶段内部。它的结论、文档、模型或判断结果，往往会直接影响后续设计、实现、测试或维护活动。学习它的关键，不是背定义，而是能够说明它解决什么问题、为什么重要、容易与哪些概念混淆，以及理解偏差会给后续工作带来什么影响。`},core_concepts:points.slice(0,3).map(p=>({name:p,definition:`${p}是本阶段的重要知识点。`,why_it_matters:'它会影响后续软件工程活动的理解与决策。',example:`可结合课程项目分析${p}的实际作用。`,common_misunderstanding:'只记名称，不理解边界、输入输出和适用场景。'})),knowledge_explanation:points.slice(1,3).map(p=>({title:p,explanation:`${p}可以作为对主知识点的补充理解，重点关注它与当前阶段目标的关系、典型应用方式以及与相近概念的区别。`,process:['明确概念边界','联系课程场景','理解前后衔接'],input_output:{input:'课程知识片段或案例',output:'对知识点的准确理解'},example:`结合软件工程案例说明${p}如何在当前阶段发挥作用。`,exam_focus:'关注定义、作用和与主知识点的联系。'})),lifecycle_position:{phase:'当前阶段',before:'前置课程概念和阶段资料',after:'后续设计、实现、测试、维护或质量评估',connection:`${mainPoint}和前后阶段紧密衔接，理解上下游关系有助于形成系统化认知。`},case_study:{title:'课程项目案例讲解',scenario:'以课程项目为例，从当前阶段目标出发分析该知识点如何落地。',analysis:`如果只停留在字面定义上，学生容易在做题或做项目时出现概念混淆。把${mainPoint}放入真实的软件工程场景后，可以更清楚地看到它如何影响任务推进、质量控制和阶段衔接。`,takeaway:'理解知识点的最好方式，是说明它解决什么问题以及会影响哪些后续活动。'},mistakes:[{mistake:'只背定义',reason:'没有联系软件工程流程',correction:'结合输入、输出、作用和场景一起理解',example:'回答时同时说明它在项目中承担什么任务。'},{mistake:'和相近概念混淆',reason:'没有比较边界',correction:'通过目标、阶段产物和使用场景区分',example:'说明它和前后相关知识点的差异。'}],learning_path:['先讲清主知识点是什么','再理解它在软件工程流程中的位置','最后结合案例和题目完成迁移应用'],summary:{key_takeaways:[`${mainPoint}要放在软件工程流程中理解`,'学习重点是作用、输入输出和前后衔接','通过案例和题目验证是否真正掌握'],one_sentence:`本阶段先讲透${mainPoint}，再扩展到相关补充知识点。`},self_check:[{question:`请说明${mainPoint}解决什么问题？`,hint:'从目标、输入和输出角度回答。'},{question:`${mainPoint}会影响哪些后续活动？`,hint:'联系设计、实现、测试或维护。'}],learningresources:docs.flatMap(r=>resourceJson(r)?.learningresources||[])};
 }
 function displayResources(items,stage){const mergedDoc=mergedDocResource(items,stage);const mindmap=items.find(r=>r.resource_type==='mindmap')||fallbackMindmapResource(stage);const reading=items.find(r=>r.resource_type==='reading');const video=items.find(r=>r.resource_type==='video');return [mindmap,mergedDoc,video,reading].filter(Boolean)}
 function fallbackMindmapResource(stage){const points=stage.points?.length?stage.points:['课程核心知识'];return {id:`fallback-mindmap-${stage.title}`,resource_type:'mindmap',title:`${stage.title}・阶段知识导图`,content:[`# ${stage.title}`,'## 阶段目标',`### 学习任务\n- ${stage.goal||'理解本阶段核心知识'}`,'## 知识点展开',...points.map(p=>`### ${p}\n- ⭐ 概念定义\n- 关键作用\n- 典型应用场景\n- 与本阶段目标的关系`),'## 易错提醒','### 概念边界\n- ⚠️ 注意与相近概念区分\n- ⚠️ 不要只记结论，要理解适用条件','### 学习建议\n- 结合教材图示和案例理解流程\n- 完成基础练习后进入阶段评估'].join('\n'),knowledge_points:points,quality_score:85,sources:[]}}
@@ -268,7 +320,7 @@ function cleanDocDisplayText(value){
   return clean(String(value||''))
     .replace(/\\n/g,' ')
     .replace(/\{\s*"?query"?[\s\S]*$/i,'')
-    .replace(/retrieved_chunks[\s\S]*$/i,'')
+    .replace(/retrieved_chunks[\s\S]*$/i,'').replace(/章节路径：[^\n\r]+/g,'').replace(/页码：[^\n\r]+/g,'').replace(/标题：/g,'').replace(/内容：/g,'').replace(/结合课程知识库内容可知：/g,'')
     .replace(/[A-Z]:\\[^\s，。；]+/g,'')
     .replace(/\s{2,}/g,' ')
     .trim();
@@ -276,23 +328,26 @@ function cleanDocDisplayText(value){
 function uniqueByText(items,getter){const seen=new Set();return (items||[]).filter(item=>{const key=cleanDocDisplayText(getter(item)).slice(0,60);if(!key||seen.has(key))return false;seen.add(key);return true})}
 function renderDoc(r,stage){
   const data=resourceJson(r)||{};
-  const points=[...new Set([...(stage.points||[]),...kps(r)])].filter(Boolean).slice(0,6);
+  const points=[...new Set([...(stage.points||[]),...kps(r)])].filter(Boolean).slice(0,4);
   const title=data.resourcetitle||r.title||`${stage.title}・讲解文档`;
   const overview=cleanDocDisplayText(data.overview?.content||data.content||stage.goal||resourceText(r));
-  const concepts=uniqueByText(data.core_concepts||[],item=>item.name).slice(0,5);
-  const explanations=uniqueByText(data.knowledge_explanation||[],item=>item.title).slice(0,5);
-  const mistakes=uniqueByText(data.mistakes||[],item=>item.mistake).slice(0,4);
-  const checks=uniqueByText(data.self_check||[],item=>item.question).slice(0,4);
-  const learningPath=uniqueByText((data.learning_path||[]).map(item=>({text:item})),item=>item.text).slice(0,5);
+  const mainTitle=cleanDocDisplayText(data.main_explanation?.title||points[0]||stage.title||'核心知识讲解');
+  const mainContent=cleanDocDisplayText(data.main_explanation?.content||data.main_explanation?.explanation||'');
+  const concepts=uniqueByText(data.core_concepts||[],item=>item.name).slice(0,3);
+  const explanations=uniqueByText(data.knowledge_explanation||[],item=>item.title).filter(item=>cleanDocDisplayText(item.title)!==mainTitle).slice(0,1);
+  const mistakes=uniqueByText(data.mistakes||[],item=>item.mistake).slice(0,3);
+  const checks=uniqueByText(data.self_check||[],item=>item.question).slice(0,3);
+  const learningPath=uniqueByText((data.learning_path||[]).map(item=>({text:item})),item=>item.text).slice(0,3);
   const lines=[`# ${cleanDocDisplayText(title)}`,'',`> 预计时长：${cleanDocDisplayText(data.estimatedtime||data.studytimepreferred||'25分钟')} · 关键词：${points.join('、')||'课程核心知识'}`,''];
   if(overview)lines.push('## 本阶段学习导入',overview,'');
-  if(concepts.length){lines.push('## 核心概念');concepts.forEach(item=>{lines.push(`### ${cleanDocDisplayText(item.name)}`,cleanDocDisplayText(item.definition||item.why_it_matters||''));if(item.example)lines.push(`- 示例：${cleanDocDisplayText(item.example)}`);if(item.common_misunderstanding)lines.push(`- 易错：${cleanDocDisplayText(item.common_misunderstanding)}`);lines.push('')})}
-  if(explanations.length){lines.push('## 知识点讲解');explanations.forEach(item=>{lines.push(`### ${cleanDocDisplayText(item.title)}`,cleanDocDisplayText(item.explanation));if(item.process?.length)lines.push(`- 学习步骤：${item.process.map(cleanDocDisplayText).filter(Boolean).join(' → ')}`);if(item.input_output)lines.push(`- 输入：${cleanDocDisplayText(item.input_output.input)}；输出：${cleanDocDisplayText(item.input_output.output)}`);if(item.example)lines.push(`- 案例：${cleanDocDisplayText(item.example)}`);if(item.exam_focus)lines.push(`- 考查重点：${cleanDocDisplayText(item.exam_focus)}`);lines.push('')})}
+  if(mainContent) lines.push(`## 核心知识讲解：${mainTitle}`, mainContent, '');
+  if(concepts.length){lines.push('## 相关核心概念');concepts.forEach(item=>{lines.push(`### ${cleanDocDisplayText(item.name)}`,cleanDocDisplayText(item.definition||item.why_it_matters||''));if(item.example)lines.push(`- 示例：${cleanDocDisplayText(item.example)}`);if(item.common_misunderstanding)lines.push(`- 易错：${cleanDocDisplayText(item.common_misunderstanding)}`);lines.push('')})}
+  if(explanations.length){lines.push('## 补充知识点');explanations.forEach(item=>{lines.push(`### ${cleanDocDisplayText(item.title)}`,cleanDocDisplayText(item.explanation));if(item.process?.length)lines.push(`- 学习步骤：${item.process.map(cleanDocDisplayText).filter(Boolean).join(' → ')}`);if(item.input_output)lines.push(`- 输入：${cleanDocDisplayText(item.input_output.input)}；输出：${cleanDocDisplayText(item.input_output.output)}`);if(item.example)lines.push(`- 案例：${cleanDocDisplayText(item.example)}`);if(item.exam_focus)lines.push(`- 考查重点：${cleanDocDisplayText(item.exam_focus)}`);lines.push('')})}
   if(data.lifecycle_position){lines.push('## 在软件生命周期中的位置',`${cleanDocDisplayText(data.lifecycle_position.phase||'当前阶段')}：${cleanDocDisplayText(data.lifecycle_position.connection||'理解本阶段和前后续活动的关系。')}`,'');}
   if(data.case_study){lines.push(`## ${cleanDocDisplayText(data.case_study.title||'课程项目案例分析')}`);['scenario','analysis','takeaway'].forEach(key=>{if(data.case_study[key])lines.push(`- ${cleanDocDisplayText(data.case_study[key])}`)});lines.push('')}
   if(mistakes.length){lines.push('## 常见误区与纠正');mistakes.forEach(item=>{lines.push(`- **${cleanDocDisplayText(item.mistake)}**：${cleanDocDisplayText(item.correction||item.reason||item.example)}`)});lines.push('')}
   if(learningPath.length){lines.push('## 推荐学习路径');learningPath.forEach((item,index)=>lines.push(`${index+1}. ${cleanDocDisplayText(item.text)}`));lines.push('')}
-  if(data.summary){lines.push('## 阶段小结');if(data.summary.one_sentence)lines.push(cleanDocDisplayText(data.summary.one_sentence));(data.summary.key_takeaways||[]).slice(0,4).forEach(item=>lines.push(`- ${cleanDocDisplayText(item)}`));lines.push('')}
+  if(data.summary){lines.push('## 阶段小结');if(data.summary.one_sentence)lines.push(cleanDocDisplayText(data.summary.one_sentence));(data.summary.key_takeaways||[]).slice(0,3).forEach(item=>lines.push(`- ${cleanDocDisplayText(item)}`));lines.push('')}
   if(checks.length){lines.push('## 自测问题');checks.forEach(item=>lines.push(`- **${cleanDocDisplayText(item.question)}**  ${cleanDocDisplayText(item.hint)}`));}
   return markdownRenderer.render(lines.filter(line=>line!==null&&line!==undefined).join('\n'));
 }

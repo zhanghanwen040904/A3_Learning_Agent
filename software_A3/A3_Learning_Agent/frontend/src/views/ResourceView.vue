@@ -209,18 +209,28 @@
               <div v-else class="doc-empty">未检索到对应知识库片段。</div>
             </div>
 
-            <div class="doc-section">
+                        <div class="doc-section">
               <h4>知识点详细讲解</h4>
-              <div v-if="docExplanations(item).length" class="doc-stack">
-                <div v-for="entry in docExplanations(item)" :key="entry.title" class="doc-card">
-                  <strong>{{ entry.title }}</strong>
-                  <p>{{ entry.explanation }}</p>
+              <div v-if="docMainExplanation(item)" class="doc-stack">
+                <div class="doc-card doc-card-main">
+                  <strong>{{ docMainExplanation(item).title }}</strong>
+                  <p>{{ docMainExplanation(item).explanation }}</p>
                 </div>
               </div>
               <div v-else class="doc-empty">未检索到对应知识库片段。</div>
             </div>
 
             <div class="doc-section">
+              <h4>补充知识点</h4>
+              <div v-if="docExplanations(item).length" class="doc-stack">
+                <div v-for="entry in docExplanations(item)" :key="entry.title" class="doc-card">
+                  <strong>{{ entry.title }}</strong>
+                  <p>{{ entry.explanation }}</p>
+                </div>
+              </div>
+              <div v-else class="doc-empty">本资源围绕单一核心知识点展开，无需额外补充知识点。</div>
+            </div>
+<div class="doc-section">
               <h4>常见误区与纠正</h4>
               <div v-if="docMistakes(item).length" class="doc-stack">
                 <div v-for="mistake in docMistakes(item)" :key="mistake.mistake_title" class="doc-card">
@@ -237,10 +247,7 @@
               <div v-if="docEvidence(item).length" class="doc-stack">
                 <div v-for="evidence in docEvidence(item)" :key="docEvidenceKey(evidence)" class="doc-card">
                   <strong>{{ evidence.title }}</strong>
-                  <small>{{ evidence.section_path.join(" > ") || "未识别章节路径" }}</small>
-                  <small v-if="evidence.pages?.length">页码：{{ evidence.pages.join("、") }}</small>
-                  <small v-if="evidence.source_file">来源：{{ evidence.source_file }}</small>
-                  <p>{{ evidence.content_preview }}</p>
+                                                                        <p>{{ evidence.content_preview }}</p>
                 </div>
               </div>
               <div v-else class="doc-empty">未检索到对应知识库片段。</div>
@@ -465,6 +472,14 @@ function dedupeBy(items, keyFn) {
     return true;
   });
 }
+function sanitizeKnowledgeText(value) {
+  return String(value || "")
+    .replace(/(标题|章节路径|页码|内容|教材依据|教材片段重点说明|结合课程知识库内容可知)\s*[：:]\s*/g, "")
+    .replace(/\n{2,}/g, "\n")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
 function docPayload(item) {
   const parsed = parseJsonLike(item.content);
   return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : null;
@@ -497,15 +512,28 @@ function docConcepts(item) {
     (entry) => normalizeCompareText(entry.name),
   ).filter((entry) => entry.name);
 }
+function docMainExplanation(item) {
+  const payload = docPayload(item) || {};
+  const main = payload.main_explanation || {};
+  const firstExtra = (payload.knowledge_explanation || [])[0] || {};
+  const title = sanitizeKnowledgeText(main?.title || firstExtra?.title || "核心知识讲解");
+  const explanation = sanitizeKnowledgeText(main?.content || main?.explanation || firstExtra?.explanation || "");
+  return explanation ? { title, explanation } : null;
+}
 function docExplanations(item) {
   const payload = docPayload(item) || {};
+  const main = docMainExplanation(item);
   return dedupeBy(
     (payload.knowledge_explanation || []).map((entry) => ({
-      title: entry?.title || entry?.name || "",
-      explanation: entry?.explanation || entry?.content || "",
+      title: sanitizeKnowledgeText(entry?.title || entry?.name || ""),
+      explanation: sanitizeKnowledgeText(entry?.explanation || entry?.content || ""),
     })),
     (entry) => normalizeCompareText(entry.title),
-  ).filter((entry) => entry.title || entry.explanation);
+  ).filter((entry) => {
+    if (!(entry.title || entry.explanation)) return false;
+    if (!main) return true;
+    return normalizeCompareText(entry.title) !== normalizeCompareText(main.title);
+  }).slice(0, 2);
 }
 function docMistakes(item) {
   const payload = docPayload(item) || {};
@@ -522,8 +550,8 @@ function docEvidence(item) {
   const payload = docPayload(item) || {};
   return dedupeBy(
     (payload.learningresources || []).map((entry) => ({
-      title: entry?.title || "",
-      content_preview: entry?.content_preview || "",
+      title: sanitizeKnowledgeText(entry?.title || ""),
+      content_preview: sanitizeKnowledgeText(entry?.content_preview || entry?.content || ""),
       section_path: Array.isArray(entry?.section_path) ? entry.section_path : [],
       pages: Array.isArray(entry?.pages) ? entry.pages : [],
       source_file: entry?.source_file || "",
@@ -582,7 +610,7 @@ function buildMindmapSource(item) {
   }
   return buildFallbackMindmap(item);
 }
-function resourceImages(item) { return extractImagePaths([item.content, item.personalization, JSON.stringify(item.metadata || {})].join("\n")); }
+function resourceImages(item) { return []; }
 function shortImageName(path) { return String(path || "").split(/\\|\//).slice(-2).join(" / "); }
 function typeLabel(type) { return ({ doc: "讲解文档", quiz: "分层练习", reading: "拓展阅读", mindmap: "思维导图", code: "代码实操", video: "教学视频" }[type] || type); }
 function eventType(status) { return ({ completed: "success", warning: "warning", failed: "danger" }[status] || "primary"); }
@@ -834,6 +862,7 @@ onBeforeUnmount(() => closeEventSource());
 .doc-card { display: grid; gap: 8px; padding: 14px; border: 1px solid #e2e8f0; border-radius: 10px; background: #f8fbff; }
 .doc-card strong { color: #0f172a; }
 .doc-card p { margin: 0; color: #334155; line-height: 1.7; }
+.doc-card-main p { font-size: 15px; line-height: 1.85; }
 .doc-card small { color: #64748b; line-height: 1.6; }
 .doc-location { display: flex; flex-wrap: wrap; gap: 8px; }
 .doc-location span { padding: 6px 10px; border-radius: 999px; background: #eff6ff; color: #1d4ed8; }

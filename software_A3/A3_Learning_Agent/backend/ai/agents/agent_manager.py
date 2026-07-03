@@ -1,11 +1,12 @@
 ﻿import json
 import time
 import uuid
+import re
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from typing import Any, Callable, Dict, Optional, List
 
-from ai.rag import build_resource_context, retrieve_knowledge_items
+from ai.rag import build_resource_context, retrieve_knowledge_items, select_profile_knowledge_items
 from ai.spark_api import content_audit
 from .code_agent import CodeAgent
 from .document_agent import DocumentAgent
@@ -161,27 +162,49 @@ class AgentManager:
         return evidence
 
     @staticmethod
-    def _knowledge_text_for_model(items: List[dict]) -> str:
+    def _knowledge_text_for_model(items: List[dict], primary_title: str = "") -> str:
         if not items:
             return "未检索到对应知识库片段。"
-        blocks = []
+
+        def normalize_title(value: str) -> str:
+            return re.sub(r"[^\u4e00-\u9fa5a-z0-9]+", "", str(value or "").strip().lower())
+
+        def clean_content(value: str) -> str:
+            text = str(value or "")
+            text = text.replace("\n", " ")
+            text = re.sub(r"(标题|章节路径|页码|内容|教材依据|教材片段重点说明|结合课程知识库内容可知)\s*[：:]\s*", "", text)
+            text = re.sub(r"\s+", " ", text)
+            return text.strip(" ，。；;:：")
+
+        cleaned = []
         for item in items:
             metadata = item.get("metadata") or {}
-            section_path = metadata.get("section_path") or []
-            if not isinstance(section_path, list):
-                section_path = [str(section_path)] if section_path else []
-            blocks.append(
-                "\n".join(
-                    [
-                        f"标题：{metadata.get('title') or '知识点'}",
-                        f"章节路径：{' / '.join(section_path) if section_path else '未标注'}",
-                        f"页码：{','.join(str(p) for p in (metadata.get('pages') or [])) or '未标注'}",
-                        f"内容：{str(item.get('content') or '').strip()}",
-                    ]
-                )
-            )
-        return "\n\n".join(blocks)
+            title = str(metadata.get("title") or "课程核心知识").strip()
+            content = clean_content(item.get("content") or "")
+            if not content:
+                continue
+            cleaned.append({"title": title, "content": content})
 
+        if not cleaned:
+            return "未检索到对应知识库片段。"
+
+        primary_key = normalize_title(primary_title)
+        if primary_key:
+            cleaned.sort(key=lambda entry: 0 if normalize_title(entry["title"]) == primary_key else 1)
+
+        main_item = cleaned[0]
+        support_items = []
+        for entry in cleaned[1:]:
+            if normalize_title(entry["title"]) == normalize_title(main_item["title"]):
+                continue
+            support_items.append(entry)
+            if len(support_items) >= 1:
+                break
+
+        blocks = [f"主知识点：{main_item['title']}\n教材内容：{main_item['content'][:900]}"]
+        for entry in support_items:
+            blocks.append(f"补充知识点：{entry['title']}\n教材内容：{entry['content'][:420]}")
+        return "\n\n".join(blocks)
     @staticmethod
     def _empty_resource(resource_type: str, stage: Dict[str, Any], stage_sources: List[dict]) -> Dict[str, Any]:
         message = "未检索到对应知识库片段。"
@@ -261,8 +284,8 @@ class AgentManager:
         emit({"type": "agent", "agent": "RetrieveAgent", "status": "running", "message": "正在从软件工程知识库召回可信依据"})
         start = time.perf_counter()
         query = self._build_query(dialogue_text, context)
-        knowledge_context = build_resource_context(query, top_k=6)
-        sources = retrieve_knowledge_items(query, top_k=6)
+        knowledge_context = build_resource_context(query, top_k=6, profile=context)
+        sources = select_profile_knowledge_items(query, profile=context, top_k=3)
         result["knowledge_context"] = knowledge_context
         result["sources"] = sources
         result["knowledge"] = self._knowledge_text_for_model(sources)
@@ -301,9 +324,16 @@ class AgentManager:
                 "goal": stage_context.get("current_need"),
             }
             stage_query = " ".join([stage.get("stage_title", ""), stage.get("stage_goal", ""), " ".join(stage.get("stage_points") or [])])
-            stage_sources = retrieve_knowledge_items(stage_query or query, top_k=6)
-            stage_knowledge_context = build_resource_context(stage_query or query, top_k=6)
+            stage_sources = select_profile_knowledge_items(stage_query or query, profile=stage_context, stage=stage, top_k=3)
+            stage_knowledge_context = build_resource_context(stage_query or query, top_k=3, profile=stage_context, stage=stage)
             evidence = self._safe_evidence(stage_sources)
+            primary_knowledge = stage_knowledge_context.get("primary_knowledge") or (evidence[0] if evidence else {})
+            primary_title = primary_knowledge.get("title") or ""
+            stage_context["selected_primary_knowledge_title"] = primary_title
+            stage_context["selected_primary_knowledge_content"] = primary_knowledge.get("content") or ""
+            stage_context["selected_knowledge_points"] = [item.get("title") for item in evidence if item.get("title")][:3]
+            task_plan["selected_primary_knowledge_title"] = primary_title
+            task_plan["selected_knowledge_points"] = stage_context["selected_knowledge_points"]
             if not stage_sources:
                 resource = self._empty_resource(resource_type, stage, [])
                 quality = {"total": 0, "passed": False, "problems": ["未检索到对应知识库片段"], "checks": {}}
@@ -324,7 +354,7 @@ class AgentManager:
                 resource["duration_ms"] = int((time.perf_counter() - started) * 1000)
                 return resource
 
-            resource = agent.generate(stage_context, self._knowledge_text_for_model(stage_sources), task_plan)
+            resource = agent.generate(stage_context, self._knowledge_text_for_model(stage_sources, primary_title), task_plan)
             emit({"type": "agent", "agent": "QualityAgent", "status": "running", "message": f"正在审核 {agent_name} 生成结果"})
             quality = self.quality_agent.evaluate(resource, stage_context, stage_sources)
             retries = 0
@@ -332,7 +362,7 @@ class AgentManager:
                 retries = 1
                 feedback = "；".join(quality.get("problems") or []) or "请提升准确性、清晰度和个性化程度"
                 emit({"type": "agent", "agent": agent_name, "status": "running", "message": f"质量评分未达标，正在根据反馈返工：{feedback}"})
-                resource = agent.generate(stage_context, self._knowledge_text_for_model(stage_sources), task_plan, feedback=feedback)
+                resource = agent.generate(stage_context, self._knowledge_text_for_model(stage_sources, primary_title), task_plan, feedback=feedback)
                 emit({"type": "agent", "agent": "QualityAgent", "status": "running", "message": f"正在复审 {agent_name} 返工结果"})
                 quality = self.quality_agent.evaluate(resource, stage_context, stage_sources)
             resource["quality"] = quality
@@ -348,6 +378,7 @@ class AgentManager:
             resource["metadata"] = {
                 **metadata,
                 "stage": stage,
+                "primary_knowledge": primary_knowledge,
                 "evidence": evidence,
                 "learning_location": evidence[0].get("learning_location") if evidence else {},
                 "debug": stage_knowledge_context.get("debug", {}),
@@ -400,3 +431,5 @@ class AgentManager:
 
 
 agent_manager = AgentManager()
+
+
