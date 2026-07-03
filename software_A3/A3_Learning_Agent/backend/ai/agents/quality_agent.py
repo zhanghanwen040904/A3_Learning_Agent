@@ -2,8 +2,8 @@ import ast
 import re
 from typing import Any, Dict, List
 
-from ai.spark_api import content_audit
-from .base_agent import XunfeiAgentSpec
+from ai.llm_api import audit_content
+from .base_agent import AgentSpec
 
 
 class QualityAgent:
@@ -11,10 +11,10 @@ class QualityAgent:
 
     def __init__(self):
         self.role = "学习资源质量评估师"
-        self.agent = XunfeiAgentSpec(
+        self.agent = AgentSpec(
             role=self.role,
             goal="量化评估资源质量并提出可执行返工意见",
-            tools=["content_audit", "retrieve_knowledge"],
+            tools=["audit_content", "retrieve_knowledge"],
             input_schema="生成资源 + 学生上下文 + RAG来源",
             output_schema="四维评分 + 是否通过 + 问题列表",
         )
@@ -51,7 +51,7 @@ class QualityAgent:
                     problems.append(f"Python语法检查失败：第{exc.lineno}行")
         if not sources:
             problems.append("缺少课程知识库来源")
-        if not content_audit(content):
+        if not audit_content(content):
             format_ok = False
             problems.append("内容安全审核未通过")
         accuracy = 90 if sources and format_ok else 60
@@ -65,5 +65,5 @@ class QualityAgent:
             "total": total,
             "passed": passed,
             "problems": problems,
-            "checks": {"content_audit": content_audit(content), "code_syntax_ok": code_syntax_ok},
+            "checks": {"audit_content": audit_content(content), "code_syntax_ok": code_syntax_ok},
         }

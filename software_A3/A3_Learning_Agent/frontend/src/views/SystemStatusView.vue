@@ -1,8 +1,8 @@
 <template>
   <div class="page system-page">
     <el-alert
-      title="这里用于展示项目是否真正连接了 MySQL 数据库和讯飞 AI 服务"
-      description="如果 AI 模式显示为模拟演示模式，说明 backend/.env 中 MOCK_AI=true 或未配置真实讯飞密钥；如需连接真实模型，请填写讯飞密钥并重启后端。"
+      title="这里用于展示项目是否真正连接了 MySQL 数据库和当前 AI 服务"
+      description="如果 AI 模式显示为模拟演示模式，说明 backend/.env 中开启了 MOCK_AI=true，或尚未配置真实模型密钥；如需连接真实模型，请填写百炼配置并重启后端。"
       type="info"
       show-icon
       :closable="false"
@@ -21,34 +21,37 @@
             <el-descriptions-item label="连接状态">
               <el-tag type="success">已连接</el-tag>
             </el-descriptions-item>
-            <el-descriptions-item label="数据库名">{{ status.database?.name || '-' }}</el-descriptions-item>
-            <el-descriptions-item label="MySQL版本">{{ status.database?.version || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="数据库名">{{ status.database?.name || "-" }}</el-descriptions-item>
+            <el-descriptions-item label="MySQL 版本">{{ status.database?.version || "-" }}</el-descriptions-item>
             <el-descriptions-item label="主机端口">{{ status.database?.host }}:{{ status.database?.port }}</el-descriptions-item>
-            <el-descriptions-item label="用户">{{ status.database?.user || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="用户">{{ status.database?.user || "-" }}</el-descriptions-item>
           </el-descriptions>
         </el-card>
       </el-col>
+
       <el-col :span="12">
         <el-card class="panel status-card">
           <template #header>AI 模型连接状态</template>
           <el-descriptions :column="1" border>
             <el-descriptions-item label="当前模式">
-              <el-tag :type="status.ai?.mock_ai ? 'warning' : 'success'">{{ status.ai?.mode || '-' }}</el-tag>
+              <el-tag :type="status.ai?.mock_ai ? 'warning' : 'success'">{{ status.ai?.mode || "-" }}</el-tag>
             </el-descriptions-item>
-            <el-descriptions-item label="讯飞星火">
-              <el-tag :type="status.ai?.spark?.configured ? 'success' : 'danger'">
-                {{ status.ai?.spark?.configured ? '已配置' : '未配置' }}
+            <el-descriptions-item label="主模型">
+              <el-tag :type="status.ai?.primary_model?.configured ? 'success' : 'danger'">
+                {{ status.ai?.primary_model?.configured ? "已配置" : "未配置" }}
               </el-tag>
             </el-descriptions-item>
-            <el-descriptions-item label="Spark Domain">{{ status.ai?.spark?.domain || '-' }}</el-descriptions-item>
-            <el-descriptions-item label="SeeDance">
-              <el-tag :type="status.ai?.seedance?.configured ? 'success' : 'warning'">
-                {{ status.ai?.seedance?.configured ? '已配置' : '未配置' }}
+            <el-descriptions-item label="模型名称">
+              {{ status.ai?.primary_model?.model || "-" }}
+            </el-descriptions-item>
+            <el-descriptions-item label="视频生成">
+              <el-tag :type="status.ai?.video?.configured ? 'success' : 'warning'">
+                {{ status.ai?.video?.configured ? "已配置" : "未配置" }}
               </el-tag>
             </el-descriptions-item>
             <el-descriptions-item label="内容审核">
-              <el-tag :type="status.ai?.content_audit?.configured ? 'success' : 'warning'">
-                {{ status.ai?.content_audit?.configured ? '已配置' : '本地兜底' }}
+              <el-tag :type="status.ai?.audit_content?.configured ? 'success' : 'warning'">
+                {{ status.ai?.audit_content?.configured ? "已配置" : "本地兜底" }}
               </el-tag>
             </el-descriptions-item>
           </el-descriptions>
@@ -74,18 +77,22 @@
       <template #header>
         <div class="header-line">
           <span>AI 连通性测试</span>
-          <el-button type="primary" :loading="testing" @click="testAi">测试星火模型</el-button>
+          <el-button type="primary" :loading="testing" @click="testAi">测试当前模型</el-button>
         </div>
       </template>
+
       <el-input v-model="prompt" type="textarea" :rows="3" />
+
       <el-card v-if="aiResult" class="result-card" shadow="never">
         <el-descriptions :column="1" border>
           <el-descriptions-item label="测试模式">
             <el-tag :type="aiResult.mock_ai ? 'warning' : 'success'">{{ aiResult.mode }}</el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="内容审核是否通过">{{ aiResult.content_audit_passed ? '通过' : '未通过/未配置' }}</el-descriptions-item>
+          <el-descriptions-item label="内容审核是否通过">
+            {{ aiResult.content_audit_passed ? "通过" : "未通过 / 未配置" }}
+          </el-descriptions-item>
         </el-descriptions>
-        <div class="markdown-body" v-html="renderMarkdown(aiResult.spark_result)"></div>
+        <div class="markdown-body" v-html="renderMarkdown(aiResult.llm_result || aiResult.spark_result)"></div>
       </el-card>
     </el-card>
   </div>
@@ -101,7 +108,7 @@ const md = new MarkdownIt({ html: true, linkify: true, breaks: true });
 const status = reactive({ database: {}, ai: {} });
 const loading = ref(false);
 const testing = ref(false);
-const prompt = ref("请用一句话说明你正在连接人工智能导论学习系统。");
+const prompt = ref("请用一句话说明你正在连接 A3 学习助手系统。");
 const aiResult = ref(null);
 
 function renderMarkdown(text) {
@@ -145,17 +152,21 @@ onMounted(loadStatus);
   display: grid;
   gap: 18px;
 }
+
 .header-line {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
+
 .status-card {
   min-height: 330px;
 }
+
 .result-card {
   margin-top: 16px;
 }
+
 .markdown-body {
   margin-top: 16px;
   line-height: 1.8;

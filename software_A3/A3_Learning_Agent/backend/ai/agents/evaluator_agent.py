@@ -1,6 +1,6 @@
 import re
 
-from .base_agent import XunfeiAgentSpec
+from .base_agent import AgentSpec
 
 DOMAIN_KEYWORDS = [
     "人工智能",
@@ -39,10 +39,10 @@ class EvaluatorAgent:
     def __init__(self):
         self.role = "学习效果评估师"
         self.goal = "根据题目、学生答案和参考答案判断掌握程度，并输出结构化判题结果。"
-        self.agent = XunfeiAgentSpec(
+        self.agent = AgentSpec(
             role=self.role,
             goal=self.goal,
-            tools=["rule_grading", "spark_chat"],
+            tools=["rule_grading", "llm_chat"],
             input_schema="题目 + 学生答案 + 参考答案 + 知识点 + 解析信息",
             output_schema="分数 + 正误 + 反馈 + 参考答案 + 解析 + 易错点 + 得分点",
         )

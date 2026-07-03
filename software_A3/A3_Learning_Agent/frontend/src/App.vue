@@ -161,7 +161,6 @@ import {
   MoreFilled,
   Monitor,
   Plus,
-  Reading,
   RefreshRight,
   User,
 } from "@element-plus/icons-vue";
@@ -173,7 +172,6 @@ const route = useRoute();
 const primaryNav = [
   { path: "/student-portrait", label: "学生画像", icon: User },
   { path: "/path", label: "学习路径", icon: Connection },
-  { path: "/chat", label: "智能答疑", icon: Reading },
   { path: "/evaluation", label: "学习评估", icon: DataAnalysis },
 ];
 

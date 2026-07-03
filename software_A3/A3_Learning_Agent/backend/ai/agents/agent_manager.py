@@ -1,4 +1,4 @@
-﻿import json
+import json
 import time
 import uuid
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -6,7 +6,7 @@ from datetime import datetime
 from typing import Any, Callable, Dict, Optional, List
 
 from ai.rag import build_resource_context, retrieve_knowledge_items
-from ai.spark_api import content_audit
+from ai.llm_api import audit_content
 from .code_agent import CodeAgent
 from .document_agent import DocumentAgent
 from .mindmap_agent import MindMapAgent
@@ -181,7 +181,7 @@ class AgentManager:
 
         emit({"type": "start", "status": "running", "message": "多智能体资源生成流程已启动"})
 
-        if dialogue_text and not content_audit(dialogue_text):
+        if dialogue_text and not audit_content(dialogue_text):
             result["errors"].append("学生输入未通过内容审核")
             trace("SafetyAgent", "failed", "学生输入未通过内容审核")
             return result

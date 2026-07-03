@@ -8,15 +8,15 @@ except ModuleNotFoundError:
     LangChainStrOutputParser = None
     LangChainPromptTemplate = None
 
-from ai.langchain_adapter import SparkLLM
+from ai.llm_adapter import PlatformLLM
 from ai.langchain_parsers import parse_json_with_fallback
-from .base_agent import XunfeiAgentSpec
+from .base_agent import AgentSpec
 
 
 def build_langchain_chain(prompt: Any) -> Any:
     if prompt is None or LangChainStrOutputParser is None:
         return None
-    return prompt | SparkLLM() | LangChainStrOutputParser()
+    return prompt | PlatformLLM() | LangChainStrOutputParser()
 
 
 RESOURCE_PROMPT_TEMPLATE = """
@@ -59,10 +59,10 @@ class StructuredResourceAgent:
     default_title = "个性化学习资源"
 
     def __init__(self):
-        self.agent = XunfeiAgentSpec(
+        self.agent = AgentSpec(
             role=self.role,
             goal=self.goal,
-            tools=["langchain_prompt", "spark_llm", "retrieve_knowledge"],
+            tools=["langchain_prompt", "platform_llm", "retrieve_knowledge"],
             input_schema="结构化学生画像 + 资源规划 + RAG教材片段 + 可选返工意见",
             output_schema=(
                 '{"title":"","content":"","knowledge_points":[],"personalization":"",'
@@ -241,7 +241,7 @@ class StructuredResourceAgent:
         if self.chain is not None:
             raw = self.chain.invoke(variables)
         else:
-            raw = SparkLLM().invoke(RESOURCE_PROMPT_TEMPLATE.format(**variables))
+            raw = PlatformLLM().invoke(RESOURCE_PROMPT_TEMPLATE.format(**variables))
         if self._is_model_error(raw):
             if self.resource_type == "doc":
                 return self._fallback_doc_resource(context, knowledge_text)
