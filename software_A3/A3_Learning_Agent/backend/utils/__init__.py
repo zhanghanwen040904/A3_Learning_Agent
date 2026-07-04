@@ -17,12 +17,28 @@ def to_jsonable(value: Any) -> Any:
 
 
 def success(data: Any = None, msg: str = "成功"):
-    return jsonify({"code": 200, "msg": msg, "data": to_jsonable(data or {})})
+    return jsonify(
+        {
+            "code": 200,
+            "success": True,
+            "msg": msg,
+            "message": msg,
+            "data": to_jsonable(data or {}),
+        }
+    )
 
 
 def fail(msg: str = "失败", code: int = 500, data: Any = None) -> Tuple[Any, int]:
     http_status = code if code in {400, 401, 403, 404, 409} else 500
-    return jsonify({"code": code, "msg": msg, "data": to_jsonable(data or {})}), http_status
+    return jsonify(
+        {
+            "code": code,
+            "success": False,
+            "msg": msg,
+            "message": msg,
+            "data": to_jsonable(data or {}),
+        }
+    ), http_status
 
 
 def require_fields(payload: Dict[str, Any], fields: list) -> Tuple[bool, str]:

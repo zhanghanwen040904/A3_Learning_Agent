@@ -13,6 +13,15 @@ from config import config
 from db.schema import ensure_extended_tables
 
 
+def _bootstrap_knowledge_base() -> None:
+    try:
+        from api.knowledge_api import bootstrap_knowledge_base
+
+        bootstrap_knowledge_base()
+    except Exception:
+        pass
+
+
 def create_app() -> Flask:
     """创建 Flask 后端应用。
 
@@ -24,6 +33,7 @@ def create_app() -> Flask:
     app.config.from_object(config)
     CORS(app, resources={r"/api/*": {"origins": "*"}})
     ensure_extended_tables()
+    _bootstrap_knowledge_base()
 
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
     app.register_blueprint(profile_bp, url_prefix="/api/profile")

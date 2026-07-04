@@ -1,12 +1,12 @@
 import json
 import time
 import uuid
+import re
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from typing import Any, Callable, Dict, Optional, List
 
-from ai.rag import build_resource_context, retrieve_knowledge_items
-from ai.llm_api import audit_content
+from ai.rag import build_resource_context, retrieve_knowledge_items, select_profile_knowledge_items
 from .code_agent import CodeAgent
 from .document_agent import DocumentAgent
 from .mindmap_agent import MindMapAgent
@@ -140,6 +140,93 @@ class AgentManager:
         )
         return merged
 
+    @staticmethod
+    def _safe_evidence(items: List[dict]) -> List[dict]:
+        evidence = []
+        for item in items or []:
+            metadata = item.get("metadata") or {}
+            section_path = metadata.get("section_path") or []
+            if not isinstance(section_path, list):
+                section_path = [str(section_path)] if section_path else []
+            evidence.append(
+                {
+                    "title": metadata.get("title") or "",
+                    "content_preview": str(item.get("content") or "")[:220],
+                    "section_path": section_path,
+                    "learning_location": metadata.get("learning_location") or {},
+                    "pages": metadata.get("pages") or [],
+                    "source_file": metadata.get("source") or item.get("source") or "",
+                }
+            )
+        return evidence
+
+    @staticmethod
+    def _knowledge_text_for_model(items: List[dict], primary_title: str = "") -> str:
+        if not items:
+            return "未检索到对应知识库片段。"
+
+        def normalize_title(value: str) -> str:
+            return re.sub(r"[^\u4e00-\u9fa5a-z0-9]+", "", str(value or "").strip().lower())
+
+        def clean_content(value: str) -> str:
+            text = str(value or "")
+            text = text.replace("\n", " ")
+            text = re.sub(r"(标题|章节路径|页码|内容|教材依据|教材片段重点说明|结合课程知识库内容可知)\s*[：:]\s*", "", text)
+            text = re.sub(r"\s+", " ", text)
+            return text.strip(" ，。；;:：")
+
+        cleaned = []
+        for item in items:
+            metadata = item.get("metadata") or {}
+            title = str(metadata.get("title") or "课程核心知识").strip()
+            content = clean_content(item.get("content") or "")
+            if not content:
+                continue
+            cleaned.append({"title": title, "content": content})
+
+        if not cleaned:
+            return "未检索到对应知识库片段。"
+
+        primary_key = normalize_title(primary_title)
+        if primary_key:
+            cleaned.sort(key=lambda entry: 0 if normalize_title(entry["title"]) == primary_key else 1)
+
+        main_item = cleaned[0]
+        support_items = []
+        for entry in cleaned[1:]:
+            if normalize_title(entry["title"]) == normalize_title(main_item["title"]):
+                continue
+            support_items.append(entry)
+            if len(support_items) >= 1:
+                break
+
+        blocks = [f"主知识点：{main_item['title']}\n教材内容：{main_item['content'][:900]}"]
+        for entry in support_items:
+            blocks.append(f"补充知识点：{entry['title']}\n教材内容：{entry['content'][:420]}")
+        return "\n\n".join(blocks)
+    @staticmethod
+    def _empty_resource(resource_type: str, stage: Dict[str, Any], stage_sources: List[dict]) -> Dict[str, Any]:
+        message = "未检索到对应知识库片段。"
+        evidence = AgentManager._safe_evidence(stage_sources)
+        title = {
+            "doc": f"{stage.get('stage_title')}・综合讲解文档",
+            "mindmap": f"{stage.get('stage_title')}・阶段知识导图",
+            "quiz": f"{stage.get('stage_title')}・基础练习题",
+            "reading": f"{stage.get('stage_title')}・拓展阅读",
+            "code": f"{stage.get('stage_title')}・代码案例",
+            "video": f"{stage.get('stage_title')}・视频讲解",
+        }.get(resource_type, f"{stage.get('stage_title')}・学习资源")
+        return {
+            "resource_type": resource_type,
+            "title": title,
+            "content": message,
+            "knowledge_points": stage.get("stage_points") or [],
+            "personalization": "当前阶段未检索到足够课程知识片段，因此未生成正式内容。",
+            "format": "markdown",
+            "agent_name": "RetrieveAgent",
+            "metadata": {"evidence": evidence, "learning_location": evidence[0].get("learning_location") if evidence else {}},
+        }
+
     def run_pipeline(
         self,
         dialogue_text: str = "",
@@ -196,11 +283,11 @@ class AgentManager:
         emit({"type": "agent", "agent": "RetrieveAgent", "status": "running", "message": "正在从软件工程知识库召回可信依据"})
         start = time.perf_counter()
         query = self._build_query(dialogue_text, context)
-        knowledge_context = build_resource_context(query, top_k=6)
-        sources = retrieve_knowledge_items(query, top_k=6)
+        knowledge_context = build_resource_context(query, top_k=6, profile=context)
+        sources = select_profile_knowledge_items(query, profile=context, top_k=3)
         result["knowledge_context"] = knowledge_context
         result["sources"] = sources
-        result["knowledge"] = json.dumps(knowledge_context, ensure_ascii=False, indent=2)
+        result["knowledge"] = self._knowledge_text_for_model(sources)
         trace("RetrieveAgent", "completed" if sources else "warning", f"召回 {len(sources)} 个本地知识库片段", int((time.perf_counter() - start) * 1000))
 
         emit({"type": "agent", "agent": "PlannerAgent", "status": "running", "message": "正在规划六类互补资源的主题、难度和目标"})
@@ -236,9 +323,37 @@ class AgentManager:
                 "goal": stage_context.get("current_need"),
             }
             stage_query = " ".join([stage.get("stage_title", ""), stage.get("stage_goal", ""), " ".join(stage.get("stage_points") or [])])
-            stage_knowledge_context = build_resource_context(stage_query or query, top_k=6)
-            stage_sources = retrieve_knowledge_items(stage_query or query, top_k=6)
-            resource = agent.generate(stage_context, json.dumps(stage_knowledge_context, ensure_ascii=False, indent=2), task_plan)
+            stage_sources = select_profile_knowledge_items(stage_query or query, profile=stage_context, stage=stage, top_k=3)
+            stage_knowledge_context = build_resource_context(stage_query or query, top_k=3, profile=stage_context, stage=stage)
+            evidence = self._safe_evidence(stage_sources)
+            primary_knowledge = stage_knowledge_context.get("primary_knowledge") or (evidence[0] if evidence else {})
+            primary_title = primary_knowledge.get("title") or ""
+            stage_context["selected_primary_knowledge_title"] = primary_title
+            stage_context["selected_primary_knowledge_content"] = primary_knowledge.get("content") or ""
+            stage_context["selected_knowledge_points"] = [item.get("title") for item in evidence if item.get("title")][:3]
+            task_plan["selected_primary_knowledge_title"] = primary_title
+            task_plan["selected_knowledge_points"] = stage_context["selected_knowledge_points"]
+            if not stage_sources:
+                resource = self._empty_resource(resource_type, stage, [])
+                quality = {"total": 0, "passed": False, "problems": ["未检索到对应知识库片段"], "checks": {}}
+                resource["quality"] = quality
+                resource["quality_score"] = 0
+                resource["retry_count"] = 0
+                resource["stage_id"] = stage.get("stage_id")
+                resource["stage_index"] = stage.get("stage_index")
+                resource["stage_title"] = stage.get("stage_title")
+                resource["stage_points"] = stage.get("stage_points") or []
+                resource["metadata"] = {
+                    **(resource.get("metadata") or {}),
+                    "stage": stage,
+                    "evidence": evidence,
+                    "debug": {"retrieved_chunks_count": 0},
+                }
+                resource["sources"] = []
+                resource["duration_ms"] = int((time.perf_counter() - started) * 1000)
+                return resource
+
+            resource = agent.generate(stage_context, self._knowledge_text_for_model(stage_sources, primary_title), task_plan)
             emit({"type": "agent", "agent": "QualityAgent", "status": "running", "message": f"正在审核 {agent_name} 生成结果"})
             quality = self.quality_agent.evaluate(resource, stage_context, stage_sources)
             retries = 0
@@ -246,7 +361,7 @@ class AgentManager:
                 retries = 1
                 feedback = "；".join(quality.get("problems") or []) or "请提升准确性、清晰度和个性化程度"
                 emit({"type": "agent", "agent": agent_name, "status": "running", "message": f"质量评分未达标，正在根据反馈返工：{feedback}"})
-                resource = agent.generate(stage_context, json.dumps(stage_knowledge_context, ensure_ascii=False, indent=2), task_plan, feedback=feedback)
+                resource = agent.generate(stage_context, self._knowledge_text_for_model(stage_sources, primary_title), task_plan, feedback=feedback)
                 emit({"type": "agent", "agent": "QualityAgent", "status": "running", "message": f"正在复审 {agent_name} 返工结果"})
                 quality = self.quality_agent.evaluate(resource, stage_context, stage_sources)
             resource["quality"] = quality
@@ -259,7 +374,14 @@ class AgentManager:
             metadata = resource.get("metadata")
             if not isinstance(metadata, dict):
                 metadata = {}
-            resource["metadata"] = {**metadata, "stage": stage}
+            resource["metadata"] = {
+                **metadata,
+                "stage": stage,
+                "primary_knowledge": primary_knowledge,
+                "evidence": evidence,
+                "learning_location": evidence[0].get("learning_location") if evidence else {},
+                "debug": stage_knowledge_context.get("debug", {}),
+            }
             resource["sources"] = [
                 {"source": item.get("source"), "chunk_index": item.get("chunk_index"), "score": item.get("score"), "retrieval_mode": item.get("retrieval_mode")}
                 for item in stage_sources
@@ -308,3 +430,5 @@ class AgentManager:
 
 
 agent_manager = AgentManager()
+
+
