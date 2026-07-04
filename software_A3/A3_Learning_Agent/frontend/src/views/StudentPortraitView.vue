@@ -4,7 +4,7 @@
       <div>
         <span class="eyebrow">Student Portrait</span>
         <h1>学生画像</h1>
-        <p>这里展示系统根据你全部学习对话自动沉淀的综合画像，会随着每一轮交流持续更新。</p>
+        <p>这里展示系统根据全部学习对话自动沉淀的综合学习状态，会随着真实学习交流持续更新。</p>
       </div>
 
       <div class="header-actions">
@@ -16,13 +16,13 @@
     <template v-if="hasAnyMeaningfulProfile">
       <div class="summary-strip">
         <div class="summary-main">
-          <span class="summary-label">画像摘要</span>
+          <span class="summary-label">综合摘要</span>
           <strong>{{ previewSummary }}</strong>
         </div>
 
         <div class="summary-tags">
           <el-tag
-            v-for="item in identifiedTags"
+            v-for="item in summaryTags"
             :key="item.id"
             round
             size="small"
@@ -37,20 +37,20 @@
       <div class="metric-row">
         <div class="metric-card">
           <span>画像完整度</span>
-          <strong>{{ Math.round(confidence * 100) }}%</strong>
-          <small>{{ completedCount }}/{{ prompts.length }} 个核心维度已识别</small>
+          <strong>{{ Math.round(completionRatio * 100) }}%</strong>
+          <small>{{ completedCount }}/{{ corePrompts.length }} 个核心维度已识别</small>
         </div>
 
         <div class="metric-card">
-          <span>综合评分</span>
-          <strong>{{ overallScore }}分</strong>
+          <span>画像置信度</span>
+          <strong>{{ confidenceLabel }}</strong>
           <small>{{ scoringMethod }}</small>
         </div>
 
         <div class="metric-card">
           <span>当前聚焦课程</span>
-          <strong>{{ previewProfile.target_course }}</strong>
-          <small>{{ previewProfile.major }}</small>
+          <strong>{{ displayCourse }}</strong>
+          <small>{{ displayMajor }}</small>
         </div>
       </div>
 
@@ -58,13 +58,25 @@
         <div class="radar-card">
           <div class="card-header">
             <div>
-              <span class="eyebrow">八维画像</span>
-              <strong>综合能力分布</strong>
+              <span class="eyebrow">核心状态雷达</span>
+              <strong>对学生当前学习状态的综合判断</strong>
+              <p v-if="radarCompareHint" class="radar-compare-hint">{{ radarCompareHint }}</p>
             </div>
-
-            <el-tag round :type="completedCount >= 6 ? 'success' : 'warning'" effect="plain">
-              {{ completedCount >= 6 ? "画像已较完整" : "仍在持续补充" }}
-            </el-tag>
+            <div class="radar-meta">
+              <div class="radar-legend" v-if="hasHistoryComparison">
+                <span class="legend-item">
+                  <i class="legend-dot previous"></i>
+                  上一轮画像
+                </span>
+                <span class="legend-item">
+                  <i class="legend-dot current"></i>
+                  当前画像
+                </span>
+              </div>
+              <el-tag round :type="completionRatio >= 0.8 ? 'success' : 'warning'" effect="plain">
+                {{ completionRatio >= 0.8 ? "画像已较完整" : "画像仍在持续生长" }}
+              </el-tag>
+            </div>
           </div>
 
           <div ref="radarRef" class="profile-radar"></div>
@@ -72,7 +84,7 @@
 
         <div class="dimension-card-grid">
           <div
-            v-for="item in dimensionCards"
+            v-for="item in coreCards"
             :key="item.id"
             :class="['dimension-card', { filled: item.filled }]"
           >
@@ -86,10 +98,28 @@
         </div>
       </div>
 
+      <div class="secondary-panel">
+        <div class="section-header">
+          <span class="eyebrow">Support Context</span>
+          <strong>辅助判断信息</strong>
+        </div>
+
+        <div class="support-grid">
+          <div
+            v-for="item in supportCards"
+            :key="item.id"
+            class="support-card"
+          >
+            <span>{{ item.label }}</span>
+            <strong>{{ item.value }}</strong>
+          </div>
+        </div>
+      </div>
+
       <div class="timeline-card">
         <div class="card-header">
           <div>
-            <span class="eyebrow">最近变化</span>
+            <span class="eyebrow">Recent Updates</span>
             <strong>画像更新轨迹</strong>
           </div>
         </div>
@@ -106,7 +136,7 @@
       </div>
     </template>
 
-    <el-empty v-else description="当前还没有足够的画像信息，先去对话区交流几轮吧。">
+    <el-empty v-else description="当前还没有足够的学生画像信息，先去对话区交流几轮吧。">
       <el-button type="primary" @click="goToChat">前往对话</el-button>
     </el-empty>
   </div>
@@ -131,15 +161,22 @@ const sessions = ref([]);
 let radarChart = null;
 
 const DEFAULT_VALUE = "待进一步观察";
-const prompts = [
-  { id: "knowledge_base", label: "知识基础" },
-  { id: "cognitive_style", label: "认知风格" },
-  { id: "error_prone_points", label: "易错点偏好" },
-  { id: "study_goal", label: "学习目标" },
-  { id: "learning_history", label: "学习历史" },
-  { id: "course_progress", label: "课程进度" },
-  { id: "study_time_prefer", label: "时间节奏" },
+const corePrompts = [
+  { id: "current_topic", label: "当前学习主题" },
+  { id: "mastery_level", label: "掌握程度" },
+  { id: "current_difficulty", label: "当前困难点" },
+  { id: "task_goal", label: "当前任务目标" },
+  { id: "support_preference", label: "适配支持方式" },
+  { id: "engagement_level", label: "学习投入状态" },
+];
+
+const supportPrompts = [
+  { id: "learning_background", label: "学习背景" },
+  { id: "recent_progress", label: "最近进展" },
+  { id: "schedule_pattern", label: "学习节奏" },
   { id: "preferred_resource", label: "资源偏好" },
+  { id: "weak_knowledge_points", label: "薄弱知识点" },
+  { id: "recommended_next_step", label: "下一步建议" },
 ];
 
 function normalizeValue(value) {
@@ -157,32 +194,76 @@ function valueOfProfile(primary, legacy) {
 const previewProfile = computed(() => ({
   major: valueOfProfile("major"),
   target_course: valueOfProfile("target_course"),
-  knowledge_base: valueOfProfile("knowledge_base", "knowledge_level"),
-  cognitive_style: valueOfProfile("cognitive_style", "study_style"),
-  error_prone_points: valueOfProfile("error_prone_points", "weak_points"),
-  study_goal: valueOfProfile("study_goal"),
-  learning_history: valueOfProfile("learning_history"),
-  course_progress: valueOfProfile("course_progress"),
-  study_time_prefer: valueOfProfile("study_time_prefer"),
+  current_topic: valueOfProfile("current_topic", "course_progress"),
+  mastery_level: valueOfProfile("mastery_level", "knowledge_base"),
+  current_difficulty: valueOfProfile("current_difficulty", "error_prone_points"),
+  task_goal: valueOfProfile("task_goal", "study_goal"),
+  support_preference: valueOfProfile("support_preference", "cognitive_style"),
+  engagement_level: valueOfProfile("engagement_level"),
+  learning_background: valueOfProfile("learning_background", "learning_history"),
+  recent_progress: valueOfProfile("recent_progress", "course_progress"),
+  schedule_pattern: valueOfProfile("schedule_pattern", "study_time_prefer"),
   preferred_resource: valueOfProfile("preferred_resource"),
+  weak_knowledge_points: valueOfProfile("weak_knowledge_points", "weak_points"),
+  recommended_next_step: valueOfProfile("recommended_next_step"),
+  portrait_confidence: valueOfProfile("portrait_confidence"),
   profile_summary: valueOfProfile("profile_summary"),
 }));
 
 const portraitScoring = computed(() => aggregateProfile.portrait_scoring || {});
 const portraitDimensions = computed(() => portraitScoring.value.dimensions || {});
+const portraitHistory = computed(() =>
+  Array.isArray(aggregateProfile.portrait_history) ? aggregateProfile.portrait_history : []
+);
+const currentPortraitSnapshot = computed(() => portraitHistory.value[0] || null);
+const previousPortraitSnapshot = computed(() => portraitHistory.value[1] || null);
+const currentSnapshotDimensions = computed(() =>
+  currentPortraitSnapshot.value?.portrait_scoring?.dimensions || {}
+);
+const previousSnapshotDimensions = computed(() =>
+  previousPortraitSnapshot.value?.portrait_scoring?.dimensions || {}
+);
+const hasHistoryComparison = computed(() =>
+  Boolean(currentPortraitSnapshot.value && previousPortraitSnapshot.value)
+);
+const completionRatio = computed(() => {
+  const backendRatio = Number(portraitScoring.value.completion_ratio);
+  if (!Number.isNaN(backendRatio) && backendRatio > 0) return backendRatio;
+  return completedCount.value / Math.max(corePrompts.length, 1);
+});
+const confidenceLabel = computed(() => {
+  if (portraitScoring.value.confidence_label) return portraitScoring.value.confidence_label;
+  if (completedCount.value >= 5) return "画像形成中";
+  if (completedCount.value >= 3) return "初步识别";
+  return "待进一步观察";
+});
+const scoringMethod = computed(() =>
+  portraitScoring.value.method || "当前画像摘要已形成，细粒度评分会在模型完成综合评估后更新"
+);
 
-const completedCount = computed(() => prompts.filter((item) => previewProfile.value[item.id] !== DEFAULT_VALUE).length);
-const confidence = computed(() => completedCount.value / prompts.length);
-const overallScore = computed(() => Number(portraitScoring.value.overall_score || 0));
-const scoringMethod = computed(() => portraitScoring.value.method || "当前主要依据画像识别结果综合判断");
+const completedCount = computed(() =>
+  corePrompts.filter((item) => previewProfile.value[item.id] !== DEFAULT_VALUE).length
+);
 
 const hasAnyMeaningfulProfile = computed(() => {
   const values = Object.values(previewProfile.value);
   return values.some((item) => item && item !== DEFAULT_VALUE);
 });
 
-const identifiedTags = computed(() =>
-  prompts.filter((item) => previewProfile.value[item.id] !== DEFAULT_VALUE).slice(0, 4)
+const displayCourse = computed(() =>
+  previewProfile.value.target_course !== DEFAULT_VALUE
+    ? previewProfile.value.target_course
+    : (previewProfile.value.current_topic !== DEFAULT_VALUE ? previewProfile.value.current_topic : "待观察")
+);
+
+const displayMajor = computed(() =>
+  previewProfile.value.major !== DEFAULT_VALUE ? previewProfile.value.major : "专业信息待观察"
+);
+
+const summaryTags = computed(() =>
+  corePrompts
+    .filter((item) => previewProfile.value[item.id] !== DEFAULT_VALUE)
+    .slice(0, 4)
 );
 
 const previewSummary = computed(() => {
@@ -190,43 +271,73 @@ const previewSummary = computed(() => {
   if (summary !== DEFAULT_VALUE) return summary;
 
   const parts = [];
-  if (previewProfile.value.major !== DEFAULT_VALUE) parts.push(`${previewProfile.value.major}方向学生`);
-  if (previewProfile.value.target_course !== DEFAULT_VALUE) parts.push(`当前聚焦${previewProfile.value.target_course}`);
-  if (previewProfile.value.knowledge_base !== DEFAULT_VALUE) parts.push(`知识基础：${previewProfile.value.knowledge_base}`);
-  if (previewProfile.value.error_prone_points !== DEFAULT_VALUE) parts.push(`薄弱点：${previewProfile.value.error_prone_points}`);
-  if (previewProfile.value.study_goal !== DEFAULT_VALUE) parts.push(`目标：${previewProfile.value.study_goal}`);
-  if (previewProfile.value.cognitive_style !== DEFAULT_VALUE) parts.push(`认知风格：${previewProfile.value.cognitive_style}`);
-
-  return parts.join("；") || "继续进行几轮真实对话后，这里会自动沉淀出你的综合学习画像。";
+  if (previewProfile.value.target_course !== DEFAULT_VALUE) parts.push(`聚焦${previewProfile.value.target_course}`);
+  if (previewProfile.value.current_topic !== DEFAULT_VALUE) parts.push(`正在处理“${previewProfile.value.current_topic}”`);
+  if (previewProfile.value.mastery_level !== DEFAULT_VALUE) parts.push(`掌握状态：${previewProfile.value.mastery_level}`);
+  if (previewProfile.value.current_difficulty !== DEFAULT_VALUE) parts.push(`主要卡点：${previewProfile.value.current_difficulty}`);
+  if (previewProfile.value.task_goal !== DEFAULT_VALUE) parts.push(`目标：${previewProfile.value.task_goal}`);
+  return parts.join("；") || "继续进行真实学习对话后，这里会自动沉淀出更稳定的学生画像。";
 });
 
-const dimensionScores = computed(() => prompts.map((item) => {
-  const backendScore = portraitDimensions.value[item.id]?.score;
-  if (backendScore !== undefined && backendScore !== null) return Number(backendScore);
-  const value = previewProfile.value[item.id];
-  return value && value !== DEFAULT_VALUE ? 60 : 15;
-}));
+const dimensionScores = computed(() =>
+  corePrompts.map((item) => {
+    const backendScore = portraitDimensions.value[item.id]?.score;
+    if (backendScore !== undefined && backendScore !== null && backendScore !== "") {
+      return Number(backendScore);
+    }
+    return 0;
+  })
+);
+const previousDimensionScores = computed(() =>
+  corePrompts.map((item) => {
+    const previousScore = previousSnapshotDimensions.value[item.id]?.score;
+    if (previousScore !== undefined && previousScore !== null && previousScore !== "") {
+      return Number(previousScore);
+    }
+    return 0;
+  })
+);
+const radarCompareHint = computed(() => {
+  if (hasHistoryComparison.value) {
+    const previousTime = formatTime(previousPortraitSnapshot.value?.create_time);
+    const currentTime = formatTime(currentPortraitSnapshot.value?.create_time);
+    return `浅紫色表示上一轮画像（${previousTime}），深紫色表示本轮更新后的画像（${currentTime}）。每次真实对话后，画像都会继续沉淀并逐步修正评分。`;
+  }
+  if (currentPortraitSnapshot.value) {
+    return "当前已生成本轮画像；继续完成新的真实对话后，这里会叠加出“上一轮 vs 当前轮”的变化对比。";
+  }
+  return "";
+});
 
-const dimensionCards = computed(() => prompts.map((item, index) => {
-  const value = previewProfile.value[item.id];
-  const filled = value !== DEFAULT_VALUE;
-  const backendInfo = portraitDimensions.value[item.id] || {};
-  return {
+const coreCards = computed(() =>
+  corePrompts.map((item, index) => {
+    const value = previewProfile.value[item.id];
+    const backendInfo = portraitDimensions.value[item.id] || {};
+    const filled = value !== DEFAULT_VALUE;
+    return {
+      ...item,
+      value: filled ? value : "当前还没有稳定识别到该维度，会随着真实对话继续补充。",
+      filled,
+      score: backendInfo.score !== undefined ? `${backendInfo.score}分` : (filled ? "评估中" : "待识别"),
+      reason: backendInfo.reason || (filled ? "该维度已经识别到有效内容，正在等待大模型给出更细致的教师式评估。" : "目前证据不足，暂时还无法稳定判断。"),
+    };
+  })
+);
+
+const supportCards = computed(() =>
+  supportPrompts.map((item) => ({
     ...item,
-    value: filled ? value : "当前还未识别出稳定结论，后续会随着对话自动补充。",
-    filled,
-    score: backendInfo.score !== undefined ? `${backendInfo.score}分` : (filled ? `${dimensionScores.value[index]}分` : "未识别"),
-    reason: backendInfo.reason || (filled ? "当前主要依据对话中的画像信息进行判断。" : "当前证据不足，暂时还无法稳定判断该维度。"),
-  };
-}));
+    value: previewProfile.value[item.id] !== DEFAULT_VALUE ? previewProfile.value[item.id] : "待进一步观察",
+  }))
+);
 
 const timelineItems = computed(() => {
   const list = [...sessions.value]
     .sort((a, b) => new Date(b.create_time || b.update_time || 0).getTime() - new Date(a.create_time || a.update_time || 0).getTime())
-    .slice(0, 5)
+    .slice(0, 6)
     .map((item) => ({
       id: item.id,
-      title: item.title || `画像对话 ${item.id}`,
+      title: item.title || `学习会话 ${item.id}`,
       desc: normalizeValue(item.profile_summary) !== DEFAULT_VALUE
         ? normalizeValue(item.profile_summary)
         : `创建于 ${formatTime(item.create_time || item.update_time)}`,
@@ -237,8 +348,8 @@ const timelineItems = computed(() => {
     : [
         {
           id: "empty",
-          title: "等待第一轮对话",
-          desc: "当你开始提问、交流学习情况后，画像变化会自动记录在这里。",
+          title: "等待更多对话",
+          desc: "当你继续提问、学习、复习或答题后，这里会持续记录画像变化。",
         },
       ];
 });
@@ -262,29 +373,46 @@ function goToChat() {
 function renderRadar() {
   nextTick(() => {
     if (!radarRef.value || !hasAnyMeaningfulProfile.value) return;
-    if (!radarChart) {
-      radarChart = echarts.init(radarRef.value);
+    if (!radarChart) radarChart = echarts.init(radarRef.value);
+
+    const seriesData = [];
+    if (hasHistoryComparison.value) {
+      seriesData.push({
+        value: previousDimensionScores.value,
+        name: "上一轮画像",
+        areaStyle: { color: "rgba(196, 181, 253, 0.10)" },
+        lineStyle: { color: "#c4b5fd", width: 2, type: "dashed" },
+        itemStyle: { color: "#c4b5fd" },
+        symbolSize: 5,
+      });
     }
+    seriesData.push({
+      value: dimensionScores.value,
+      name: "当前画像",
+      areaStyle: { color: "rgba(109, 93, 252, 0.18)" },
+      lineStyle: { color: "#6d5dfc", width: 2.5 },
+      itemStyle: { color: "#6d5dfc" },
+      symbolSize: 6,
+    });
 
     radarChart.setOption({
-      tooltip: { trigger: "item" },
+      tooltip: {
+        trigger: "item",
+        confine: true,
+      },
       radar: {
         radius: "66%",
-        center: ["50%", "54%"],
-        indicator: prompts.map((item) => ({ name: item.label, max: 100 })),
+        center: ["50%", "56%"],
+        indicator: corePrompts.map((item) => ({ name: item.label, max: 100 })),
         axisName: { color: "#475569", fontSize: 12 },
-        splitLine: { lineStyle: { color: "#e5e7eb" } },
-        splitArea: { areaStyle: { color: ["#ffffff", "#f8fafc"] } },
-        axisLine: { lineStyle: { color: "#d1d5db" } },
+        splitLine: { lineStyle: { color: "#e8edf7" } },
+        splitArea: { areaStyle: { color: ["#ffffff", "#f8faff"] } },
+        axisLine: { lineStyle: { color: "#d8e3f5" } },
       },
       series: [
         {
           type: "radar",
-          data: [{ value: dimensionScores.value }],
-          areaStyle: { color: "rgba(59, 130, 246, 0.16)" },
-          lineStyle: { color: "#2563eb", width: 2 },
-          itemStyle: { color: "#2563eb" },
-          symbolSize: 6,
+          data: seriesData,
         },
       ],
     });
@@ -358,22 +486,20 @@ onBeforeUnmount(() => {
 .page-header h1 {
   margin: 6px 0 8px;
   font-size: 36px;
-  color: #111827;
+  color: #0f172a;
 }
 
 .page-header p {
   margin: 0;
-  color: #6b7280;
-  line-height: 1.7;
+  color: #64748b;
 }
 
 .eyebrow {
-  display: block;
-  color: #94a3b8;
   font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: .08em;
   text-transform: uppercase;
+  color: #94a3b8;
 }
 
 .header-actions {
@@ -385,15 +511,16 @@ onBeforeUnmount(() => {
 .metric-card,
 .radar-card,
 .dimension-card,
+.support-card,
 .timeline-card {
-  border: 1px solid #ececec;
-  border-radius: 22px;
+  border: 1px solid #edf0f6;
   background: #fff;
-  box-shadow: 0 8px 30px rgba(15, 23, 42, 0.04);
+  border-radius: 24px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.04);
 }
 
 .summary-strip {
-  padding: 18px 22px;
+  padding: 22px 24px;
 }
 
 .summary-main {
@@ -402,129 +529,175 @@ onBeforeUnmount(() => {
 }
 
 .summary-label {
-  color: #6b7280;
-  font-size: 12px;
-  font-weight: 700;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .summary-main strong {
+  font-size: 18px;
+  line-height: 1.6;
   color: #111827;
-  line-height: 1.8;
-  font-size: 28px;
 }
 
 .summary-tags {
   display: flex;
+  gap: 10px;
   flex-wrap: wrap;
   justify-content: flex-end;
-  gap: 8px;
 }
 
 .metric-row {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
+  gap: 16px;
 }
 
 .metric-card {
-  padding: 18px 20px;
+  padding: 22px 24px;
+  display: grid;
+  gap: 10px;
 }
 
-.metric-card span {
-  display: block;
-  color: #6b7280;
-  font-size: 13px;
-  margin-bottom: 10px;
+.metric-card span,
+.metric-card small {
+  color: #64748b;
 }
 
 .metric-card strong {
-  display: block;
-  color: #111827;
-  font-size: 28px;
-  line-height: 1.2;
-}
-
-.metric-card small {
-  display: block;
-  color: #94a3b8;
-  margin-top: 8px;
+  font-size: 24px;
+  color: #0f172a;
 }
 
 .visual-panel {
   display: grid;
-  grid-template-columns: 340px minmax(0, 1fr);
+  grid-template-columns: 380px minmax(0, 1fr);
   gap: 16px;
 }
 
 .radar-card,
-.timeline-card {
-  padding: 16px 18px;
-}
-
-.card-header {
-  margin-bottom: 12px;
-}
-
-.card-header strong {
-  display: block;
-  color: #111827;
-  font-size: 16px;
+.timeline-card,
+.secondary-panel {
+  padding: 22px 24px;
 }
 
 .profile-radar {
-  width: 100%;
-  height: 300px;
+  height: 360px;
+}
+
+.radar-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.radar-legend {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.legend-dot.previous {
+  background: #c4b5fd;
+  box-shadow: 0 0 0 4px rgba(196, 181, 253, 0.16);
+}
+
+.legend-dot.current {
+  background: #6d5dfc;
+  box-shadow: 0 0 0 4px rgba(109, 93, 252, 0.14);
+}
+
+.radar-compare-hint {
+  margin: 10px 0 0;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.7;
+  max-width: 290px;
+}
+
+.dimension-card-grid,
+.support-grid {
+  display: grid;
+  gap: 16px;
 }
 
 .dimension-card-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.dimension-card {
-  min-height: 118px;
-  padding: 14px;
-  background: #fafafa;
+.support-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.dimension-card,
+.support-card {
+  padding: 20px 20px 18px;
 }
 
 .dimension-card.filled {
-  background: #f8fbff;
-  border-color: #dbeafe;
+  border-color: rgba(109, 93, 252, 0.22);
+  box-shadow: 0 16px 36px rgba(109, 93, 252, 0.08);
 }
 
-.dimension-card-top {
-  margin-bottom: 8px;
-}
-
-.dimension-card-top span {
-  color: #111827;
+.dimension-card-top span,
+.support-card span {
+  color: #64748b;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .dimension-card-top strong {
-  color: #2563eb;
-  font-size: 12px;
+  color: #6d5dfc;
+  font-size: 14px;
 }
 
-.dimension-card p {
+.dimension-value,
+.dimension-reason,
+.support-card strong {
   margin: 0;
-  color: #4b5563;
-  font-size: 12px;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
-.dimension-value {
-  display: -webkit-box;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
+.dimension-value,
+.support-card strong {
+  color: #0f172a;
+  font-size: 16px;
 }
 
 .dimension-reason {
-  margin-top: 8px !important;
-  color: #64748b !important;
+  margin-top: 10px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.section-header {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.section-header strong {
+  color: #0f172a;
+  font-size: 20px;
 }
 
 .timeline-list {
@@ -533,57 +706,56 @@ onBeforeUnmount(() => {
 }
 
 .timeline-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: 14px 1fr;
+  gap: 12px;
+  align-items: start;
 }
 
 .timeline-dot {
-  width: 9px;
-  height: 9px;
-  flex: 0 0 auto;
-  margin-top: 6px;
+  width: 10px;
+  height: 10px;
+  margin-top: 7px;
   border-radius: 999px;
-  background: #2563eb;
-  box-shadow: 0 0 0 4px #dbeafe;
+  background: linear-gradient(135deg, #6d5dfc, #9d8cff);
+  box-shadow: 0 0 0 4px rgba(109, 93, 252, 0.1);
 }
 
 .timeline-item strong {
-  display: block;
-  color: #111827;
-  font-size: 14px;
+  color: #0f172a;
 }
 
 .timeline-item p {
-  margin: 4px 0 0;
-  color: #6b7280;
-  font-size: 13px;
+  margin: 6px 0 0;
+  color: #64748b;
   line-height: 1.6;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1280px) {
   .visual-panel {
     grid-template-columns: 1fr;
   }
 
-  .dimension-card-grid {
+  .support-grid,
+  .dimension-card-grid,
+  .metric-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 860px) {
   .portrait-view-page {
     padding: 20px;
   }
 
   .page-header,
-  .summary-strip,
-  .card-header {
+  .summary-strip {
     flex-direction: column;
   }
 
-  .metric-row,
-  .dimension-card-grid {
+  .support-grid,
+  .dimension-card-grid,
+  .metric-row {
     grid-template-columns: 1fr;
   }
 }

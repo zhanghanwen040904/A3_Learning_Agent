@@ -153,7 +153,7 @@ import MarkdownIt from "markdown-it";
 import { ACTIVE_PROFILE_SESSION_KEY, profileApi, setActiveProfileSessionId } from "../api";
 
 const DEFAULT_VALUE = "待进一步观察";
-const STORAGE_PREFIX = "a3_learning_agent_profile_conversation_v5";
+const STORAGE_PREFIX = "a3_learning_agent_profile_conversation_v6";
 const md = new MarkdownIt({ html: false, linkify: true, breaks: true });
 const LEGACY_WELCOME_MESSAGES = [
   "你好，我是学习画像助手。你可以直接用自然语言告诉我你的专业、学习目标、学习历史、课程进度、易错点和资源偏好；我会自动抽取八维动态学习画像，并在后续学习中随学随新。",
@@ -161,15 +161,22 @@ const LEGACY_WELCOME_MESSAGES = [
   "你可以自由描述你的专业、课程目标、基础、薄弱点和偏好的学习方式。我会自动提取画像，并只追问缺失或模糊的信息。",
 ];
 
-const prompts = [
-  { id: "knowledge_base", label: "知识基础" },
-  { id: "cognitive_style", label: "认知风格" },
-  { id: "error_prone_points", label: "易错点偏好" },
-  { id: "study_goal", label: "学习目标" },
-  { id: "learning_history", label: "学习历史" },
-  { id: "course_progress", label: "课程进度" },
-  { id: "study_time_prefer", label: "时间节奏" },
+const corePrompts = [
+  { id: "current_topic", label: "当前学习主题" },
+  { id: "mastery_level", label: "掌握程度" },
+  { id: "current_difficulty", label: "当前困难点" },
+  { id: "task_goal", label: "当前任务目标" },
+  { id: "support_preference", label: "适配支持方式" },
+  { id: "engagement_level", label: "学习投入状态" },
+];
+
+const supportPrompts = [
+  { id: "learning_background", label: "学习背景" },
+  { id: "recent_progress", label: "最近进展" },
+  { id: "schedule_pattern", label: "学习节奏" },
   { id: "preferred_resource", label: "资源偏好" },
+  { id: "weak_knowledge_points", label: "薄弱知识点" },
+  { id: "recommended_next_step", label: "下一步建议" },
 ];
 
 const profileSyncing = ref(false);
@@ -195,27 +202,46 @@ const showHome = computed(() => {
   return meaningfulMessages.length === 0;
 });
 
-const completedCount = computed(() => prompts.filter((item) => previewProfile.value[item.id] && previewProfile.value[item.id] !== DEFAULT_VALUE).length);
+const completedCount = computed(() =>
+  corePrompts.filter((item) => previewProfile.value[item.id] && previewProfile.value[item.id] !== DEFAULT_VALUE).length
+);
 
 const statusText = computed(() => {
   if (profileSyncing.value) return "回答已返回，画像正在后台静默更新...";
   if (sending.value) return "正在理解你的问题...";
-  if (isComplete.value) return "当前画像信息已经比较完整，后续对话仍会持续自动补充。";
-  return `已识别 ${completedCount.value}/${prompts.length} 个画像维度，后续会随对话自动更新`;
+  if (isComplete.value) return "当前核心学习状态已经较完整，后续对话仍会持续自动补充。";
+  return `已识别 ${completedCount.value}/${corePrompts.length} 个核心状态维度，后续会随对话自动更新`;
 });
 
-const valueOfProfile = (primary, legacy) => aggregateProfile[primary] || profile[primary] || (legacy ? aggregateProfile[legacy] || profile[legacy] : "") || DEFAULT_VALUE;
+const valueOfProfile = (primary, legacy) =>
+  aggregateProfile[primary]
+  || profile[primary]
+  || (legacy ? aggregateProfile[legacy] || profile[legacy] : "")
+  || DEFAULT_VALUE;
 
 const previewProfile = computed(() => {
   const merged = {};
-  for (const prompt of prompts) {
+  for (const prompt of corePrompts) {
+    merged[prompt.id] = valueOfProfile(prompt.id);
+  }
+  for (const prompt of supportPrompts) {
     merged[prompt.id] = valueOfProfile(prompt.id);
   }
   merged.major = valueOfProfile("major");
   merged.target_course = valueOfProfile("target_course");
-  merged.knowledge_base = valueOfProfile("knowledge_base", "knowledge_level");
-  merged.cognitive_style = valueOfProfile("cognitive_style", "study_style");
-  merged.error_prone_points = valueOfProfile("error_prone_points", "weak_points");
+  merged.current_topic = valueOfProfile("current_topic", "course_progress");
+  merged.mastery_level = valueOfProfile("mastery_level", "knowledge_base");
+  merged.current_difficulty = valueOfProfile("current_difficulty", "error_prone_points");
+  merged.task_goal = valueOfProfile("task_goal", "study_goal");
+  merged.support_preference = valueOfProfile("support_preference", "cognitive_style");
+  merged.engagement_level = valueOfProfile("engagement_level");
+  merged.learning_background = valueOfProfile("learning_background", "learning_history");
+  merged.recent_progress = valueOfProfile("recent_progress", "course_progress");
+  merged.schedule_pattern = valueOfProfile("schedule_pattern", "study_time_prefer");
+  merged.preferred_resource = valueOfProfile("preferred_resource");
+  merged.weak_knowledge_points = valueOfProfile("weak_knowledge_points", "weak_points");
+  merged.recommended_next_step = valueOfProfile("recommended_next_step");
+  merged.portrait_confidence = valueOfProfile("portrait_confidence");
   merged.profile_summary = aggregateProfile.profile_summary || profile.profile_summary || DEFAULT_VALUE;
   return merged;
 });
