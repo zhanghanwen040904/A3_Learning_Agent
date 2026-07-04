@@ -166,6 +166,22 @@ def ensure_extended_tables() -> None:
             KEY idx_tutor_conversation_session_id (profile_session_id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         """,
+        """
+        CREATE TABLE IF NOT EXISTS portrait_snapshot (
+            id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+            user_id BIGINT UNSIGNED NOT NULL,
+            profile_session_id BIGINT UNSIGNED NULL,
+            trigger_source VARCHAR(64) NOT NULL DEFAULT 'profile_update',
+            profile_summary TEXT NULL,
+            portrait_scoring JSON NULL,
+            profile_snapshot JSON NULL,
+            create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY idx_portrait_snapshot_user_id (user_id),
+            KEY idx_portrait_snapshot_session_id (profile_session_id),
+            KEY idx_portrait_snapshot_create_time (create_time)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        """,
     ]
     for statement in statements:
         mysql_db.execute(statement)
@@ -199,10 +215,28 @@ def ensure_extended_tables() -> None:
     profile_extra_columns = {
         "major": "VARCHAR(120) NULL",
         "target_course": "VARCHAR(120) NULL",
+        "current_topic": "TEXT NULL",
+        "mastery_level": "TEXT NULL",
+        "current_difficulty": "TEXT NULL",
+        "task_goal": "TEXT NULL",
+        "support_preference": "TEXT NULL",
+        "engagement_level": "TEXT NULL",
+        "learning_background": "TEXT NULL",
+        "recent_progress": "TEXT NULL",
+        "schedule_pattern": "TEXT NULL",
+        "weak_knowledge_points": "TEXT NULL",
+        "recommended_next_step": "TEXT NULL",
+        "portrait_confidence": "VARCHAR(16) NULL",
         "knowledge_base": "TEXT NULL",
         "cognitive_style": "TEXT NULL",
         "error_prone_points": "TEXT NULL",
         "learning_history": "TEXT NULL",
+        "course_progress": "TEXT NULL",
+        "study_goal": "TEXT NULL",
+        "study_time_prefer": "TEXT NULL",
+        "knowledge_level": "TEXT NULL",
+        "study_style": "TEXT NULL",
+        "weak_points": "TEXT NULL",
         "challenge_scene": "TEXT NULL",
         "preferred_resource": "TEXT NULL",
         "profile_summary": "TEXT NULL",

@@ -14,9 +14,35 @@ from ai.langchain_parsers import parse_json_with_fallback
 from config import config
 from .base_agent import AgentSpec
 
+DEFAULT_VALUE = "待进一步观察"
+
+CORE_PROFILE_DIMENSIONS = [
+    "current_topic",
+    "mastery_level",
+    "current_difficulty",
+    "task_goal",
+    "support_preference",
+    "engagement_level",
+]
+
 PROFILE_FIELDS = [
     "major",
     "target_course",
+    "current_topic",
+    "mastery_level",
+    "current_difficulty",
+    "task_goal",
+    "support_preference",
+    "engagement_level",
+    "learning_background",
+    "recent_progress",
+    "schedule_pattern",
+    "preferred_resource",
+    "weak_knowledge_points",
+    "recommended_next_step",
+    "portrait_confidence",
+    "profile_summary",
+    # legacy compatibility fields
     "knowledge_base",
     "cognitive_style",
     "error_prone_points",
@@ -24,75 +50,108 @@ PROFILE_FIELDS = [
     "learning_history",
     "course_progress",
     "study_time_prefer",
-    "preferred_resource",
     "knowledge_level",
     "study_style",
     "weak_points",
     "challenge_scene",
-    "profile_summary",
 ]
 
-CORE_PROFILE_DIMENSIONS = [
-    "knowledge_base",
-    "cognitive_style",
-    "error_prone_points",
-    "study_goal",
-    "learning_history",
-    "course_progress",
-    "study_time_prefer",
-    "preferred_resource",
-]
-
-DEFAULT_VALUE = "待进一步观察"
-
-FIELD_ALIASES = {
-    "major": ["专业背景", "专业", "方向"],
-    "target_course": ["目标课程", "课程", "章节"],
-    "knowledge_base": ["知识基础", "基础情况", "基础水平", "知识水平"],
-    "cognitive_style": ["认知风格", "学习方式", "学习风格", "学习偏好"],
-    "error_prone_points": ["易错点", "知识短板", "薄弱点", "不会", "容易卡住"],
-    "study_goal": ["学习目标", "目标", "希望达到"],
-    "learning_history": ["学习历史", "学习经历", "历史表现", "做过", "学过"],
-    "course_progress": ["课程进度", "学到哪里", "当前进度"],
-    "study_time_prefer": ["时间节奏", "时间偏好", "学习时间", "效率最高"],
-    "preferred_resource": ["资源偏好", "优先看", "喜欢的资源"],
-    "knowledge_level": ["基础情况", "知识基础", "基础水平"],
-    "study_style": ["学习方式", "学习风格", "学习偏好"],
-    "weak_points": ["知识短板", "薄弱点", "不会", "容易卡住"],
-    "challenge_scene": ["困难场景", "最常卡住", "跟不上"],
+FIELD_LABELS = {
+    "major": "专业背景",
+    "target_course": "聚焦课程",
+    "current_topic": "当前学习主题",
+    "mastery_level": "掌握程度",
+    "current_difficulty": "当前困难点",
+    "task_goal": "当前任务目标",
+    "support_preference": "适配支持方式",
+    "engagement_level": "学习投入状态",
+    "learning_background": "学习背景",
+    "recent_progress": "最近进展",
+    "schedule_pattern": "学习节奏",
+    "preferred_resource": "偏好资源",
+    "weak_knowledge_points": "薄弱知识点",
+    "recommended_next_step": "下一步建议",
+    "portrait_confidence": "画像置信度",
 }
 
-PROFILE_ANALYZE_PROMPT_TEMPLATE = """
-你是学习画像分析师。请从学生自然语言对话中抽取结构化学习画像。
-必须严格只返回 JSON，不要 markdown，不要解释。
-JSON 字段必须完全一致：
-{{"major":"","target_course":"","knowledge_base":"","cognitive_style":"","error_prone_points":"","study_goal":"","learning_history":"","course_progress":"","study_time_prefer":"","preferred_resource":"","knowledge_level":"","study_style":"","weak_points":"","challenge_scene":"","profile_summary":""}}
+ANALYZE_PROMPT_TEMPLATE = """
+你是一名高校学习画像分析助手。你的任务不是追问用户，而是根据已有对话，静默抽取一个“适合学习支持系统使用”的学生画像。
 
-如信息不足，请合理填写“{default_value}”。
+请严格只输出 JSON，不要输出 markdown，不要解释。
+字段必须完整，未知时填“{default_value}”。
 
-学生对话：
+字段说明：
+- current_topic：当前正在讨论或学习的具体主题/章节/知识点
+- mastery_level：当前掌握状态，只能用简洁短语，如“入门起步 / 基础未稳 / 有一定基础 / 掌握较好”
+- current_difficulty：当前最明显的困难、卡点或不清楚的地方
+- task_goal：当前这轮学习最直接的目标
+- support_preference：当前更适合的支持方式，如“通俗讲解 / 图解梳理 / 例题带练 / 代码示例 / 分步骤说明”
+- engagement_level：当前投入状态，如“刚开始接触 / 持续学习中 / 复习巩固中 / 冲刺提升中”
+- learning_background：用户体现出的既有背景或起点
+- recent_progress：最近学到哪里、正在推进什么
+- schedule_pattern：若提到了时间习惯则提取，否则填默认值
+- preferred_resource：若提到了资源偏好则提取，否则填默认值
+- weak_knowledge_points：更偏知识点层面的薄弱项
+- recommended_next_step：一句简短、可执行的下一步建议
+- portrait_confidence：只能填“低 / 中 / 高”
+- profile_summary：一句综合摘要，不超过80字
+
+输出字段：
+{{
+  "major": "",
+  "target_course": "",
+  "current_topic": "",
+  "mastery_level": "",
+  "current_difficulty": "",
+  "task_goal": "",
+  "support_preference": "",
+  "engagement_level": "",
+  "learning_background": "",
+  "recent_progress": "",
+  "schedule_pattern": "",
+  "preferred_resource": "",
+  "weak_knowledge_points": "",
+  "recommended_next_step": "",
+  "portrait_confidence": "",
+  "profile_summary": ""
+}}
+
+对话内容：
 {dialogue_text}
 """.strip()
 
-PROFILE_CHAT_PROMPT_TEMPLATE = """
-你是高校课程学习助手。系统主功能是对话式答疑，学习画像只在后台静默更新。
+CHAT_EXTRACT_PROMPT_TEMPLATE = """
+你是一名高校课程学习助手。当前主任务是：
+1. 回答学生这次真正提出的问题；
+2. 同时静默更新学生画像，但不要显式追问画像。
 
-请根据【完整多轮对话】和【当前画像草稿】完成两件事：
-1. 正常回答学生当前这条消息，优先解决用户眼前的问题；
-2. 从整段对话中静默抽取或更新学习画像。
+要求：
+- assistant_reply 必须直接解决学生当前问题，不能只说“我已记录”“请继续补充”
+- 不主动追问画像缺失项
+- 画像提取要结合整段对话，而不是只看最后一句
+- 严格只输出 JSON
+- 未知字段填“{default_value}”
 
-重要要求：
-- 每一次对话都默认用于补充画像，但不要显式提问画像；
-- 不要主动追问“还缺什么信息”“你的基础如何”“你偏好什么资源”之类画像问题；
-- assistant_reply 必须是自然、直接、像主流智能体那样的帮助性回复；
-- assistant_reply 必须真正回应学生当前这条消息，禁止只说“我已记录”“我会更新画像”“请继续提问”这类空泛套话，除非用户本身只是在做信息补充且没有提出任何具体问题；
-- next_question 固定返回空字符串；
-- reply_type 固定返回 answer_only；
-- 画像要综合上下文，不要只复制最后一句。
-
-必须严格只返回 JSON，不要 markdown，不要解释。JSON 字段必须完全一致：
+返回格式：
 {{
-  "profile": {{"major":"","target_course":"","knowledge_base":"","cognitive_style":"","error_prone_points":"","study_goal":"","learning_history":"","course_progress":"","study_time_prefer":"","preferred_resource":"","knowledge_level":"","study_style":"","weak_points":"","challenge_scene":"","profile_summary":""}},
+  "profile": {{
+    "major": "",
+    "target_course": "",
+    "current_topic": "",
+    "mastery_level": "",
+    "current_difficulty": "",
+    "task_goal": "",
+    "support_preference": "",
+    "engagement_level": "",
+    "learning_background": "",
+    "recent_progress": "",
+    "schedule_pattern": "",
+    "preferred_resource": "",
+    "weak_knowledge_points": "",
+    "recommended_next_step": "",
+    "portrait_confidence": "",
+    "profile_summary": ""
+  }},
   "assistant_reply": "",
   "reply_type": "answer_only",
   "missing_fields": [],
@@ -109,78 +168,85 @@ PROFILE_CHAT_PROMPT_TEMPLATE = """
 {messages}
 """.strip()
 
-PROFILE_ANALYZE_PROMPT = LangChainPromptTemplate.from_template(PROFILE_ANALYZE_PROMPT_TEMPLATE) if LangChainPromptTemplate is not None else None
-PROFILE_CHAT_PROMPT = LangChainPromptTemplate.from_template(PROFILE_CHAT_PROMPT_TEMPLATE) if LangChainPromptTemplate is not None else None
+ANALYZE_PROMPT = LangChainPromptTemplate.from_template(ANALYZE_PROMPT_TEMPLATE) if LangChainPromptTemplate is not None else None
+CHAT_EXTRACT_PROMPT = LangChainPromptTemplate.from_template(CHAT_EXTRACT_PROMPT_TEMPLATE) if LangChainPromptTemplate is not None else None
 
 
 class ProfileAgent:
-    """从学生对话中抽取结构化学习画像。"""
-
     def __init__(self):
-        self.role = "学习画像分析师"
-        self.goal = "从学生自然语言对话中抽取学习画像，并在问答场景下静默更新画像。"
+        self.role = "学生画像分析助手"
+        self.goal = "从自然对话中沉淀可服务学习支持系统的动态学习画像"
         self.agent = AgentSpec(
             role=self.role,
             goal=self.goal,
-            tools=["langchain_prompt", "platform_llm"],
-            input_schema="学生自然语言对话文本",
-            output_schema='{"major":"","target_course":"","knowledge_base":"","cognitive_style":"","error_prone_points":"","study_goal":"","learning_history":"","course_progress":"","study_time_prefer":"","preferred_resource":"","knowledge_level":"","study_style":"","weak_points":"","challenge_scene":"","profile_summary":""}',
+            tools=["platform_llm"],
+            input_schema="多轮自然语言对话",
+            output_schema=json.dumps({field: "" for field in PROFILE_FIELDS if field not in {
+                "knowledge_base",
+                "cognitive_style",
+                "error_prone_points",
+                "study_goal",
+                "learning_history",
+                "course_progress",
+                "study_time_prefer",
+                "knowledge_level",
+                "study_style",
+                "weak_points",
+                "challenge_scene",
+            }}, ensure_ascii=False),
         )
-        self.analyze_chain = (PROFILE_ANALYZE_PROMPT | PlatformLLM() | LangChainStrOutputParser()) if PROFILE_ANALYZE_PROMPT is not None and LangChainStrOutputParser is not None else None
-        self.chat_chain = (PROFILE_CHAT_PROMPT | PlatformLLM() | LangChainStrOutputParser()) if PROFILE_CHAT_PROMPT is not None and LangChainStrOutputParser is not None else None
+        self.analyze_chain = (
+            ANALYZE_PROMPT | PlatformLLM() | LangChainStrOutputParser()
+            if ANALYZE_PROMPT is not None and LangChainStrOutputParser is not None
+            else None
+        )
+        self.chat_chain = (
+            CHAT_EXTRACT_PROMPT | PlatformLLM() | LangChainStrOutputParser()
+            if CHAT_EXTRACT_PROMPT is not None and LangChainStrOutputParser is not None
+            else None
+        )
 
     def analyze(self, dialogue_text: str) -> Dict[str, str]:
-        parsed = self._extract_from_dialogue(dialogue_text)
+        heuristic_profile = self._extract_from_dialogue(dialogue_text)
         if config.MOCK_AI:
-            return parsed
+            return heuristic_profile
 
         variables = {"default_value": DEFAULT_VALUE, "dialogue_text": dialogue_text}
-        if self.analyze_chain is not None:
-            raw = self.analyze_chain.invoke(variables)
-        else:
-            raw = PlatformLLM().invoke(PROFILE_ANALYZE_PROMPT_TEMPLATE.format(**variables))
-        model_result = self._parse_profile(raw)
-        return self._merge_profile(model_result, parsed)
+        raw = self.analyze_chain.invoke(variables) if self.analyze_chain is not None else PlatformLLM().invoke(
+            ANALYZE_PROMPT_TEMPLATE.format(**variables)
+        )
+        model_profile = self._parse_profile(raw)
+        return self._merge_profile(heuristic_profile, model_profile)
 
     def _parse_profile(self, raw: str) -> Dict[str, str]:
-        data = parse_json_with_fallback(raw)
-        return self._normalize_profile({field: str(data.get(field) or DEFAULT_VALUE) for field in PROFILE_FIELDS})
+        return self._normalize_profile(parse_json_with_fallback(raw))
 
     def chat_extract(self, messages: List[Dict[str, str]], current_profile: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         current_profile = current_profile or {}
         dialogue_text = self._messages_to_dialogue(messages)
-        parsed_from_messages = self._extract_from_dialogue(dialogue_text)
-        base_profile = self._normalize_profile({**current_profile, **{k: v for k, v in parsed_from_messages.items() if v != DEFAULT_VALUE}})
-        latest_user_message = self._latest_user_message(messages)
+        heuristic_profile = self._extract_from_dialogue(dialogue_text)
+        base_profile = self._merge_profile(self._normalize_profile(current_profile), heuristic_profile)
 
         if config.MOCK_AI:
-            return self._build_chat_result(base_profile, source="mock_fallback", latest_user_message=latest_user_message)
+            return self._build_chat_result(base_profile, latest_user_message=self._latest_user_message(messages), source="mock")
 
         variables = {
+            "default_value": DEFAULT_VALUE,
             "base_profile": json.dumps(base_profile, ensure_ascii=False),
             "messages": json.dumps(messages, ensure_ascii=False),
         }
-        if self.chat_chain is not None:
-            raw = self.chat_chain.invoke(variables)
-        else:
-            raw = PlatformLLM().invoke(PROFILE_CHAT_PROMPT_TEMPLATE.format(**variables))
-
+        raw = self.chat_chain.invoke(variables) if self.chat_chain is not None else PlatformLLM().invoke(
+            CHAT_EXTRACT_PROMPT_TEMPLATE.format(**variables)
+        )
         data = parse_json_with_fallback(raw)
         model_profile = self._normalize_profile(data.get("profile") or {})
-        merged_profile = self._merge_profile(model_profile, base_profile)
-        missing_fields = self._missing_fields(merged_profile)
-
+        merged_profile = self._merge_profile(base_profile, model_profile)
+        confidence = self._safe_float(data.get("confidence"), self._confidence_by_profile(merged_profile))
         assistant_reply = str(data.get("assistant_reply") or "").strip()
         if not assistant_reply:
-            assistant_reply = "当前大模型未返回有效答复，请重试一次；我会继续在后台保留并更新你的学习画像。"
+            assistant_reply = self._build_mock_reply(self._latest_user_message(messages), merged_profile)
 
-        is_complete = bool(data.get("is_complete")) and len(missing_fields) <= 4
-        confidence = data.get("confidence", 0.0)
-        try:
-            confidence = float(confidence)
-        except Exception:
-            confidence = self._confidence_by_profile(merged_profile)
-
+        missing_fields = self._missing_fields(merged_profile)
         return {
             "profile": merged_profile,
             "missing_fields": missing_fields,
@@ -188,42 +254,73 @@ class ProfileAgent:
             "reply_type": "answer_only",
             "next_question": "",
             "confidence": max(0.0, min(1.0, confidence)),
-            "is_complete": is_complete or len(missing_fields) <= 4,
-            "reasoning_note": str(data.get("reasoning_note") or "已基于多轮上下文完成问题回答与后台画像更新。"),
+            "is_complete": len(missing_fields) <= 1,
+            "reasoning_note": str(data.get("reasoning_note") or "已基于整段对话静默更新学生画像。"),
             "model_enabled": True,
-            "source": "llm_chat",
+            "source": "llm_chat_extract",
         }
 
-    def _normalize_profile(self, profile: Dict[str, Any]) -> Dict[str, str]:
-        normalized = {}
-        for field in PROFILE_FIELDS:
-            value = str(profile.get(field) or DEFAULT_VALUE).strip()
-            normalized[field] = value or DEFAULT_VALUE
-        self._sync_dimension_aliases(normalized)
-        normalized["profile_summary"] = self._build_summary(normalized)
-        return normalized
+    def _safe_float(self, value: Any, fallback: float) -> float:
+        try:
+            return float(value)
+        except Exception:
+            return fallback
 
-    def _sync_dimension_aliases(self, profile: Dict[str, str]) -> Dict[str, str]:
-        alias_pairs = [
-            ("knowledge_base", "knowledge_level"),
-            ("cognitive_style", "study_style"),
-            ("error_prone_points", "weak_points"),
-        ]
-        for primary, legacy in alias_pairs:
-            primary_value = profile.get(primary) or DEFAULT_VALUE
-            legacy_value = profile.get(legacy) or DEFAULT_VALUE
-            if primary_value == DEFAULT_VALUE and legacy_value != DEFAULT_VALUE:
-                profile[primary] = legacy_value
-            if legacy_value == DEFAULT_VALUE and primary_value != DEFAULT_VALUE:
-                profile[legacy] = primary_value
-        if (profile.get("challenge_scene") or DEFAULT_VALUE) == DEFAULT_VALUE and profile.get("error_prone_points") != DEFAULT_VALUE:
-            profile["challenge_scene"] = profile["error_prone_points"]
-        return profile
+    def _normalize_profile(self, profile: Dict[str, Any]) -> Dict[str, str]:
+        raw = {field: self._clean_value(profile.get(field)) for field in PROFILE_FIELDS}
+
+        raw["major"] = raw["major"] if raw["major"] != DEFAULT_VALUE else self._clean_value(profile.get("major_name"))
+
+        # old -> new
+        if raw["mastery_level"] == DEFAULT_VALUE:
+            raw["mastery_level"] = self._first_meaningful(raw["knowledge_base"], raw["knowledge_level"])
+        if raw["support_preference"] == DEFAULT_VALUE:
+            raw["support_preference"] = self._first_meaningful(raw["cognitive_style"], raw["study_style"])
+        if raw["current_difficulty"] == DEFAULT_VALUE:
+            raw["current_difficulty"] = self._first_meaningful(raw["error_prone_points"], raw["weak_points"], raw["challenge_scene"])
+        if raw["task_goal"] == DEFAULT_VALUE:
+            raw["task_goal"] = raw["study_goal"]
+        if raw["learning_background"] == DEFAULT_VALUE:
+            raw["learning_background"] = raw["learning_history"]
+        if raw["recent_progress"] == DEFAULT_VALUE:
+            raw["recent_progress"] = self._first_meaningful(raw["course_progress"], raw["current_topic"])
+        if raw["schedule_pattern"] == DEFAULT_VALUE:
+            raw["schedule_pattern"] = raw["study_time_prefer"]
+        if raw["weak_knowledge_points"] == DEFAULT_VALUE:
+            raw["weak_knowledge_points"] = self._first_meaningful(raw["weak_points"], raw["error_prone_points"])
+
+        # new -> old
+        raw["knowledge_base"] = self._first_meaningful(raw["knowledge_base"], raw["mastery_level"])
+        raw["knowledge_level"] = self._first_meaningful(raw["knowledge_level"], raw["mastery_level"])
+        raw["cognitive_style"] = self._first_meaningful(raw["cognitive_style"], raw["support_preference"])
+        raw["study_style"] = self._first_meaningful(raw["study_style"], raw["support_preference"])
+        raw["error_prone_points"] = self._first_meaningful(raw["error_prone_points"], raw["current_difficulty"])
+        raw["weak_points"] = self._first_meaningful(raw["weak_points"], raw["weak_knowledge_points"], raw["current_difficulty"])
+        raw["challenge_scene"] = self._first_meaningful(raw["challenge_scene"], raw["current_difficulty"])
+        raw["study_goal"] = self._first_meaningful(raw["study_goal"], raw["task_goal"])
+        raw["learning_history"] = self._first_meaningful(raw["learning_history"], raw["learning_background"])
+        raw["course_progress"] = self._first_meaningful(raw["course_progress"], raw["recent_progress"], raw["current_topic"])
+        raw["study_time_prefer"] = self._first_meaningful(raw["study_time_prefer"], raw["schedule_pattern"])
+
+        if raw["recommended_next_step"] == DEFAULT_VALUE:
+            raw["recommended_next_step"] = self._derive_next_step(raw)
+        if raw["portrait_confidence"] == DEFAULT_VALUE:
+            raw["portrait_confidence"] = self._confidence_label(raw)
+        raw["profile_summary"] = self._build_summary(raw)
+        return raw
+
+    def _merge_profile(self, base: Dict[str, str], incoming: Dict[str, str]) -> Dict[str, str]:
+        merged = {}
+        for field in PROFILE_FIELDS:
+            base_value = self._clean_value(base.get(field))
+            incoming_value = self._clean_value(incoming.get(field))
+            merged[field] = incoming_value if incoming_value != DEFAULT_VALUE else base_value
+        return self._normalize_profile(merged)
 
     def _messages_to_dialogue(self, messages: List[Dict[str, str]]) -> str:
         lines = []
         for item in messages or []:
-            role = "学生" if item.get("role") == "user" else "画像助手"
+            role = "学生" if item.get("role") == "user" else "学习助手"
             content = str(item.get("content") or "").strip()
             if content:
                 lines.append(f"{role}：{content}")
@@ -236,13 +333,13 @@ class ProfileAgent:
         return ""
 
     def _missing_fields(self, profile: Dict[str, str]) -> List[str]:
-        return [field for field in CORE_PROFILE_DIMENSIONS if not profile.get(field) or profile.get(field) == DEFAULT_VALUE]
+        return [field for field in CORE_PROFILE_DIMENSIONS if self._clean_value(profile.get(field)) == DEFAULT_VALUE]
 
     def _confidence_by_profile(self, profile: Dict[str, str]) -> float:
-        filled = len([field for field in CORE_PROFILE_DIMENSIONS if profile.get(field) and profile.get(field) != DEFAULT_VALUE])
+        filled = len([field for field in CORE_PROFILE_DIMENSIONS if self._clean_value(profile.get(field)) != DEFAULT_VALUE])
         return round(filled / max(len(CORE_PROFILE_DIMENSIONS), 1), 2)
 
-    def _build_chat_result(self, profile: Dict[str, str], source: str, latest_user_message: str = "") -> Dict[str, Any]:
+    def _build_chat_result(self, profile: Dict[str, str], latest_user_message: str = "", source: str = "fallback") -> Dict[str, Any]:
         missing_fields = self._missing_fields(profile)
         return {
             "profile": profile,
@@ -251,8 +348,8 @@ class ProfileAgent:
             "reply_type": "answer_only",
             "next_question": "",
             "confidence": self._confidence_by_profile(profile),
-            "is_complete": len(missing_fields) <= 4,
-            "reasoning_note": "当前为 MOCK_AI 演示模式，使用本地规则进行问题回答和画像提取。",
+            "is_complete": len(missing_fields) <= 1,
+            "reasoning_note": "当前使用本地兜底画像提取逻辑。",
             "model_enabled": False,
             "source": source,
         }
@@ -260,285 +357,269 @@ class ProfileAgent:
     def _build_mock_reply(self, latest_user_message: str, profile: Dict[str, str]) -> str:
         text = str(latest_user_message or "").strip()
         if not text:
-            return "你好，你可以直接问我课程、章节、知识点、题目或学习方法，我会在后台同步更新学习画像。"
-
-        course = profile.get("target_course") or self._guess_course(text)
-
-        if any(keyword in text for keyword in ["哪些章节", "有哪些章节", "章节有哪些", "目录", "知识点有哪些"]):
-            if "软件工程" in course:
-                return "如果你现在学的是软件工程，常见章节一般包括：软件工程概述、软件生命周期、可行性研究、需求分析、总体设计、详细设计、编码实现、软件测试、维护与项目管理。你告诉我想先看哪一章，我就按那一章继续帮你。"
-            return "你先告诉我具体是哪门课程，我就能按这门课给你列章节；如果暂时只想快速开始，也可以直接告诉我你想先学哪个知识点。"
-
-        if any(keyword in text for keyword in ["回答我的问题", "先回答", "直接回答", "先告诉我"]):
-            return "收到，我会优先直接回答你的问题，画像只在后台静默更新，不再打断你的主问题。你继续发具体问题就行。"
-
-        if "画像" in text and any(keyword in text for keyword in ["分析", "总结", "看看", "生成"]):
-            return "可以，我会继续依据我们所有对话静默更新画像；如果你需要，我也可以单独给你一版当前画像总结。"
-
-        return "我已经收到你的信息，并会在后台同步更新学习画像。你可以继续直接问课程、章节、题目或学习上的具体问题，我优先回答问题本身。"
-
-    def _merge_profile(self, model_result: Dict[str, str], parsed: Dict[str, str]) -> Dict[str, str]:
-        merged = {}
-        for field in PROFILE_FIELDS:
-            parsed_value = parsed.get(field) or DEFAULT_VALUE
-            model_value = model_result.get(field) or DEFAULT_VALUE
-            merged[field] = parsed_value if parsed_value != DEFAULT_VALUE else model_value
-        merged["profile_summary"] = self._build_summary(merged)
-        return merged
+            return "你可以直接问课程、知识点、题目、学习方法或复习安排，我会优先帮你解决问题，并在后台自动更新画像。"
+        if any(keyword in text for keyword in ["分为几章", "几个章节", "目录", "有哪些章节"]):
+            course = profile.get("target_course")
+            if course and course != DEFAULT_VALUE:
+                return f"{course}一般会先讲课程概览，再进入需求、设计、实现、测试、维护等模块。你如果愿意，我可以继续按章节给你顺下来。"
+            return "这门课通常会先讲整体框架，再展开到具体章节。你告诉我是哪门课，我可以直接按章节给你梳理。"
+        if any(keyword in text for keyword in ["怎么学", "如何学", "学习路线"]):
+            return "可以，我们可以按“先搭框架、再攻薄弱点、最后做题或案例巩固”的顺序来学。我也可以直接给你拆成一版短期学习路线。"
+        return "收到，我会优先回答你当前的问题，同时把这轮对话静默计入画像里。你可以继续直接问具体内容。"
 
     def _extract_from_dialogue(self, dialogue_text: str) -> Dict[str, str]:
         text = str(dialogue_text or "").strip()
+        latest_user = self._extract_latest_user_text(text)
+        source = latest_user or text
         result = {field: DEFAULT_VALUE for field in PROFILE_FIELDS}
-        if not text:
-            return result
 
-        for field, aliases in FIELD_ALIASES.items():
-            result[field] = self._extract_by_aliases(text, aliases)
+        if not source:
+            return self._normalize_profile(result)
 
-        if result["major"] == DEFAULT_VALUE:
-            result["major"] = self._guess_major(text)
-        if result["target_course"] == DEFAULT_VALUE:
-            result["target_course"] = self._guess_course(text)
-        if result["knowledge_base"] == DEFAULT_VALUE:
-            result["knowledge_base"] = self._guess_knowledge_level(text)
-        if result["course_progress"] == DEFAULT_VALUE:
-            result["course_progress"] = self._guess_course_progress(text)
-        if result["cognitive_style"] == DEFAULT_VALUE:
-            result["cognitive_style"] = self._guess_style(text)
-        if result["preferred_resource"] == DEFAULT_VALUE:
-            result["preferred_resource"] = self._guess_resource(text)
-        if result["study_time_prefer"] == DEFAULT_VALUE:
-            result["study_time_prefer"] = self._guess_time(text)
-        if result["study_goal"] == DEFAULT_VALUE:
-            result["study_goal"] = self._guess_goal(text)
-        if result["error_prone_points"] == DEFAULT_VALUE:
-            result["error_prone_points"] = self._guess_weak_point(text)
-        if result["challenge_scene"] == DEFAULT_VALUE:
-            result["challenge_scene"] = self._guess_challenge_scene(text)
-        if result["learning_history"] == DEFAULT_VALUE:
-            result["learning_history"] = self._guess_learning_history(text)
+        result["major"] = self._guess_major(text)
+        result["target_course"] = self._guess_course(text)
+        result["current_topic"] = self._guess_current_topic(source, result["target_course"])
+        result["mastery_level"] = self._guess_mastery_level(source)
+        result["current_difficulty"] = self._guess_current_difficulty(source)
+        result["task_goal"] = self._guess_task_goal(source, result["target_course"])
+        result["support_preference"] = self._guess_support_preference(text)
+        result["engagement_level"] = self._guess_engagement_level(text)
+        result["learning_background"] = self._guess_learning_background(text, result["mastery_level"])
+        result["recent_progress"] = self._guess_recent_progress(text, result["current_topic"])
+        result["schedule_pattern"] = self._guess_schedule_pattern(text)
+        result["preferred_resource"] = self._guess_resource_preference(text)
+        result["weak_knowledge_points"] = self._guess_weak_knowledge_points(text, result["current_difficulty"])
+        result["recommended_next_step"] = self._derive_next_step(result)
+        result["portrait_confidence"] = self._confidence_label(result)
+        return self._normalize_profile(result)
 
-        self._sync_dimension_aliases(result)
-        result["profile_summary"] = self._build_summary(result)
-        return result
-
-    def _extract_by_aliases(self, text: str, aliases: List[str]) -> str:
-        for alias in aliases:
-            match = re.search(rf"{re.escape(alias)}[：:\s]+(.+)", text)
-            if match:
-                value = match.group(1).strip().splitlines()[0].strip()
-                return value or DEFAULT_VALUE
-        return DEFAULT_VALUE
-
-    def _normalize_choice_text(self, text: str) -> str:
-        normalized = str(text or "")
-        compact = re.sub(r"\s+", "", normalized)
-        option_map = {
-            "A": "图文讲解",
-            "Ａ": "图文讲解",
-            "B": "代码示例",
-            "Ｂ": "代码示例",
-            "C": "思维导图",
-            "Ｃ": "思维导图",
-            "D": "其他方式",
-            "Ｄ": "其他方式",
-        }
-        for key, value in option_map.items():
-            choose_pattern = rf"(?:选择|选|我选|我选择){re.escape(key)}(?:$|[。，,.;\s])"
-            tail_pattern = rf"(?:^|[\n\r我：:]){re.escape(key)}$"
-            if re.search(choose_pattern, compact) or re.search(tail_pattern, compact):
-                return value
-        if re.fullmatch(r"[A-DＡ-Ｄ]", compact):
-            return option_map.get(compact, normalized)
-        return normalized
+    def _extract_latest_user_text(self, text: str) -> str:
+        lines = [line.strip() for line in str(text or "").splitlines() if line.strip()]
+        for line in reversed(lines):
+            if line.startswith("学生："):
+                return line.replace("学生：", "", 1).strip()
+        return lines[-1] if lines else ""
 
     def _guess_major(self, text: str) -> str:
-        patterns = [
-            r"([\u4e00-\u9fa5A-Za-z0-9]+(?:与技术|科学|工程|专业))专业学生",
-            r"我是([\u4e00-\u9fa5A-Za-z0-9]+)专业",
-            r"专业[是为:：\s]+([\u4e00-\u9fa5A-Za-z0-9]+)",
-        ]
-        for pattern in patterns:
-            match = re.search(pattern, text)
-            if match:
-                value = re.sub(r"学生$", "", match.group(1).strip())
-                return value or DEFAULT_VALUE
-
-        candidates = ["计算机科学与技术", "计算机科学", "人工智能", "计算机", "数据科学", "网络工程", "自动化", "软件工程"]
-        for item in candidates:
+        patterns = ["软件工程", "计算机科学与技术", "人工智能", "数据科学", "网络工程", "信息安全"]
+        for item in patterns:
             if item in text:
-                if item == "软件工程" and re.search(r"软件工程(?:课|课程|章节)", text):
-                    continue
                 return item
         return DEFAULT_VALUE
 
     def _guess_course(self, text: str) -> str:
-        course_patterns = [
-            r"学习([\u4e00-\u9fa5A-Za-z0-9]+?)课程",
-            r"针对([\u4e00-\u9fa5A-Za-z0-9]+?)课",
-            r"课程[是为:：\s]+([\u4e00-\u9fa5A-Za-z0-9]+)",
+        patterns = ["软件工程", "人工智能导论", "数据结构", "操作系统", "计算机组成原理", "数据库原理"]
+        for item in patterns:
+            if item in text:
+                return item
+        return DEFAULT_VALUE
+
+    def _guess_current_topic(self, text: str, course: str) -> str:
+        explicit_patterns = [
+            r"[“\"']([^”\"']{2,24})[”\"']这个部分",
+            r"关于([^，。！？\n]{2,24})",
+            r"学习([^，。！？\n]{2,24})",
+            r"复习([^，。！？\n]{2,24})",
+            r"解释知识点[“\"']?([^”\"'\n]{2,24})",
+            r"([^，。！？\n]{2,24})怎么学",
         ]
-        for pattern in course_patterns:
+        for pattern in explicit_patterns:
+            match = re.search(pattern, text)
+            if match:
+                candidate = match.group(1).strip()
+                if len(candidate) >= 2:
+                    return candidate
+        for token in ["Scrum", "Sprint", "需求分析", "总体设计", "详细设计", "软件测试", "软件生命周期", "可行性研究", "UML", "数据流图", "用例图"]:
+            if token in text:
+                return token
+        if any(keyword in text for keyword in ["几章", "几个章节", "目录", "课程结构"]):
+            return f"{course}课程整体结构" if course != DEFAULT_VALUE else "课程整体结构"
+        return DEFAULT_VALUE
+
+    def _guess_mastery_level(self, text: str) -> str:
+        lowered = str(text)
+        if any(keyword in lowered for keyword in ["零基础", "刚开始", "刚入门", "一点不会", "完全不会"]):
+            return "入门起步"
+        if any(keyword in lowered for keyword in ["不太会", "不太懂", "模糊", "没学明白", "有点不会", "不熟"]):
+            return "基础未稳"
+        if any(keyword in lowered for keyword in ["会一些", "学过", "有基础", "了解过"]):
+            return "有一定基础"
+        if any(keyword in lowered for keyword in ["比较熟", "掌握得不错", "很熟", "能讲清"]):
+            return "掌握较好"
+        return DEFAULT_VALUE
+
+    def _guess_current_difficulty(self, text: str) -> str:
+        patterns = [
+            r"对于[“\"']?([^，。！？\n]{2,24})[”\"']?这个部分不太会",
+            r"([^，。！？\n]{2,24})不太会",
+            r"([^，。！？\n]{2,24})不太懂",
+            r"([^，。！？\n]{2,24})看不懂",
+            r"卡在([^，。！？\n]{2,24})",
+            r"不会([^，。！？\n]{2,24})",
+            r"薄弱点是([^，。！？\n]{2,24})",
+        ]
+        for pattern in patterns:
             match = re.search(pattern, text)
             if match:
                 return match.group(1).strip()
-        if "软件工程" in text:
-            return "软件工程"
-        candidates = ["需求分析", "可行性研究", "总体设计", "详细设计", "软件测试", "软件维护", "软件生命周期", "结构化设计"]
-        for item in candidates:
-            if item in text:
-                return item
+        if any(keyword in text for keyword in ["不太会", "不太懂", "困难", "模糊", "卡住", "不会"]):
+            return "当前知识点理解还不稳定"
         return DEFAULT_VALUE
 
-    def _extract_learned_topics(self, text: str) -> str:
+    def _guess_task_goal(self, text: str, course: str) -> str:
         patterns = [
-            r"(?:之前|已经|曾经)?(?:学过|学习过|学习了|掌握了|了解了)([^。；;\n]{2,60})",
-            r"(?:已掌握|已经掌握|比较熟悉)([^。；;\n]{2,60})",
+            r"(?:目标|希望|想要|打算)(?:是|为)?([^，。！？\n]{4,32})",
+            r"我想([^，。！？\n]{4,32})",
+            r"我希望([^，。！？\n]{4,32})",
         ]
-        topics = []
         for pattern in patterns:
-            for match in re.finditer(pattern, text):
-                value = self._clean_topic_phrase(match.group(1))
-                if value != DEFAULT_VALUE and value not in topics:
-                    topics.append(value)
-        return "、".join(topics[:3]) if topics else DEFAULT_VALUE
+            match = re.search(pattern, text)
+            if match:
+                return match.group(1).strip()
+        if any(keyword in text for keyword in ["怎么学", "学习路线", "如何学习"]):
+            return f"建立{course}的学习路径" if course != DEFAULT_VALUE else "建立当前课程的学习路径"
+        if any(keyword in text for keyword in ["解释", "讲讲", "帮我理解", "图解"]):
+            return "先把当前知识点讲明白"
+        return DEFAULT_VALUE
 
-    def _extract_unstable_topics(self, text: str) -> str:
-        patterns = [
-            r"([^。；;\n]{2,60}?)(?:混淆|不稳定|不熟|不会|不太会|薄弱|卡住)",
-            r"([^。；;\n]{2,60}?)(?:之间的关系)(?:经常)?(?:容易)?(?:混淆|不清楚)",
-        ]
-        topics = []
-        for pattern in patterns:
-            for match in re.finditer(pattern, text):
-                value = self._clean_topic_phrase(match.group(1))
-                if value != DEFAULT_VALUE and value not in topics:
-                    topics.append(value)
-        return "、".join(topics[:3]) if topics else DEFAULT_VALUE
+    def _guess_support_preference(self, text: str) -> str:
+        preferences = []
+        if any(keyword in text for keyword in ["图解", "画图", "流程图", "结构图"]):
+            preferences.append("图解梳理")
+        if any(keyword in text for keyword in ["例子", "案例", "举例"]):
+            preferences.append("案例说明")
+        if any(keyword in text for keyword in ["代码", "实操", "实现"]):
+            preferences.append("代码示例")
+        if any(keyword in text for keyword in ["通俗", "简单", "好懂", "一步一步", "分步骤"]):
+            preferences.append("通俗分步骤讲解")
+        if any(keyword in text for keyword in ["题", "刷题", "练习"]):
+            preferences.append("练习带动理解")
+        return "、".join(preferences[:2]) if preferences else DEFAULT_VALUE
 
-    def _clean_topic_phrase(self, value: str) -> str:
-        value = str(value or "").strip()
-        value = re.split(r"但是|不过|然后", value)[0]
-        value = re.sub(r"^(?:和|以及|还有|目前|我对|这门课的)", "", value)
-        value = re.sub(r"(?:之间的关系|的关系)$", "", value)
-        value = value.strip(" 、，,。；;")
-        return value or DEFAULT_VALUE
+    def _guess_engagement_level(self, text: str) -> str:
+        if any(keyword in text for keyword in ["刚开始", "入门", "起步"]):
+            return "刚开始接触"
+        if any(keyword in text for keyword in ["复习", "回顾", "巩固"]):
+            return "复习巩固中"
+        if any(keyword in text for keyword in ["冲刺", "考试", "期末", "考研"]):
+            return "目标驱动强化中"
+        if any(keyword in text for keyword in ["最近一直", "持续", "这段时间都在"]):
+            return "持续学习中"
+        return DEFAULT_VALUE
 
-    def _guess_course_progress(self, text: str) -> str:
-        learned = self._extract_learned_topics(text)
-        if learned != DEFAULT_VALUE:
-            return f"已学到{learned}"
-        match = re.search(r"(?:当前|现在)?(?:学到|进度到)([^。；;\n]{2,40})", text)
+    def _guess_learning_background(self, text: str, mastery_level: str) -> str:
+        pieces = []
+        major = self._guess_major(text)
+        if major != DEFAULT_VALUE:
+            pieces.append(f"{major}相关背景")
+        if mastery_level != DEFAULT_VALUE:
+            pieces.append(f"当前处于“{mastery_level}”阶段")
+        if any(keyword in text for keyword in ["学过", "接触过", "看过"]):
+            pieces.append("此前接触过相关内容")
+        return "；".join(pieces) if pieces else DEFAULT_VALUE
+
+    def _guess_recent_progress(self, text: str, current_topic: str) -> str:
+        match = re.search(r"(?:学到|看到|进行到)([^，。！？\n]{2,24})", text)
         if match:
-            value = self._clean_topic_phrase(match.group(1))
-            return value if value != DEFAULT_VALUE else DEFAULT_VALUE
+            return match.group(1).strip()
+        if current_topic != DEFAULT_VALUE:
+            return f"当前正在围绕“{current_topic}”继续理解"
+        if any(keyword in text for keyword in ["刚开始", "入门"]):
+            return "刚进入课程起步阶段"
         return DEFAULT_VALUE
 
-    def _guess_knowledge_level(self, text: str) -> str:
-        if any(item in text for item in ["很多定义不太会", "很多定义不会", "定义不太会", "定义不会"]):
-            return "定义理解薄弱"
-        learned = self._extract_learned_topics(text)
-        unstable = self._extract_unstable_topics(text)
-        if learned != DEFAULT_VALUE and unstable != DEFAULT_VALUE:
-            return f"已学过{learned}，但{unstable}仍不稳定"
-        if learned != DEFAULT_VALUE:
-            return f"已学过{learned}"
-        candidates = ["零基础", "刚入门", "基础薄弱", "基础较弱", "基础一般", "还可以", "有一定基础", "基础较好", "比较熟悉", "掌握较好"]
-        for item in candidates:
-            if item in text:
-                return item
+    def _guess_schedule_pattern(self, text: str) -> str:
+        patterns = []
+        if "晚上" in text or "夜里" in text or "夜间" in text:
+            patterns.append("偏晚上学习")
+        if "周末" in text:
+            patterns.append("周末集中安排")
+        if "碎片" in text:
+            patterns.append("碎片化推进")
+        if "固定" in text:
+            patterns.append("有固定学习时段")
+        return "、".join(patterns[:2]) if patterns else DEFAULT_VALUE
+
+    def _guess_resource_preference(self, text: str) -> str:
+        options = []
+        if "视频" in text:
+            options.append("视频讲解")
+        if any(keyword in text for keyword in ["图解", "思维导图", "流程图"]):
+            options.append("图解资料")
+        if any(keyword in text for keyword in ["题", "练习", "刷题"]):
+            options.append("练习题")
+        if "代码" in text:
+            options.append("代码示例")
+        if any(keyword in text for keyword in ["文档", "讲义", "教材"]):
+            options.append("文字资料")
+        return "、".join(options[:2]) if options else DEFAULT_VALUE
+
+    def _guess_weak_knowledge_points(self, text: str, current_difficulty: str) -> str:
+        if current_difficulty != DEFAULT_VALUE:
+            return current_difficulty
+        for token in ["需求分析", "总体设计", "详细设计", "Scrum", "Sprint", "软件测试", "UML", "数据流图"]:
+            if token in text and any(keyword in text for keyword in ["不会", "不懂", "模糊", "困难"]):
+                return token
         return DEFAULT_VALUE
 
-    def _guess_style(self, text: str) -> str:
-        normalized = self._normalize_choice_text(text)
-        explicit = ["图文讲解", "代码示例", "思维导图", "图解", "案例", "分层练习", "视频", "代码实操", "讲解"]
-        tags = [item for item in explicit if item in normalized]
-        if "图文讲解" in tags:
-            tags = [item for item in tags if item not in {"图解", "讲解"}]
-        return "、".join(tags[:3]) if tags else DEFAULT_VALUE
+    def _derive_next_step(self, profile: Dict[str, str]) -> str:
+        topic = self._clean_value(profile.get("current_topic"))
+        difficulty = self._clean_value(profile.get("current_difficulty"))
+        preference = self._clean_value(profile.get("support_preference"))
+        goal = self._clean_value(profile.get("task_goal"))
 
-    def _guess_resource(self, text: str) -> str:
-        normalized = self._normalize_choice_text(text)
-        explicit = ["图文讲解", "代码示例", "思维导图", "讲解文档", "练习题", "代码案例", "视频", "拓展阅读", "图解"]
-        tags = [item for item in explicit if item in normalized]
-        if "图文讲解" in tags:
-            tags = [item for item in tags if item != "图解"]
-        return "、".join(tags[:3]) if tags else DEFAULT_VALUE
-
-    def _guess_time(self, text: str) -> str:
-        parts = []
-        if re.search(r"晚上\s*12\s*点|12\s*点", text):
-            parts.append("晚上12点")
-        parts.extend(item for item in ["晚上", "白天", "周末", "碎片时间", "60分钟", "1小时", "两小时"] if item in text and item not in parts)
-        return "、".join(parts) if parts else DEFAULT_VALUE
-
-    def _guess_goal(self, text: str) -> str:
-        score = re.search(r"(?:拿到|考到|达到)?\s*(\d{2,3})\s*分", text)
-        if score:
-            return f"拿到{score.group(1)}分"
-        match = re.search(r"(?:希望|想要|目标是|目标)([^。；;\n]{2,60})", text)
-        if match:
-            value = match.group(1).strip(" ：:，,。；; ")
-            return value or DEFAULT_VALUE
-        if "期末复习" in text:
-            return "期末复习"
+        if topic != DEFAULT_VALUE and difficulty != DEFAULT_VALUE:
+            return f"先围绕“{topic}”把“{difficulty}”讲透，再做1-2个小练习验证理解。"
+        if topic != DEFAULT_VALUE and preference != DEFAULT_VALUE:
+            return f"下一步可按“{preference}”方式继续展开“{topic}”。"
+        if goal != DEFAULT_VALUE:
+            return f"把当前问题拆成可执行步骤，优先推进“{goal}”。"
         return DEFAULT_VALUE
 
-    def _guess_weak_point(self, text: str) -> str:
-        candidates = ["瀑布模型", "需求分析", "可行性研究", "总体设计", "详细设计", "软件测试", "软件维护", "软件生命周期", "数据流图", "模块设计", "编码实现", "数据字典"]
-        hits = [item for item in candidates if item in text]
-        if hits:
-            return "、".join(hits[:4])
-        if any(item in text for item in ["定义不清", "定义不会", "概念混淆"]):
-            return "定义理解困难"
-        return DEFAULT_VALUE
-
-    def _guess_challenge_scene(self, text: str) -> str:
-        tags = [item for item in ["看图", "看公式", "写代码", "做题", "听课", "建模", "画图", "需求建模"] if item in text]
-        return "、".join(tags) if tags else DEFAULT_VALUE
-
-    def _guess_learning_history(self, text: str) -> str:
-        tags = []
-        learned = self._extract_learned_topics(text)
-        if learned != DEFAULT_VALUE:
-            tags.append(f"之前学过{learned}")
-        patterns = [
-            r"(?:已经|之前|曾经)(?:学习|学过|完成|做过|练过)([^。；;\n]{2,40})",
-            r"(?:作业|实验|测试|考试|项目)(?:[^。；;\n]{0,30})(?:做过|完成|得分|错题|反馈)",
-        ]
-        for pattern in patterns:
-            for match in re.finditer(pattern, text):
-                value = match.group(0).strip()
-                if value and value not in tags:
-                    tags.append(value)
-        return "、".join(tags[:3]) if tags else DEFAULT_VALUE
+    def _confidence_label(self, profile: Dict[str, str]) -> str:
+        ratio = self._confidence_by_profile(profile)
+        if ratio >= 0.84:
+            return "高"
+        if ratio >= 0.5:
+            return "中"
+        return "低"
 
     def _build_summary(self, profile: Dict[str, str]) -> str:
-        major = profile.get("major") or DEFAULT_VALUE
-        course = profile.get("target_course") or DEFAULT_VALUE
-        knowledge = profile.get("knowledge_base") or profile.get("knowledge_level") or DEFAULT_VALUE
-        weak = profile.get("error_prone_points") or profile.get("weak_points") or DEFAULT_VALUE
-        style = profile.get("cognitive_style") or profile.get("study_style") or DEFAULT_VALUE
-        goal = profile.get("study_goal") or DEFAULT_VALUE
-        history = profile.get("learning_history") or DEFAULT_VALUE
-        time = profile.get("study_time_prefer") or DEFAULT_VALUE
+        major = self._clean_value(profile.get("major"))
+        course = self._clean_value(profile.get("target_course"))
+        topic = self._clean_value(profile.get("current_topic"))
+        mastery = self._clean_value(profile.get("mastery_level"))
+        difficulty = self._clean_value(profile.get("current_difficulty"))
+        goal = self._clean_value(profile.get("task_goal"))
+        support = self._clean_value(profile.get("support_preference"))
 
         parts = []
         if major != DEFAULT_VALUE:
-            parts.append(f"{major}方向学生")
+            parts.append(f"{major}方向")
         if course != DEFAULT_VALUE:
             parts.append(f"当前聚焦{course}")
-        if knowledge != DEFAULT_VALUE:
-            parts.append(f"知识基础：{knowledge}")
-        if weak != DEFAULT_VALUE:
-            parts.append(f"易错点：{weak}")
+        if topic != DEFAULT_VALUE:
+            parts.append(f"正在处理“{topic}”")
+        if mastery != DEFAULT_VALUE:
+            parts.append(f"掌握状态：{mastery}")
+        if difficulty != DEFAULT_VALUE:
+            parts.append(f"主要卡点：{difficulty}")
         if goal != DEFAULT_VALUE:
-            parts.append(f"目标：{goal}")
-        if history != DEFAULT_VALUE:
-            parts.append(f"学习历史包含{history}")
-        if time != DEFAULT_VALUE:
-            parts.append(f"偏向在{time}学习")
-        if style != DEFAULT_VALUE:
-            parts.append(f"认知风格偏好{style}")
+            parts.append(f"当前目标：{goal}")
+        if support != DEFAULT_VALUE:
+            parts.append(f"更适合：{support}")
 
-        return "；".join(parts) if parts else DEFAULT_VALUE
+        return "；".join(parts) if parts else "继续进行真实学习对话后，这里会自动沉淀出更稳定的学生画像。"
+
+    def _clean_value(self, value: Any) -> str:
+        text = str(value or "").strip()
+        if text in {"", "None", "null", "undefined", DEFAULT_VALUE}:
+            return DEFAULT_VALUE
+        return re.sub(r"\s+", " ", text)
+
+    def _first_meaningful(self, *values: Any) -> str:
+        for value in values:
+            cleaned = self._clean_value(value)
+            if cleaned != DEFAULT_VALUE:
+                return cleaned
+        return DEFAULT_VALUE
