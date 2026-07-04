@@ -8,17 +8,26 @@ from flask import Blueprint, Response, request, stream_with_context
 
 from ai.agents import agent_manager
 from ai.rag import generated_kb_dir
-<<<<<<< HEAD
-from ai.spark_api import content_audit, spark_chat
-=======
-from ai.llm_api import audit_content
->>>>>>> xiangmu/main
+from importlib import import_module
 from db import mysql_db
 from utils import fail, success
 from utils.auth_decorator import login_required
 from utils.jwt_utils import verify_token
 from utils.profile_session import resolve_profile_session
 
+_llm_api = import_module("ai.llm_api")
+audit_content = getattr(_llm_api, "audit_content")
+
+if hasattr(_llm_api, "llm_chat"):
+    llm_chat = getattr(_llm_api, "llm_chat")
+elif hasattr(_llm_api, "PlatformLLM"):
+    def llm_chat(prompt: str) -> str:
+        return getattr(_llm_api, "PlatformLLM")().invoke(prompt)
+else:
+    raise ImportError("ai.llm_api 中缺少 llm_chat 或 PlatformLLM，无法进行模型文本生成")
+
+content_audit = audit_content
+spark_chat = llm_chat
 resource_bp = Blueprint("resource", __name__)
 IMAGE_PATTERN = re.compile(r"(?:[A-Za-z]:\\[^\n\r，,；;）)]+|images[\\/][^\n\r，,；;）)]+)\.(?:png|jpg|jpeg|webp|gif)", re.IGNORECASE)
 IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".webp", ".gif"}

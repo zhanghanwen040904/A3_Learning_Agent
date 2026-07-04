@@ -99,9 +99,25 @@ export const chatApi = {
 };
 
 export const knowledgeApi = {
+  importBookJson: (data) => {
+    if (typeof FormData !== "undefined" && data instanceof FormData) {
+      return http.post("/knowledge/import-book-json", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    }
+    return http.post("/knowledge/import-book-json", data);
+  },
   status: () => http.get("/knowledge/status"),
+  documents: () => http.get("/knowledge/documents"),
   rebuild: (data = { force: true }) => http.post("/knowledge/rebuild", data),
   search: (data) => http.post("/knowledge/search", data),
+  tree: () => http.get("/knowledge/tree"),
+  section: (nodeId, params = { include_children: true }) =>
+    http.get(`/knowledge/section/${encodeURIComponent(nodeId)}`, { params }),
+  chapterIndex: () => http.get("/knowledge/chapter-index"),
+  chapterBrowser: () => http.get("/knowledge/chapter-browser"),
+  knowledgeTree: () => http.get("/knowledge/knowledge-tree"),
+  knowledgeGraph: () => http.get("/knowledge/knowledge-graph"),
 };
 
 export const evaluationApi = {

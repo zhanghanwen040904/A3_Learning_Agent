@@ -81,18 +81,10 @@ class StructuredResourceAgent:
         self.agent = AgentSpec(
             role=self.role,
             goal=self.goal,
-<<<<<<< HEAD
             tools=["langchain_prompt", "spark_llm", "retrieve_knowledge"],
             input_schema="结构化学生画像 + 资源规划 + 教材知识片段 + 可选返工意见",
             output_schema='{"title":"","content":"","knowledge_points":[],"personalization":"","format":"markdown"}',
-=======
-            tools=["langchain_prompt", "platform_llm", "retrieve_knowledge"],
-            input_schema="结构化学生画像 + 资源规划 + RAG教材片段 + 可选返工意见",
-            output_schema=(
-                '{"title":"","content":"","knowledge_points":[],"personalization":"",'
-                '"format":"markdown"}'
-            ),
->>>>>>> xiangmu/main
+
         )
         self.chain = build_langchain_chain(RESOURCE_PROMPT)
 
@@ -453,8 +445,6 @@ class StructuredResourceAgent:
     def _invoke_model(self, variables: Dict[str, Any]) -> str:
         if self.chain is not None:
             raw = self.chain.invoke(variables)
-        else:
-            raw = SparkLLM().invoke(RESOURCE_PROMPT_TEMPLATE.format(**variables))
         if hasattr(raw, "content"):
             raw = raw.content
         return str(raw or "")
@@ -477,14 +467,8 @@ class StructuredResourceAgent:
             "requirements": self.requirements,
             "feedback": feedback or "首次生成，无返工意见",
         }
-<<<<<<< HEAD
         raw = self._invoke_model(variables)
-=======
-        if self.chain is not None:
-            raw = self.chain.invoke(variables)
-        else:
-            raw = PlatformLLM().invoke(RESOURCE_PROMPT_TEMPLATE.format(**variables))
->>>>>>> xiangmu/main
+
         if self._is_model_error(raw):
             return self._fallback_doc_resource(context, knowledge_text) if self.resource_type == "doc" else self._fallback_resource(context, knowledge_text)
 

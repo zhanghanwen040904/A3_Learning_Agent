@@ -416,15 +416,25 @@ def build_vector_db(force: bool = False) -> dict:
 
     try:
         collection = _get_collection()
-        if collection.count() > 0 and not force:
-            _last_build_result = {
-                "status": "loaded",
-                "chunks": collection.count(),
-                "fallback_chunks": len(_fallback_chunks),
-                "retrieval_source": _fallback_chunks[0].get("metadata", {}).get("retrieval_source", "unknown"),
-                "message": "向量库已存在，直接加载",
-            }
-            return _last_build_result
+        existing_count = collection.count()
+        if existing_count > 0 and not force:
+            if existing_count == len(_fallback_chunks):
+                _last_build_result = {
+                    "status": "loaded",
+                    "chunks": existing_count,
+                    "fallback_chunks": len(_fallback_chunks),
+                    "retrieval_source": _fallback_chunks[0].get("metadata", {}).get("retrieval_source", "unknown"),
+                    "message": "向量库已存在且与当前知识库数量一致，直接加载",
+                }
+                return _last_build_result
+            try:
+                collection.delete(ids=collection.get(include=[]) ["ids"])
+            except Exception:
+                reset_rag_cache()
+                vector_dir = Path(config.RAG_VECTOR_DIR)
+                if vector_dir.exists():
+                    shutil.rmtree(vector_dir)
+                collection = _get_collection()
 
         ids, texts, metadatas = [], [], []
         for item in _fallback_chunks:

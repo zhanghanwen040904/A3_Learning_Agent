@@ -349,6 +349,12 @@ def _load_rag_knowledge_points() -> List[dict]:
     return items
 
 
+def _normalize_difficulty(value) -> str:
+    text = str(value or 'basic').strip().lower()
+    mapping = {'基础': 'basic', '基础题': 'basic', 'basic': 'basic', '提高': 'improve', '提升': 'improve', 'improve': 'improve', '应用': 'application', '应用题': 'application', 'application': 'application', '高级': 'advanced', 'advanced': 'advanced'}
+    return mapping.get(text, text or 'basic')
+
+
 def _normalize_generated_question_item(item: dict) -> dict:
     related_titles = item.get("related_knowledge_titles") or item.get("knowledge_points") or []
     primary_titles = item.get("primary_knowledge_titles") or related_titles
@@ -364,12 +370,12 @@ def _normalize_generated_question_item(item: dict) -> dict:
         "chapter": section_path[1] if isinstance(section_path, list) and len(section_path) > 1 else "",
         "source_document": item.get("source_file") or "",
         "question_type": item.get("question_type") or "",
-        "difficulty": item.get("difficulty_level") or item.get("difficulty") or "basic",
+        "difficulty": _normalize_difficulty(item.get("difficulty_level") or item.get("difficulty") or "basic"),
         "prompt": stem,
         "stem": stem,
         "options": item.get("options") or [],
-        "reference_answer": item.get("answer") or "",
-        "explanation": item.get("analysis") or "",
+        "reference_answer": item.get("reference_answer") or item.get("answer") or "",
+        "explanation": item.get("analysis") or item.get("explanation") or "",
         "common_mistake": item.get("common_mistake") or "",
         "scoring_points": item.get("scoring_points") or [],
         "keywords": item.get("keywords") or [],
@@ -389,7 +395,7 @@ def _normalize_generated_question_item(item: dict) -> dict:
 
 
 def _load_generated_question_bank() -> List[dict]:
-    questions_dir = questions_json_dir()
+    questions_dir = GENERATED_QUESTION_BANK_DIR
     if questions_dir.exists():
         items: List[dict] = []
         for path in sorted(questions_dir.glob("*.json")):
@@ -404,10 +410,11 @@ def _load_generated_question_bank() -> List[dict]:
         if items:
             return items
 
-    if not GENERATED_QUESTION_BANK_DIR.exists():
+    fallback_questions_dir = questions_json_dir()
+    if not fallback_questions_dir.exists():
         return []
     items: List[dict] = []
-    for path in sorted(GENERATED_QUESTION_BANK_DIR.glob("*.json")):
+    for path in sorted(fallback_questions_dir.glob("*.json")):
         try:
             payload = json.loads(path.read_text(encoding="utf-8"))
         except Exception:

@@ -6,13 +6,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from typing import Any, Callable, Dict, Optional, List
 
-<<<<<<< HEAD
 from ai.rag import build_resource_context, retrieve_knowledge_items, select_profile_knowledge_items
-from ai.spark_api import content_audit
-=======
-from ai.rag import build_resource_context, retrieve_knowledge_items
-from ai.llm_api import audit_content
->>>>>>> xiangmu/main
 from .code_agent import CodeAgent
 from .document_agent import DocumentAgent
 from .mindmap_agent import MindMapAgent

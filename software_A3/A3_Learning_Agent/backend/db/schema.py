@@ -28,6 +28,76 @@ def _drop_index_if_exists(table: str, index_name: str) -> None:
 def ensure_extended_tables() -> None:
     statements = [
         """
+        CREATE TABLE IF NOT EXISTS knowledge_documents (
+            id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+            file_name VARCHAR(255) NOT NULL,
+            file_path TEXT NULL,
+            course VARCHAR(255) NOT NULL,
+            type VARCHAR(32) NOT NULL DEFAULT 'JSON',
+            size BIGINT UNSIGNED NOT NULL DEFAULT 0,
+            section_count INT NOT NULL DEFAULT 0,
+            chunk_count INT NOT NULL DEFAULT 0,
+            status VARCHAR(32) NOT NULL DEFAULT 'imported',
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY uk_knowledge_documents_course_file (course, file_name),
+            KEY idx_knowledge_documents_course (course),
+            KEY idx_knowledge_documents_status (status)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        """,
+        """
+        CREATE TABLE IF NOT EXISTS knowledge_sections (
+            id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+            document_id BIGINT UNSIGNED NULL,
+            node_id VARCHAR(255) NOT NULL,
+            parent_id VARCHAR(255) NULL,
+            title VARCHAR(255) NOT NULL,
+            level INT NOT NULL DEFAULT 0,
+            chapter_id VARCHAR(255) NULL,
+            start_page INT NULL,
+            path_json JSON NULL,
+            path_text TEXT NULL,
+            course VARCHAR(255) NOT NULL,
+            source_file VARCHAR(255) NOT NULL,
+            sort_order INT NOT NULL DEFAULT 0,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY uk_knowledge_sections_node_source (node_id, source_file),
+            KEY idx_knowledge_sections_document_id (document_id),
+            KEY idx_knowledge_sections_parent_id (parent_id),
+            KEY idx_knowledge_sections_course (course),
+            KEY idx_knowledge_sections_sort_order (sort_order)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        """,
+        """
+        CREATE TABLE IF NOT EXISTS knowledge_chunks (
+            id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+            document_id BIGINT UNSIGNED NULL,
+            section_id BIGINT UNSIGNED NULL,
+            section_node_id VARCHAR(255) NOT NULL,
+            chapter_id VARCHAR(255) NULL,
+            section_title VARCHAR(255) NOT NULL,
+            path_json JSON NULL,
+            path_text TEXT NULL,
+            page VARCHAR(32) NULL,
+            content MEDIUMTEXT NOT NULL,
+            chunk_index INT NOT NULL DEFAULT 0,
+            course VARCHAR(255) NOT NULL,
+            source_file VARCHAR(255) NOT NULL,
+            embedding_id VARCHAR(255) NULL,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY uk_knowledge_chunks_section_page_idx (section_node_id, source_file, page, chunk_index),
+            KEY idx_knowledge_chunks_document_id (document_id),
+            KEY idx_knowledge_chunks_section_id (section_id),
+            KEY idx_knowledge_chunks_section_node_id (section_node_id),
+            KEY idx_knowledge_chunks_course (course)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        """,
+        """
         CREATE TABLE IF NOT EXISTS learning_event (
             id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
             user_id BIGINT UNSIGNED NOT NULL,

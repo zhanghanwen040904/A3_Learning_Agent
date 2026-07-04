@@ -5,8 +5,11 @@ from flask import Blueprint, request
 
 from ai.agents import SafetyAgent
 from ai.rag import retrieve_knowledge, retrieve_knowledge_items
-from ai.spark_api import content_audit, spark_chat
+from ai.llm_api import audit_content, llm_chat
 from api.resource_api import _append_images_to_resource
+# 兼容下面原来使用的函数名
+content_audit = audit_content
+spark_chat = llm_chat
 from db import mysql_db
 from utils import fail, success
 from utils.auth_decorator import login_required

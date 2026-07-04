@@ -1,0 +1,3587 @@
+{
+  "stage": "question_answer_links_json",
+  "version": "v16_question_answer_link_map",
+  "links": [
+    {
+      "link_id": "qa_link_d2337dea1703",
+      "question_id": "question_414ad4e448ce",
+      "answer_id": "answer_ceece973c72b",
+      "question_no": "1",
+      "answer_no": "1",
+      "sub_question_no": "",
+      "question_page": 23,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "1. 美国一家公司在 1982 年计划用 FORTRAN 语言开发一个在 VAX 750 计算机上运行的应用程序，估计这个程序的长度为 10 000 条 FORTRAN 指令。如果平均每人每天可以开发出 10 条 FORTRAN 指令，请问：",
+      "answer_preview": "(1)（对）；\n(2)（错）；\n(3)（对）；\n(4)（错）；\n(5)（错）；\n(6)（错）；\n(7)（对）；\n(8)（对）；\n(9)（错）；\n(10)（对）。"
+    },
+    {
+      "link_id": "qa_link_bc5b1ee71764",
+      "question_id": "question_f141251e9ef2",
+      "answer_id": "answer_ceece973c72b",
+      "question_no": "1",
+      "answer_no": "1",
+      "sub_question_no": "2",
+      "question_page": 23,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "(2)假设程序员的月平均工资为4000美元，每月按20个工作日计算，这个软件的成本是多少美元？",
+      "answer_preview": "(1)（对）；\n(2)（错）；\n(3)（对）；\n(4)（错）；\n(5)（错）；\n(6)（错）；\n(7)（对）；\n(8)（对）；\n(9)（错）；\n(10)（对）。"
+    },
+    {
+      "link_id": "qa_link_39a1d1751442",
+      "question_id": "question_bbc7876bc263",
+      "answer_id": "answer_ceece973c72b",
+      "question_no": "1",
+      "answer_no": "1",
+      "sub_question_no": "3",
+      "question_page": 23,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "(3) 1982 年 VAX 750 计算机硬件价格约为 125 000 美元，在那一年这个软件的成本在总成本中占多大比例？",
+      "answer_preview": "(1)（对）；\n(2)（错）；\n(3)（对）；\n(4)（错）；\n(5)（错）；\n(6)（错）；\n(7)（对）；\n(8)（对）；\n(9)（错）；\n(10)（对）。"
+    },
+    {
+      "link_id": "qa_link_c0ac68783d39",
+      "question_id": "question_3bd8f79af201",
+      "answer_id": "answer_ceece973c72b",
+      "question_no": "1",
+      "answer_no": "1",
+      "sub_question_no": "4",
+      "question_page": 23,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "(4)20年后，一台性能远远优于VAX750的微型计算机的价格约为2000美元，这时软件开发生产率已提高到平均每人每天可以开发出40条指令，而程序员的月平均工资也已涨到8000美元。如果在2002年开发上述FORTRAN应用程序，则该软件的成本在总成本中占多大比例？",
+      "answer_preview": "(1)（对）；\n(2)（错）；\n(3)（对）；\n(4)（错）；\n(5)（错）；\n(6)（错）；\n(7)（对）；\n(8)（对）；\n(9)（错）；\n(10)（对）。"
+    },
+    {
+      "link_id": "qa_link_51d34e73c773",
+      "question_id": "question_5a83609e9a96",
+      "answer_id": "answer_de0c5d81b910",
+      "question_no": "2",
+      "answer_no": "2",
+      "sub_question_no": "",
+      "question_page": 23,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "2. 根据历史数据可以作出如下的假设。",
+      "answer_preview": "A：购票请求；\nB：接受；\nC: <u>拒绝</u>；\nD: 车次表；\nE: <u>售票记录；</u>\nF:<u>{乘车日期+到站+车次}</u>；\nG:<u>\"2004\"..\"2014\"+\"/\"+\"01\"..\"12\"+\"/\"+\"01\"..\"31\";</u>\nH:\"001\"..\"100\"。"
+    },
+    {
+      "link_id": "qa_link_e11fbcd09152",
+      "question_id": "question_9171f06c71b8",
+      "answer_id": "answer_de0c5d81b910",
+      "question_no": "2",
+      "answer_no": "2",
+      "sub_question_no": "",
+      "question_page": 23,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "基于上述假设可以比较计算机硬件和软件成本的变化趋势。",
+      "answer_preview": "A：购票请求；\nB：接受；\nC: <u>拒绝</u>；\nD: 车次表；\nE: <u>售票记录；</u>\nF:<u>{乘车日期+到站+车次}</u>；\nG:<u>\"2004\"..\"2014\"+\"/\"+\"01\"..\"12\"+\"/\"+\"01\"..\"31\";</u>\nH:\"001\"..\"100\"。"
+    },
+    {
+      "link_id": "qa_link_ebfa21e388d8",
+      "question_id": "question_3cc6abcacf98",
+      "answer_id": "answer_de0c5d81b910",
+      "question_no": "2",
+      "answer_no": "2",
+      "sub_question_no": "1",
+      "question_page": 23,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "(1) 在 1985 年对计算机存储容量的需求估计是多少？如果字长为 16 位，这个存储器的价格是多少？",
+      "answer_preview": "A：购票请求；\nB：接受；\nC: <u>拒绝</u>；\nD: 车次表；\nE: <u>售票记录；</u>\nF:<u>{乘车日期+到站+车次}</u>；\nG:<u>\"2004\"..\"2014\"+\"/\"+\"01\"..\"12\"+\"/\"+\"01\"..\"31\";</u>\nH:\"001\"..\"100\"。"
+    },
+    {
+      "link_id": "qa_link_0d0f9ecd776a",
+      "question_id": "question_06adcd32831a",
+      "answer_id": "answer_24d499b7327a",
+      "question_no": "3",
+      "answer_no": "3",
+      "sub_question_no": "",
+      "question_page": 24,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "3. 美国某科幻电影中有一个描写计算机软件错误的故事，很富于戏剧性。故事情节如下：",
+      "answer_preview": "简化的文本编辑程序的用例图见图 B.5。"
+    },
+    {
+      "link_id": "qa_link_53d8799ba7dd",
+      "question_id": "question_a9b42db66ced",
+      "answer_id": "answer_24d499b7327a",
+      "question_no": "3",
+      "answer_no": "3",
+      "sub_question_no": "",
+      "question_page": 24,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "鲍曼用手指敲着控制台说：“HAL，是不是有什么东西干扰了你，以致出了这个差错？”",
+      "answer_preview": "简化的文本编辑程序的用例图见图 B.5。"
+    },
+    {
+      "link_id": "qa_link_ce9713923295",
+      "question_id": "question_8252a145ac4c",
+      "answer_id": "answer_24d499b7327a",
+      "question_no": "3",
+      "answer_no": "3",
+      "sub_question_no": "",
+      "question_page": 24,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "“喂，我是飞行指挥中心，我们已经彻底分析了你所遇到的麻烦，我们的两台计算机得出了完全一致的结论。问题出在故障预报系统中，我们确信是程序设计有错误。你必须断开你的计算机并改为地面控制模式，我们才能改正这个错误。”",
+      "answer_preview": "简化的文本编辑程序的用例图见图 B.5。"
+    },
+    {
+      "link_id": "qa_link_59de33f873c4",
+      "question_id": "question_630b2d6e56c7",
+      "answer_id": "answer_24d499b7327a",
+      "question_no": "3",
+      "answer_no": "3",
+      "sub_question_no": "1",
+      "question_page": 24,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "(1) 为什么鲍曼拆下存储器就能摆脱计算机的干扰而独自控制宇宙飞船？我们现在遇到的软件问题有这么严重吗？",
+      "answer_preview": "简化的文本编辑程序的用例图见图 B.5。"
+    },
+    {
+      "link_id": "qa_link_619d2c039e71",
+      "question_id": "question_03656e72eb66",
+      "answer_id": "answer_24d499b7327a",
+      "question_no": "3",
+      "answer_no": "3",
+      "sub_question_no": "2",
+      "question_page": 24,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "(2) 如果不依靠飞行指挥中心，鲍曼怎样才能知道 HAL 的故障预报有问题？",
+      "answer_preview": "简化的文本编辑程序的用例图见图 B.5。"
+    },
+    {
+      "link_id": "qa_link_9b9119f7fcaa",
+      "question_id": "question_5df0b62b38c2",
+      "answer_id": "answer_401846d61efc",
+      "question_no": "4",
+      "answer_no": "4",
+      "sub_question_no": "",
+      "question_page": 24,
+      "answer_pages": [
+        238,
+        239
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "4. 什么是软件过程？它与软件工程方法学有何关系？",
+      "answer_preview": "(1) 图A.5所示程序的循环控制结构有两个出口，因此是非结构化的程序。\n(2) 利用附加变量flag设计的等价的结构化程序如图B.6所示。\n(3) 不用附加变量 flag 设计的等价的结构程序如图 B.7 所示。\n附 录\n图 B.5 简化的文本编辑程序的用例图\n图 B.6 与图 A.5 等价的结构化程序（用 flag）\n图 B.7 与图 A.5 等价的结构化程序（不用 flag）"
+    },
+    {
+      "link_id": "qa_link_ba960a2bc97d",
+      "question_id": "question_206109f5ec90",
+      "answer_id": "answer_30d966bbc458",
+      "question_no": "5",
+      "answer_no": "5",
+      "sub_question_no": "",
+      "question_page": 24,
+      "answer_pages": [
+        239,
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "5. 为什么说分阶段的生命周期模型有助于软件项目管理？",
+      "answer_preview": "图形用户界面的状态转换图如图B.8所示。\n图 B.8 图形用户界面的状态转换图\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "link_id": "qa_link_9e4995ebda51",
+      "question_id": "question_e226027311a8",
+      "answer_id": "answer_36e5f4a5793b",
+      "question_no": "6",
+      "answer_no": "6",
+      "sub_question_no": "",
+      "question_page": 24,
+      "answer_pages": [
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "6. 什么是里程碑？它应该有哪些特征？",
+      "answer_preview": "判断浮点二进制数的有穷状态机如图B.9所示。\n图 B.9 判断浮点二进制数的有穷状态机"
+    },
+    {
+      "link_id": "qa_link_f9ffa2d9a513",
+      "question_id": "question_1d33ea09fea3",
+      "answer_id": "answer_a01f4e4e94ff",
+      "question_no": "7",
+      "answer_no": "7",
+      "sub_question_no": "",
+      "question_page": 24,
+      "answer_pages": [
+        237,
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "7.假设要求你开发一个软件，该软件的功能是把读入的浮点数开平方，所得到的结果应该精确到小数点后 4 位。一旦实现并测试完之后，该产品将被抛弃。你打算选用哪种软件生命周期模型？请说明你作出选择的理由。",
+      "answer_preview": "杂货店问题的对象模型如图 B.4 所示。\n软件工程导论（第 6 版）学习辅导\n图 B.4 杂货店问题的对象模型"
+    },
+    {
+      "link_id": "qa_link_9937f5a6cd17",
+      "question_id": "question_a31ee0b5bb5e",
+      "answer_id": "answer_4e933249237a",
+      "question_no": "8",
+      "answer_no": "8",
+      "sub_question_no": "",
+      "question_page": 24,
+      "answer_pages": [
+        224
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "8. 假设你被任命为一家软件公司的项目负责人，你的工作是管理该公司已被广泛应用的字处理软件的新版本开发。由于市场竞争激烈，公司规定了严格的完成期限并且已对外公布。你打算采用哪种软件生命周期模型？为什么？",
+      "answer_preview": "从图 10.2 可以看出，事件 2、5、4、7、10、9 和 12 的最早时刻和最迟时刻相同，这些事件定义了关键路径。在图 10.2 中用粗线箭头代表关键路径。\n组成关键路径的子任务 b、c、f 和 h 是关键任务。"
+    },
+    {
+      "link_id": "qa_link_4eaa376800d4",
+      "question_id": "question_c51ee76a0738",
+      "answer_id": "answer_d233c82633da",
+      "question_no": "9",
+      "answer_no": "9",
+      "sub_question_no": "",
+      "question_page": 24,
+      "answer_pages": [
+        224
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "9. 螺旋模型与 Rational 统一过程有哪些相似之处？有何差异？",
+      "answer_preview": "由于待开发的应用系统类似于以前做过的系统，开发人员已经积累了较丰富的经验，没有多少技术难题需要攻克。为了减少通信开销，充分发挥技术骨干的作用，统一意志统一行动，提高生产率，加快开发进度，项目组的组织结构以基于主程序员组的形式为宜。\n针对待开发的系统，客户已经写出了完整的需求文档，项目组又有开发类似系统的经验，因此，可以采用广大软件工程师熟悉的瀑布模型来开发本系统。"
+    },
+    {
+      "link_id": "qa_link_d342b9f0deeb",
+      "question_id": "question_759e0f977d37",
+      "answer_id": "answer_b37e2e881bdb",
+      "question_no": "10",
+      "answer_no": "10",
+      "sub_question_no": "",
+      "question_page": 24,
+      "answer_pages": [
+        224
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "10.说明敏捷过程的适用范围。",
+      "answer_preview": "所谓软件可靠性，是程序在给定的时间间隔内按照规格说明书的规定成功地运行的概率。通常认为，软件可靠性既包含正确性又包含健壮性，也就是说，不仅在预定环境下程序应该能正确地完成预期功能，而且在硬件发生故障、输入的数据无效或用户操作错误等意外环境下，程序也应该能作出适当的响应。\n如果一个程序在预定环境下能够正确地完成预期的功能，但是在意外环境下不能作出适当的响应，则该程序就是既正确又不可靠。"
+    },
+    {
+      "link_id": "qa_link_5e0636d5f1f7",
+      "question_id": "question_6a0007a42586",
+      "answer_id": "answer_bf3442600caf",
+      "question_no": "11",
+      "answer_no": "11",
+      "sub_question_no": "",
+      "question_page": 25,
+      "answer_pages": [
+        224,
+        225
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "11. 试比较 Rational 统一过程和敏捷过程。",
+      "answer_preview": "在开发软件的过程中，下述原因会导致软件配置项发生变化。\n* 新的市场条件导致产品需求或业务规则发生变化。 * 客户提出了新需求，要求修改信息系统产生的数据或产品提供的功能。 * 企业改组或业务缩减，引起项目优先级或软件工程队伍结构变化。 * 预算或进度限制，导致对目标系统的重新定义。\n第 10 章 软件项目管理\n· 发现了在软件开发过程的前期阶段所犯的错误，必须加以改正。\n但是，变化也很容易失去控制，如果不能适当地管理和控制变化，必然会"
+    },
+    {
+      "link_id": "qa_link_27a67246495e",
+      "question_id": "question_9902257e0ed5",
+      "answer_id": "answer_e6351996e9ab",
+      "question_no": "12",
+      "answer_no": "12",
+      "sub_question_no": "",
+      "question_page": 25,
+      "answer_pages": [
+        225
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "12. 试讨论微软过程与RUP及敏捷过程的关系。",
+      "answer_preview": "CMM的基本思想是，由于软件危机是因对软件过程管理不善而引起的，所以新软件技术的运用并不会自动提高软件的生产率和质量，提高软件生产率和软件质量的关键是改进对软件过程的管理。能力成熟度模型有助于软件开发机构建立一个有规律的、成熟的软件过程。\n对软件过程的改进不可能一蹴而就，只能是在完成一个又一个小的改进步骤基础上不断进行的渐进过程。因此，CMM 把软件过程从无序到有序的进化过程分成 5 个阶段，并把这些阶段排序，形成 5 个逐层提高的等级"
+    },
+    {
+      "link_id": "qa_link_7dfc8bcc864d",
+      "question_id": "question_3193793df21b",
+      "answer_id": "answer_ceece973c72b",
+      "question_no": "1",
+      "answer_no": "1",
+      "sub_question_no": "",
+      "question_page": 37,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "情景与描述了所有可能的动作序列的状态图之间有什么关系？",
+      "answer_preview": "(1)（对）；\n(2)（错）；\n(3)（对）；\n(4)（错）；\n(5)（错）；\n(6)（错）；\n(7)（对）；\n(8)（对）；\n(9)（错）；\n(10)（对）。"
+    },
+    {
+      "link_id": "qa_link_5a6b926f39f9",
+      "question_id": "question_ecbe4c2adeb3",
+      "answer_id": "answer_de0c5d81b910",
+      "question_no": "2",
+      "answer_no": "2",
+      "sub_question_no": "",
+      "question_page": 37,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "2. 在程序流程图中的每个结点都必须有一条从开始结点到该结点本身的路径，以及一条从该结点到结束结点的路径。为什么数据流图没有关于结点之间可达性的类似规则？",
+      "answer_preview": "A：购票请求；\nB：接受；\nC: <u>拒绝</u>；\nD: 车次表；\nE: <u>售票记录；</u>\nF:<u>{乘车日期+到站+车次}</u>；\nG:<u>\"2004\"..\"2014\"+\"/\"+\"01\"..\"12\"+\"/\"+\"01\"..\"31\";</u>\nH:\"001\"..\"100\"。"
+    },
+    {
+      "link_id": "qa_link_1487cc85197b",
+      "question_id": "question_103f74d4261b",
+      "answer_id": "answer_24d499b7327a",
+      "question_no": "3",
+      "answer_no": "3",
+      "sub_question_no": "",
+      "question_page": 37,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "3. 请为某仓库的管理设计一个 ER 模型。该仓库主要管理零件的订购和供应等事项。仓库向工程项目供应零件，并且根据需要向供应商订购零件。",
+      "answer_preview": "简化的文本编辑程序的用例图见图 B.5。"
+    },
+    {
+      "link_id": "qa_link_e494fa6fe2cf",
+      "question_id": "question_a2b42a3b9b3c",
+      "answer_id": "answer_401846d61efc",
+      "question_no": "4",
+      "answer_no": "4",
+      "sub_question_no": "",
+      "question_page": 37,
+      "answer_pages": [
+        238,
+        239
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "4.银行计算机储蓄系统的工作过程大致如下：储户填写的存款单或取款单由业务员键入系统，如果是存款则系统记录存款人姓名、住址（或电话号码）、身份证号码、存款类型、存款日期、到期日期、利率及密码（可选）等信息，并打印出存款存单给储户；如果是取款而且存款时留有密码，则系统首先核对储户密码，若密码正确或存款时未留密码，则系统计算利息并打印出利息清单给储户。",
+      "answer_preview": "(1) 图A.5所示程序的循环控制结构有两个出口，因此是非结构化的程序。\n(2) 利用附加变量flag设计的等价的结构化程序如图B.6所示。\n(3) 不用附加变量 flag 设计的等价的结构程序如图 B.7 所示。\n附 录\n图 B.5 简化的文本编辑程序的用例图\n图 B.6 与图 A.5 等价的结构化程序（用 flag）\n图 B.7 与图 A.5 等价的结构化程序（不用 flag）"
+    },
+    {
+      "link_id": "qa_link_c0b946cfc883",
+      "question_id": "question_8f60961fcbb8",
+      "answer_id": "answer_30d966bbc458",
+      "question_no": "5",
+      "answer_no": "5",
+      "sub_question_no": "",
+      "question_page": 37,
+      "answer_pages": [
+        239,
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "5. 目前住院病人主要由护士护理，这样做不仅需要大量护士，而且由于不能随时观察危重病人的病情变化，还会延误抢救时机。某医院打算开发一个以计算机为中心的患",
+      "answer_preview": "图形用户界面的状态转换图如图B.8所示。\n图 B.8 图形用户界面的状态转换图\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "link_id": "qa_link_d1111e1d533b",
+      "question_id": "question_357190f0403b",
+      "answer_id": "answer_36e5f4a5793b",
+      "question_no": "6",
+      "answer_no": "6",
+      "sub_question_no": "",
+      "question_page": 38,
+      "answer_pages": [
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "6.考虑一个修改磁带上主文件的系统。文件管理员把修改信息穿孔在卡片上，系统读入穿孔卡片上的信息并按照记录号把修改信息顺序排列好。然后系统逐个读入主文件上的记录，根据记录上的校验码校核每个读人的记录，丢掉出错的记录，按照修改信息修改余下的记录，产生的新文件存储在磁盘上。最后，系统输出一份修改报告供文件管理员参阅。",
+      "answer_preview": "判断浮点二进制数的有穷状态机如图B.9所示。\n图 B.9 判断浮点二进制数的有穷状态机"
+    },
+    {
+      "link_id": "qa_link_6028f51b3861",
+      "question_id": "question_1cd83f99cbf5",
+      "answer_id": "answer_a01f4e4e94ff",
+      "question_no": "7",
+      "answer_no": "7",
+      "sub_question_no": "",
+      "question_page": 38,
+      "answer_pages": [
+        237,
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "7. 某高校可用的电话号码有以下几类：校内电话号码由 4 位数字组成，第 1 位数字不是 0；校外电话又分为本市电话和外地电话两类，拨校外电话需先拨 0，如果是本地电话再接着拨 8 位电话号码（第 1 位不是 0），如果是外地电话则先拨 3 位区码，再拨 8 位电话号码（第 1 位不是 0）。",
+      "answer_preview": "杂货店问题的对象模型如图 B.4 所示。\n软件工程导论（第 6 版）学习辅导\n图 B.4 杂货店问题的对象模型"
+    },
+    {
+      "link_id": "qa_link_8cd0fbcb1f6c",
+      "question_id": "question_6c2ed2a93585",
+      "answer_id": "answer_4e933249237a",
+      "question_no": "8",
+      "answer_no": "8",
+      "sub_question_no": "",
+      "question_page": 38,
+      "answer_pages": [
+        224
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "8. 办公室复印机的工作过程大致如下：未接收到复印命令时处于闲置状态，一旦接收到复印命令则进入复印状态，完成一个复印命令规定的工作后又回到闲置状态，等待下一个复印命令；如果执行复印命令时发现缺纸，则进入缺纸状态，发出警告，等待装纸，装满纸后进入闲置状态，准备接收复印命令；如果复印时发生卡纸故障，则进入卡纸状态，发出警告等待维修人员来排除故障，故障排除后回到闲",
+      "answer_preview": "从图 10.2 可以看出，事件 2、5、4、7、10、9 和 12 的最早时刻和最迟时刻相同，这些事件定义了关键路径。在图 10.2 中用粗线箭头代表关键路径。\n组成关键路径的子任务 b、c、f 和 h 是关键任务。"
+    },
+    {
+      "link_id": "qa_link_e10c81742716",
+      "question_id": "question_fd1d01099c45",
+      "answer_id": "answer_d233c82633da",
+      "question_no": "9",
+      "answer_no": "9",
+      "sub_question_no": "",
+      "question_page": 38,
+      "answer_pages": [
+        224
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "9.二维整数表是由整数对构成的数组，可以认为表中左列的整数被映射成右列的整数，因此，可以把二维整数表看做是把整数映射成整数的函数。该函数的定义域是表中左列整数的集合，例如，若表 $g=\\{(3,5),(7,6),(8,2)\\}$ ，则 *g* 的定义域 $dom(g)=\\{3,7,8\\}$ 。",
+      "answer_preview": "由于待开发的应用系统类似于以前做过的系统，开发人员已经积累了较丰富的经验，没有多少技术难题需要攻克。为了减少通信开销，充分发挥技术骨干的作用，统一意志统一行动，提高生产率，加快开发进度，项目组的组织结构以基于主程序员组的形式为宜。\n针对待开发的系统，客户已经写出了完整的需求文档，项目组又有开发类似系统的经验，因此，可以采用广大软件工程师熟悉的瀑布模型来开发本系统。"
+    },
+    {
+      "link_id": "qa_link_bac2a64b9d64",
+      "question_id": "question_8f5ed54ef1af",
+      "answer_id": "answer_d233c82633da",
+      "question_no": "9",
+      "answer_no": "9",
+      "sub_question_no": "",
+      "question_page": 38,
+      "answer_pages": [
+        224
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "试用 Z 语言写出查表操作的规格说明。",
+      "answer_preview": "由于待开发的应用系统类似于以前做过的系统，开发人员已经积累了较丰富的经验，没有多少技术难题需要攻克。为了减少通信开销，充分发挥技术骨干的作用，统一意志统一行动，提高生产率，加快开发进度，项目组的组织结构以基于主程序员组的形式为宜。\n针对待开发的系统，客户已经写出了完整的需求文档，项目组又有开发类似系统的经验，因此，可以采用广大软件工程师熟悉的瀑布模型来开发本系统。"
+    },
+    {
+      "link_id": "qa_link_aba38757d31d",
+      "question_id": "question_a4d826669322",
+      "answer_id": "answer_b37e2e881bdb",
+      "question_no": "10",
+      "answer_no": "10",
+      "sub_question_no": "",
+      "question_page": 38,
+      "answer_pages": [
+        224
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "10.一个浮点二进制数的构成是：一个可选的符号（+或-），后跟一个或多个二进制位，再跟上一个字符 E,再加上另一个可选符号（+或-）及一个或多个二进制位。例如，下列的字符串都是浮点二进制数：",
+      "answer_preview": "所谓软件可靠性，是程序在给定的时间间隔内按照规格说明书的规定成功地运行的概率。通常认为，软件可靠性既包含正确性又包含健壮性，也就是说，不仅在预定环境下程序应该能正确地完成预期功能，而且在硬件发生故障、输入的数据无效或用户操作错误等意外环境下，程序也应该能作出适当的响应。\n如果一个程序在预定环境下能够正确地完成预期的功能，但是在意外环境下不能作出适当的响应，则该程序就是既正确又不可靠。"
+    },
+    {
+      "link_id": "qa_link_510b5723c436",
+      "question_id": "question_082fc0b7b263",
+      "answer_id": "answer_b37e2e881bdb",
+      "question_no": "10",
+      "answer_no": "10",
+      "sub_question_no": "",
+      "question_page": 39,
+      "answer_pages": [
+        224
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "假设有这样一个有穷状态机：以一串字符为输入，判断字符串是否为合法的浮点二进制数。试对这个有穷状态机进行规格说明。",
+      "answer_preview": "所谓软件可靠性，是程序在给定的时间间隔内按照规格说明书的规定成功地运行的概率。通常认为，软件可靠性既包含正确性又包含健壮性，也就是说，不仅在预定环境下程序应该能正确地完成预期功能，而且在硬件发生故障、输入的数据无效或用户操作错误等意外环境下，程序也应该能作出适当的响应。\n如果一个程序在预定环境下能够正确地完成预期的功能，但是在意外环境下不能作出适当的响应，则该程序就是既正确又不可靠。"
+    },
+    {
+      "link_id": "qa_link_c614f419a8b1",
+      "question_id": "question_b6577ec290e0",
+      "answer_id": "answer_bf3442600caf",
+      "question_no": "11",
+      "answer_no": "11",
+      "sub_question_no": "",
+      "question_page": 39,
+      "answer_pages": [
+        224,
+        225
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "11.假设你在一所职业高中工作，负责该校信息系统的建设与维护。财务科长请你研究用学校拥有的计算机生成工资明细表和各种财务报表的可能性。",
+      "answer_preview": "在开发软件的过程中，下述原因会导致软件配置项发生变化。\n* 新的市场条件导致产品需求或业务规则发生变化。 * 客户提出了新需求，要求修改信息系统产生的数据或产品提供的功能。 * 企业改组或业务缩减，引起项目优先级或软件工程队伍结构变化。 * 预算或进度限制，导致对目标系统的重新定义。\n第 10 章 软件项目管理\n· 发现了在软件开发过程的前期阶段所犯的错误，必须加以改正。\n但是，变化也很容易失去控制，如果不能适当地管理和控制变化，必然会"
+    },
+    {
+      "link_id": "qa_link_aff02abd02c7",
+      "question_id": "question_b12e5fca5951",
+      "answer_id": "answer_bf3442600caf",
+      "question_no": "11",
+      "answer_no": "11",
+      "sub_question_no": "",
+      "question_page": 39,
+      "answer_pages": [
+        224,
+        225
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "请详细描述你用结构化分析方法分析上述问题的过程。",
+      "answer_preview": "在开发软件的过程中，下述原因会导致软件配置项发生变化。\n* 新的市场条件导致产品需求或业务规则发生变化。 * 客户提出了新需求，要求修改信息系统产生的数据或产品提供的功能。 * 企业改组或业务缩减，引起项目优先级或软件工程队伍结构变化。 * 预算或进度限制，导致对目标系统的重新定义。\n第 10 章 软件项目管理\n· 发现了在软件开发过程的前期阶段所犯的错误，必须加以改正。\n但是，变化也很容易失去控制，如果不能适当地管理和控制变化，必然会"
+    },
+    {
+      "link_id": "qa_link_051645f4e795",
+      "question_id": "question_57ed870e37a7",
+      "answer_id": "answer_bf3442600caf",
+      "question_no": "11",
+      "answer_no": "11",
+      "sub_question_no": "",
+      "question_page": 59,
+      "answer_pages": [
+        224,
+        225
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "为什么模块的独立性很重要呢？",
+      "answer_preview": "在开发软件的过程中，下述原因会导致软件配置项发生变化。\n* 新的市场条件导致产品需求或业务规则发生变化。 * 客户提出了新需求，要求修改信息系统产生的数据或产品提供的功能。 * 企业改组或业务缩减，引起项目优先级或软件工程队伍结构变化。 * 预算或进度限制，导致对目标系统的重新定义。\n第 10 章 软件项目管理\n· 发现了在软件开发过程的前期阶段所犯的错误，必须加以改正。\n但是，变化也很容易失去控制，如果不能适当地管理和控制变化，必然会"
+    },
+    {
+      "link_id": "qa_link_a47e75968b2d",
+      "question_id": "question_e0503902d12e",
+      "answer_id": "answer_ceece973c72b",
+      "question_no": "1",
+      "answer_no": "1",
+      "sub_question_no": "",
+      "question_page": 71,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "1. 用逐步求精方法解决下述更新顺序主文件的问题。",
+      "answer_preview": "(1)（对）；\n(2)（错）；\n(3)（对）；\n(4)（错）；\n(5)（错）；\n(6)（错）；\n(7)（对）；\n(8)（对）；\n(9)（错）；\n(10)（对）。"
+    },
+    {
+      "link_id": "qa_link_b885622196fb",
+      "question_id": "question_7b4be318ee86",
+      "answer_id": "answer_ceece973c72b",
+      "question_no": "1",
+      "answer_no": "1",
+      "sub_question_no": "",
+      "question_page": 71,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "1、2 和 3。也就是说，事务类型如下：",
+      "answer_preview": "(1)（对）；\n(2)（错）；\n(3)（对）；\n(4)（错）；\n(5)（错）；\n(6)（错）；\n(7)（对）；\n(8)（对）；\n(9)（错）；\n(10)（对）。"
+    },
+    {
+      "link_id": "qa_link_4070d2bd2f50",
+      "question_id": "question_9dab27c60205",
+      "answer_id": "answer_de0c5d81b910",
+      "question_no": "2",
+      "answer_no": "2",
+      "sub_question_no": "",
+      "question_page": 71,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "2. 分析图3.1所示的层次图，确定每个模块的内聚类型。",
+      "answer_preview": "A：购票请求；\nB：接受；\nC: <u>拒绝</u>；\nD: 车次表；\nE: <u>售票记录；</u>\nF:<u>{乘车日期+到站+车次}</u>；\nG:<u>\"2004\"..\"2014\"+\"/\"+\"01\"..\"12\"+\"/\"+\"01\"..\"31\";</u>\nH:\"001\"..\"100\"。"
+    },
+    {
+      "link_id": "qa_link_ea84ca516954",
+      "question_id": "question_1550f9a186ff",
+      "answer_id": "answer_24d499b7327a",
+      "question_no": "3",
+      "answer_no": "3",
+      "sub_question_no": "",
+      "question_page": 71,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "3. 分析图 3.2，确定模块之间的耦合类型。",
+      "answer_preview": "简化的文本编辑程序的用例图见图 B.5。"
+    },
+    {
+      "link_id": "qa_link_6efd207de42f",
+      "question_id": "question_6ae3a02fff96",
+      "answer_id": "answer_401846d61efc",
+      "question_no": "4",
+      "answer_no": "4",
+      "sub_question_no": "",
+      "question_page": 72,
+      "answer_pages": [
+        238,
+        239
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "4. 用面向数据流方法设计本书第 2 章第 11 题所述的工资支付系统的软件结构。",
+      "answer_preview": "(1) 图A.5所示程序的循环控制结构有两个出口，因此是非结构化的程序。\n(2) 利用附加变量flag设计的等价的结构化程序如图B.6所示。\n(3) 不用附加变量 flag 设计的等价的结构程序如图 B.7 所示。\n附 录\n图 B.5 简化的文本编辑程序的用例图\n图 B.6 与图 A.5 等价的结构化程序（用 flag）\n图 B.7 与图 A.5 等价的结构化程序（不用 flag）"
+    },
+    {
+      "link_id": "qa_link_a8bf2c591eaf",
+      "question_id": "question_60123ea6f754",
+      "answer_id": "answer_30d966bbc458",
+      "question_no": "5",
+      "answer_no": "5",
+      "sub_question_no": "",
+      "question_page": 72,
+      "answer_pages": [
+        239,
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "5. 用3种方法计算图3.3所示流图的环形复杂度。",
+      "answer_preview": "图形用户界面的状态转换图如图B.8所示。\n图 B.8 图形用户界面的状态转换图\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "link_id": "qa_link_c4b39ca57331",
+      "question_id": "question_5e69129d931a",
+      "answer_id": "answer_36e5f4a5793b",
+      "question_no": "6",
+      "answer_no": "6",
+      "sub_question_no": "",
+      "question_page": 72,
+      "answer_pages": [
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "下面列出的代码用重复执行的加法来计算两个正整数 X 和 Y 的乘积，请用 Halstead 方法预测程序长度，并把预测出的长度与实际长度相比较。",
+      "answer_preview": "判断浮点二进制数的有穷状态机如图B.9所示。\n图 B.9 判断浮点二进制数的有穷状态机"
+    },
+    {
+      "link_id": "qa_link_a3f6f886652c",
+      "question_id": "question_3d7586b50845",
+      "answer_id": "answer_4e933249237a",
+      "question_no": "8",
+      "answer_no": "8",
+      "sub_question_no": "",
+      "question_page": 72,
+      "answer_pages": [
+        224
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "8. 某交易所规定给经纪人的手续费计算方法如下：总手续费等于基本手续费加上与交易中的每股价格和股数有关的附加手续费。如果交易总金额少于 1000 元，则基本手续费为交易金额的",
+      "answer_preview": "从图 10.2 可以看出，事件 2、5、4、7、10、9 和 12 的最早时刻和最迟时刻相同，这些事件定义了关键路径。在图 10.2 中用粗线箭头代表关键路径。\n组成关键路径的子任务 b、c、f 和 h 是关键任务。"
+    },
+    {
+      "link_id": "qa_link_5373cd2fb466",
+      "question_id": "question_6f2909a169f8",
+      "answer_id": "answer_4e933249237a",
+      "question_no": "8",
+      "answer_no": "8",
+      "sub_question_no": "",
+      "question_page": 72,
+      "answer_pages": [
+        224
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "8.4%;如果交易总金额在 $1000\\sim10000$ 元之间，则基本手续费为交易金额的 5%，再加 34 元；如果交易总金额超过 10 000 元，则基本手续费为交易金额的 4% 加上 134 元。当每股售价低于 14 元时，附加手续费为基本手续费的 5%，除非买进、卖出的股数不是 100 的倍数，在这种情况下附加手续费为基本手续费的 9%。当每股售价",
+      "answer_preview": "从图 10.2 可以看出，事件 2、5、4、7、10、9 和 12 的最早时刻和最迟时刻相同，这些事件定义了关键路径。在图 10.2 中用粗线箭头代表关键路径。\n组成关键路径的子任务 b、c、f 和 h 是关键任务。"
+    },
+    {
+      "link_id": "qa_link_0aeab4ebf665",
+      "question_id": "question_673e7f882846",
+      "answer_id": "answer_d233c82633da",
+      "question_no": "9",
+      "answer_no": "9",
+      "sub_question_no": "",
+      "question_page": 73,
+      "answer_pages": [
+        224
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "9. 画出下列伪码程序的程序流程图和盒图。",
+      "answer_preview": "由于待开发的应用系统类似于以前做过的系统，开发人员已经积累了较丰富的经验，没有多少技术难题需要攻克。为了减少通信开销，充分发挥技术骨干的作用，统一意志统一行动，提高生产率，加快开发进度，项目组的组织结构以基于主程序员组的形式为宜。\n针对待开发的系统，客户已经写出了完整的需求文档，项目组又有开发类似系统的经验，因此，可以采用广大软件工程师熟悉的瀑布模型来开发本系统。"
+    },
+    {
+      "link_id": "qa_link_3dcef438d1b0",
+      "question_id": "question_639790cba74d",
+      "answer_id": "answer_24d499b7327a",
+      "question_no": "3",
+      "answer_no": "3",
+      "sub_question_no": "",
+      "question_page": 73,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "3.5 给出的程序流程图代表一个非结构化的程序，请问：",
+      "answer_preview": "简化的文本编辑程序的用例图见图 B.5。"
+    },
+    {
+      "link_id": "qa_link_db90442a5a66",
+      "question_id": "question_57cf2bb8784e",
+      "answer_id": "answer_24d499b7327a",
+      "question_no": "3",
+      "answer_no": "3",
+      "sub_question_no": "3",
+      "question_page": 73,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "(3) 在(2)题的设计中你使用附加的标志变量 flag 了吗？若没用，请再设计一个使用 flag 的程序；若用了，请再设计一个不用 flag 的程序。",
+      "answer_preview": "简化的文本编辑程序的用例图见图 B.5。"
+    },
+    {
+      "link_id": "qa_link_171f4f339234",
+      "question_id": "question_d44637e6992a",
+      "answer_id": "answer_bf3442600caf",
+      "question_no": "11",
+      "answer_no": "11",
+      "sub_question_no": "",
+      "question_page": 74,
+      "answer_pages": [
+        224,
+        225
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "11. 研究下面给出的伪码程序，要求：",
+      "answer_preview": "在开发软件的过程中，下述原因会导致软件配置项发生变化。\n* 新的市场条件导致产品需求或业务规则发生变化。 * 客户提出了新需求，要求修改信息系统产生的数据或产品提供的功能。 * 企业改组或业务缩减，引起项目优先级或软件工程队伍结构变化。 * 预算或进度限制，导致对目标系统的重新定义。\n第 10 章 软件项目管理\n· 发现了在软件开发过程的前期阶段所犯的错误，必须加以改正。\n但是，变化也很容易失去控制，如果不能适当地管理和控制变化，必然会"
+    },
+    {
+      "link_id": "qa_link_9eed162a9610",
+      "question_id": "question_5263443bb064",
+      "answer_id": "answer_bf3442600caf",
+      "question_no": "11",
+      "answer_no": "11",
+      "sub_question_no": "2",
+      "question_page": 74,
+      "answer_pages": [
+        224,
+        225
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "(2) 它是结构化的还是非结构化的？说明你的理由。",
+      "answer_preview": "在开发软件的过程中，下述原因会导致软件配置项发生变化。\n* 新的市场条件导致产品需求或业务规则发生变化。 * 客户提出了新需求，要求修改信息系统产生的数据或产品提供的功能。 * 企业改组或业务缩减，引起项目优先级或软件工程队伍结构变化。 * 预算或进度限制，导致对目标系统的重新定义。\n第 10 章 软件项目管理\n· 发现了在软件开发过程的前期阶段所犯的错误，必须加以改正。\n但是，变化也很容易失去控制，如果不能适当地管理和控制变化，必然会"
+    },
+    {
+      "link_id": "qa_link_b4777047e1e6",
+      "question_id": "question_3de5a1ffe740",
+      "answer_id": "answer_da7ce2a3b150",
+      "question_no": "14",
+      "answer_no": "14",
+      "sub_question_no": "",
+      "question_page": 74,
+      "answer_pages": [
+        92
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "14. 用 Ashcroft\\_Manna 技术可以将非结构化的程序转换为结构化程序，图 3.7 是一个转换的例子。",
+      "answer_preview": "(1)从这个例子中看出，Ashcroft-Manna 技术的基本方法是，当待改造的程序含有嵌套的非结构化的 IF 语句时，改造后的程序中增加 DO-CASE 语句和 DO-UNTIL 语句，并增加一个辅助变量 I,I 的初始值为 1。最外层的 IF 语句在 $\\mathrm{I}=1$ 时执行，执行完这个 IF 语句后把 I 赋值为随后应该执行的内层 IF 语句所对应的 CASE 标号值。DO-CASE 语句的最大分支数（可执行的最大标"
+    },
+    {
+      "link_id": "qa_link_e5f019308be6",
+      "question_id": "question_60468b7efb75",
+      "answer_id": "answer_da7ce2a3b150",
+      "question_no": "14",
+      "answer_no": "14",
+      "sub_question_no": "1",
+      "question_page": 74,
+      "answer_pages": [
+        92
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "(1) 你能否从这个例子总结出 Ashcroft\\_Manna 技术的一些基本方法？",
+      "answer_preview": "(1)从这个例子中看出，Ashcroft-Manna 技术的基本方法是，当待改造的程序含有嵌套的非结构化的 IF 语句时，改造后的程序中增加 DO-CASE 语句和 DO-UNTIL 语句，并增加一个辅助变量 I,I 的初始值为 1。最外层的 IF 语句在 $\\mathrm{I}=1$ 时执行，执行完这个 IF 语句后把 I 赋值为随后应该执行的内层 IF 语句所对应的 CASE 标号值。DO-CASE 语句的最大分支数（可执行的最大标"
+    },
+    {
+      "link_id": "qa_link_934e87735058",
+      "question_id": "question_ecb517386940",
+      "answer_id": "answer_fa28e7b7051b",
+      "question_no": "15",
+      "answer_no": "15",
+      "sub_question_no": "",
+      "question_page": 75,
+      "answer_pages": [
+        92,
+        93
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "15. 用 Jackson 图描绘下述的一列火车的构成：",
+      "answer_preview": "Jackson 图善于描绘复杂事物的组成。用 Jackson 图描绘一列火车的构成的方法至少有两种，一种方法是把火车分为一个车头和两个车头两类，另一种方法是把后车头作为可选的。图 3.29 给出了描绘一列火车的构成的Jackson 图。\n第 3 章 结构化设计\n(b)解法2"
+    },
+    {
+      "link_id": "qa_link_8a44a504a395",
+      "question_id": "question_8dd34da884a8",
+      "answer_id": "answer_ceece973c72b",
+      "question_no": "1",
+      "answer_no": "1",
+      "sub_question_no": "",
+      "question_page": 108,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "1. 编程时使用的程序设计语言对软件的开发与维护有何影响？",
+      "answer_preview": "(1)（对）；\n(2)（错）；\n(3)（对）；\n(4)（错）；\n(5)（错）；\n(6)（错）；\n(7)（对）；\n(8)（对）；\n(9)（错）；\n(10)（对）。"
+    },
+    {
+      "link_id": "qa_link_a6301dacb0fe",
+      "question_id": "question_9446916e7e24",
+      "answer_id": "answer_de0c5d81b910",
+      "question_no": "2",
+      "answer_no": "2",
+      "sub_question_no": "",
+      "question_page": 108,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "2. 如果一个程序有两个输入数据，每个输入都是一个 32 位的二进制整数，那么这个程序有多少种可能的输入？如果每微秒可进行一次测试，那么对所有可能的输入进行测试需要多长时间？",
+      "answer_preview": "A：购票请求；\nB：接受；\nC: <u>拒绝</u>；\nD: 车次表；\nE: <u>售票记录；</u>\nF:<u>{乘车日期+到站+车次}</u>；\nG:<u>\"2004\"..\"2014\"+\"/\"+\"01\"..\"12\"+\"/\"+\"01\"..\"31\";</u>\nH:\"001\"..\"100\"。"
+    },
+    {
+      "link_id": "qa_link_03a97ba1e86d",
+      "question_id": "question_c91b201d82c5",
+      "answer_id": "answer_24d499b7327a",
+      "question_no": "3",
+      "answer_no": "3",
+      "sub_question_no": "",
+      "question_page": 108,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "3. 假设有一个由5000行FORTRAN语句构成的程序（经编译后大约有25 000条机器指令），估计在对它进行测试期间将发现多少个错误？为什么？",
+      "answer_preview": "简化的文本编辑程序的用例图见图 B.5。"
+    },
+    {
+      "link_id": "qa_link_47b7296dc8de",
+      "question_id": "question_61526834e713",
+      "answer_id": "answer_401846d61efc",
+      "question_no": "4",
+      "answer_no": "4",
+      "sub_question_no": "",
+      "question_page": 108,
+      "answer_pages": [
+        238,
+        239
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "4. 设计下列伪码程序的语句覆盖和路径覆盖测试用例：",
+      "answer_preview": "(1) 图A.5所示程序的循环控制结构有两个出口，因此是非结构化的程序。\n(2) 利用附加变量flag设计的等价的结构化程序如图B.6所示。\n(3) 不用附加变量 flag 设计的等价的结构程序如图 B.7 所示。\n附 录\n图 B.5 简化的文本编辑程序的用例图\n图 B.6 与图 A.5 等价的结构化程序（用 flag）\n图 B.7 与图 A.5 等价的结构化程序（不用 flag）"
+    },
+    {
+      "link_id": "qa_link_ef76cc86e50f",
+      "question_id": "question_b636ae399004",
+      "answer_id": "answer_401846d61efc",
+      "question_no": "4",
+      "answer_no": "4",
+      "sub_question_no": "",
+      "question_page": 108,
+      "answer_pages": [
+        238,
+        239
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "请保留原题含义并结构化。stem 只放题干，不要把选项、答案、解析混入题干；options 输出字符串数组，如 A. ...；answer 适合客观题的简短答案；reference_answer 可放简答题/论述题的参考答案；can_auto_grade 只有选择/判断/填空等可稳定判分时为 true。",
+      "answer_preview": "(1) 图A.5所示程序的循环控制结构有两个出口，因此是非结构化的程序。\n(2) 利用附加变量flag设计的等价的结构化程序如图B.6所示。\n(3) 不用附加变量 flag 设计的等价的结构程序如图 B.7 所示。\n附 录\n图 B.5 简化的文本编辑程序的用例图\n图 B.6 与图 A.5 等价的结构化程序（用 flag）\n图 B.7 与图 A.5 等价的结构化程序（不用 flag）"
+    },
+    {
+      "link_id": "qa_link_cdceeaf0d333",
+      "question_id": "question_0571a85ce7d4",
+      "answer_id": "answer_30d966bbc458",
+      "question_no": "5",
+      "answer_no": "5",
+      "sub_question_no": "",
+      "question_page": 108,
+      "answer_pages": [
+        239,
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "设计下列伪码程序的分支覆盖和条件组合覆盖测试用例：",
+      "answer_preview": "图形用户界面的状态转换图如图B.8所示。\n图 B.8 图形用户界面的状态转换图\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "link_id": "qa_link_cb66a605b5d0",
+      "question_id": "question_504b709b66ce",
+      "answer_id": "answer_30d966bbc458",
+      "question_no": "5",
+      "answer_no": "5",
+      "sub_question_no": "",
+      "question_page": 108,
+      "answer_pages": [
+        239,
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "请保留原题含义并结构化。stem 只放题干，不要把选项、答案、解析混入题干；options 输出字符串数组，如 A. ...；answer 适合客观题的简短答案；reference_answer 可放简答题/论述题的参考答案；can_auto_grade 只有选择/判断/填空等可稳定判分时为 true。",
+      "answer_preview": "图形用户界面的状态转换图如图B.8所示。\n图 B.8 图形用户界面的状态转换图\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "link_id": "qa_link_8075085f2682",
+      "question_id": "question_c0ff11eecb26",
+      "answer_id": "answer_30d966bbc458",
+      "question_no": "5",
+      "answer_no": "5",
+      "sub_question_no": "",
+      "question_page": 109,
+      "answer_pages": [
+        239,
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "阅读以下程序，该程序的功能是？",
+      "answer_preview": "图形用户界面的状态转换图如图B.8所示。\n图 B.8 图形用户界面的状态转换图\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "link_id": "qa_link_c3c74dd6c1b9",
+      "question_id": "question_16cc10605ca9",
+      "answer_id": "answer_36e5f4a5793b",
+      "question_no": "6",
+      "answer_no": "6",
+      "sub_question_no": "",
+      "question_page": 109,
+      "answer_pages": [
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "6.使用基本路径测试方法，设计测试下面列出的伪码程序的测试用例：",
+      "answer_preview": "判断浮点二进制数的有穷状态机如图B.9所示。\n图 B.9 判断浮点二进制数的有穷状态机"
+    },
+    {
+      "link_id": "qa_link_f3be314bfc0a",
+      "question_id": "question_97a0205c6ad7",
+      "answer_id": "answer_36e5f4a5793b",
+      "question_no": "6",
+      "answer_no": "6",
+      "sub_question_no": "",
+      "question_page": 109,
+      "answer_pages": [
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "设计测试下列函数的测试方案：\n```\n1: START\nINPUT(A,B,C,D)\n2: IF(A >0)\n3: AND(B >0)\n4: THEN X=A+B\n5: ELSE X=A-B\n6: END\n7: IF(C >A)\n8: OR(D <B)\n9: THEN Y=C-D\n10: ELSE Y=C+D\n11: END\n12: PRINT(X,Y)\nS",
+      "answer_preview": "判断浮点二进制数的有穷状态机如图B.9所示。\n图 B.9 判断浮点二进制数的有穷状态机"
+    },
+    {
+      "link_id": "qa_link_4458f99ce8be",
+      "question_id": "question_c438ecf0772c",
+      "answer_id": "answer_4e933249237a",
+      "question_no": "8",
+      "answer_no": "8",
+      "sub_question_no": "",
+      "question_page": 109,
+      "answer_pages": [
+        224
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "8.一个折半查找程序可搜索按字母顺序排列的名字列表，如果查找的名字在列表中则返回真，否则返回假。为了对它进行功能测试，应该使用哪些测试用例？",
+      "answer_preview": "从图 10.2 可以看出，事件 2、5、4、7、10、9 和 12 的最早时刻和最迟时刻相同，这些事件定义了关键路径。在图 10.2 中用粗线箭头代表关键路径。\n组成关键路径的子任务 b、c、f 和 h 是关键任务。"
+    },
+    {
+      "link_id": "qa_link_c4bd25ac227e",
+      "question_id": "question_86913e8bdb16",
+      "answer_id": "answer_d233c82633da",
+      "question_no": "9",
+      "answer_no": "9",
+      "sub_question_no": "",
+      "question_page": 109,
+      "answer_pages": [
+        224
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "9. 某图书馆有一个使用 CRT 终端的信息检索系统，该系统有下列四个基本检索命令，如表4.1所示。",
+      "answer_preview": "由于待开发的应用系统类似于以前做过的系统，开发人员已经积累了较丰富的经验，没有多少技术难题需要攻克。为了减少通信开销，充分发挥技术骨干的作用，统一意志统一行动，提高生产率，加快开发进度，项目组的组织结构以基于主程序员组的形式为宜。\n针对待开发的系统，客户已经写出了完整的需求文档，项目组又有开发类似系统的经验，因此，可以采用广大软件工程师熟悉的瀑布模型来开发本系统。"
+    },
+    {
+      "link_id": "qa_link_a2fb61044529",
+      "question_id": "question_853446575bf1",
+      "answer_id": "answer_b37e2e881bdb",
+      "question_no": "10",
+      "answer_no": "10",
+      "sub_question_no": "",
+      "question_page": 110,
+      "answer_pages": [
+        224
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "10. 航空公司 A 向软件公司 B 订购了一个规划飞行路线的程序。假设你是软件公司 C 的软件工程师。A 公司已雇用你所在的公司对上述程序进行验收测试。你的任务是，根据下述事实设计验收测试的输入数据。",
+      "answer_preview": "所谓软件可靠性，是程序在给定的时间间隔内按照规格说明书的规定成功地运行的概率。通常认为，软件可靠性既包含正确性又包含健壮性，也就是说，不仅在预定环境下程序应该能正确地完成预期功能，而且在硬件发生故障、输入的数据无效或用户操作错误等意外环境下，程序也应该能作出适当的响应。\n如果一个程序在预定环境下能够正确地完成预期的功能，但是在意外环境下不能作出适当的响应，则该程序就是既正确又不可靠。"
+    },
+    {
+      "link_id": "qa_link_c7abafc7a7b1",
+      "question_id": "question_47db3420893c",
+      "answer_id": "answer_bf3442600caf",
+      "question_no": "11",
+      "answer_no": "11",
+      "sub_question_no": "",
+      "question_page": 110,
+      "answer_pages": [
+        224,
+        225
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "11. 对一个包含 10 000 条机器指令的程序进行一个月集成测试后，总共改正了 15 个错误，此时 MTTF=10h;经过两个月测试后，总共改正了 25 个错误（第二个月改正了 10个错误），MTTF=15h。",
+      "answer_preview": "在开发软件的过程中，下述原因会导致软件配置项发生变化。\n* 新的市场条件导致产品需求或业务规则发生变化。 * 客户提出了新需求，要求修改信息系统产生的数据或产品提供的功能。 * 企业改组或业务缩减，引起项目优先级或软件工程队伍结构变化。 * 预算或进度限制，导致对目标系统的重新定义。\n第 10 章 软件项目管理\n· 发现了在软件开发过程的前期阶段所犯的错误，必须加以改正。\n但是，变化也很容易失去控制，如果不能适当地管理和控制变化，必然会"
+    },
+    {
+      "link_id": "qa_link_9b283ef619ab",
+      "question_id": "question_175c3088b4b6",
+      "answer_id": "answer_bf3442600caf",
+      "question_no": "11",
+      "answer_no": "11",
+      "sub_question_no": "1",
+      "question_page": 110,
+      "answer_pages": [
+        224,
+        225
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "(1)根据上述数据确定MTTF与测试时间之间的函数关系，画出MTTF与测试时间 $\\tau$ 的关系曲线。在画这条曲线时你做了什么假设？",
+      "answer_preview": "在开发软件的过程中，下述原因会导致软件配置项发生变化。\n* 新的市场条件导致产品需求或业务规则发生变化。 * 客户提出了新需求，要求修改信息系统产生的数据或产品提供的功能。 * 企业改组或业务缩减，引起项目优先级或软件工程队伍结构变化。 * 预算或进度限制，导致对目标系统的重新定义。\n第 10 章 软件项目管理\n· 发现了在软件开发过程的前期阶段所犯的错误，必须加以改正。\n但是，变化也很容易失去控制，如果不能适当地管理和控制变化，必然会"
+    },
+    {
+      "link_id": "qa_link_77b357608fbb",
+      "question_id": "question_3b14e0477bf2",
+      "answer_id": "answer_bf3442600caf",
+      "question_no": "11",
+      "answer_no": "11",
+      "sub_question_no": "2",
+      "question_page": 110,
+      "answer_pages": [
+        224,
+        225
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "(2) 为做到 MTTF=100h，必须进行多长时间的集成测试？当集成测试结束时总共改正了多少个错误？还有多少个错误潜伏在程序中？",
+      "answer_preview": "在开发软件的过程中，下述原因会导致软件配置项发生变化。\n* 新的市场条件导致产品需求或业务规则发生变化。 * 客户提出了新需求，要求修改信息系统产生的数据或产品提供的功能。 * 企业改组或业务缩减，引起项目优先级或软件工程队伍结构变化。 * 预算或进度限制，导致对目标系统的重新定义。\n第 10 章 软件项目管理\n· 发现了在软件开发过程的前期阶段所犯的错误，必须加以改正。\n但是，变化也很容易失去控制，如果不能适当地管理和控制变化，必然会"
+    },
+    {
+      "link_id": "qa_link_16e4ff2281f2",
+      "question_id": "question_22b7a21768ec",
+      "answer_id": "answer_e6351996e9ab",
+      "question_no": "12",
+      "answer_no": "12",
+      "sub_question_no": "",
+      "question_page": 110,
+      "answer_pages": [
+        225
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "12. 在测试一个长度为 48 000 条指令的程序时，第一个月由甲、乙两名测试员各自独立测试这个程序。经一个月测试后，甲发现并改正 20 个错误，使 MTTF 达到 8h。与此同时，乙发现 24 个错误，其中的 6 个错误甲也发现了。以后由甲一个人继续测试这个程序。问：",
+      "answer_preview": "CMM的基本思想是，由于软件危机是因对软件过程管理不善而引起的，所以新软件技术的运用并不会自动提高软件的生产率和质量，提高软件生产率和软件质量的关键是改进对软件过程的管理。能力成熟度模型有助于软件开发机构建立一个有规律的、成熟的软件过程。\n对软件过程的改进不可能一蹴而就，只能是在完成一个又一个小的改进步骤基础上不断进行的渐进过程。因此，CMM 把软件过程从无序到有序的进化过程分成 5 个阶段，并把这些阶段排序，形成 5 个逐层提高的等级"
+    },
+    {
+      "link_id": "qa_link_731bcf4b8481",
+      "question_id": "question_243562e7f865",
+      "answer_id": "answer_ceece973c72b",
+      "question_no": "1",
+      "answer_no": "1",
+      "sub_question_no": "",
+      "question_page": 128,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "1.某些软件工程师不同意“目前国外许多软件开发组织把60%以上的人力用于维护已有的软件”的说法，他们争论说：“我并没有花费我的60%的时间去改正我所开发的程序中的错误。”",
+      "answer_preview": "(1)（对）；\n(2)（错）；\n(3)（对）；\n(4)（错）；\n(5)（错）；\n(6)（错）；\n(7)（对）；\n(8)（对）；\n(9)（错）；\n(10)（对）。"
+    },
+    {
+      "link_id": "qa_link_5415af4a1088",
+      "question_id": "question_4212db8958b7",
+      "answer_id": "answer_ceece973c72b",
+      "question_no": "1",
+      "answer_no": "1",
+      "sub_question_no": "",
+      "question_page": 128,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "请问，你对上述争论有何看法？",
+      "answer_preview": "(1)（对）；\n(2)（错）；\n(3)（对）；\n(4)（错）；\n(5)（错）；\n(6)（错）；\n(7)（对）；\n(8)（对）；\n(9)（错）；\n(10)（对）。"
+    },
+    {
+      "link_id": "qa_link_0774cfe6e4fc",
+      "question_id": "question_7ba170274f5d",
+      "answer_id": "answer_de0c5d81b910",
+      "question_no": "2",
+      "answer_no": "2",
+      "sub_question_no": "",
+      "question_page": 128,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "2. 为什么大型软件的维护成本高达开发成本的4倍左右？",
+      "answer_preview": "A：购票请求；\nB：接受；\nC: <u>拒绝</u>；\nD: 车次表；\nE: <u>售票记录；</u>\nF:<u>{乘车日期+到站+车次}</u>；\nG:<u>\"2004\"..\"2014\"+\"/\"+\"01\"..\"12\"+\"/\"+\"01\"..\"31\";</u>\nH:\"001\"..\"100\"。"
+    },
+    {
+      "link_id": "qa_link_4d5252c9df11",
+      "question_id": "question_c6acf3d50182",
+      "answer_id": "answer_24d499b7327a",
+      "question_no": "3",
+      "answer_no": "3",
+      "sub_question_no": "",
+      "question_page": 128,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "3. 某软件公司拟采取下述措施提高他们开发出的软件产品的可维护性。请判断哪些措施是正确的？哪些措施不正确？",
+      "answer_preview": "简化的文本编辑程序的用例图见图 B.5。"
+    },
+    {
+      "link_id": "qa_link_09b42b3b2af3",
+      "question_id": "question_9067b063ba7c",
+      "answer_id": "answer_24d499b7327a",
+      "question_no": "3",
+      "answer_no": "3",
+      "sub_question_no": "1",
+      "question_page": 128,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "(1) 在分析用户需求时同时考虑维护问题。",
+      "answer_preview": "简化的文本编辑程序的用例图见图 B.5。"
+    },
+    {
+      "link_id": "qa_link_b7ea5edf1764",
+      "question_id": "question_867f8c10d94e",
+      "answer_id": "answer_401846d61efc",
+      "question_no": "4",
+      "answer_no": "4",
+      "sub_question_no": "",
+      "question_page": 128,
+      "answer_pages": [
+        238,
+        239
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "4. 假设你的任务是对一个已有的软件做重大修改，而且只允许你从下述文档中选取两份：(1)程序的规格说明；(2)程序的详细设计结果（自然语言描述加上某种设计工具",
+      "answer_preview": "(1) 图A.5所示程序的循环控制结构有两个出口，因此是非结构化的程序。\n(2) 利用附加变量flag设计的等价的结构化程序如图B.6所示。\n(3) 不用附加变量 flag 设计的等价的结构程序如图 B.7 所示。\n附 录\n图 B.5 简化的文本编辑程序的用例图\n图 B.6 与图 A.5 等价的结构化程序（用 flag）\n图 B.7 与图 A.5 等价的结构化程序（不用 flag）"
+    },
+    {
+      "link_id": "qa_link_c5717cf5b562",
+      "question_id": "question_5d49feed5def",
+      "answer_id": "answer_401846d61efc",
+      "question_no": "4",
+      "answer_no": "4",
+      "sub_question_no": "",
+      "question_page": 129,
+      "answer_pages": [
+        238,
+        239
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "你将选取哪两份文档？为什么这样选取？",
+      "answer_preview": "(1) 图A.5所示程序的循环控制结构有两个出口，因此是非结构化的程序。\n(2) 利用附加变量flag设计的等价的结构化程序如图B.6所示。\n(3) 不用附加变量 flag 设计的等价的结构程序如图 B.7 所示。\n附 录\n图 B.5 简化的文本编辑程序的用例图\n图 B.6 与图 A.5 等价的结构化程序（用 flag）\n图 B.7 与图 A.5 等价的结构化程序（不用 flag）"
+    },
+    {
+      "link_id": "qa_link_00750de1da0a",
+      "question_id": "question_5f0c6b600ba6",
+      "answer_id": "answer_30d966bbc458",
+      "question_no": "5",
+      "answer_no": "5",
+      "sub_question_no": "",
+      "question_page": 129,
+      "answer_pages": [
+        239,
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "5. 当一个十几年前开发出的程序还在为其用户完成关键的业务工作时，是否有必要对它进行再工程？如果对它进行再工程，经济上是否划算？",
+      "answer_preview": "图形用户界面的状态转换图如图B.8所示。\n图 B.8 图形用户界面的状态转换图\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "link_id": "qa_link_8bd8aca2457b",
+      "question_id": "question_c00ab50cc5e8",
+      "answer_id": "answer_36e5f4a5793b",
+      "question_no": "6",
+      "answer_no": "6",
+      "sub_question_no": "",
+      "question_page": 129,
+      "answer_pages": [
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "6. 代码重构与正向工程有何相同之处？有何不同之处？",
+      "answer_preview": "判断浮点二进制数的有穷状态机如图B.9所示。\n图 B.9 判断浮点二进制数的有穷状态机"
+    },
+    {
+      "link_id": "qa_link_c68c4d1a9960",
+      "question_id": "question_750e10aa9bdb",
+      "answer_id": "answer_ceece973c72b",
+      "question_no": "1",
+      "answer_no": "1",
+      "sub_question_no": "",
+      "question_page": 145,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "1. 用面向对象范型开发软件时与用结构化范型开发软件时相比较，软件的生命周期有何不同？这种差异带来了什么后果？",
+      "answer_preview": "(1)（对）；\n(2)（错）；\n(3)（对）；\n(4)（错）；\n(5)（错）；\n(6)（错）；\n(7)（对）；\n(8)（对）；\n(9)（错）；\n(10)（对）。"
+    },
+    {
+      "link_id": "qa_link_07838f23b388",
+      "question_id": "question_b0ac3f04bee7",
+      "answer_id": "answer_de0c5d81b910",
+      "question_no": "2",
+      "answer_no": "2",
+      "sub_question_no": "",
+      "question_page": 145,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "2. 为什么在开发大型软件时，采用面向对象范型比采用结构化范型较易取得成功？",
+      "answer_preview": "A：购票请求；\nB：接受；\nC: <u>拒绝</u>；\nD: 车次表；\nE: <u>售票记录；</u>\nF:<u>{乘车日期+到站+车次}</u>；\nG:<u>\"2004\"..\"2014\"+\"/\"+\"01\"..\"12\"+\"/\"+\"01\"..\"31\";</u>\nH:\"001\"..\"100\"。"
+    },
+    {
+      "link_id": "qa_link_aa906bc988e6",
+      "question_id": "question_7d54a1859e10",
+      "answer_id": "answer_24d499b7327a",
+      "question_no": "3",
+      "answer_no": "3",
+      "sub_question_no": "",
+      "question_page": 145,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "3. 为什么说夏利牌汽车是小汽车类的特化，而发动机不是小汽车类的特化？",
+      "answer_preview": "简化的文本编辑程序的用例图见图 B.5。"
+    },
+    {
+      "link_id": "qa_link_f6018a7a915d",
+      "question_id": "question_9124117920c0",
+      "answer_id": "answer_401846d61efc",
+      "question_no": "4",
+      "answer_no": "4",
+      "sub_question_no": "",
+      "question_page": 145,
+      "answer_pages": [
+        238,
+        239
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "4. 对象和属性之间有何区别？",
+      "answer_preview": "(1) 图A.5所示程序的循环控制结构有两个出口，因此是非结构化的程序。\n(2) 利用附加变量flag设计的等价的结构化程序如图B.6所示。\n(3) 不用附加变量 flag 设计的等价的结构程序如图 B.7 所示。\n附 录\n图 B.5 简化的文本编辑程序的用例图\n图 B.6 与图 A.5 等价的结构化程序（用 flag）\n图 B.7 与图 A.5 等价的结构化程序（不用 flag）"
+    },
+    {
+      "link_id": "qa_link_b0bf3b82c243",
+      "question_id": "question_f68e4cc3940d",
+      "answer_id": "answer_30d966bbc458",
+      "question_no": "5",
+      "answer_no": "5",
+      "sub_question_no": "",
+      "question_page": 145,
+      "answer_pages": [
+        239,
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "5. 什么是对象？它与传统的数据有何异同？",
+      "answer_preview": "图形用户界面的状态转换图如图B.8所示。\n图 B.8 图形用户界面的状态转换图\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "link_id": "qa_link_e33b146b0eed",
+      "question_id": "question_a6b2f78ef4df",
+      "answer_id": "answer_36e5f4a5793b",
+      "question_no": "6",
+      "answer_no": "6",
+      "sub_question_no": "",
+      "question_page": 145,
+      "answer_pages": [
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "6. 什么是模型？开发软件时为什么要建立模型？",
+      "answer_preview": "判断浮点二进制数的有穷状态机如图B.9所示。\n图 B.9 判断浮点二进制数的有穷状态机"
+    },
+    {
+      "link_id": "qa_link_cbd9b2282b9a",
+      "question_id": "question_05d4aabd19c8",
+      "answer_id": "answer_a01f4e4e94ff",
+      "question_no": "7",
+      "answer_no": "7",
+      "sub_question_no": "",
+      "question_page": 145,
+      "answer_pages": [
+        237,
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "7.试用面向对象方法分析设计下述程序：",
+      "answer_preview": "杂货店问题的对象模型如图 B.4 所示。\n软件工程导论（第 6 版）学习辅导\n图 B.4 杂货店问题的对象模型"
+    },
+    {
+      "link_id": "qa_link_dd2d5a96b890",
+      "question_id": "question_ebf56f111e4d",
+      "answer_id": "answer_4e933249237a",
+      "question_no": "8",
+      "answer_no": "8",
+      "sub_question_no": "",
+      "question_page": 146,
+      "answer_pages": [
+        224
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "8. 用面向对象方法解决下述问题时需要哪些对象类？类与类之间有何关系？",
+      "answer_preview": "从图 10.2 可以看出，事件 2、5、4、7、10、9 和 12 的最早时刻和最迟时刻相同，这些事件定义了关键路径。在图 10.2 中用粗线箭头代表关键路径。\n组成关键路径的子任务 b、c、f 和 h 是关键任务。"
+    },
+    {
+      "link_id": "qa_link_abe044c2ddfd",
+      "question_id": "question_9670644e1486",
+      "answer_id": "answer_d233c82633da",
+      "question_no": "9",
+      "answer_no": "9",
+      "sub_question_no": "",
+      "question_page": 146,
+      "answer_pages": [
+        224
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "9. 试建立下述订货系统的用例模型。",
+      "answer_preview": "由于待开发的应用系统类似于以前做过的系统，开发人员已经积累了较丰富的经验，没有多少技术难题需要攻克。为了减少通信开销，充分发挥技术骨干的作用，统一意志统一行动，提高生产率，加快开发进度，项目组的组织结构以基于主程序员组的形式为宜。\n针对待开发的系统，客户已经写出了完整的需求文档，项目组又有开发类似系统的经验，因此，可以采用广大软件工程师熟悉的瀑布模型来开发本系统。"
+    },
+    {
+      "link_id": "qa_link_54e76e42fe7c",
+      "question_id": "question_2266dc93d131",
+      "answer_id": "answer_b37e2e881bdb",
+      "question_no": "10",
+      "answer_no": "10",
+      "sub_question_no": "",
+      "question_page": 146,
+      "answer_pages": [
+        224
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "10. 为什么说面向对象方法与人类习惯的思维解题方法比较一致？",
+      "answer_preview": "所谓软件可靠性，是程序在给定的时间间隔内按照规格说明书的规定成功地运行的概率。通常认为，软件可靠性既包含正确性又包含健壮性，也就是说，不仅在预定环境下程序应该能正确地完成预期功能，而且在硬件发生故障、输入的数据无效或用户操作错误等意外环境下，程序也应该能作出适当的响应。\n如果一个程序在预定环境下能够正确地完成预期的功能，但是在意外环境下不能作出适当的响应，则该程序就是既正确又不可靠。"
+    },
+    {
+      "link_id": "qa_link_829118820da6",
+      "question_id": "question_5f147a5d8934",
+      "answer_id": "answer_ceece973c72b",
+      "question_no": "1",
+      "answer_no": "1",
+      "sub_question_no": "",
+      "question_page": 161,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "1. 应该依据什么准则来评价用例图？",
+      "answer_preview": "(1)（对）；\n(2)（错）；\n(3)（对）；\n(4)（错）；\n(5)（错）；\n(6)（错）；\n(7)（对）；\n(8)（对）；\n(9)（错）；\n(10)（对）。"
+    },
+    {
+      "link_id": "qa_link_329fd3eacc4b",
+      "question_id": "question_c46a23eb02f0",
+      "answer_id": "answer_de0c5d81b910",
+      "question_no": "2",
+      "answer_no": "2",
+      "sub_question_no": "",
+      "question_page": 161,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "2. 应该依据什么准则来评价脚本？",
+      "answer_preview": "A：购票请求；\nB：接受；\nC: <u>拒绝</u>；\nD: 车次表；\nE: <u>售票记录；</u>\nF:<u>{乘车日期+到站+车次}</u>；\nG:<u>\"2004\"..\"2014\"+\"/\"+\"01\"..\"12\"+\"/\"+\"01\"..\"31\";</u>\nH:\"001\"..\"100\"。"
+    },
+    {
+      "link_id": "qa_link_48f4a34d1b10",
+      "question_id": "question_4a585c0d5653",
+      "answer_id": "answer_24d499b7327a",
+      "question_no": "3",
+      "answer_no": "3",
+      "sub_question_no": "",
+      "question_page": 161,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "3. 应该依据什么准则来评价状态图？",
+      "answer_preview": "简化的文本编辑程序的用例图见图 B.5。"
+    },
+    {
+      "link_id": "qa_link_c48203785e90",
+      "question_id": "question_8a0b70be96a9",
+      "answer_id": "answer_401846d61efc",
+      "question_no": "4",
+      "answer_no": "4",
+      "sub_question_no": "",
+      "question_page": 161,
+      "answer_pages": [
+        238,
+        239
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "4. 用非正式分析法分析确定下述杂货店问题中的对象。",
+      "answer_preview": "(1) 图A.5所示程序的循环控制结构有两个出口，因此是非结构化的程序。\n(2) 利用附加变量flag设计的等价的结构化程序如图B.6所示。\n(3) 不用附加变量 flag 设计的等价的结构程序如图 B.7 所示。\n附 录\n图 B.5 简化的文本编辑程序的用例图\n图 B.6 与图 A.5 等价的结构化程序（用 flag）\n图 B.7 与图 A.5 等价的结构化程序（不用 flag）"
+    },
+    {
+      "link_id": "qa_link_829d3b295e6f",
+      "question_id": "question_a8364afe295f",
+      "answer_id": "answer_30d966bbc458",
+      "question_no": "5",
+      "answer_no": "5",
+      "sub_question_no": "",
+      "question_page": 161,
+      "answer_pages": [
+        239,
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "确定第4题所述杂货店问题中对象类之间可能有的继承关系。",
+      "answer_preview": "图形用户界面的状态转换图如图B.8所示。\n图 B.8 图形用户界面的状态转换图\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "link_id": "qa_link_0f850ca03e57",
+      "question_id": "question_8539a703eac6",
+      "answer_id": "answer_36e5f4a5793b",
+      "question_no": "6",
+      "answer_no": "6",
+      "sub_question_no": "",
+      "question_page": 161,
+      "answer_pages": [
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "6. 建立下述牙科诊所管理系统的对象模型。",
+      "answer_preview": "判断浮点二进制数的有穷状态机如图B.9所示。\n图 B.9 判断浮点二进制数的有穷状态机"
+    },
+    {
+      "link_id": "qa_link_e7bb58a94b70",
+      "question_id": "question_0a19129d89b0",
+      "answer_id": "answer_a01f4e4e94ff",
+      "question_no": "7",
+      "answer_no": "7",
+      "sub_question_no": "",
+      "question_page": 162,
+      "answer_pages": [
+        237,
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "建立第 6 题所述牙科诊所管理系统的用例模型。",
+      "answer_preview": "杂货店问题的对象模型如图 B.4 所示。\n软件工程导论（第 6 版）学习辅导\n图 B.4 杂货店问题的对象模型"
+    },
+    {
+      "link_id": "qa_link_42093fc2ffac",
+      "question_id": "question_08c1657ee1a7",
+      "answer_id": "answer_4e933249237a",
+      "question_no": "8",
+      "answer_no": "8",
+      "sub_question_no": "",
+      "question_page": 162,
+      "answer_pages": [
+        224
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "8. 用数据流图建立第6题所述牙科诊所管理系统的功能模型。",
+      "answer_preview": "从图 10.2 可以看出，事件 2、5、4、7、10、9 和 12 的最早时刻和最迟时刻相同，这些事件定义了关键路径。在图 10.2 中用粗线箭头代表关键路径。\n组成关键路径的子任务 b、c、f 和 h 是关键任务。"
+    },
+    {
+      "link_id": "qa_link_9b48987d6c41",
+      "question_id": "question_c3bf1ff36a75",
+      "answer_id": "answer_d233c82633da",
+      "question_no": "9",
+      "answer_no": "9",
+      "sub_question_no": "",
+      "question_page": 162,
+      "answer_pages": [
+        224
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "9.写出第6题所述牙科诊所管理系统的脚本。",
+      "answer_preview": "由于待开发的应用系统类似于以前做过的系统，开发人员已经积累了较丰富的经验，没有多少技术难题需要攻克。为了减少通信开销，充分发挥技术骨干的作用，统一意志统一行动，提高生产率，加快开发进度，项目组的组织结构以基于主程序员组的形式为宜。\n针对待开发的系统，客户已经写出了完整的需求文档，项目组又有开发类似系统的经验，因此，可以采用广大软件工程师熟悉的瀑布模型来开发本系统。"
+    },
+    {
+      "link_id": "qa_link_0050961476cc",
+      "question_id": "question_93110d04ea8c",
+      "answer_id": "answer_b37e2e881bdb",
+      "question_no": "10",
+      "answer_no": "10",
+      "sub_question_no": "",
+      "question_page": 162,
+      "answer_pages": [
+        224
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "10. 画出第 6 题所述牙科诊所管理系统的状态图。",
+      "answer_preview": "所谓软件可靠性，是程序在给定的时间间隔内按照规格说明书的规定成功地运行的概率。通常认为，软件可靠性既包含正确性又包含健壮性，也就是说，不仅在预定环境下程序应该能正确地完成预期功能，而且在硬件发生故障、输入的数据无效或用户操作错误等意外环境下，程序也应该能作出适当的响应。\n如果一个程序在预定环境下能够正确地完成预期的功能，但是在意外环境下不能作出适当的响应，则该程序就是既正确又不可靠。"
+    },
+    {
+      "link_id": "qa_link_d5c58ba58cf2",
+      "question_id": "question_f237c3aec21b",
+      "answer_id": "answer_b37e2e881bdb",
+      "question_no": "10",
+      "answer_no": "10",
+      "sub_question_no": "3",
+      "question_page": 169,
+      "answer_pages": [
+        224
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "(3)分析结果重用。重用某个软件系统的分析模型（即问题域模型）。这类重用特别",
+      "answer_preview": "所谓软件可靠性，是程序在给定的时间间隔内按照规格说明书的规定成功地运行的概率。通常认为，软件可靠性既包含正确性又包含健壮性，也就是说，不仅在预定环境下程序应该能正确地完成预期功能，而且在硬件发生故障、输入的数据无效或用户操作错误等意外环境下，程序也应该能作出适当的响应。\n如果一个程序在预定环境下能够正确地完成预期的功能，但是在意外环境下不能作出适当的响应，则该程序就是既正确又不可靠。"
+    },
+    {
+      "link_id": "qa_link_064febcadae4",
+      "question_id": "question_7346c749fdf4",
+      "answer_id": "answer_ceece973c72b",
+      "question_no": "1",
+      "answer_no": "1",
+      "sub_question_no": "",
+      "question_page": 177,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "请比较功能内聚和信息性内聚。",
+      "answer_preview": "(1)（对）；\n(2)（错）；\n(3)（对）；\n(4)（错）；\n(5)（错）；\n(6)（错）；\n(7)（对）；\n(8)（对）；\n(9)（错）；\n(10)（对）。"
+    },
+    {
+      "link_id": "qa_link_02868380c767",
+      "question_id": "question_88536665ea32",
+      "answer_id": "answer_de0c5d81b910",
+      "question_no": "2",
+      "answer_no": "2",
+      "sub_question_no": "",
+      "question_page": 177,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "2. 多态重用与继承重用有何关系？",
+      "answer_preview": "A：购票请求；\nB：接受；\nC: <u>拒绝</u>；\nD: 车次表；\nE: <u>售票记录；</u>\nF:<u>{乘车日期+到站+车次}</u>；\nG:<u>\"2004\"..\"2014\"+\"/\"+\"01\"..\"12\"+\"/\"+\"01\"..\"31\";</u>\nH:\"001\"..\"100\"。"
+    },
+    {
+      "link_id": "qa_link_a346a2316cf6",
+      "question_id": "question_df64cfde9257",
+      "answer_id": "answer_24d499b7327a",
+      "question_no": "3",
+      "answer_no": "3",
+      "sub_question_no": "",
+      "question_page": 177,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "3. 在面向对象设计过程中为什么会调整对目标系统的需求？怎样调整需求？",
+      "answer_preview": "简化的文本编辑程序的用例图见图 B.5。"
+    },
+    {
+      "link_id": "qa_link_63156e951eef",
+      "question_id": "question_7e0d81f9fdee",
+      "answer_id": "answer_401846d61efc",
+      "question_no": "4",
+      "answer_no": "4",
+      "sub_question_no": "",
+      "question_page": 177,
+      "answer_pages": [
+        238,
+        239
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "4. 为了设计人机交互子系统，为什么需要分类用户？",
+      "answer_preview": "(1) 图A.5所示程序的循环控制结构有两个出口，因此是非结构化的程序。\n(2) 利用附加变量flag设计的等价的结构化程序如图B.6所示。\n(3) 不用附加变量 flag 设计的等价的结构程序如图 B.7 所示。\n附 录\n图 B.5 简化的文本编辑程序的用例图\n图 B.6 与图 A.5 等价的结构化程序（用 flag）\n图 B.7 与图 A.5 等价的结构化程序（不用 flag）"
+    },
+    {
+      "link_id": "qa_link_21d6a5a6130b",
+      "question_id": "question_4970f3dae7ed",
+      "answer_id": "answer_30d966bbc458",
+      "question_no": "5",
+      "answer_no": "5",
+      "sub_question_no": "",
+      "question_page": 177,
+      "answer_pages": [
+        239,
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "5. 问题空间和解空间有何区别？",
+      "answer_preview": "图形用户界面的状态转换图如图B.8所示。\n图 B.8 图形用户界面的状态转换图\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "link_id": "qa_link_3043da276aab",
+      "question_id": "question_50502f72e328",
+      "answer_id": "answer_36e5f4a5793b",
+      "question_no": "6",
+      "answer_no": "6",
+      "sub_question_no": "",
+      "question_page": 177,
+      "answer_pages": [
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "6. 从面向对象分析阶段到面向对象设计阶段，对象模型有何变化？",
+      "answer_preview": "判断浮点二进制数的有穷状态机如图B.9所示。\n图 B.9 判断浮点二进制数的有穷状态机"
+    },
+    {
+      "link_id": "qa_link_b89eb8afc481",
+      "question_id": "question_019434fd70fb",
+      "answer_id": "answer_a01f4e4e94ff",
+      "question_no": "7",
+      "answer_no": "7",
+      "sub_question_no": "",
+      "question_page": 177,
+      "answer_pages": [
+        237,
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "请用面向对象方法分析设计下述的图书馆自动化系统。",
+      "answer_preview": "杂货店问题的对象模型如图 B.4 所示。\n软件工程导论（第 6 版）学习辅导\n图 B.4 杂货店问题的对象模型"
+    },
+    {
+      "link_id": "qa_link_929e2f97bb25",
+      "question_id": "question_8e43535bef1a",
+      "answer_id": "answer_4e933249237a",
+      "question_no": "8",
+      "answer_no": "8",
+      "sub_question_no": "",
+      "question_page": 177,
+      "answer_pages": [
+        224
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "8. 用面向对象方法分析设计下述的电梯系统。",
+      "answer_preview": "从图 10.2 可以看出，事件 2、5、4、7、10、9 和 12 的最早时刻和最迟时刻相同，这些事件定义了关键路径。在图 10.2 中用粗线箭头代表关键路径。\n组成关键路径的子任务 b、c、f 和 h 是关键任务。"
+    },
+    {
+      "link_id": "qa_link_3e7959be0812",
+      "question_id": "question_3711ddc15730",
+      "answer_id": "answer_4e933249237a",
+      "question_no": "8",
+      "answer_no": "8",
+      "sub_question_no": "",
+      "question_page": 178,
+      "answer_pages": [
+        224
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "按下电梯按钮请求电梯在指定楼层停下时，按钮指示灯亮；当电梯到达指定楼层时，指示灯熄灭。除了大厦的最低层和最高层之外，每层楼都有两个按钮分别指示电梯上行和下行。当这两个按钮之一被按下时相应的指示灯亮，当电梯到达此楼层时灯熄灭，电梯向要求的方向移动。当电梯无升降动作时，关门并停在当前楼层。",
+      "answer_preview": "从图 10.2 可以看出，事件 2、5、4、7、10、9 和 12 的最早时刻和最迟时刻相同，这些事件定义了关键路径。在图 10.2 中用粗线箭头代表关键路径。\n组成关键路径的子任务 b、c、f 和 h 是关键任务。"
+    },
+    {
+      "link_id": "qa_link_851ec310e6ac",
+      "question_id": "question_b3579ea17094",
+      "answer_id": "answer_ceece973c72b",
+      "question_no": "1",
+      "answer_no": "1",
+      "sub_question_no": "",
+      "question_page": 191,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "1. 为什么应该尽量使用面向对象语言来实现面向对象分析和设计的结果？",
+      "answer_preview": "(1)（对）；\n(2)（错）；\n(3)（对）；\n(4)（错）；\n(5)（错）；\n(6)（错）；\n(7)（对）；\n(8)（对）；\n(9)（错）；\n(10)（对）。"
+    },
+    {
+      "link_id": "qa_link_21c3a8937243",
+      "question_id": "question_1344365686f0",
+      "answer_id": "answer_de0c5d81b910",
+      "question_no": "2",
+      "answer_no": "2",
+      "sub_question_no": "",
+      "question_page": 191,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "2. 什么是强类型语言？这类语言有哪些优点？",
+      "answer_preview": "A：购票请求；\nB：接受；\nC: <u>拒绝</u>；\nD: 车次表；\nE: <u>售票记录；</u>\nF:<u>{乘车日期+到站+车次}</u>；\nG:<u>\"2004\"..\"2014\"+\"/\"+\"01\"..\"12\"+\"/\"+\"01\"..\"31\";</u>\nH:\"001\"..\"100\"。"
+    },
+    {
+      "link_id": "qa_link_0446150186b3",
+      "question_id": "question_af240f7c3590",
+      "answer_id": "answer_24d499b7327a",
+      "question_no": "3",
+      "answer_no": "3",
+      "sub_question_no": "",
+      "question_page": 191,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "3. 用动态联编实现多态性是否会显著降低程序的运行效率？",
+      "answer_preview": "简化的文本编辑程序的用例图见图 B.5。"
+    },
+    {
+      "link_id": "qa_link_67af11a709d4",
+      "question_id": "question_d01547bd614e",
+      "answer_id": "answer_401846d61efc",
+      "question_no": "4",
+      "answer_no": "4",
+      "sub_question_no": "",
+      "question_page": 191,
+      "answer_pages": [
+        238,
+        239
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "4. 为什么说参数化类有助于提高可重用性？",
+      "answer_preview": "(1) 图A.5所示程序的循环控制结构有两个出口，因此是非结构化的程序。\n(2) 利用附加变量flag设计的等价的结构化程序如图B.6所示。\n(3) 不用附加变量 flag 设计的等价的结构程序如图 B.7 所示。\n附 录\n图 B.5 简化的文本编辑程序的用例图\n图 B.6 与图 A.5 等价的结构化程序（用 flag）\n图 B.7 与图 A.5 等价的结构化程序（不用 flag）"
+    },
+    {
+      "link_id": "qa_link_71e70decf455",
+      "question_id": "question_2be78d52ef25",
+      "answer_id": "answer_30d966bbc458",
+      "question_no": "5",
+      "answer_no": "5",
+      "sub_question_no": "",
+      "question_page": 191,
+      "answer_pages": [
+        239,
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "5. 把策略方法与实现方法分开后，为什么能提高可重用性？",
+      "answer_preview": "图形用户界面的状态转换图如图B.8所示。\n图 B.8 图形用户界面的状态转换图\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "link_id": "qa_link_462453534867",
+      "question_id": "question_9202b99d8e3b",
+      "answer_id": "answer_36e5f4a5793b",
+      "question_no": "6",
+      "answer_no": "6",
+      "sub_question_no": "",
+      "question_page": 191,
+      "answer_pages": [
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "面向对象软件的哪些特点使得测试和维护变得比较容易？哪些特点使得测试和维护变得比较困难？",
+      "answer_preview": "判断浮点二进制数的有穷状态机如图B.9所示。\n图 B.9 判断浮点二进制数的有穷状态机"
+    },
+    {
+      "link_id": "qa_link_edb2159dba17",
+      "question_id": "question_a943d5e6cec5",
+      "answer_id": "answer_a01f4e4e94ff",
+      "question_no": "7",
+      "answer_no": "7",
+      "sub_question_no": "",
+      "question_page": 192,
+      "answer_pages": [
+        237,
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "7.试用C++语言编程实现下述简单图形程序的类继承结构。",
+      "answer_preview": "杂货店问题的对象模型如图 B.4 所示。\n软件工程导论（第 6 版）学习辅导\n图 B.4 杂货店问题的对象模型"
+    },
+    {
+      "link_id": "qa_link_ce1665764325",
+      "question_id": "question_f59849fbe54f",
+      "answer_id": "answer_4e933249237a",
+      "question_no": "8",
+      "answer_no": "8",
+      "sub_question_no": "",
+      "question_page": 192,
+      "answer_pages": [
+        224
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "设计测试用例以测试第 7 题类继承结构中的各个类。",
+      "answer_preview": "从图 10.2 可以看出，事件 2、5、4、7、10、9 和 12 的最早时刻和最迟时刻相同，这些事件定义了关键路径。在图 10.2 中用粗线箭头代表关键路径。\n组成关键路径的子任务 b、c、f 和 h 是关键任务。"
+    },
+    {
+      "link_id": "qa_link_ef02dc267150",
+      "question_id": "question_5cd81df85e79",
+      "answer_id": "answer_d233c82633da",
+      "question_no": "9",
+      "answer_no": "9",
+      "sub_question_no": "",
+      "question_page": 192,
+      "answer_pages": [
+        224
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "9. 有若干行 C 语言代码，要求统计出该代码中共有多少个关键字？试设计出相关算法和数据结构。",
+      "answer_preview": "由于待开发的应用系统类似于以前做过的系统，开发人员已经积累了较丰富的经验，没有多少技术难题需要攻克。为了减少通信开销，充分发挥技术骨干的作用，统一意志统一行动，提高生产率，加快开发进度，项目组的组织结构以基于主程序员组的形式为宜。\n针对待开发的系统，客户已经写出了完整的需求文档，项目组又有开发类似系统的经验，因此，可以采用广大软件工程师熟悉的瀑布模型来开发本系统。"
+    },
+    {
+      "link_id": "qa_link_9ef65edba91b",
+      "question_id": "question_8d27b8dd53a1",
+      "answer_id": "answer_d233c82633da",
+      "question_no": "9",
+      "answer_no": "9",
+      "sub_question_no": "2",
+      "question_page": 210,
+      "answer_pages": [
+        224
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "(2)计算技术复杂性因子TCF。这个步骤度量14种技术因素对软件规模的影响程度。这 14 种技术因素分别是：数据通信、分布式数据处理、性能标准、高负荷硬件、高处理率、联机数据输入、终端用户效率、联机更新、复杂的计算、可重用性、安装方便、操作方便、可移植性和可维护性。",
+      "answer_preview": "由于待开发的应用系统类似于以前做过的系统，开发人员已经积累了较丰富的经验，没有多少技术难题需要攻克。为了减少通信开销，充分发挥技术骨干的作用，统一意志统一行动，提高生产率，加快开发进度，项目组的组织结构以基于主程序员组的形式为宜。\n针对待开发的系统，客户已经写出了完整的需求文档，项目组又有开发类似系统的经验，因此，可以采用广大软件工程师熟悉的瀑布模型来开发本系统。"
+    },
+    {
+      "link_id": "qa_link_9500d59eeea2",
+      "question_id": "question_5f9664697070",
+      "answer_id": "answer_ceece973c72b",
+      "question_no": "1",
+      "answer_no": "1",
+      "sub_question_no": "",
+      "question_page": 219,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "1.下面叙述对一个计算机辅助设计(CAD)软件的需求。",
+      "answer_preview": "(1)（对）；\n(2)（错）；\n(3)（对）；\n(4)（错）；\n(5)（错）；\n(6)（错）；\n(7)（对）；\n(8)（对）；\n(9)（错）；\n(10)（对）。"
+    },
+    {
+      "link_id": "qa_link_91567e536dc7",
+      "question_id": "question_f2cf9831a159",
+      "answer_id": "answer_ceece973c72b",
+      "question_no": "1",
+      "answer_no": "1",
+      "sub_question_no": "",
+      "question_page": 219,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "该CAD软件接受由工程师提供的二维或三维几何图形数据。工程师通过用户界面与CAD系统交互并控制它，该用户界面应该表现出良好的人机界面设计特征。几何图形数据及其他支持信息都保存在一个CAD数据库中。开发必要的分析、设计模块，以产生所需要的设计结果，这些输出将显示在各种不同的图形设备上。应该适当地设计软件，以便与外部设备交互并控制它们。所用的外部设备包括鼠标、数",
+      "answer_preview": "(1)（对）；\n(2)（错）；\n(3)（对）；\n(4)（错）；\n(5)（错）；\n(6)（错）；\n(7)（对）；\n(8)（对）；\n(9)（错）；\n(10)（对）。"
+    },
+    {
+      "link_id": "qa_link_4358cd84ef41",
+      "question_id": "question_d15d3047eecb",
+      "answer_id": "answer_de0c5d81b910",
+      "question_no": "2",
+      "answer_no": "2",
+      "sub_question_no": "",
+      "question_page": 219,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "2. 计算下述的牙科诊所预约系统的未调整功能点数。",
+      "answer_preview": "A：购票请求；\nB：接受；\nC: <u>拒绝</u>；\nD: 车次表；\nE: <u>售票记录；</u>\nF:<u>{乘车日期+到站+车次}</u>；\nG:<u>\"2004\"..\"2014\"+\"/\"+\"01\"..\"12\"+\"/\"+\"01\"..\"31\";</u>\nH:\"001\"..\"100\"。"
+    },
+    {
+      "link_id": "qa_link_0058f48654d0",
+      "question_id": "question_f4d3cf962d90",
+      "answer_id": "answer_24d499b7327a",
+      "question_no": "3",
+      "answer_no": "3",
+      "sub_question_no": "",
+      "question_page": 220,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "3.LMN公司曾经完成过5个软件开发项目，有关这些项目的数据记录在表10.2中。请根据这些历史数据计算静态单变量估算模型中的参数值，并且估算完成一个30KLOC的项目需要多大工作量。",
+      "answer_preview": "简化的文本编辑程序的用例图见图 B.5。"
+    },
+    {
+      "link_id": "qa_link_433697690110",
+      "question_id": "question_a3a552e7b004",
+      "answer_id": "answer_24d499b7327a",
+      "question_no": "3",
+      "answer_no": "3",
+      "sub_question_no": "",
+      "question_page": 220,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "<table border=\"1\" style=\"width: 100%;table-layout: fixed;\"><tr><td><p><strong>项 目 序 号</strong></p></td><td><p>规模(KLOC)</p></td><td><p>工作量(PM)</p></td></tr><tr><td><p>1</p></td><td>",
+      "answer_preview": "简化的文本编辑程序的用例图见图 B.5。"
+    },
+    {
+      "link_id": "qa_link_b84b365d7a05",
+      "question_id": "question_ab28f5f2d192",
+      "answer_id": "answer_401846d61efc",
+      "question_no": "4",
+      "answer_no": "4",
+      "sub_question_no": "",
+      "question_page": 220,
+      "answer_pages": [
+        238,
+        239
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "4. 为什么成本估算模型中的参数应该根据软件开发公司的历史数据来确定？",
+      "answer_preview": "(1) 图A.5所示程序的循环控制结构有两个出口，因此是非结构化的程序。\n(2) 利用附加变量flag设计的等价的结构化程序如图B.6所示。\n(3) 不用附加变量 flag 设计的等价的结构程序如图 B.7 所示。\n附 录\n图 B.5 简化的文本编辑程序的用例图\n图 B.6 与图 A.5 等价的结构化程序（用 flag）\n图 B.7 与图 A.5 等价的结构化程序（不用 flag）"
+    },
+    {
+      "link_id": "qa_link_32881990a671",
+      "question_id": "question_2e488365c06d",
+      "answer_id": "answer_30d966bbc458",
+      "question_no": "5",
+      "answer_no": "5",
+      "sub_question_no": "",
+      "question_page": 220,
+      "answer_pages": [
+        239,
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "5. 为什么推迟关键路径上的任务会延迟整个项目？",
+      "answer_preview": "图形用户界面的状态转换图如图B.8所示。\n图 B.8 图形用户界面的状态转换图\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "link_id": "qa_link_0bb82985a2ac",
+      "question_id": "question_44210c1a301d",
+      "answer_id": "answer_36e5f4a5793b",
+      "question_no": "6",
+      "answer_no": "6",
+      "sub_question_no": "",
+      "question_page": 220,
+      "answer_pages": [
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "6. 机动时间有何重要性？",
+      "answer_preview": "判断浮点二进制数的有穷状态机如图B.9所示。\n图 B.9 判断浮点二进制数的有穷状态机"
+    },
+    {
+      "link_id": "qa_link_18b497bc57eb",
+      "question_id": "question_4fa05d47c452",
+      "answer_id": "answer_a01f4e4e94ff",
+      "question_no": "7",
+      "answer_no": "7",
+      "sub_question_no": "",
+      "question_page": 220,
+      "answer_pages": [
+        237,
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "7.假设有一项工程任务被分解成了 a, b, ..., i 9个子任务，表10.3给出了完成每个子任务所需要的时间以及子任务彼此之间的依赖关系。请用工程网络描述表10.3中给出的信息，并且计算每个事件的最早时刻和最迟时刻。",
+      "answer_preview": "杂货店问题的对象模型如图 B.4 所示。\n软件工程导论（第 6 版）学习辅导\n图 B.4 杂货店问题的对象模型"
+    },
+    {
+      "link_id": "qa_link_55381a9d0ea6",
+      "question_id": "question_58889926e4d0",
+      "answer_id": "answer_4e933249237a",
+      "question_no": "8",
+      "answer_no": "8",
+      "sub_question_no": "",
+      "question_page": 220,
+      "answer_pages": [
+        224
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "分析第7题所述的各个子任务之间的关系，找出关键路径和关键任务。",
+      "answer_preview": "从图 10.2 可以看出，事件 2、5、4、7、10、9 和 12 的最早时刻和最迟时刻相同，这些事件定义了关键路径。在图 10.2 中用粗线箭头代表关键路径。\n组成关键路径的子任务 b、c、f 和 h 是关键任务。"
+    },
+    {
+      "link_id": "qa_link_a20083d75a67",
+      "question_id": "question_70cc431232c7",
+      "answer_id": "answer_d233c82633da",
+      "question_no": "9",
+      "answer_no": "9",
+      "sub_question_no": "",
+      "question_page": 220,
+      "answer_pages": [
+        224
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "9.假设你被指定为项目负责人，你的任务是开发一个应用系统，该系统类似于你的小组以前做过的那些系统，只不过规模更大且更复杂一些。客户已经写出了完整的需求文档。你将选用哪种项目组结构？为什么？你打算采用哪种软件过程模型？为什么？",
+      "answer_preview": "由于待开发的应用系统类似于以前做过的系统，开发人员已经积累了较丰富的经验，没有多少技术难题需要攻克。为了减少通信开销，充分发挥技术骨干的作用，统一意志统一行动，提高生产率，加快开发进度，项目组的组织结构以基于主程序员组的形式为宜。\n针对待开发的系统，客户已经写出了完整的需求文档，项目组又有开发类似系统的经验，因此，可以采用广大软件工程师熟悉的瀑布模型来开发本系统。"
+    },
+    {
+      "link_id": "qa_link_3466223ccf40",
+      "question_id": "question_ea19ac0a3cea",
+      "answer_id": "answer_b37e2e881bdb",
+      "question_no": "10",
+      "answer_no": "10",
+      "sub_question_no": "",
+      "question_page": 220,
+      "answer_pages": [
+        224
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "10.一个程序能既正确又不可靠吗？请解释你的答案。",
+      "answer_preview": "所谓软件可靠性，是程序在给定的时间间隔内按照规格说明书的规定成功地运行的概率。通常认为，软件可靠性既包含正确性又包含健壮性，也就是说，不仅在预定环境下程序应该能正确地完成预期功能，而且在硬件发生故障、输入的数据无效或用户操作错误等意外环境下，程序也应该能作出适当的响应。\n如果一个程序在预定环境下能够正确地完成预期的功能，但是在意外环境下不能作出适当的响应，则该程序就是既正确又不可靠。"
+    },
+    {
+      "link_id": "qa_link_e0a760b51ed1",
+      "question_id": "question_36b3a7fd1463",
+      "answer_id": "answer_bf3442600caf",
+      "question_no": "11",
+      "answer_no": "11",
+      "sub_question_no": "",
+      "question_page": 221,
+      "answer_pages": [
+        224,
+        225
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "11. 为什么在开发软件的过程中变化既是必要的又是不可避免的？为什么必须进行配置管理？",
+      "answer_preview": "在开发软件的过程中，下述原因会导致软件配置项发生变化。\n* 新的市场条件导致产品需求或业务规则发生变化。 * 客户提出了新需求，要求修改信息系统产生的数据或产品提供的功能。 * 企业改组或业务缩减，引起项目优先级或软件工程队伍结构变化。 * 预算或进度限制，导致对目标系统的重新定义。\n第 10 章 软件项目管理\n· 发现了在软件开发过程的前期阶段所犯的错误，必须加以改正。\n但是，变化也很容易失去控制，如果不能适当地管理和控制变化，必然会"
+    },
+    {
+      "link_id": "qa_link_b5ea9fa90dfd",
+      "question_id": "question_32ae7741218e",
+      "answer_id": "answer_e6351996e9ab",
+      "question_no": "12",
+      "answer_no": "12",
+      "sub_question_no": "",
+      "question_page": 221,
+      "answer_pages": [
+        225
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "12.CMM 的基本思想是什么？为什么要把能力成熟度划分成 5 个等级？",
+      "answer_preview": "CMM的基本思想是，由于软件危机是因对软件过程管理不善而引起的，所以新软件技术的运用并不会自动提高软件的生产率和质量，提高软件生产率和软件质量的关键是改进对软件过程的管理。能力成熟度模型有助于软件开发机构建立一个有规律的、成熟的软件过程。\n对软件过程的改进不可能一蹴而就，只能是在完成一个又一个小的改进步骤基础上不断进行的渐进过程。因此，CMM 把软件过程从无序到有序的进化过程分成 5 个阶段，并把这些阶段排序，形成 5 个逐层提高的等级"
+    },
+    {
+      "link_id": "qa_link_e9885a301781",
+      "question_id": "question_58bf4aa66082",
+      "answer_id": "answer_30d966bbc458",
+      "question_no": "5",
+      "answer_no": "5",
+      "sub_question_no": "",
+      "question_page": 229,
+      "answer_pages": [
+        239,
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "请说明多态重用与继承重用的关系。（共15分）",
+      "answer_preview": "图形用户界面的状态转换图如图B.8所示。\n图 B.8 图形用户界面的状态转换图\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "link_id": "qa_link_263953ce1254",
+      "question_id": "question_9c6ff80fa30f",
+      "answer_id": "answer_de0c5d81b910",
+      "question_no": "2",
+      "answer_no": "2",
+      "sub_question_no": "",
+      "question_page": 230,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "2. 判断下列各项是类还是类的实例，答案写在括号内。（共 10 分）",
+      "answer_preview": "A：购票请求；\nB：接受；\nC: <u>拒绝</u>；\nD: 车次表；\nE: <u>售票记录；</u>\nF:<u>{乘车日期+到站+车次}</u>；\nG:<u>\"2004\"..\"2014\"+\"/\"+\"01\"..\"12\"+\"/\"+\"01\"..\"31\";</u>\nH:\"001\"..\"100\"。"
+    },
+    {
+      "link_id": "qa_link_2e0c4fb77d03",
+      "question_id": "question_ea853f6cb986",
+      "answer_id": "answer_a01f4e4e94ff",
+      "question_no": "7",
+      "answer_no": "7",
+      "sub_question_no": "",
+      "question_page": 231,
+      "answer_pages": [
+        237,
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "7. 请建立下述杂货店问题的对象模型。（共 20 分）",
+      "answer_preview": "杂货店问题的对象模型如图 B.4 所示。\n软件工程导论（第 6 版）学习辅导\n图 B.4 杂货店问题的对象模型"
+    },
+    {
+      "link_id": "qa_link_e6f967768479",
+      "question_id": "question_f85be7e6f1f6",
+      "answer_id": "answer_ceece973c72b",
+      "question_no": "1",
+      "answer_no": "1",
+      "sub_question_no": "",
+      "question_page": 231,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "1. 判断下述提高软件可维护性的措施是否正确，正确的在括号内写对，错的写错。（共 10 分）",
+      "answer_preview": "(1)（对）；\n(2)（错）；\n(3)（对）；\n(4)（错）；\n(5)（错）；\n(6)（错）；\n(7)（对）；\n(8)（对）；\n(9)（错）；\n(10)（对）。"
+    },
+    {
+      "link_id": "qa_link_f696b8fe0c9e",
+      "question_id": "question_4bf38cc234e2",
+      "answer_id": "answer_24d499b7327a",
+      "question_no": "3",
+      "answer_no": "3",
+      "sub_question_no": "",
+      "question_page": 233,
+      "answer_pages": [
+        238
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "3. 画出简化的文本编辑程序的用例图，该编辑程序的主要功能有，建立文件、打开文件、插入文本、修改文本和保存文件。（共 10 分）",
+      "answer_preview": "简化的文本编辑程序的用例图见图 B.5。"
+    },
+    {
+      "link_id": "qa_link_e0e942d10e3c",
+      "question_id": "question_32cb05a81c47",
+      "answer_id": "answer_30d966bbc458",
+      "question_no": "5",
+      "answer_no": "5",
+      "sub_question_no": "",
+      "question_page": 233,
+      "answer_pages": [
+        239,
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "画出图形用户界面(GUI)的状态转换图，该界面具有一个主菜单和一个带有文件打开命令的文件菜单，在每个菜单上都有一条退出命令。假设每次只有一个文件能够打开。（共 20 分）",
+      "answer_preview": "图形用户界面的状态转换图如图B.8所示。\n图 B.8 图形用户界面的状态转换图\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "link_id": "qa_link_347721b0b49e",
+      "question_id": "question_07f46fe10263",
+      "answer_id": "answer_30d966bbc458",
+      "question_no": "5",
+      "answer_no": "5",
+      "sub_question_no": "1",
+      "question_page": 23,
+      "answer_pages": [
+        239,
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "(1)对计算机存储容量的需求大致按下面公式描述的趋势逐年增加：",
+      "answer_preview": "图形用户界面的状态转换图如图B.8所示。\n图 B.8 图形用户界面的状态转换图\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "link_id": "qa_link_417fd1c5fdab",
+      "question_id": "question_7aad52b20716",
+      "answer_id": "answer_30d966bbc458",
+      "question_no": "5",
+      "answer_no": "5",
+      "sub_question_no": "6",
+      "question_page": 62,
+      "answer_pages": [
+        239,
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "(6)设计单入口、单出口的模块。这条启发式规则警告软件工程师不要使模块间出现内容耦合。",
+      "answer_preview": "图形用户界面的状态转换图如图B.8所示。\n图 B.8 图形用户界面的状态转换图\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "link_id": "qa_link_509efb9165c2",
+      "question_id": "question_8031b7489336",
+      "answer_id": "answer_30d966bbc458",
+      "question_no": "5",
+      "answer_no": "5",
+      "sub_question_no": "",
+      "question_page": 71,
+      "answer_pages": [
+        239,
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "图 3.1 计算多地点日平均温度的程序",
+      "answer_preview": "图形用户界面的状态转换图如图B.8所示。\n图 B.8 图形用户界面的状态转换图\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "link_id": "qa_link_d32f5420cd09",
+      "question_id": "question_7a017277f9ad",
+      "answer_id": "answer_30d966bbc458",
+      "question_no": "5",
+      "answer_no": "5",
+      "sub_question_no": "1",
+      "question_page": 72,
+      "answer_pages": [
+        239,
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "(1)用判定表表示手续费的计算方法。",
+      "answer_preview": "图形用户界面的状态转换图如图B.8所示。\n图 B.8 图形用户界面的状态转换图\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "link_id": "qa_link_fd4ed28ab8c0",
+      "question_id": "question_ccb5cde2a224",
+      "answer_id": "answer_30d966bbc458",
+      "question_no": "5",
+      "answer_no": "5",
+      "sub_question_no": "2",
+      "question_page": 73,
+      "answer_pages": [
+        239,
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "(2)用判定树表示手续费的计算方法。",
+      "answer_preview": "图形用户界面的状态转换图如图B.8所示。\n图 B.8 图形用户界面的状态转换图\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "link_id": "qa_link_0a22a562a06a",
+      "question_id": "question_388e3c6f29f4",
+      "answer_id": "answer_30d966bbc458",
+      "question_no": "5",
+      "answer_no": "5",
+      "sub_question_no": "2",
+      "question_page": 73,
+      "answer_pages": [
+        239,
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "(2) 设计一个与它等价的结构化程序。",
+      "answer_preview": "图形用户界面的状态转换图如图B.8所示。\n图 B.8 图形用户界面的状态转换图\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "link_id": "qa_link_42a00c025213",
+      "question_id": "question_c4f5cace5303",
+      "answer_id": "answer_30d966bbc458",
+      "question_no": "5",
+      "answer_no": "5",
+      "sub_question_no": "1",
+      "question_page": 74,
+      "answer_pages": [
+        239,
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "(1) 画出它的程序流程图。",
+      "answer_preview": "图形用户界面的状态转换图如图B.8所示。\n图 B.8 图形用户界面的状态转换图\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "link_id": "qa_link_8b67d82d9950",
+      "question_id": "question_0fc1c8a7ff4c",
+      "answer_id": "answer_30d966bbc458",
+      "question_no": "5",
+      "answer_no": "5",
+      "sub_question_no": "",
+      "question_page": 74,
+      "answer_pages": [
+        239,
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "研究图 3.6 给出的程序流程图，要求：",
+      "answer_preview": "图形用户界面的状态转换图如图B.8所示。\n图 B.8 图形用户界面的状态转换图\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "link_id": "qa_link_2990cbb28c40",
+      "question_id": "question_fcc17cd90e54",
+      "answer_id": "answer_30d966bbc458",
+      "question_no": "5",
+      "answer_no": "5",
+      "sub_question_no": "2",
+      "question_page": 74,
+      "answer_pages": [
+        239,
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "(2) 设计一个等价的结构化程序。",
+      "answer_preview": "图形用户界面的状态转换图如图B.8所示。\n图 B.8 图形用户界面的状态转换图\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "link_id": "qa_link_e56e1ccb5964",
+      "question_id": "question_abb6ee8eb00a",
+      "answer_id": "answer_30d966bbc458",
+      "question_no": "5",
+      "answer_no": "5",
+      "sub_question_no": "2",
+      "question_page": 74,
+      "answer_pages": [
+        239,
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "(2)进一步简化图3.7(b)给出的结构化设计。",
+      "answer_preview": "图形用户界面的状态转换图如图B.8所示。\n图 B.8 图形用户界面的状态转换图\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "link_id": "qa_link_7c596751ac81",
+      "question_id": "question_0eb0545ff318",
+      "answer_id": "answer_30d966bbc458",
+      "question_no": "5",
+      "answer_no": "5",
+      "sub_question_no": "",
+      "question_page": 75,
+      "answer_pages": [
+        239,
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "图 3.6 一个非结构化设计",
+      "answer_preview": "图形用户界面的状态转换图如图B.8所示。\n图 B.8 图形用户界面的状态转换图\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "link_id": "qa_link_843e706acb2f",
+      "question_id": "question_bae3dec2c718",
+      "answer_id": "answer_30d966bbc458",
+      "question_no": "5",
+      "answer_no": "5",
+      "sub_question_no": "1",
+      "question_page": 110,
+      "answer_pages": [
+        239,
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "(1)设计测试数据以全面测试系统的正常操作。",
+      "answer_preview": "图形用户界面的状态转换图如图B.8所示。\n图 B.8 图形用户界面的状态转换图\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "link_id": "qa_link_14b2c8bd2f8f",
+      "question_id": "question_7c57871ae030",
+      "answer_id": "answer_30d966bbc458",
+      "question_no": "5",
+      "answer_no": "5",
+      "sub_question_no": "2",
+      "question_page": 110,
+      "answer_pages": [
+        239,
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "(2)设计测试数据以测试系统的非正常操作。",
+      "answer_preview": "图形用户界面的状态转换图如图B.8所示。\n图 B.8 图形用户界面的状态转换图\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "link_id": "qa_link_f65bc22786f1",
+      "question_id": "question_f36c1ae39a7d",
+      "answer_id": "answer_30d966bbc458",
+      "question_no": "5",
+      "answer_no": "5",
+      "sub_question_no": "8",
+      "question_page": 128,
+      "answer_pages": [
+        239,
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "(8) 进行总体设计时加强模块间的联系。",
+      "answer_preview": "图形用户界面的状态转换图如图B.8所示。\n图 B.8 图形用户界面的状态转换图\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "link_id": "qa_link_62089610939e",
+      "question_id": "question_af517f24eacb",
+      "answer_id": "answer_30d966bbc458",
+      "question_no": "5",
+      "answer_no": "5",
+      "sub_question_no": "14",
+      "question_page": 128,
+      "answer_pages": [
+        239,
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "(14) 采用防错程序设计技术，在程序中引入自检能力。",
+      "answer_preview": "图形用户界面的状态转换图如图B.8所示。\n图 B.8 图形用户界面的状态转换图\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "link_id": "qa_link_5787ad2ac133",
+      "question_id": "question_1149b3594b5f",
+      "answer_id": "answer_30d966bbc458",
+      "question_no": "5",
+      "answer_no": "5",
+      "sub_question_no": "2",
+      "question_page": 169,
+      "answer_pages": [
+        239,
+        240
+      ],
+      "match_method": "same_chapter_question_no_exact",
+      "match_confidence": 0.95,
+      "question_preview": "(2)设计结果重用。重用某个软件系统的设计模型（即求解域模型）。这个级别的重用有助于把一个应用系统移植到完全不同的软硬件平台上。",
+      "answer_preview": "图形用户界面的状态转换图如图B.8所示。\n图 B.8 图形用户界面的状态转换图\n软件工程导论（第 6 版）学习辅导"
+    }
+  ],
+  "stats": {
+    "question_count": 158,
+    "answer_count": 128,
+    "linked_question_count": 155,
+    "unlinked_question_count": 3,
+    "link_count": 155,
+    "unmatched_answer_count": 114
+  },
+  "unmatched_questions": [
+    {
+      "question_id": "question_8e599502f778",
+      "question_no": "",
+      "sub_question_no": "1",
+      "page": 13,
+      "content_preview": "(1)如何开发软件，以满足社会对软件日益增长的需求。"
+    },
+    {
+      "question_id": "question_29593034e8fc",
+      "question_no": "",
+      "sub_question_no": "2",
+      "page": 13,
+      "content_preview": "(2)如何更有效地维护数量不断膨胀的已有软件。"
+    },
+    {
+      "question_id": "question_e76b33d2f84e",
+      "question_no": "13",
+      "sub_question_no": "",
+      "page": 74,
+      "content_preview": "13. 从伪码转变为程序流程图或从程序流程图转变为伪码是否是唯一的？请说明理由。"
+    }
+  ],
+  "unmatched_answers": [
+    {
+      "answer_id": "answer_b932c0fa291c",
+      "answer_no": "1",
+      "pages": [
+        25
+      ],
+      "content_preview": "(1 )\n\\frac {10000}{10}=100 0$ （人日）\n开发这个应用程序大约需用 1000 个人日。需要指出的是，上述工作量包括问题定义、可行性研究、需求分析、总体设计、详细设计、编码和单元测试、综合测试等各个开发阶段的工作量，而不仅仅是编写程序所需的工作量。\n(2)每月平均工作 20 天，故开发这个软件需要用\n\\frac {1000}{20}=5 0$ （人月）\n每人每月的平均工资为 4000 美元，因此这个软件的成本大"
+    },
+    {
+      "answer_id": "answer_3d61b6ddbe73",
+      "answer_no": "2",
+      "pages": [
+        25,
+        26
+      ],
+      "content_preview": "(1)在 1985 年对计算机存储容量的需求，估计是\n\\begin{aligned} M&=4080e^{0.28(1985-1960)} \\\\ &=4080e^{7} \\\\ &=4474263（字） \\end{aligned}\n如果字长为 16 位，则这个存储器的价格是\n\\begin{aligned} P&=0.048 \\times 0.72^{1985-1974} \\times 4474263 \\\\ &=5789（美元） \\end{"
+    },
+    {
+      "answer_id": "answer_0bdeae11a645",
+      "answer_no": "3",
+      "pages": [
+        26
+      ],
+      "content_preview": "(1)计算机通过运行程序来控制宇宙飞船，而程序指令存放在存储器中。拆下存储器之后，计算机因取不出指令而无法运行程序，因此也就无法控制宇宙飞船了。\n我们现在遇到的软件问题没有这么严重，还没有出现计算机不服从人的命令的情况。\n(2)除非鲍曼能亲自分析有故障的部件，或者在计算机上还安装有另外一套故障检测系统，否则不依靠飞行指挥中心他很难知道 HAL 的故障预报有问题。\n(3)应该把HAL设计成具有若干个储存的问题，供周期性测试之用。通过把应有"
+    },
+    {
+      "answer_id": "answer_4eece80c6616",
+      "answer_no": "4",
+      "pages": [
+        26
+      ],
+      "content_preview": "软件过程是为了开发出高质量的软件产品所需完成的一系列任务的框架，它规定了完成各项任务的工作步骤。\n软件过程定义了运用技术方法的顺序、应该交付的文档资料、为保证软件质量和协调软件变化必须采取的管理措施，以及标志完成了相应开发活动的里程碑。\n软件过程是软件工程方法学的 3 个重要组成部分之一。"
+    },
+    {
+      "answer_id": "answer_7e812339c4fe",
+      "answer_no": "5",
+      "pages": [
+        26
+      ],
+      "content_preview": "软件是计算机系统的逻辑部件而不是物理部件，其固有的特点是缺乏可见性，因此，管理和控制软件开发过程相当困难。\n分阶段的生命周期模型提高了软件项目的可见性。管理者可以把各个阶段任务的完成作为里程碑来对软件开发过程进行管理。把阶段划分得更细就能够更密切地监控软件项目的进展情况。"
+    },
+    {
+      "answer_id": "answer_c1d8cce91766",
+      "answer_no": "6",
+      "pages": [
+        26,
+        27
+      ],
+      "content_preview": "里程碑是用来说明项目进展情况的事件。通常，把一个开发活动的结束或一项开发任务的完成定义为一个里程碑。\n里程碑必须与软件开发工作的进展情况密切相关，而且里程碑的完成必须非常明显\n第 1 章 软件工程概论\n（也就是说，里程碑应该有很高的可见性）。"
+    },
+    {
+      "answer_id": "answer_38ac6b953879",
+      "answer_no": "7",
+      "pages": [
+        27
+      ],
+      "content_preview": "对这个软件的需求很明确，实现开平方功能的算法也很成熟，因此，既无须通过原型来分析需求也无须用原型来验证设计方案。此外，一旦实现并测试完之后，该产品将被抛弃，因此也无须使用有助于提高软件可维护性的增量模型或螺旋模型来开发该软件。\n综上所述，为了开发这个简单的软件，使用大多数人所熟悉的瀑布模型就可以了。"
+    },
+    {
+      "answer_id": "answer_40ccf8a39a02",
+      "answer_no": "8",
+      "pages": [
+        27
+      ],
+      "content_preview": "对这个项目的一个重要要求是，严格按照已对外公布了的日期完成产品开发工作，因此，选择生命周期模型时应该着重考虑哪种模型有助于加快产品开发的进度。使用增量模型开发软件时可以并行完成开发工作，因此能够加快开发进度。\n这个项目是开发该公司已被广泛应用的字处理软件的新版本，从上述事实至少可以得出 3 点结论：第一，旧版本相当于一个原型，通过收集用户对旧版本的反映，较容易确定对新版本的需求，没必要再专门建立一个原型系统来分析用户的需求；第二，该公司"
+    },
+    {
+      "answer_id": "answer_e07eda40cfc5",
+      "answer_no": "9",
+      "pages": [
+        27
+      ],
+      "content_preview": "螺旋模型所定义的软件过程也是一种迭代式软件生命周期过程，与 Rational 统一过程有许多相似之处：螺旋模型也是重复一系列组成系统生命周期的循环，在每次生命周期结束时向用户交付软件产品的一个可运行的版本，每个生命周期由若干次迭代组成，每次迭代都需要进行风险分析，每次迭代结束时都交付产品的一个增量原型。\n以系统生命周期为单位的迭代而言，RUP 具有同样的二维迭代特性，但是，在 RUP 的一次生命周期所包含的若干次迭代过程中，每次迭代经历"
+    },
+    {
+      "answer_id": "answer_64ffac07d831",
+      "answer_no": "10",
+      "pages": [
+        27
+      ],
+      "content_preview": "敏捷过程具有对变化和不确定性的更快速、更敏捷的反应特性，而且在快速的同时仍然能够保持可持续的开发速度。因此较适用于开发可用资源及开发时间都有较苛刻约束的小型项目。"
+    },
+    {
+      "answer_id": "answer_acec1629cb61",
+      "answer_no": "11",
+      "pages": [
+        27,
+        28
+      ],
+      "content_preview": "以极限编程为典型代表的敏捷过程是一个一维的迭代过程，该过程中的每个生命周期交付软件产品的一个可运行的版本，各个生命周期持续地循环；每个生命周期\n软件工程导论（第 6 版）学习辅导\n的长度（即开发一个软件版本所用的时间）可以从几个星期到几个月，一般说来，生命周期的长度越短越好；敏捷过程衡量项目进度的首要标准是可以工作的软件。\n与敏捷过程不同，Rational 统一过程是一个二维的迭代过程，整个过程由生命周期的若干次循环组成；每个生命周期明"
+    },
+    {
+      "answer_id": "answer_005e6ce30190",
+      "answer_no": "12",
+      "pages": [
+        28,
+        29
+      ],
+      "content_preview": "相对于 RUP 而言，可以把微软过程看做是它的一个精简配置版本。整个微软过程由若干个生命周期的持续递进循环组成，每个生命周期划分为 5 个阶段。微软过程生命周期阶段与 RUP 生命周期阶段的对应关系为：RUP 的初始阶段完成微软过程规划阶段的工作，精化阶段完成设计工作，构建阶段完成开发和稳定工作，移交阶段完成发布工作。微软过程的每个阶段精简为由一次迭代完成，每次迭代所完成的工作相当于经历 RUP 的若干个核心工作流程：规划阶段中一次迭代"
+    },
+    {
+      "answer_id": "answer_f54b17ff86b0",
+      "answer_no": "1",
+      "pages": [
+        39
+      ],
+      "content_preview": "情景仅仅是通过部分或全部状态图的一条路径。也就是说，情景仅仅描述了系统的某个典型行为，而状态图则描述了系统所有行为。"
+    },
+    {
+      "answer_id": "answer_3f20bc2657d4",
+      "answer_no": "2",
+      "pages": [
+        39
+      ],
+      "content_preview": "数据流图不描述控制，因此，在一个数据流图中两个“处理”之间可能没有通路。如果每个处理都使用不同的输入数据，并生成不同的输出数据，而且一个处理的输出不用做另一个处理的输入，那么，在它们之间就没有弧。"
+    },
+    {
+      "answer_id": "answer_582ff03414c5",
+      "answer_no": "3",
+      "pages": [
+        39,
+        40
+      ],
+      "content_preview": "建立 ER 图的大致过程如下所述。\n(1)确定实体类型\n本问题中共有三类实体，分别是“零件”、“工程项目”和“供应商”。\n(2)确定联系类型\n一种零件可供应多个工程项目，一个工程项目需要使用多种零件，因此，零件与工程项目之间的联系“供应”,是多对多（ M : N ）联系；类似地，零件与供应商之间的联系“订购\",也是多对多（ M : N ）联系。\n(3)确定实体类型和联系类型的属性\n实体类型“零件”的主要属性是零件编号、零件名称、颜色和重"
+    },
+    {
+      "answer_id": "answer_60083c0cb735",
+      "answer_no": "4",
+      "pages": [
+        40,
+        41
+      ],
+      "content_preview": "(1)描绘本系统功能的数据流图如图 2.2 所示。\n图 2.2 计算机储蓄系统数据流图\n(2)本问题中共有两类实体，分别是“储户”和“储蓄所”,它们之间存在“存取款”关系。因为一位储户可以在多家储蓄所存取款，一家储蓄所拥有多位储户，所以“存取款”是多对多（ M : N ）关系。\n储户的属性主要有姓名、住址、电话号码和身份证号码，储蓄所的属性主要是名称、地址和电话号码，而数额、类型、到期日期、利率和密码则是联系类型存取款的属性。\n图 2."
+    },
+    {
+      "answer_id": "answer_1a8e2494f867",
+      "answer_no": "5",
+      "pages": [
+        41
+      ],
+      "content_preview": "从问题陈述可知，本系统的数据源点是“病人”和“护士”,他们分别提供生理信号和要求病情报告的信息。进一步分析问题陈述，从系统应该“定时记录病人情况以形成患者日志”这项要求可以想到，还应该有一个提供日期和时间信息的“时钟”作为数据源点。\n从问题陈述容易看出，本系统的数据终点是接收警告信息和病情报告的护士。\n系统对病人生理信号的处理功能主要是“接收信号”、“分析信号”和“产生警告信息”。此外，系统还应该具有“定时取样生理信号”、“更新日志”和"
+    },
+    {
+      "answer_id": "answer_651da8989287",
+      "answer_no": "6",
+      "pages": [
+        41,
+        42
+      ],
+      "content_preview": "本系统的数据源点和终点都是文件管理员，他既向系统提供修改信息，又接收系统生成的修改报告。\n系统功能主要是接收修改信息、读主文件、校核记录、修改原始记录和产生报告。注意，问题陈述中所描述的“系统按照记录号把修改信息顺序排列好”,是具体的实现方法。在数据流图中无须描绘具体实现方法，因此，在本系统的数据流图中不需要包含“排序”功能。类似地，“文件管理员把修改信息穿孔在卡片上，系统读入穿孔卡片上的信息”,是系\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "answer_id": "answer_8737f3162b11",
+      "answer_no": "7",
+      "pages": [
+        42,
+        43
+      ],
+      "content_preview": "电话号码=[校内电话号码|校外电话号码]\n校内电话号码=非零数字+3位数字\n第 2 章 结构化分析\n校外电话号码=[本市号码|外地号码]\n本市号码=数字零+8位数字\n外地号码=数字零+3位数字+8位数字\n非零数字=[1|2|3|4|5|6|7|8|9]\n数字零=0\n3位数字=3{数字}3\n8位数字=非零数字+7位数字\n7位数字=7{数字}7\n数字=[0|1|2|3|4|5|6|7|8|9]"
+    },
+    {
+      "answer_id": "answer_c59b7409b34f",
+      "answer_no": "8",
+      "pages": [
+        43
+      ],
+      "content_preview": "从问题陈述可知，复印机的状态主要有闲置、复印、缺纸和卡纸。引起状态转换的事件主要是复印命令、完成复印命令、发现缺纸、装满纸、发生卡纸故障和排除了卡纸故障。"
+    },
+    {
+      "answer_id": "answer_4d277a0a2ba7",
+      "answer_no": "9",
+      "pages": [
+        43,
+        44
+      ],
+      "content_preview": "Lookup操作的Z规格说明如图2.9所示。\n图 2.9 Lookup 操作的 Z 规格说明\n上面给出的 Z 规格说明指出：t 是二维整数表， $\\mathrm{t}'$ 是执行查表操作后的二维整数表；1? 是输入（即要查找的整数），r！是查表操作得到的结果，它也是整数。\n图 2.9 所示 Z 规格的下半部分准确地说明了查表操作应该得到的结果：\n* 若输入1?不在表t的定义域中，则输出r!是0,而且表t保持不变。 * 若输入1?在表t的"
+    },
+    {
+      "answer_id": "answer_a4d33ede38ff",
+      "answer_no": "10",
+      "pages": [
+        44
+      ],
+      "content_preview": "该有穷状态机的初态是“等待字符串输入”。在初态若接收到字符+、或字符一、或二进制位，则进入“输入尾数”状态；在初态若接收到其他字符，则进入终态“非浮点二进制数”。在“输入尾数”状态若接收到二进制位，则保持该状态不变；若接收到字符 E,则进入“等待输入指数”状态；若接收到其他字符，则进入终态“非浮点二进制数”。在 “等待输入指数”状态若接收到字符+、或字符一、或二进制位，则进入“输入指数”状态；若接收到其他字符，则进入终态“非浮点二进制数"
+    },
+    {
+      "answer_id": "answer_f5846876212b",
+      "answer_no": "11",
+      "pages": [
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56
+      ],
+      "content_preview": "通常，结构化分析过程包括问题定义、可行性研究和需求分析三个阶段。下面分别叙述这三个阶段的分析过程。\n(1)问题定义\n从何处着手解决财务科长提出的问题呢？立即开始考虑实现工资支付系统的详细方案并动手编写程序，对技术人员无疑是很有吸引力的。但是，在这样的早期阶段就考虑具体的技术问题，却很可能会迷失前进的方向。会计部门（用户）并没有要求在学校自己的计算机上实现工资支付系统，仅仅要求研究这样做的可能性。后者是和前者很不相同的问题，它实际上是问，"
+    },
+    {
+      "answer_id": "answer_5291658acb82",
+      "answer_no": "1",
+      "pages": [
+        75,
+        76,
+        77,
+        78,
+        79,
+        80
+      ],
+      "content_preview": "解决任何问题之前都必须首先理解问题，对问题理解得越深入，解决起来也就越容易。为了获得对顺序主文件更新问题的直观、具体的认识，首先设想一个典型的主文件（称为旧的主文件）、一个事务文件和更新后得到的新的主文件及异常情况报告，如图 3.8 所示。\n为了简单起见，在图 3.8 中忽略了主文件和事务文件中所包含的订户地址信息。\n从图 3.8 可以看出，更新顺序主文件系统有下述两个输入文件：\n\\textcircled{1}$ 旧的主文件（由包含订户"
+    },
+    {
+      "answer_id": "answer_3fa53d5024dc",
+      "answer_no": "2",
+      "pages": [
+        80,
+        81
+      ],
+      "content_preview": "从图 3.1 所示的层次图可以看出，这个程序的功能是计算若干个指定地点的每日平均温度。变量 sum 保存某地一天之内在指定的时间取样点的温度之和。程序运行时首先初始化变量 sum 并打开文件，然后读取地点、时间和温度等原始数据，创建用于保存这些数据的温度记录，接下来计算特定地点的日平均温度，存储温度记录。重复调用 “读取地点、时间和温度”、“创建新的温度记录”、“计算特定地点的日平均温度”和“存储温度记录”等模块，直至计算出并保存好所有"
+    },
+    {
+      "answer_id": "answer_b0f397be09e1",
+      "answer_no": "3",
+      "pages": [
+        81
+      ],
+      "content_preview": "综合分析图 3.2 和表 3.1 所提供的信息可知各个模块之间的耦合情况。例如，当模块 p 调用模块 q 时（接口 1），它传递了一个参数-飞机类型。当模块 q 把控制返还给模块 p 时，它传回一个状态标志。\n某些模块之间的耦合类型是明显的，例如，模块 p 和 q 之间（接口1）、模块 r 和 t 之间（接口5）及模块 s 和 u 之间（接口6）都是数据耦合，因为它们传递的都是一个简单变量。\n如果两个模块中的一个模块给另一个模块传递控制"
+    },
+    {
+      "answer_id": "answer_a4ef935ab9f1",
+      "answer_no": "4",
+      "pages": [
+        81,
+        82,
+        83
+      ],
+      "content_preview": "在解答第 2 章第 11 题的过程中已经用结构化分析方法详细地分析了这个工资支付系统，并且认真审查了结构化分析所得出的结果。因此，可以从图 2.19 所示的工资支付系统完整数据流图出发，设计工资支付系统的结构。\n从图 2.19 可以看出，事务数据和人事数据沿着两条输入通路进入系统，输出数据沿着一条输出通路离开系统，数据流图中没有明显的事务中心。因此，从整体上看这个数据流图具有变换流的基本特征。\n接下来应该分析确定输入流和输出流的边界，以"
+    },
+    {
+      "answer_id": "answer_6f9e7c866ddc",
+      "answer_no": "5",
+      "pages": [
+        83,
+        84
+      ],
+      "content_preview": "计算环形复杂度的方法主要有下述三种。\n(1)环形复杂度等于流图中的区域数\n(2)环形复杂度等于流图中边的条数减去结点数之后再加 2\n软件工程导论（第 6 版）学习辅导\n11-8+2=5\n(3)环形复杂度等于程序中的判断数加 1\n流图中有 2 条输出弧的结点（例如图 3.3 中的结点 c 和 f）对应于程序中的 1 个判断，有 $n(n>2)$ 条输出弧的结点（例如图 3.3 中的结点 a 有 3 条输出弧）对应于程序中的 $n-1$ 个"
+    },
+    {
+      "answer_id": "answer_af8d7910ab05",
+      "answer_no": "6",
+      "pages": [
+        84,
+        85
+      ],
+      "content_preview": "Halstead方法根据详细设计中使用的不同运算符的个数 $n_{1}$ 和不同操作数的个数 $n_{2}$ 来预测程序长度 H 。通常，把变量和常量作为操作数，把其他符号视为运算符，因此，逗号、分号、圆括号、方括号、算术运算符和逻辑运算符等全都是运算符。\n按照惯例，把所有总是成对出现或以三个一组方式出现的符号视为一个运算符。\n计算 X 与 Y 之积的代码中包含的运算符有下列8种( $n_{1}=8$ ):\n=、；、while end-"
+    },
+    {
+      "answer_id": "answer_d3b83e24ce6e",
+      "answer_no": "7",
+      "pages": [
+        85
+      ],
+      "content_preview": "分析图 3.4 可以看出，该处理过程由顺序执行的 3 个程序块组成：首先执行处理 a,然后执行一个 DO-UNTIL 型循环，最后执行处理 j。\nDO-UNTIL 型循环的循环体是处理 b 和一个 IF-THEN-ELSE 型分支结构，循环结束条件为 x8。其中，IF-THEN-ELSE 型分支结构的分支条件是 x1,THEN 部分是处理 f 和另一个分支条件为 x6 的 IF-THEN-ELSE 型分支结构；ELSE 部分是一个 CA"
+    },
+    {
+      "answer_id": "answer_9773ad627338",
+      "answer_no": "8",
+      "pages": [
+        85,
+        86
+      ],
+      "content_preview": "令 P 代表交易的总金额，Q代表每股的售价，n代表交易的股数。\n(1)表示手续费计算方法的判定表如图 3.20 所示。\n判定表的每一列是一条计算规则。例如，第 1 列（规则 1）规定，当交易总金额 P 少于1000 元，且每股售价 Q 低于 14 元，且交易的股数 n 是 100 的倍数时，给经纪人的手续费为\n(1+0.05) \\times 0.084 P\n第 16 列（规则 16）表明，当交易总金额 P 超过 10 000 元，且每股"
+    },
+    {
+      "answer_id": "answer_6696c7663ea8",
+      "answer_no": "9",
+      "pages": [
+        86
+      ],
+      "content_preview": "(1)从该伪码程序转变成的程序流程图示于图3.22中。\n(2)由该伪码转变成的盒图如图 3.23 所示。"
+    },
+    {
+      "answer_id": "answer_25e17f3891e1",
+      "answer_no": "10",
+      "pages": [
+        86
+      ],
+      "content_preview": "(1)通常所说的结构化程序是按照狭义的结构程序的定义衡量，符合定义规定的程序。图 3.5 所示的程序的循环控制结构有两个出口，显然不符合狭义的结构程序的定义，因此是非结构化的程序。\n(2)使用附加的标志变量 flag，至少有两种方法可以把该程序改造为等价的结构化程序，图 3.24 所示盒图描绘了等价的结构化程序。\n(3) 不使用 flag 把该程序改造为等价的结构化程序的方法如图 3.25 所示。"
+    },
+    {
+      "answer_id": "answer_4bcd53f62a0d",
+      "answer_no": "11",
+      "pages": [
+        86,
+        87,
+        88,
+        89,
+        90
+      ],
+      "content_preview": "(1)根据这个伪码程序画出的程序流程图如图3.26所示。\n(2)这个程序是非结构化的。因为在图 3.26 中“印出缓冲区的内容”这个处理框有两个入口；此外，循环结构有两个出口： $I\\le\\space T$ 为假和MATCH=N为真时都结束循环。\n(3)仅用三种控制结构的等价的结构化程序的伪码如下：\n第 3 章 结构化设计\n图 3.21 描述手续费计算方法的判定树\nINPUT N\nINPUT KEYWORD(S) FOR TOPIC\nI"
+    },
+    {
+      "answer_id": "answer_ac8da68c8065",
+      "answer_no": "12",
+      "pages": [
+        90,
+        91,
+        92
+      ],
+      "content_preview": "(1)图 3.6 所示程序流程图可用伪码表示为：\n``` START Loop: IF P1 THEN S1 IF P2 THEN S2 IF P3 THEN S3 IF P4 THEN S4 GO TO Loop ELSE GO TO Exit END ELSE GO TO Exit END ELSE GO TO Exit END ELSE GO TO Exit END Exit: STOP ``` (2)使用附加的标志变量 flag"
+    },
+    {
+      "answer_id": "answer_e5d8e2a38dd3",
+      "answer_no": "1",
+      "pages": [
+        110
+      ],
+      "content_preview": "程序设计语言是人们用计算机解决问题的基本工具，因此，它将影响软件开发人员的思维方式和解题方式。\n程序设计语言是表达具体的解题方法的工具，它的语法是否清晰易懂，阅读程序时是否容易产生二义性，都对程序的可读性和可理解性有较大影响。\n程序设计语言所提供的模块化机制是否完善，编译程序查错能力的强弱等，都对程序的可靠性有明显影响。\n程序设计语言实现设计结果的难易程度，是否提供了良好的独立编译机制，可利用的软件开发工具是否丰富而且有效等，都对软件的"
+    },
+    {
+      "answer_id": "answer_859f129057d4",
+      "answer_no": "2",
+      "pages": [
+        110,
+        111
+      ],
+      "content_preview": "每个32位的二进制整数具有 $2^{32}$ 个可能的值，因此，具有两个整数输入的程序\n第 4 章 结构化实现\n应该具有 2^{64} 个可能的输入。\n每微秒可进行一次测试，即每秒可进行 $10^{6}$ 个测试，因此，每天可进行的测试数为\n60 \\times 60 \\times 24 \\times 10^{6}=8.64 \\times 10^{10 }\n这等于每年大约可进行 $3.139×10^{13}$ 个测试。\n因为 $2^{10"
+    },
+    {
+      "answer_id": "answer_d96f0dfa1446",
+      "answer_no": "3",
+      "pages": [
+        111
+      ],
+      "content_preview": "经验表明，在类似的程序中，单位长度里的错误数 $E_{\\mathrm{T}}/I_{\\mathrm{T}}$ 近似为常数。美国的一些统计数字告诉我们，通常\n0.5 \\times 10^{-2} \\le E_{T}/I_{T} \\le 2 \\times 10^{-2 }\n也就是说，在测试之前每 1000 条指令中有 $5\\sim20$ 个错误。\n假设在该程序的每 1000 条指令中有 10 个错误，则估计在对它进行测试期间将发现的错误数为"
+    },
+    {
+      "answer_id": "answer_66ebbb72388c",
+      "answer_no": "4",
+      "pages": [
+        111,
+        112
+      ],
+      "content_preview": "(1)语句覆盖的测试用例\n因为每个判定表达式为真或为假时均有赋值语句，为了使每个语句都至少执行一次，总共需要两组测试数据，以便使得每个判定表达式取值为真或为假各一次。下面是实现语句覆盖的典型测试用例：\n\\textcircled{1}$ 使 3 个判定表达式之值全为假\n输入：A=1,B=1,C=1\n预期的输出： $X=1,\\space Y=2,\\space Z=3\n\\textcircled{2}$ 使3个判定表达式之值全为真\n输入： $\\"
+    },
+    {
+      "answer_id": "answer_d5cfd3e0d979",
+      "answer_no": "5",
+      "pages": [
+        112,
+        113
+      ],
+      "content_preview": "(1)分支覆盖（即判定覆盖）标准为，不仅使每个语句至少执行一次，而且使每个判定表达式的每个分支都至少执行一次。\n为做到分支覆盖，至少需要两组测试数据，以使每个判定表达式之值为真或为假各一次。下面是典型的测试用例：\n\\textcircled{1}$ 使两个判定表达式之值全为假\n输入： $\\mathrm{A}=-1,\\mathrm{B}=-2,\\mathrm{C}=-3,\\mathrm{D}=1\n预期的输出： $X=1,\\space Y=-"
+    },
+    {
+      "answer_id": "answer_7cbbe7cc970c",
+      "answer_no": "6",
+      "pages": [
+        113,
+        114
+      ],
+      "content_preview": "用基本路径测试方法设计测试用例的过程，有下述 4 个步骤。\n(1)根据过程设计的结果画出流图\n与本题给出的伪码程序相对应的流图如图 4.1 所示。\n(2)计算流图的环形复杂度\n使用下述三种方法中的任一种都可以算出图 4.1 所示流图的环形复杂度为 5。\n\\textcircled{1}$ 该流图共有 15 条边，12 个结点，所以环形复杂度为\n15-12+2= 5\n\\textcircled{2}$ 该流图共有5个区域，因此环形复杂度为5。"
+    },
+    {
+      "answer_id": "answer_6d0b128017ac",
+      "answer_no": "7",
+      "pages": [
+        114,
+        115
+      ],
+      "content_preview": "题中并没有给出实现函数 SEARCH 的算法，仅仅描述了它的功能，因此，只能用黑盒测试技术设计测试它的测试方案。\n为了用等价划分法设计测试方案，首先需要划分输入数据的等价类。根据该函数的功能，可以把它的输入数据划分成以下等价类。\n(1) 有效输入的等价类\n* 数组有偶数个元素，第1个元素是所要找的数。 * 数组有偶数个元素，最后一个元素是所要找的数。 * 数组有偶数个元素，数组中没有所要找的数。 * 数组有奇数个元素，第1个元素是所要找"
+    },
+    {
+      "answer_id": "answer_3e40a5613427",
+      "answer_no": "8",
+      "pages": [
+        115,
+        116
+      ],
+      "content_preview": "为了对这个折半查找程序进行功能测试，应该使用下述测试用例：\n软件工程导论（第 6 版）学习辅导\n\\textcircled{1}$ 查找列表中第一个名字\n预期的输出：TRUE\n\\textcircled{2}$ 查找列表中最后一个名字\n预期的输出：TRUE\n\\textcircled{3}$ 查找第一个名字后的名字\n预期的输出：TRUE\n\\textcircled{4}$ 查找最后一个名字前的名字\n预期的输出：TRUE\n\\textcircled"
+    },
+    {
+      "answer_id": "answer_321ba1a6833b",
+      "answer_no": "9",
+      "pages": [
+        116,
+        117
+      ],
+      "content_preview": "(1)测试系统正常操作的测试数据\n\\textcircled{1}$ 顺序执行下列三个命令：\nb(KEYWORD)\ns(L)\nd(N)\n其中，KEYWORD 是正确的关键字；L 是执行命令 b 后在屏幕上显示的约 20 个行号中的一个（至少应该使 L 分别为第一个、最后一个和中央一个行号）；N 是执行命令 s 后列出的索引号中的一个（至少应该使 N 分别为第一个、最后一个和中央一个索引号）。\n针对若干个不同的 KEYWORD 重复执行上述"
+    },
+    {
+      "answer_id": "answer_1545120e62d5",
+      "answer_no": "1",
+      "pages": [
+        117
+      ],
+      "content_preview": "AARON,JULES(book)\n\\textcircled{3}$ 用比执行命令b后列出的最大行号大1的数作为命令s的参数\n预期的输出：“命令 s 的参数不在行号列表中”\n\\textcircled{4}$ 用数字和标点符号作为命令b和命令f的参数\n预期的输出：“参数类型错”\n\\textcircled{5}$ 用字母字符作为命令s和命令d的参数\n预期的输出：“参数类型错”\n\\textcircled{6}$ 用〇和负数作为命令s和命令d的"
+    },
+    {
+      "answer_id": "answer_bca7999389e5",
+      "answer_no": "10",
+      "pages": [
+        117,
+        118
+      ],
+      "content_preview": "应该分别使用正常的输入数据和异常的输入数据作为验收测试数据。\n(1)用正常的输入数据作为测试数据\n\\textcircled{1}$ 输入常规的出发点、目的地、5个位置校核点、高度、速度及飞机型号。\n\\textcircled{2}$ 针对5对不同的出发点和目的地，重复执行测试 $\\textcircled{1}$ 。\n\\textcircled{3}$ 固定出发点、目的地、位置校核点、高度和速度，分别输入 $3\\sim5$ 种不同的飞机型号，"
+    },
+    {
+      "answer_id": "answer_36b185f8b3ef",
+      "answer_no": "11",
+      "pages": [
+        118,
+        119
+      ],
+      "content_preview": "(1)假设在程序的平均无故障时间MTTF和测试时间 $\\tau$ 之间存在线性关系，即\n\\mathrm {MTTF}=a+b \\tau\n根据题意可知，当 $\\tau=1$ 时 $MTTF=10$ ，当 $\\tau=2$ 时 $MTTF=15$ ，把这些已知的数据代入上列方程后得到下列的联立方程式\n\\left \\{ \\begin{aligned} &a+b=10 \\\\ &a+2b=15 \\end{aligned} \\right .\n解上列"
+    },
+    {
+      "answer_id": "answer_a2bce8b45401",
+      "answer_no": "12",
+      "pages": [
+        119,
+        121
+      ],
+      "content_preview": "(1)本题中采用了分别测试法，因此，可以估算出刚开始测试时程序中错误总数为\nE_{ \\mathrm {T}}= \\frac {24}{6} \\times 20=8 0\n(2)因为\n8= \\frac {48000}{K(E_{T}-20)}= \\frac {48000}{K \\times 60 }\n所以\nK=10 0\n因为\n240= \\frac {48000}{100(80-E_{c}) }\n所以\nE_{c}=7 8\n为了使平均无故障时间"
+    },
+    {
+      "answer_id": "answer_15acd1840ae3",
+      "answer_no": "1",
+      "pages": [
+        129
+      ],
+      "content_preview": "首先，软件维护并非仅仅是改正程序中的错误，它还包括为了使软件适应变化了的环境而修改软件的活动，以及为了满足用户在使用软件的过程中提出的扩充或完善软件的新需求而修改软件的活动，甚至包括为了提高软件未来的可维护性或可靠性而主动地修改软件的活动。实际上，为了消除程序中潜藏的错误而进行的改正性维护，仅占全部维护活动的 1/5 左右。\n其次，“目前国外许多软件开发组织把 60%以上的人力用于维护已有的软件”,指的是软件开发组织内人力分配的整体状况"
+    },
+    {
+      "answer_id": "answer_05a6f07a21f6",
+      "answer_no": "2",
+      "pages": [
+        129,
+        130
+      ],
+      "content_preview": "软件维护不像一般产品维修那样仅限于排除用户在使用产品的过程中遇到的故障。事实上，当用户在使用软件产品的过程中遇到了故障时，软件维护人员必须进行改正性维护活动，以诊断并改正软件中潜藏的错误；当运行软件的环境改变了的时候，软件维护人员必须适当地修改软件（即进行适应性维护），以使软件适应新的运行环境；当用户在使用软件的过程中提出增加软件功能或提高软件性能的要求时，软件维护人员必须对软件进行完善性维护，以满足用户的新需求。此外，在资源允许的情况"
+    },
+    {
+      "answer_id": "answer_d8187d1256af",
+      "answer_no": "3",
+      "pages": [
+        130,
+        131
+      ],
+      "content_preview": "(1)正确。在分析用户需求的同时考虑维护问题，列出将来可能变更或增加的需求，就可以在设计时为将来可能做的修改预先做一些准备，使得在用户确实提出这些维护要求时，实现起来比较容易一些。\n（2）不正确。程序中的注解是提高程序可理解性的关键的内部文档，删去程序中的注解必然会降低程序的可读性和可理解性，从而降低软件的可维护性。\n（3）正确。完整准确的文档对提高软件的可理解性有重要作用，保证文档的正确性是提高软件可维护性的关键。\n（4）不正确。程序"
+    },
+    {
+      "answer_id": "answer_be97f54f59a4",
+      "answer_no": "4",
+      "pages": [
+        131
+      ],
+      "content_preview": "通常，“对一个已有的软件做重大修改”意味着对软件功能做较大变更或增加较多新功能，这往往需要修改软件的体系结构。因此，了解原有软件的总体情况是很重要的。程序的规格说明书准确地描述了对软件系统的数据要求、功能需求、性能需求、可靠性和可用性要求、出错处理需求、接口需求、约束、逆向需求及将来可能提出的需求，对了解已有软件的总体情况有很大帮助。在对已有软件做重大修改之前仔细阅读、认真研究这份文档，可以避免许多修改错误。因此，应该选取这份文档。\n有"
+    },
+    {
+      "answer_id": "answer_002fc77ed6ba",
+      "answer_no": "5",
+      "pages": [
+        131
+      ],
+      "content_preview": "既然这个老程序目前还在为其用户完成关键的业务工作，可见它的业务重要程度相当高。但是，在十几年前软件工程还不像现在这样深入人心，软件过程管理还不成熟，那时开发出的软件往往可维护性较差。一般说来，用户的业务工作将持续相当长时间，也就是说，这个程序很可能还要继续服役若干年，在这么长的时间里它肯定还会经历若干次修改。与其每次花费很多人力物力来维护这个老程序，还不如在现代软件工程方法学指导下再造这个程序（即对它进行再工程）。\n粗看起来，在这个老程"
+    },
+    {
+      "answer_id": "answer_89a7b74b2ce8",
+      "answer_no": "6",
+      "pages": [
+        131
+      ],
+      "content_preview": "代码重构和正向工程都需要重新设计数据结构和算法，并且需要重新编写程序代码，这些是代码重构和正向工程相同的地方。\n通常，代码重构并不修改程序的体系结构，它只修改某些模块的设计细节和模块中使用的局部数据结构，并重新编写这些模块的代码。如果修改的范围扩展到模块边界之外并涉及程序的体系结构，则代码重构变成了正向工程。"
+    },
+    {
+      "answer_id": "answer_641acdbe01b1",
+      "answer_no": "1",
+      "pages": [
+        146,
+        147
+      ],
+      "content_preview": "用结构化范型开发软件时，软件的生命周期如下：\n(1) 陈述需求阶段。\n（2） 规格说明（分析）阶段。\n(3) 设计阶段。\n(4) 实现阶段。\n(5) 维护阶段。\n用面向对象范型开发软件时，软件的生命周期为：\n(1) 陈述需求阶段。\n(2) 面向对象分析阶段。\n(3) 面向对象设计阶段。\n(4) 面向对象实现阶段。\n(5) 维护阶段。\n粗看起来，用这两种不同的范型开发软件时，软件生命周期基本相同。但是，仔细分析起来就会发现两者之间有本质差"
+    },
+    {
+      "answer_id": "answer_45295d23131f",
+      "answer_no": "2",
+      "pages": [
+        147
+      ],
+      "content_preview": "结构化技术要么面向处理（例如面向数据流的设计方法），要么面向数据（例如面向数据结构的设计方法），但没有既面向处理又面向数据的结构化技术。用结构化技术开发出的软件产品的基本成分是产品的行为（即处理）和这些行为所操作的数据。由于数据和对数据的处理是分离的，尽管开发者把程序划分成了许多模块，但是这些模块之间的联系是比较紧密的，因此，使用结构化范型开发出的软件产品本质上是一个完整的单元。由此带来的后果是软件规模越大，用结构化范型开发软件的技术难"
+    },
+    {
+      "answer_id": "answer_2d1bfd0502ae",
+      "answer_no": "3",
+      "pages": [
+        147
+      ],
+      "content_preview": "夏利牌汽车具有小汽车的全部属性和行为，它只不过是一种特定品牌的小汽车，因此，夏利牌汽车可以从基类（小汽车）派生出来，也就是说，夏利牌汽车是小汽车类的特化。\n发动机是组成小汽车的一种零件。小汽车还有车身、车灯、轮子等许多种其他零件，小汽车所具有的许多属性和行为发动机都不具有，因此，发动机不能从小汽车类派生出来，它不是小汽车类的特化。"
+    },
+    {
+      "answer_id": "answer_81a7ef03bb74",
+      "answer_no": "4",
+      "pages": [
+        147
+      ],
+      "content_preview": "对象是对客观世界实体的抽象，它是描述实体静态属性的数据和代表实体动态行为的操作结合在一起所构成的统一体。属性只不过是对象的一种特性，它是组成对象的一种成分。"
+    },
+    {
+      "answer_id": "answer_b9e3034026d3",
+      "answer_no": "5",
+      "pages": [
+        147
+      ],
+      "content_preview": "对象是用面向对象方法学开发软件时对客观世界实体的抽象，它是由描述实体属性的数据及可以对这些数据施加的所有操作封装在一起构成的统一体。传统的数据是用传统方法学开发软件时对客观世界实体的抽象，但是，这种抽象是不全面的：数据只能描述实体的静态属性，不能描述实体的动态行为。必须从外界对数据施加操作，才能改变数据实现实体应有的行为。\n对象与传统数据有本质区别，它不是被动地等待外界对它施加操作，相反，它是进行处理的主体。必须发消息请求对象主动地执行"
+    },
+    {
+      "answer_id": "answer_7d97478bd399",
+      "answer_no": "6",
+      "pages": [
+        147,
+        148
+      ],
+      "content_preview": "所谓模型，就是为了理解事物而对事物作出的一种抽象，是对事物的一种无歧义的书面描述。通常，模型由一组图示符号和组织这些符号的规则组成，利用它们来定\n软件工程导论（第 6 版）学习辅导\n义和描述问题域中的术语和概念。更进一步讲，模型是一种思维工具，利用这种工具可以把知识规范地表示出来。\n众所周知，在解决问题之前必须首先理解所要解决的问题。对问题理解得越透彻，就越容易解决它。在开发软件的过程中，为了更好地理解客户要求解决的问题，往往需要建立问"
+    },
+    {
+      "answer_id": "answer_6ac11132acdf",
+      "answer_no": "7",
+      "pages": [
+        148,
+        149,
+        150
+      ],
+      "content_preview": "面向对象方法模仿人类习惯的思维解题方法，用对象分解取代了功能分解，也就是把程序分解成一系列对象，每个对象都既有自己的数据，又有处理这些数据的方法。不同对象之间通过发送消息向对方提出服务要求，接受消息的对象主动完成指定功能提供所需要的服务。程序中所有对象分工协作，共同完成整个程序的功能。\n从本题中给出的对这个简单图形程序的需求可以看出，这个程序中只涉及两类实体（即对象）--圆和弧。\n从需求陈述中不难看出，圆的基本属性是圆心坐标和半径，弧的"
+    },
+    {
+      "answer_id": "answer_3102c4875255",
+      "answer_no": "8",
+      "pages": [
+        150
+      ],
+      "content_preview": "解决这个问题的一个可能的方案是，在“圆”类中增加一个字符串类型的属性，并给“圆”类的服务“显示”加一段代码，使它不仅能在屏幕上显示圆，而且能在圆内显示字符串。虽然用面向对象的程序设计语言实现这个方案并不困难，但它不是一个理想的方案：字符串和圆是截然不同的两类实体，当考虑字符串时，想到的是字符串内容、字体、字号（字符大小）、对齐方式及其他一些可能的属性，它们中没有哪一个是与圆有关的。把两类不同实体的属性放在同一个类中，这样定义出的“综合”"
+    },
+    {
+      "answer_id": "answer_d2e3a1c8abd5",
+      "answer_no": "9",
+      "pages": [
+        150
+      ],
+      "content_preview": "从对这个订货系统的需求可以知道，仓库管理员通过放在仓库中的终端把零件入库/出库事务报告给订货系统，系统接收到事务信息之后应该处理事务；采购员需要使用订货系统提供的产生报表功能，以获取订货报表。综上所述，可以画出图 6.4 所示的用例图。"
+    },
+    {
+      "answer_id": "answer_cced94099e61",
+      "answer_no": "10",
+      "pages": [
+        150,
+        151,
+        153
+      ],
+      "content_preview": "人类认识客观世界、解决现实问题的过程是一个渐进的过程。人的认识需要在继承以前的有关知识的基础上，经过多次反复才能逐步深化。在人的认识深化过程中，既包括从一般到特殊的演绎思维过程，也包括从特殊到一般的归纳思维过程。人在认识和解决复杂问题时使用的最强有力的思维工具是抽象，也就是在处理复杂对象时，为了达到某个分析目的而集中研究对象的与此目\n第 6 章 面向对象方法学引论\n的有关的实质特性，暂时忽略对象的那些与此目的无关的特性。\n面向对象方法学"
+    },
+    {
+      "answer_id": "answer_96d269540b4f",
+      "answer_no": "1",
+      "pages": [
+        162
+      ],
+      "content_preview": "用例图是从用户的观点来描述系统的功能，因此，必须包含用户关心的所有关键功能。"
+    },
+    {
+      "answer_id": "answer_f7973df70efd",
+      "answer_no": "2",
+      "pages": [
+        162
+      ],
+      "content_preview": "脚本必须从用户的观点来描述每个重要的功能序列，因此，脚本应该能够说明系统的一类重要功能或具体的使用方法。"
+    },
+    {
+      "answer_id": "answer_1b6a8ed23b3a",
+      "answer_no": "3",
+      "pages": [
+        162
+      ],
+      "content_preview": "状态图应该描绘所有可能的状态转换。图中每条孤都要有一个引起状态转换的事件。从开始结点（初态）到每个结点（中间状态）以及从每个结点到最终结点（终态）都必须有一条路径。"
+    },
+    {
+      "answer_id": "answer_217cf6dea2e8",
+      "answer_no": "4",
+      "pages": [
+        162,
+        163
+      ],
+      "content_preview": "非正式分析也称为词法分析，这种方法把用自然语言书写的需求陈述中的名词作为候选的对象。\n从对杂货店问题的描述中可以找出下列名词作为对象的候选者：\n杂货店，库存，顾客，商品，名称，数量，销售终端，服务台，终端，退货，码头，供应商，发货，肉食部，农产品部，损耗，损失，折扣。其中，“退货”粗看起来是动词，好像应该作为操作的候选者，但是，经仔细分析可知，退货包含货物名称、数量、价格等属性，实际上是一类对象。类似地，“发货”也应该作为一类对象。\n词"
+    },
+    {
+      "answer_id": "answer_0befbe012dae",
+      "answer_no": "5",
+      "pages": [
+        163
+      ],
+      "content_preview": "继承关系是“A\\_KIND\\_OF”（“是一种”）关系，也就是说，基类是公共的对象类，派生类是一种特殊的基类。\n通常，有两种常用的方法可以确定问题域中对象类之间可能存在的继承关系。\n(1)自顶向下方法通过研究已知的对象类在问题域中的行为和作用，找出在某些情况下需要特殊处理并且具有特殊属性的对象，从而把现有的对象类细化成更具体的子类。\n(2)自底向上方法与自顶向下方法相反，这种方法对类似的对象类进行分组，然后寻找它们之间的共性，所有相似的"
+    },
+    {
+      "answer_id": "answer_c43204948cd7",
+      "answer_no": "6",
+      "pages": [
+        163,
+        164
+      ],
+      "content_preview": "从对牙科诊所问题的陈述中，可以找出下列名词作为对象的候选者：\n王大夫，小镇，牙科诊所，牙科助手，牙科保健员，接待员，软件系统，预约，病人，预约登记表，就诊时间，预约时间，约定时间，系统，名字，记录的病人数据，病历号，姓名，日期，预约信息，病人清单，病人记录，电话号码，每天工作安排，每周工作安排。\n通常，通过词法分析找到的候选对象中有许多并不是问题域中真正有意义的对象，因此，必须对这些候选对象进行严格的筛选，从中删除不正确的或不必要的，只"
+    },
+    {
+      "answer_id": "answer_f75f5e583661",
+      "answer_no": "7",
+      "pages": [
+        164,
+        165
+      ],
+      "content_preview": "用例图从用户角度描述系统的功能，它必须包含用户关心的所有关键功能。用户通常就是用例图中的行为者。为了画出系统的用例图，首先应该找出系统的用户，然后根据用户对系统功能的需求确定用例。\n从对牙科诊所问题的陈述可知，接待员负责处理病人预约事务，为此他需要访问预约登记表和病人记录，接待员也可以取消预约，此外，接待员还可以根据预约登记表打印出关于所有病人的每天和每周的工作安排，牙医将按照工作安排诊治病人；在病人就诊后，\n第 7 章 面向对象分析\n"
+    },
+    {
+      "answer_id": "answer_b4939d1c452c",
+      "answer_no": "8",
+      "pages": [
+        165
+      ],
+      "content_preview": "从牙科诊所管理系统的需求陈述得知，当进行预约时病人提供姓名、希望的就诊日期等数据，系统查询预约登记表，以确定一个有效的就诊日期；此外，系统还将查询病人记录以获得病历号等病人数据。在每次预约诊治完成之后，应该更新预约登记表，以标记相应的预约诊治已经完成，必要时将约定下次就诊日期。诊所职员可以按照病人姓名和日期查询预约信息，也可以取消预约。此外，系统可以打印出每天和每周的工作安排给牙医。\n根据上述的系统功能，可以画出图 7.4 所示的牙科诊"
+    },
+    {
+      "answer_id": "answer_3afa3c067f47",
+      "answer_no": "9",
+      "pages": [
+        165,
+        166
+      ],
+      "content_preview": "脚本从用户角度描述系统典型的工作过程。根据对牙科诊所管理系统的需求，至少可以设想出下述三个脚本。\n(1)正常情况\n病人甲请求预约。系统识别出病人的名字。系统建议一个就诊时间。病人同意该时间，接待员输入该预约。在预约的就诊日期到来之前两天，系统输出一份包含病人姓名和电话号码等信息的提醒清单。接待员打电话提醒病人。病人如约到来。治疗完之后，牙医助手安排该病人的下一次预约。\n(2) 新病人\n病人乙请求预约。系统不认识该病人的名字，必须把该病人"
+    },
+    {
+      "answer_id": "answer_7f0c37212c78",
+      "answer_no": "10",
+      "pages": [
+        166,
+        167
+      ],
+      "content_preview": "状态图描绘系统可能有的状态转换。牙科诊所管理系统的主要功能是实现病人预约，根据需求陈述和在第 9 题解答中给出的脚本，可以画出图 7.5 所示的牙科诊所管理系统状态图。图中把除了完成病人预约之外的事务笼统地称为日常事务。\nCHAPTER\n设计是把分析阶段得到的对目标系统的需求转变成符合成本和质量要求的、抽象的系统实现方案的过程。从面向对象分析到面向对象设计是一个逐渐扩充模型的过程，或者说，面向对象设计就是用面向对象观点建立求解域模型的过"
+    },
+    {
+      "answer_id": "answer_a9ecffebd43a",
+      "answer_no": "1",
+      "pages": [
+        178
+      ],
+      "content_preview": "内聚是衡量组成模块的各个元素彼此结合的紧密程度，它是信息隐藏和局部化原理的自然扩展。设计软件时应该力求做到模块高内聚。\n当采用结构化范型设计软件系统时，使用功能分解方法划分模块。组成这类模块的元素主要是完成模块功能的可执行语句。如果模块内所有处理元素属于一个整体，完成单一完整的功能，则该模块的内聚称为功能内聚。采用结构化范型开发软件时，功能内聚是最高等级的内聚。\n采用面向对象范型设计软件时，使用对象分解方法划分模块。对象是面向对象软件的"
+    },
+    {
+      "answer_id": "answer_ec13ac7391ee",
+      "answer_no": "2",
+      "pages": [
+        178
+      ],
+      "content_preview": "当已有的类构件不能通过实例重用方式满足当前系统的需求时，利用继承机制从已有类派生出符合当前需要的子类，从而获得可在当前系统中使用的类构件，这种重用方式称为继承重用。\n如果在设计类构件时，把可能妨碍重用的、与应用环境密切相关的操作从一般操作中分离出来，作为适配接口，并且把这类操作说明为多态操作，类中其他操作通过调用适当的多态操作来完成自己的功能，则为了在当前系统中重用已有的类构件，在从已有类派生出的子类中只需重新定义某些多态操作即可满足当"
+    },
+    {
+      "answer_id": "answer_82ce5cd24c13",
+      "answer_no": "3",
+      "pages": [
+        178
+      ],
+      "content_preview": "有两种情况会导致修改由面向对象分析确定下来的系统需求：一是客户需求或系统外部环境发生了变化；二是分析员对问题域理解不透彻或缺乏领域专家帮助，以致面向对象分析模型不能完整、准确地反映客户的真实需求。\n为了调整对目标系统的需求，通常只需简单地修改面向对象分析的结果（例如增添或删掉一些类，从已有类派生出新类，调整某些类之间的关系），然后把这些修改反映到问题域子系统中。"
+    },
+    {
+      "answer_id": "answer_f280efe5715b",
+      "answer_no": "4",
+      "pages": [
+        178,
+        179
+      ],
+      "content_preview": "人机界面是提供给用户使用的，用户对人机界面的评价在很大程度上由人的\n第 8 章 面向对象设计\n主观因素决定。用户的技能水平或职务不同，喜好和习惯也往往不同。因此，为了设计出符合用户需要的人机界面，应该了解和研究用户，根据用户类型设计出被他们所喜爱的用户界面。"
+    },
+    {
+      "answer_id": "answer_f1018ec0b890",
+      "answer_no": "5",
+      "pages": [
+        179
+      ],
+      "content_preview": "问题空间是现实世界的一部分，它由现实世界中的实体组成。解空间实际上就是软件系统，它由实现解决方案的软件实体组成。"
+    },
+    {
+      "answer_id": "answer_c65319aae6e7",
+      "answer_no": "6",
+      "pages": [
+        179
+      ],
+      "content_preview": "在面向对象分析阶段建立的对象模型中，对象是对问题空间中实体的抽象。随着软件开发过程进入面向对象设计阶段，这些对象逐渐变成了解空间的实体。"
+    },
+    {
+      "answer_id": "answer_993fdabf5627",
+      "answer_no": "7",
+      "pages": [
+        179,
+        180,
+        181,
+        182
+      ],
+      "content_preview": "识别对象的一条主要准则是寻找应用领域中的重要概念。\n在一座图书馆中常见的实体有“书”、“书柜”、“读者”等。在办公室环境中，可能有“文件夹”、“信件”、“职员”等实体。应用领域中特有的这些实体是对象的主要候选者。它们可以是现实世界中的事物（例如，书）、担任的角色（例如，图书馆的读者）、组织单位（例如，计算机系）、地点（例如，办公室）或设备（例如，打印机）。此外，还可以通过研究已有的分类或聚集结构，发现候选的对象。通过访谈、阅读文档等途径"
+    },
+    {
+      "answer_id": "answer_07df2a848fbb",
+      "answer_no": "8",
+      "pages": [
+        182,
+        183,
+        184,
+        185,
+        186
+      ],
+      "content_preview": "在电梯系统的需求陈述中，共有下列11个不同的名词：大厦、电梯、楼层、按钮、运动、指示灯、请求、最低层、最高层、方向和门。这些名词所代表的事物可以作为对象的初步候选者。其中，大厦、最低层、最高层和楼层是处于问题边界之外的，因此应该删掉；运动、方向、指示灯、请求和门可以作为其他对象的属性，例如，指示灯（的状态）可以作为按钮类的属性，方向和门（的状态）可以作为电梯类的属性。经过上述筛选后只剩下两个候选的对象类，即电梯和按钮。\n在需求陈述中实际"
+    },
+    {
+      "answer_id": "answer_655e28654e8a",
+      "answer_no": "1",
+      "pages": [
+        192
+      ],
+      "content_preview": "面向对象语言充分支持对象、类、封装、继承、多态、重载等面向对象的概念，编译程序能够自动地在目标程序中实现上述概念，因此，把面向对象的设计结果翻译成面向对象程序比较容易，这就降低了编程工作量而且减少了编程错误。更重要的是，从面向对象分析到面向对象设计再到面向对象程序设计，始终使用统一的概念，既可以保证在软件开发过程的各个阶段之间平滑过渡，又有助于提高软件的可重用性和可维护性。"
+    },
+    {
+      "answer_id": "answer_5385b97cecb7",
+      "answer_no": "2",
+      "pages": [
+        192
+      ],
+      "content_preview": "按照编译时对程序中使用的数据进行类型检查的严格程度，可以把程序设计语言划分成两类。如果语言仅要求每个变量或属性隶属于一个对象，则是弱类型的；如果语法规定每个变量或属性必须准确地属于某个特定的类，则这样的语言是强类型的。\n强类型的语言主要有两个优点：一是有利于在编译时发现程序错误；二是增加了优化的可能性。因此，强类型语言有助于提高程序的可靠性和运行效率。"
+    },
+    {
+      "answer_id": "answer_aea0ae0c2074",
+      "answer_no": "3",
+      "pages": [
+        192,
+        193
+      ],
+      "content_preview": "绝大多数面向对象语言都优化了动态联编时查找多态操作入口点的过程，由于实现了高效率查找，因此并不会显著降低程序的运行效率。\n以 C++ 语言为例，该语言的动态联编是通过使用“虚函数表”实现的。所谓虚函数表就是编译程序替每个使用虚函数的类构造的一个函数指针数组。类中每个虚函数在表中都有一个表项（即数组元素），它是一个函数指针。注意，如果在派生类中没有重新定义基类的虚函数，又没有通过一般的函数重载屏蔽基类的虚函数，则派生类的虚函数表中有指针项"
+    },
+    {
+      "answer_id": "answer_640ca33fc797",
+      "answer_no": "4",
+      "pages": [
+        193
+      ],
+      "content_preview": "在实际的应用程序中，往往有这样一些软件元素（即函数、类等软件成分），从它们的逻辑功能看，彼此是相同的，所不同的主要是处理的对象类型不同。\n所谓参数化类，就是使用一个或多个类型去参数化一个类的机制，有了这种机制，程序员就可以先定义一个参数化的类模板（即在类定义中包含以参数形式出现的一个或多个类型），然后在使用时把数据类型作为参数传递进来，从而把这个类模板在不同的应用程序中重复使用，或在同一程序的不同部分重复使用。"
+    },
+    {
+      "answer_id": "answer_4793897bacf8",
+      "answer_no": "5",
+      "pages": [
+        193
+      ],
+      "content_preview": "从所完成的功能看，有两类不同的方法。一类方法负责作出决策，提供变元，并且管理全局资源，可称为策略方法。另一类方法负责完成具体操作，但并不作出是否执行这个操作的决定，可称为实现方法。\n策略方法通常紧密依赖于具体应用，应用系统不同，策略方法往往也不同。实现方法是自含式算法，相对独立于具体应用，因此，在其他应用系统中也可能重用它们。\n为提高可重用性，编程时不要把策略和实现放在同一个方法中，应该把算法的核心部分放在一个单独的具体实现方法中。当开"
+    },
+    {
+      "answer_id": "answer_bc588fe8290f",
+      "answer_no": "6",
+      "pages": [
+        193
+      ],
+      "content_preview": "封装性使得对象成为独立性很强的模块，理解一个对象所需要了解的元素，大部分都在该对象内部，因此，测试和维护比较容易。对象彼此之间仅能通过发送消息相互作用，不能从外界直接修改对象的私有数据，进一步使得测试和维护变得更容易。信息隐藏确保了对对象本身的修改不会在该对象以外产生影响，从而大大减少了回归错误的数量，因此，这个特点也使得测试和维护变得比较容易。\n与封装性和信息隐藏相反，继承性和多态性加大了测试（含调试）和维护的难度。\n* 由于派生类继"
+    },
+    {
+      "answer_id": "answer_3cedcabe42d4",
+      "answer_no": "7",
+      "pages": [
+        193,
+        194
+      ],
+      "content_preview": "在对第 6 章习题第 8 题的解答中，已经分析设计了解决本问题所需要的类以及类的继承结构，图 9.1 所示类图总结了上述的设计结果。其中，Location 类即是“位置” 类，Point 类即是“点”类，GMessage 类即是“图形模式字符串”类，Circle 类即是“圆”类， MCircle 类即是“圆内字符串”类。\n下面给出用 C++ 语言实现图 9.1 所示类继承结构的程序代码。\n``` enum Boolean (false,"
+    },
+    {
+      "answer_id": "answer_a569cc24a97f",
+      "answer_no": "8",
+      "pages": [
+        194,
+        195
+      ],
+      "content_preview": "在这个简单图形程序中，类内多数方法彼此间相对独立，仅仅 Point、Circle 和 MCircle 类的 Show 和 Hide 方法因为修改数据成员 Visible 而影响 IsVisible 方法的输出结果。因此，在设计测试用例以覆盖对所有方法的调用时，多数方法的调用顺序无关紧要，仅仅需要在调用上述三个类的 Show 或 Hide 方法之后，立即调用 IsVisible 方法，以观察 IsVisible 方法输出的变化。\n(1)测"
+    },
+    {
+      "answer_id": "answer_982a275d58b1",
+      "answer_no": "9",
+      "pages": [
+        195
+      ],
+      "content_preview": "解决这类问题的关键有以下几个步骤：\n\\textcircled{1}$ 分析问题寻找数据特点，提炼出所有可行有效的算法；\n\\textcircled{2}$ 定义与所提炼算法相关联的数据结构；\n\\textcircled{3}$ 依据此数据结构进行算法的详细设计；\n\\textcircled{4}$ 进行一定规模的实验与评测；\n\\textcircled{5}$ 确定最佳设计。"
+    },
+    {
+      "answer_id": "answer_bd729e4029a4",
+      "answer_no": "1",
+      "pages": [
+        195
+      ],
+      "content_preview": "基本思路\n(1)分析问题寻找数据特点：这是查找问题，每遇到一个单词就拿它与关键字数组中的每个关键字进行匹配，直到匹配成功。\n缺点：效率低。对于大规模的数据，其等待时间往往无法忍受。\n(2)扩展思路1:考虑减少每个单词的比较次数，以提高效率。因此，可考虑对关键字进行分类。而32个关键字，是由字母组成的，而且有长有短，所以可以根据这些特点提炼算法。\n(3)扩展思路2:建立索引，我们知道在所有数据结构中，哈希结构最适合快速查找的场合。"
+    },
+    {
+      "answer_id": "answer_dfcdf79394df",
+      "answer_no": "2",
+      "pages": [
+        195,
+        196
+      ],
+      "content_preview": "可行的算法（即可行的详细设计方案）分析\n【a】暴力查找：不对关键字做任何处理。\n【b】按首字母分类查找：将关键字按照首字母分类，首字母相同的分为一类，如 int 和 if 同属于首字母 i 类。\n【c】按长度分类查找：将关键字按照长度分类，相同长度的分为一类，如 if 和 do 同属\n软件工程导论（第 6 版）学习辅导\n于长度为 2 的类。\n【d】按长度和首字母分类查找：将长度相同，首字母也相同的分为一类，如 sizeof 和 stat"
+    },
+    {
+      "answer_id": "answer_12bc587bc162",
+      "answer_no": "3",
+      "pages": [
+        196,
+        197,
+        198,
+        199,
+        200,
+        201,
+        202,
+        203,
+        204,
+        205,
+        206,
+        207,
+        208
+      ],
+      "content_preview": "可行的数据结构分析（定义与所提炼算法相关联的数据结构）\n为了编程方便，首先将关键字存到一个基本数组中：\n``` string[]keyword; //初始关键字数组 keyword=new string[32]{\"auto\",\"double\",\"int\",\"struct\",\"break\",\"else\",\"long\",\"switch\", \"case\",\"enum\",\"register\",\"typedef\",\"char\",\"extern\","
+    },
+    {
+      "answer_id": "answer_80f1a437a3ce",
+      "answer_no": "6",
+      "pages": [
+        208
+      ],
+      "content_preview": "结果分析与评测，如图 9.4 和图 9.5 所示。\n<table border=\"1\" style=\"width: 100%;table-layout: fixed;\"><tr><td colspan=6><p><strong>结果汇总</strong></p></td></tr><tr><td><p>单词个数</p></td><td><p>暴力查找</p></td><td><p>按首字母分类</p></td><td><p>按长度分类<"
+    },
+    {
+      "answer_id": "answer_73bc0b5064f0",
+      "answer_no": "7",
+      "pages": [
+        208,
+        209
+      ],
+      "content_preview": "结论（算法和数据结构确定）\n实验结果表明：方案 1 暴力查找最差，方案 4 最好，方案 5 仅次之。\n(1)针对这组数据的特点，应选择方案4。\n(2)如果不进行算法分析，在处理查找问题时，尽量选择哈希结构为数据结构是比较合理的。\n第 10 章"
+    },
+    {
+      "answer_id": "answer_4d24b68529fe",
+      "answer_no": "1",
+      "pages": [
+        221,
+        222
+      ],
+      "content_preview": "(1) 习题中仅对需求做了粗略描述，每项需求都应该进一步扩展，以提供细节需求和定量约束。例如，在开始估算软件规模之前，需要确定“良好的人机界面设计特征”的具体含义，以及对“CAD数据库”的规模和复杂度的具体需求。\n经过对需求的进一步精化，分解出软件的下述 7 个主要的子功能。\n* 用户界面及控制机制。 * 二维几何图形分析。 * 三维几何图形分析。 * 数据库管理。 * 计算机图形显示机制。 * 外部设备控制。 * 设计分析模块。\n(2"
+    },
+    {
+      "answer_id": "answer_4649765e6b88",
+      "answer_no": "2",
+      "pages": [
+        222,
+        223
+      ],
+      "content_preview": "输入数据有“病人名”、“预约时间”、“完成的预约”和“取消预约”，其中前3项\n第 10 章 软件项目管理\n的复杂度级别为“简单”，第 4 项的复杂度级别为“平均”。\n输出数据有“病情说明”（简单复杂度）、“预约登记表”、“支持细节”、“预约信息”、“未就诊病人清单”（以上 4 项复杂度级别为“平均”）、“日安排”和“周安排”（以上 2 项复杂度级别为“复杂”)。\n查询有“按名字查询”、“按日期查询”（这 2 项复杂度为“简单”）、“核实"
+    },
+    {
+      "answer_id": "answer_4941babf3a9a",
+      "answer_no": "3",
+      "pages": [
+        223
+      ],
+      "content_preview": "静态单变量模型假定在软件规模和开发软件所需的工作量之间存在如下的函数关系：\nE=A+B \\times ( \\mathrm {KLOC})^{c }\n根据表 10.2 中给出的历史数据，可以画出软件规模与工作量之间的实际函数关系曲线，如图 10.1 所示。\n从图 10.1 可以看出，在 LMN 公司软件规模与工作量之间存在线性关系，直线的斜率是 2.4。因此，静态单变量模型中的 3 个参数的值如下：\nA=0B=2.4C= 1\n根据适用于 "
+    },
+    {
+      "answer_id": "answer_9c9ddfecf5bb",
+      "answer_no": "4",
+      "pages": [
+        223
+      ],
+      "content_preview": "每个公司开发的软件类型都不完全相同，此外，每个公司都有不同的经验、习惯、标准和策略，也就是说，不同公司的能力成熟度并不相同。因此，不同公司开发软件的生产率也不相同，显然不能用同样的成本估算参数来估算工作量，而应该根据该公司开发软件的历史数据确定成本估算模型中的参数。"
+    },
+    {
+      "answer_id": "answer_b8e4163dbc65",
+      "answer_no": "5",
+      "pages": [
+        223
+      ],
+      "content_preview": "关键路径定义为一组任务（称为关键任务），这组任务决定了完成项目所需要的最短时间。如果位于关键路径上的一个关键任务的完成时间被推迟了，则关键路径上的下一个任务的开始时间和结束时间也要相应的延迟。这样依次传递，会波及关键路径上的最后一个任务，从而延迟整个项目。"
+    },
+    {
+      "answer_id": "answer_c5473662a976",
+      "answer_no": "6",
+      "pages": [
+        223,
+        224
+      ],
+      "content_preview": "虽然不在关键路径上的任务并不决定完成项目所需要的最短时间，可以适当延迟一些时间，但是，如果这些任务延迟过久，则整个项目的完成时间也会被推迟。机动时间给出了完成这类任务的时间范围。\n此外，在制订进度计划时仔细研究并充分利用工程网络中的机动时间，往往能够安排\n软件工程导论（第 6 版）学习辅导\n出既节省资源又不影响最终竣工时间的进度表。"
+    },
+    {
+      "answer_id": "answer_25fb88eb2d37",
+      "answer_no": "7",
+      "pages": [
+        224
+      ],
+      "content_preview": "根据表 10.3 中给出的信息，可以画出如图 10.2 所示的工程网络。由于子任务 a 和 b 都不依赖于其他子任务，所以都可以从时刻零开始。根据最早时刻和最迟时刻的算法，可以算出每个事件的最早时刻和最迟时刻，算出的值已经标在工程网络中。为了便于对照图 10.2 和表 10.3,在图中标注的完成任务时间后面的括弧中写出了该任务的标识。"
+    },
+    {
+      "answer_id": "answer_10f58fe014d0",
+      "answer_no": "1",
+      "pages": [
+        234
+      ],
+      "content_preview": "(1) <u>定义</u>；<u>开发</u>；<u>维护</u>；<u>问题定义</u>；<u>可行性研究</u>；<u>需求分析</u>；<u>总体设计</u>；<u>详细设计</u>；<u>编码和单元测试</u>；<u>综合测试</u>；<u>维护</u>；<u>维护</u>。\n(2) <u>技术</u>；<u>经济</u>；操作；<u>软件项目的可行性。</u>\n(3)<u>一致性</u>；<u>现实性</u>；<u>完整性</"
+    },
+    {
+      "answer_id": "answer_9afd9f2880f7",
+      "answer_no": "2",
+      "pages": [
+        234
+      ],
+      "content_preview": "A: $|Q|>|W(I,J)|\nB: $\\underline{J=J+1}\nC: $\\underline{I=I+1}\nD: <u>J循环 UNTIL</u> $\\underline{J>N}\nE: $\\underline{I循环UNTIL I>M}"
+    },
+    {
+      "answer_id": "answer_0d3ab6fd15b3",
+      "answer_no": "3",
+      "pages": [
+        234,
+        235
+      ],
+      "content_preview": "(1)实现语句覆盖的测试方案如下：\n\\textcircled{1}$ 覆盖 THEN 部分的语句，即使得条件(A>0)And(B>0)和条件(C>A)Or(D<B) 均为真。\n输入： $\\mathrm{A}=1,\\mathrm{B}=1,\\mathrm{C}=2,\\mathrm{D}=0$ 。\n预期输出： $X=2,Y=2$ 。\n\\textcircled{2}$ 覆盖ELSE部分的语句，即使得条件( $A>0$ )And( $B>0$ "
+    },
+    {
+      "answer_id": "answer_5746f71c5d7f",
+      "answer_no": "4",
+      "pages": [
+        235
+      ],
+      "content_preview": "电话号码=[校内号码|校外号码]\n校内号码=非零数字+3位数字\n校外号码=[本市号码|外地号码]\n本市号码=数字零+非零数字+7位数字\n外地号码=数字零+区码+当地号码\n非零数字=[1|2|3|4|5|6|7|8|9]\n数字零=0\n3 位数字=3{数字}3\n7位数字=7{数字}7\n区码=3{数字}5\n当地号码=非零数字+6（数字）7\n数字=[0|1|2|3|4|5|6|7|8|9]"
+    },
+    {
+      "answer_id": "answer_640b3d9afa7d",
+      "answer_no": "5",
+      "pages": [
+        235,
+        236
+      ],
+      "content_preview": "多态重用实际上是一种特殊的继承重用，是充分利用多态性机制支持的继承重用。一般说来，使用多态重用方式重用已有的类构件时，在子类中需要重新定义的操作比较少，因此，多态重用方式的成本比继承重用方式的成本低。\n软件工程导论（第 6 版）学习辅导"
+    },
+    {
+      "answer_id": "answer_fa3826a10966",
+      "answer_no": "1",
+      "pages": [
+        236
+      ],
+      "content_preview": "(1)（继承）；\n(2)（继承）；\n(3)（聚集）；\n(4)（一般关联）；\n(5)（一般关联）；\n(6)（一般关联）；\n(7)（聚集）；\n(8)（继承）；\n(9)（一般关联）；\n(10)（聚集）。"
+    },
+    {
+      "answer_id": "answer_dbce51cf6fb5",
+      "answer_no": "2",
+      "pages": [
+        236
+      ],
+      "content_preview": "(1)（实例）；\n(2)（类）；\n(3)（实例）；\n(4)（类）；\n(5)（类）；\n(6)（实例）；\n(7)（类）；\n(8)（类）；\n(9)（实例）；\n(10)（类）。"
+    },
+    {
+      "answer_id": "answer_abaa939b6f38",
+      "answer_no": "3",
+      "pages": [
+        236
+      ],
+      "content_preview": "A: <u>偶然性</u>；\nB:<u>逻辑性</u>；\nC：<u>通信性</u>；\nD: <u>顺序性</u>；\nE: <u>功能性</u>。"
+    },
+    {
+      "answer_id": "answer_44d21ec4173f",
+      "answer_no": "4",
+      "pages": [
+        236
+      ],
+      "content_preview": "如图 B.2 所示。\n<table border=\"1\" style=\"width: 100%;table-layout: fixed;\"><tr><td rowspan=5 colspan=6></td></tr><tr></tr><tr><td rowspan=3></td><td rowspan=3></td><td rowspan=3></td></tr><tr><td colspan=5></td></tr><tr><td c"
+    },
+    {
+      "answer_id": "answer_aa1be604e67d",
+      "answer_no": "5",
+      "pages": [
+        236,
+        237
+      ],
+      "content_preview": "(1)刚开始测试时程序中错误总数为\n附 录\nE_{T}= \\frac {24}{6} \\times 20=8 0\n(2)由方程\n8= \\frac {48000}{K(E_{T}-20) }\n解得\nK= \\frac {48000}{8(80-20)}=10 0\n由方程\n240= \\frac {48000}{100(80-E_{C_{1}}) }\n解得\nE_{C_{1}}=7 8\n78-20=5 8\n即，为使平均无故障时间达到 240h,如"
+    },
+    {
+      "answer_id": "answer_7e99f71c0f40",
+      "answer_no": "6",
+      "pages": [
+        237
+      ],
+      "content_preview": "描绘复印机行为的状态转换图如图 B.3 所示。\n图 B.3 复印机的状态转换图"
+    }
+  ],
+  "course": "软件工程",
+  "source_file": "C:\\Users\\ASUS\\Desktop\\新建文件夹\\21世纪软件工程专业规划教材 软件工程导论学习辅导 第6版 (张海藩，牟永敏编著) (z-library.sk, 1lib.sk, z-lib.sk).pdf",
+  "mode": "question_only_external_knowledge_base"
+}
