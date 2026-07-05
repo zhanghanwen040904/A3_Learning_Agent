@@ -1,0 +1,16 @@
+backend/.env
+backend/.venv/
+.venv/
+.mysql_data/
+backend/.mysql_data/
+backend/__pycache__/
+backend/**/__pycache__/
+frontend/node_modules/
+frontend/dist/
+rag_data/vector_db/
+*.pyc
+*.pyo
+*.log
+.DS_Store
+.idea/
+.vscode/
