@@ -487,16 +487,26 @@ async function triggerAutoGenerate(){
     await generateAll();
   }finally{
     autoGenerating.value=false;
+    localStorage.removeItem('a3_pending_path_autogenerate_session');
   }
+}
+async function maybeRunPendingAutoGenerate(){
+  const pendingSessionId = localStorage.getItem('a3_pending_path_autogenerate_session');
+  if(!pendingSessionId) return;
+  const currentSessionId = String(localStorage.getItem('a3_active_profile_session_id') || '');
+  if(currentSessionId && pendingSessionId !== currentSessionId) return;
+  await triggerAutoGenerate();
 }
 onMounted(async()=>{
   await loadAll();
   renderMarkmaps();
   window.addEventListener('a3-path-auto-generate', triggerAutoGenerate);
   if(route.query.autoGenerate==='1'){
-    await triggerAutoGenerate();
+    await maybeRunPendingAutoGenerate();
     await router.replace({ path: '/path' });
+    return;
   }
+  await maybeRunPendingAutoGenerate();
 });
 onBeforeUnmount(()=>{
   window.removeEventListener('a3-path-auto-generate', triggerAutoGenerate);
