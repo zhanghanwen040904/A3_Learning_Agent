@@ -158,14 +158,16 @@
 </template>
 
 <script setup>
-import { computed,nextTick,onMounted,ref,watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { computed,nextTick,onBeforeUnmount,onMounted,ref,watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { Transformer } from 'markmap-lib';
 import { Markmap } from 'markmap-view';
 import MarkdownIt from 'markdown-it';
 import { ElMessage } from 'element-plus';
 import { pathApi,profileApi,resourceApi } from '../api';
 const router=useRouter();
+const route=useRoute();
+const autoGenerating=ref(false);
 const paths=ref([]),resources=ref([]),profile=ref({}),integrated=ref({}),loading=ref(false),progress=ref(0),completed=ref([]),hint=ref(''),openStages=ref({}),openResources=ref({}),assessmentRecords=ref([]),agentSteps=ref([]),activeStageIndex=ref(0),activeResourceTabs=ref({});
 const detailDialog=ref({visible:false,type:'basis',resource:null});
 const agents=[{name:'PlannerAgent',short:'PL',desc:'读取画像并规划阶段目标',p:18},{name:'RetrieverAgent',short:'RG',desc:'检索课程知识库和章节依据',p:34},{name:'ResourceAgents',short:'RA',desc:'生成讲解、练习、思维导图等资源',p:64},{name:'AuditAgent',short:'AU',desc:'校验事实准确性和格式质量',p:82},{name:'PackagerAgent',short:'PK',desc:'按阶段挂载资源并刷新页面',p:100}];
@@ -477,7 +479,28 @@ async function generateAll(extra=''){
 }
 function pace(c){hint.value=({fast:'学习节奏加快，资源更精炼。',slow:'学习节奏放慢，增加概念解释和基础练习。',practice:'增加练习题、代码案例和应用任务比例。'}[c]||'');generateAll(hint.value)}
 function fb(t){hint.value=({easy:'学生反馈太简单，请提高后续应用和实操难度。',hard:'学生反馈太难，请降低难度并增加基础讲解。',quiz:'结合练习结果调整后续路径，强化错题知识点。'}[t]||'');ElMessage.info('已收到反馈，正在调整后续学习方案…');generateAll(hint.value)}
-onMounted(async()=>{await loadAll();renderMarkmaps()});
+async function triggerAutoGenerate(){
+  if(autoGenerating.value||loading.value)return;
+  autoGenerating.value=true;
+  try{
+    await loadAll();
+    await generateAll();
+  }finally{
+    autoGenerating.value=false;
+  }
+}
+onMounted(async()=>{
+  await loadAll();
+  renderMarkmaps();
+  window.addEventListener('a3-path-auto-generate', triggerAutoGenerate);
+  if(route.query.autoGenerate==='1'){
+    await triggerAutoGenerate();
+    await router.replace({ path: '/path' });
+  }
+});
+onBeforeUnmount(()=>{
+  window.removeEventListener('a3-path-auto-generate', triggerAutoGenerate);
+});
 watch(stages,()=>{if(activeStageIndex.value>=stages.value.length)activeStageIndex.value=Math.max(stages.value.length-1,0);ensureActiveResourceTabs();renderMarkmaps()},{deep:true,flush:'post'});
 watch(current,(value)=>{if(!done(activeStageIndex.value)&&activeStageIndex.value<value)activeStageIndex.value=value});
 </script>

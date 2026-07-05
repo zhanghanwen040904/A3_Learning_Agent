@@ -66,6 +66,10 @@
                 </el-button>
                 <template #dropdown>
                   <el-dropdown-menu class="recent-actions-menu">
+                    <el-dropdown-item command="review" class="recent-action-item">
+                      <el-icon><Connection /></el-icon>
+                      <span>复习</span>
+                    </el-dropdown-item>
                     <el-dropdown-item command="rename" class="recent-action-item">
                       <el-icon><EditPen /></el-icon>
                       <span>重命名</span>
@@ -331,6 +335,10 @@ function sessionTitle(item) {
 }
 
 async function handleSessionCommand(command, item) {
+  if (command === "review") {
+    await reviewSession(item);
+    return;
+  }
   if (command === "rename") {
     await renameSession(item);
     return;
@@ -338,6 +346,31 @@ async function handleSessionCommand(command, item) {
   if (command === "delete") {
     await deleteSession(item);
   }
+}
+
+async function reviewSession(item) {
+  const id = item?.id;
+  if (!id) return;
+
+  const previousSessionId = activeSessionId.value;
+  activeSessionId.value = String(id);
+  setActiveProfileSessionId(id);
+
+  const res = await profileApi.activateSession(id);
+  if (res.code !== 200) {
+    activeSessionId.value = previousSessionId;
+    setActiveProfileSessionId(previousSessionId || "");
+    ElMessage.error(res.msg || "切换复习会话失败");
+    return;
+  }
+
+  if (route.path !== "/path") {
+    await router.push({ path: "/path", query: { sessionId: String(id), autoGenerate: '1' } });
+  }
+
+  window.dispatchEvent(new CustomEvent("a3-profile-session-change", { detail: { id } }));
+  window.dispatchEvent(new CustomEvent("a3-path-auto-generate", { detail: { id } }));
+  ElMessage.success(`已进入“${sessionTitle(item)}”的学习路径`);
 }
 
 async function renameSession(item) {
