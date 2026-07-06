@@ -365,11 +365,10 @@ async function reviewSession(item) {
   }
 
   if (route.path !== "/path") {
-    await router.push({ path: "/path", query: { sessionId: String(id), autoGenerate: '1' } });
+    await router.push({ path: "/path", query: { sessionId: String(id) } });
   }
 
   window.dispatchEvent(new CustomEvent("a3-profile-session-change", { detail: { id } }));
-  window.dispatchEvent(new CustomEvent("a3-path-auto-generate", { detail: { id } }));
   ElMessage.success(`已进入“${sessionTitle(item)}”的学习路径`);
 }
 

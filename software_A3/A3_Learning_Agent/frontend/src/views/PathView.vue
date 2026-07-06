@@ -158,15 +158,14 @@
 </template>
 
 <script setup>
-import { computed,nextTick,onBeforeUnmount,onMounted,ref,watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { computed,nextTick,onMounted,ref,watch } from 'vue';
+import { useRouter } from 'vue-router';
 import { Transformer } from 'markmap-lib';
 import { Markmap } from 'markmap-view';
 import MarkdownIt from 'markdown-it';
 import { ElMessage } from 'element-plus';
 import { pathApi,profileApi,resourceApi } from '../api';
 const router=useRouter();
-const route=useRoute();
 const autoGenerating=ref(false);
 const paths=ref([]),resources=ref([]),profile=ref({}),integrated=ref({}),loading=ref(false),progress=ref(0),completed=ref([]),hint=ref(''),openStages=ref({}),openResources=ref({}),assessmentRecords=ref([]),agentSteps=ref([]),activeStageIndex=ref(0),activeResourceTabs=ref({});
 const detailDialog=ref({visible:false,type:'basis',resource:null});
@@ -487,29 +486,19 @@ async function triggerAutoGenerate(){
     await generateAll();
   }finally{
     autoGenerating.value=false;
-    localStorage.removeItem('a3_pending_path_autogenerate_session');
   }
 }
-async function maybeRunPendingAutoGenerate(){
-  const pendingSessionId = localStorage.getItem('a3_pending_path_autogenerate_session');
-  if(!pendingSessionId) return;
-  const currentSessionId = String(localStorage.getItem('a3_active_profile_session_id') || '');
-  if(currentSessionId && pendingSessionId !== currentSessionId) return;
-  await triggerAutoGenerate();
+function hasExistingLearningPath(){
+  if(Array.isArray(integrated.value?.stages) && integrated.value.stages.length>0) return true;
+  if(Array.isArray(paths.value) && paths.value.length>0) return true;
+  return false;
 }
 onMounted(async()=>{
   await loadAll();
   renderMarkmaps();
-  window.addEventListener('a3-path-auto-generate', triggerAutoGenerate);
-  if(route.query.autoGenerate==='1'){
-    await maybeRunPendingAutoGenerate();
-    await router.replace({ path: '/path' });
-    return;
+  if(!hasExistingLearningPath()){
+    await triggerAutoGenerate();
   }
-  await maybeRunPendingAutoGenerate();
-});
-onBeforeUnmount(()=>{
-  window.removeEventListener('a3-path-auto-generate', triggerAutoGenerate);
 });
 watch(stages,()=>{if(activeStageIndex.value>=stages.value.length)activeStageIndex.value=Math.max(stages.value.length-1,0);ensureActiveResourceTabs();renderMarkmaps()},{deep:true,flush:'post'});
 watch(current,(value)=>{if(!done(activeStageIndex.value)&&activeStageIndex.value<value)activeStageIndex.value=value});
