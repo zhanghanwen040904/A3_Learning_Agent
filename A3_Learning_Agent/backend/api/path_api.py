@@ -6,7 +6,7 @@ from flask import Blueprint, request
 from ai.agents import SafetyAgent
 from ai.rag import retrieve_knowledge, retrieve_knowledge_items
 from ai.llm_api import audit_content, llm_chat
-from api.resource_api import _append_images_to_resource, build_local_video_resource
+from api.resource_api import _append_images_to_resource
 # 兼容下面原来使用的函数名
 content_audit = audit_content
 spark_chat = llm_chat
@@ -180,7 +180,7 @@ def _normalize_resource(resource: dict) -> dict:
     return item
 
 
-def _attach_resources_to_stages(stages: list[dict], resources: list[dict], user_id: int | None = None, session_id: int | None = None) -> list[dict]:
+def _attach_resources_to_stages(stages: list[dict], resources: list[dict]) -> list[dict]:
     if not stages:
         return stages
     for stage in stages:
@@ -209,12 +209,8 @@ def _attach_resources_to_stages(stages: list[dict], resources: list[dict], user_
                 best_stage = stages[best_index]
             best_stage["resources"].append(resource)
             assigned_ids.add(resource.get("id"))
-    for stage in stages:
-        if not any(resource.get("resource_type") == "video" for resource in stage.get("resources") or []):
-            video_resource = build_local_video_resource(stage, user_id=user_id, session_id=session_id)
-            if video_resource:
-                stage["resources"].append(video_resource)
-        stage["resources"] = sorted(stage["resources"][:6], key=_resource_order)
+        for stage in stages:
+            stage["resources"] = sorted(stage["resources"][:6], key=_resource_order)
     for index, stage in enumerate(stages):
         stage["status"] = "current" if index == 0 else "pending"
         stage.pop("raw", None)
@@ -330,13 +326,7 @@ def integrated_learning_path():
         )
         resources = [_normalize_resource(item) for item in resource_rows]
         stages = _parse_path_stages(path.get("path_content") if path else "") or _fallback_stages(resources)
-        stages = _attach_resources_to_stages(stages, resources, user_id=request.user_id, session_id=session_id)
-        integrated_resources = resources[:]
-        for stage in stages:
-            for resource in stage.get("resources") or []:
-                if resource.get("resource_type") == "video" and str(resource.get("id", "")).startswith("local-video-"):
-                    if not any(str(item.get("id")) == str(resource.get("id")) for item in integrated_resources):
-                        integrated_resources.append(resource)
+        stages = _attach_resources_to_stages(stages, resources)
         total_days = sum(_duration_days(stage.get("duration")) for stage in stages)
         topic = (profile or {}).get("target_course") or (profile or {}).get("study_goal") or (stages[0].get("title") if stages else "个性化学习路径")
         data = {
@@ -345,7 +335,7 @@ def integrated_learning_path():
             "topic": topic,
             "total_duration": f"{total_days}天" if total_days else f"{len(stages)}阶段",
             "stage_count": len(stages),
-            "resource_count": len(integrated_resources),
+            "resource_count": len(resources),
             "profile_basis": _profile_basis(profile),
             "overview": "以个性化学习路径为主线骨架，将多模态学习资源精准挂载到每个阶段节点。",
             "workflow": [
@@ -355,7 +345,7 @@ def integrated_learning_path():
                 {"agent": "EvaluatorAgent", "role": "根据学习反馈和练习结果动态调整后续路径与资源"},
             ],
             "stages": stages,
-            "resources": integrated_resources,
+            "resources": resources,
             "path_content": path.get("path_content") if path else "",
         }
         return success(data, "一体化学习路径查询成功")

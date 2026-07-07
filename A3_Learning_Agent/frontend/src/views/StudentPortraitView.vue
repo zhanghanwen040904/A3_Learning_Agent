@@ -281,7 +281,7 @@ const previewSummary = computed(() => {
 
 const dimensionScores = computed(() =>
   corePrompts.map((item) => {
-    const backendScore = portraitDimensions.value[item.id]?.score;
+    const backendScore = currentSnapshotDimensions.value[item.id]?.score ?? portraitDimensions.value[item.id]?.score;
     if (backendScore !== undefined && backendScore !== null && backendScore !== "") {
       return Number(backendScore);
     }

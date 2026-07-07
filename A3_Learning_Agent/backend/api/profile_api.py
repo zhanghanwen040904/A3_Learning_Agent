@@ -1,4 +1,5 @@
 import json
+import re
 from typing import Any, Optional
 
 from flask import Blueprint, request
@@ -305,12 +306,7 @@ def _persist_profile_result(user_id: int, session_id: int, session: dict, profil
     }
     mysql_db.upsert_by_unique_key("student_profile", profile_data, update_fields=["profile_session_id", *PROFILE_FIELDS])
 
-    session_title = (
-        profile_data.get("profile_summary")
-        or profile_data.get("target_course")
-        or profile_data.get("major")
-        or session.get("title")
-    )
+    session_title = _session_knowledge_title(profile_data, session.get("title"))
     if session_title:
         mysql_db.update("profile_session", {"title": str(session_title)[:120]}, "id=%s AND user_id=%s", (session_id, user_id))
 
@@ -324,6 +320,7 @@ def _persist_profile_result(user_id: int, session_id: int, session: dict, profil
         profile=aggregate_profile,
         portrait_scoring=aggregate_profile.get("portrait_scoring") or {},
         trigger_source="chat_profile_sync",
+        force=True,
     )
     aggregate_profile["portrait_history"] = _portrait_history(user_id, limit=6)
     return {
@@ -453,6 +450,76 @@ def _trim_text(value: Any, limit: int = 120) -> str:
     if not text:
         return ""
     return text[:limit]
+
+
+def _extract_knowledge_title(value: Any) -> str:
+    text = _normalize_text(value)
+    if not text:
+        return ""
+
+    text = re.sub(r"^.*?方向[：:；;]\s*", "", text)
+    text = re.sub(
+        r"^(当前聚焦|聚焦|当前学习主题|学习主题|薄弱知识点|薄弱点|易错点|当前难点|知识点|章节)\s*[：:]?\s*",
+        "",
+        text,
+    )
+    if "聚焦" in text:
+        after_focus = text.split("聚焦", 1)[1].strip(" ：:；;，,。 ")
+        if after_focus:
+            text = after_focus
+
+    parts = re.split(r"[；;，,、/\n|]", text)
+    parts = [part.strip(" ：:；;，,。!！?？·[]【】()（）\"'") for part in parts if part and part.strip()]
+    if not parts:
+        return ""
+
+    for part in parts:
+        if 1 <= len(part) <= 18:
+            return part
+    return parts[0][:24]
+
+
+def _extract_segment_by_labels(value: Any, labels: list[str]) -> str:
+    text = _normalize_text(value)
+    if not text:
+        return ""
+    for label in labels:
+        pattern = rf"{re.escape(label)}\s*[：:]\s*([^；;，,\n]+)"
+        match = re.search(pattern, text)
+        if match:
+            candidate = _extract_knowledge_title(match.group(1))
+            if candidate:
+                return candidate
+    return ""
+
+
+def _session_knowledge_title(profile_like: Optional[dict], fallback: Any = "") -> str:
+    profile_like = profile_like or {}
+    summary_candidates = [
+        _extract_segment_by_labels(profile_like.get("profile_summary"), ["薄弱知识点", "薄弱点", "易错点", "当前难点"]),
+        _extract_segment_by_labels(profile_like.get("profile_summary"), ["当前学习主题", "学习主题", "当前聚焦"]),
+    ]
+    for title in summary_candidates:
+        if title:
+            return title[:120]
+
+    candidate_fields = [
+        "weak_knowledge_points",
+        "current_difficulty",
+        "current_topic",
+        "recent_progress",
+        "course_progress",
+        "profile_summary",
+        "target_course",
+        "major",
+    ]
+    for field in candidate_fields:
+        title = _extract_knowledge_title(profile_like.get(field))
+        if title:
+            return title[:120]
+
+    fallback_title = _extract_knowledge_title(fallback) or _normalize_text(fallback)
+    return (fallback_title or "新对话")[:120]
 
 
 def _conversation_evidence_snapshot(user_id: int, limit_sessions: int = 8, limit_messages: int = 24) -> list[dict]:
@@ -717,7 +784,14 @@ def _snapshot_dimension_signature(portrait_scoring: dict) -> dict:
     return result
 
 
-def _persist_portrait_snapshot(user_id: int, profile_session_id: int, profile: dict, portrait_scoring: dict, trigger_source: str = "profile_update") -> None:
+def _persist_portrait_snapshot(
+    user_id: int,
+    profile_session_id: int,
+    profile: dict,
+    portrait_scoring: dict,
+    trigger_source: str = "profile_update",
+    force: bool = False,
+) -> None:
     try:
         latest = mysql_db.query_one(
             """
@@ -734,7 +808,7 @@ def _persist_portrait_snapshot(user_id: int, profile_session_id: int, profile: d
         current_signature = _snapshot_dimension_signature(portrait_scoring)
         current_summary = _trim_text(profile.get("profile_summary"), 240)
 
-        if latest and latest_signature == current_signature and _trim_text(latest.get("profile_summary"), 240) == current_summary:
+        if (not force) and latest and latest_signature == current_signature and _trim_text(latest.get("profile_summary"), 240) == current_summary:
             return
 
         mysql_db.insert(
@@ -815,7 +889,8 @@ def list_sessions():
         session = _active_session(request.user_id, create_if_missing=False)
         rows = mysql_db.query_all(
             """
-            SELECT ps.*, sp.profile_summary, sp.major, sp.target_course, sp.update_time AS profile_update_time,
+            SELECT ps.*, sp.profile_summary, sp.major, sp.target_course, sp.current_topic, sp.current_difficulty,
+                   sp.weak_knowledge_points, sp.recent_progress, sp.course_progress, sp.update_time AS profile_update_time,
                    pc.messages AS conversation_messages
             FROM profile_session ps
             LEFT JOIN student_profile sp ON sp.user_id = ps.user_id AND sp.profile_session_id = ps.id
@@ -829,6 +904,10 @@ def list_sessions():
             messages = _json_loads(row.get("conversation_messages"), [])
             row["message_count"] = len(messages) if isinstance(messages, list) else 0
             row.pop("conversation_messages", None)
+            desired_title = _session_knowledge_title(row, row.get("title"))
+            if desired_title and desired_title != row.get("title"):
+                mysql_db.update("profile_session", {"title": desired_title}, "id=%s AND user_id=%s", (row["id"], request.user_id))
+                row["title"] = desired_title
         return success({"sessions": rows, "active_session_id": session["id"] if session else None}, "查询成功")
     except Exception as exc:
         return fail("画像会话查询失败", 500, {"error": str(exc)})
@@ -1045,7 +1124,7 @@ def create_profile():
         data = {"user_id": request.user_id, "profile_session_id": session_id, **{field: profile.get(field, DEFAULT_VALUE) for field in PROFILE_FIELDS}}
         mysql_db.upsert_by_unique_key("student_profile", data, update_fields=["profile_session_id", *PROFILE_FIELDS])
 
-        title = data.get("profile_summary") or data.get("target_course") or data.get("major") or session.get("title")
+        title = _session_knowledge_title(data, session.get("title"))
         mysql_db.update("profile_session", {"title": str(title)[:120]}, "id=%s AND user_id=%s", (session_id, request.user_id))
 
         conversation = payload.get("conversation")
@@ -1063,6 +1142,7 @@ def create_profile():
             profile=aggregate_profile,
             portrait_scoring=aggregate_profile.get("portrait_scoring") or {},
             trigger_source="create_profile",
+            force=True,
         )
         aggregate_profile["portrait_history"] = _portrait_history(request.user_id, limit=6)
         return success({**data, "aggregate_profile": aggregate_profile}, "画像创建成功")
@@ -1107,6 +1187,7 @@ def update_profile():
             profile=aggregate_profile,
             portrait_scoring=aggregate_profile.get("portrait_scoring") or {},
             trigger_source="update_profile",
+            force=True,
         )
         aggregate_profile["portrait_history"] = _portrait_history(request.user_id, limit=6)
         return success({"user_id": request.user_id, "profile_session_id": session_id, **data, "aggregate_profile": aggregate_profile}, "画像更新成功")

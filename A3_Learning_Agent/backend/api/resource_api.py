@@ -4,12 +4,10 @@ import re
 import threading
 from pathlib import Path
 
-from flask import Blueprint, Response, request, send_file, stream_with_context
-from werkzeug.utils import safe_join
+from flask import Blueprint, Response, request, stream_with_context
 
 from ai.agents import agent_manager
 from ai.rag import generated_kb_dir
-from config import PROJECT_ROOT
 from importlib import import_module
 from db import mysql_db
 from utils import fail, success
@@ -33,22 +31,6 @@ spark_chat = llm_chat
 resource_bp = Blueprint("resource", __name__)
 IMAGE_PATTERN = re.compile(r"(?:[A-Za-z]:\\[^\n\r，,；;）)]+|images[\\/][^\n\r，,；;）)]+)\.(?:png|jpg|jpeg|webp|gif)", re.IGNORECASE)
 IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".webp", ".gif"}
-VIDEO_DIR = PROJECT_ROOT / "rag_data" / "videos"
-VIDEO_SUFFIXES = {".mp4", ".webm", ".mov", ".m4v"}
-VIDEO_KEYWORDS = {
-    "软件危机": ["软件危机"],
-    "软件工程": ["软件工程", "方法学"],
-    "软件生命周期": ["软件生命周期", "瀑布模型", "快速原型", "增量模型", "螺旋模型", "喷泉模型", "软件过程"],
-    "可行性研究": ["可行性研究", "成本效益", "可行性研究分析"],
-    "需求分析": ["需求分析", "需求收集", "分析建模", "ER图", "数据范式", "状态转换图", "验证需求", "形式化说明技术"],
-    "数据流图": ["系统流程图", "数据流图", "数据字典"],
-    "总体设计": ["总体设计", "耦合", "内聚", "启发式规则", "层次图", "结构图", "结构化设计", "变换分析", "事务分析", "模块"],
-    "详细设计": ["详细设计", "结构化程序", "用户界面设计", "PAD图", "判定树", "PDL", "程序复杂度"],
-    "编码实现": ["编码"],
-    "软件测试": ["测试", "测试目标", "单元测试", "系统测试", "确认测试", "调试"],
-    "软件维护": ["维护", "维护工作"],
-    "练习": ["习题课"],
-}
 FORBIDDEN_DOC_FIELDS = {
     "query",
     "knowledge_base_dir",
@@ -74,117 +56,6 @@ def _safe_json_loads(value, default):
         return json.loads(value)
     except Exception:
         return default
-
-
-def _video_id(path: Path) -> str:
-    return re.sub(r"[^0-9A-Za-z\u4e00-\u9fa5_-]+", "_", path.stem).strip("_") or path.stem
-
-
-def _list_local_videos() -> list[dict]:
-    if not VIDEO_DIR.exists():
-        return []
-    videos = []
-    for path in sorted(VIDEO_DIR.iterdir(), key=lambda item: item.name):
-        if not path.is_file() or path.suffix.lower() not in VIDEO_SUFFIXES:
-            continue
-        stem = path.stem.strip()
-        title = re.sub(r"^\d+\s*", "", stem).strip() or stem
-        videos.append(
-            {
-                "id": _video_id(path),
-                "title": title,
-                "file_name": path.name,
-                "url": f"/api/resource/video/{_video_id(path)}",
-                "content_type": "video/mp4" if path.suffix.lower() == ".mp4" else "video/*",
-            }
-        )
-    return videos
-
-
-def _video_score(video: dict, text: str) -> int:
-    title = str(video.get("title") or "")
-    file_name = str(video.get("file_name") or "")
-    haystack = f"{title} {file_name}"
-    score = 0
-    compact_text = re.sub(r"[\s_\-（）()]+", "", text)
-    compact_title = re.sub(r"[\s_\-（）()]+", "", haystack)
-    for concept, keywords in VIDEO_KEYWORDS.items():
-        if concept in text:
-            for keyword in keywords:
-                if keyword in haystack or keyword in compact_title:
-                    score += 12
-        for keyword in keywords:
-            if keyword in text and keyword in haystack:
-                score += 8
-    for token in re.findall(r"[\u4e00-\u9fa5A-Za-z0-9]{2,}", text):
-        if token and (token in haystack or token in compact_title):
-            score += 3
-    if title and title in text:
-        score += 10
-    if "习题" in haystack and any(token in text for token in ["练习", "测评", "巩固", "题"]):
-        score += 6
-    return score
-
-
-def match_local_videos(text: str, limit: int = 2) -> list[dict]:
-    videos = _list_local_videos()
-    ranked = sorted(
-        [{**video, "score": _video_score(video, text)} for video in videos],
-        key=lambda item: (item["score"], item["title"]),
-        reverse=True,
-    )
-    selected = [item for item in ranked if item["score"] > 0][:limit]
-    if not selected and videos:
-        selected = videos[:limit]
-    return selected
-
-
-def build_local_video_resource(stage: dict, user_id: int | None = None, session_id: int | None = None) -> dict | None:
-    text = " ".join(
-        str(part or "")
-        for part in [stage.get("title"), stage.get("goal"), " ".join(stage.get("points") or []), stage.get("raw")]
-    )
-    videos = match_local_videos(text, limit=2)
-    if not videos:
-        return None
-    primary = videos[0]
-    points = stage.get("points") or []
-    title = f"{stage.get('title') or '当前阶段'}・配套教学视频"
-    content_lines = [
-        f"# {title}",
-        "",
-        "本视频资源来自课程本地视频库，已根据当前阶段目标和知识点自动匹配。",
-        "",
-        "## 推荐观看顺序",
-    ]
-    for index, video in enumerate(videos, start=1):
-        content_lines.append(f"{index}. {video['title']}")
-    content_lines.extend(
-        [
-            "",
-            "## 学习建议",
-            "- 先带着阶段目标观看视频，记录不理解的术语。",
-            "- 再回到讲解文档和思维导图，对照概念、流程和阶段产物。",
-            "- 最后完成阶段练习，检查能否迁移应用。",
-        ]
-    )
-    return {
-        "id": f"local-video-{stage.get('index') or stage.get('stage_index') or primary['id']}",
-        "user_id": user_id,
-        "profile_session_id": session_id,
-        "resource_type": "video",
-        "title": title,
-        "content": "\n".join(content_lines),
-        "knowledge_points": points,
-        "personalization": "根据当前学习阶段知识点从本地视频资源库自动匹配。",
-        "quality_score": 88,
-        "audit_status": "passed",
-        "agent_name": "LocalVideoResource",
-        "metadata": {"videos": videos, "video_url": primary.get("url"), "stage": stage},
-        "video_url": primary.get("url"),
-        "type_label": "教学短视频",
-        "sources": [],
-    }
 
 
 def _normalize_compare_text(value: str) -> str:
@@ -849,24 +720,6 @@ def _append_images_to_resource(resource: dict) -> dict:
     return resource
 
 
-@resource_bp.get("/video/<video_id>")
-def serve_local_video(video_id: str):
-    videos = {item["id"]: item for item in _list_local_videos()}
-    video = videos.get(video_id)
-    if not video:
-        return fail("视频不存在", 404)
-    file_path = safe_join(str(VIDEO_DIR), video["file_name"])
-    if not file_path:
-        return fail("视频路径无效", 400)
-    return send_file(file_path, mimetype=video.get("content_type") or "video/mp4", conditional=True)
-
-
-@resource_bp.get("/videos")
-@login_required
-def list_local_videos():
-    return success(_list_local_videos(), "本地视频资源查询成功")
-
-
 @resource_bp.post("/generate")
 @login_required
 def generate_resources():
@@ -1029,20 +882,6 @@ def list_my_resources():
                     "id=%s",
                     (item["id"],),
                 )
-        if not any(item.get("resource_type") == "video" for item in resources):
-            profile = mysql_db.query_one(
-                "SELECT * FROM student_profile WHERE user_id=%s AND profile_session_id=%s",
-                (request.user_id, session["id"]),
-            ) or {}
-            stage = {
-                "index": 1,
-                "title": profile.get("study_goal") or profile.get("target_course") or "软件工程学习",
-                "goal": profile.get("study_goal") or profile.get("weak_points") or "学习软件工程核心知识",
-                "points": [item for item in [profile.get("weak_points"), profile.get("error_prone_points"), profile.get("course_progress")] if item],
-            }
-            video_resource = build_local_video_resource(stage, user_id=request.user_id, session_id=session["id"])
-            if video_resource:
-                resources.append(video_resource)
         return success(resources, "查询成功")
     except Exception as exc:
         return fail("资源查询失败", 500, {"error": str(exc)})
