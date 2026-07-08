@@ -33,16 +33,32 @@ class MySQLDB:
             conn.close()
 
     def query_one(self, sql: str, params: Optional[Sequence[Any]] = None) -> Optional[Dict[str, Any]]:
-        with self.get_connection() as conn:
-            with conn.cursor() as cursor:
-                cursor.execute(sql, params)
-                return cursor.fetchone()
+        try:
+            with self.get_connection() as conn:
+                with conn.cursor() as cursor:
+                    cursor.execute(sql, params)
+                    return cursor.fetchone()
+        except pymysql.err.OperationalError as exc:
+            if exc.args and exc.args[0] in (2006, 2013):
+                with self.get_connection() as conn:
+                    with conn.cursor() as cursor:
+                        cursor.execute(sql, params)
+                        return cursor.fetchone()
+            raise
 
     def query_all(self, sql: str, params: Optional[Sequence[Any]] = None) -> List[Dict[str, Any]]:
-        with self.get_connection() as conn:
-            with conn.cursor() as cursor:
-                cursor.execute(sql, params)
-                return list(cursor.fetchall())
+        try:
+            with self.get_connection() as conn:
+                with conn.cursor() as cursor:
+                    cursor.execute(sql, params)
+                    return list(cursor.fetchall())
+        except pymysql.err.OperationalError as exc:
+            if exc.args and exc.args[0] in (2006, 2013):
+                with self.get_connection() as conn:
+                    with conn.cursor() as cursor:
+                        cursor.execute(sql, params)
+                        return list(cursor.fetchall())
+            raise
 
     def execute(self, sql: str, params: Optional[Sequence[Any]] = None) -> int:
         with self.get_connection() as conn:

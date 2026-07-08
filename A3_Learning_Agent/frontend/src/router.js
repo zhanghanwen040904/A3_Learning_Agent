@@ -3,6 +3,7 @@ import ArchitectureView from "./views/ArchitectureView.vue";
 import AuthView from "./views/AuthView.vue";
 import ChatView from "./views/ChatView.vue";
 import EvaluationView from "./views/EvaluationView.vue";
+import WrongBookView from "./views/WrongBookView.vue";
 import KnowledgeView from "./views/KnowledgeView.vue";
 import PathView from "./views/PathView.vue";
 import ProfileView from "./views/ProfileView.vue";
@@ -20,6 +21,7 @@ const routes = [
   { path: "/resource", redirect: "/path", meta: { title: "学习路径", requiresAuth: true } },
   { path: "/chat", component: ChatView, meta: { title: "智能答疑", requiresAuth: true } },
   { path: "/evaluation", component: EvaluationView, meta: { title: "学习评估", requiresAuth: true } },
+  { path: "/wrong-book", component: WrongBookView, meta: { title: "错题本", requiresAuth: true } },
   { path: "/knowledge", component: KnowledgeView, meta: { title: "知识库管理", requiresAuth: true } },
   { path: "/system", component: SystemStatusView, meta: { title: "系统状态", requiresAuth: true } },
 ];

@@ -1,4 +1,5 @@
 import json
+import logging
 import time
 import uuid
 import re
@@ -17,6 +18,9 @@ from .quiz_agent import QuizAgent
 from .reading_agent import ReadingAgent
 from .safety_agent import SafetyAgent
 from .video_agent import VideoAgent
+
+
+logger = logging.getLogger(__name__)
 
 
 class AgentManager:
@@ -193,16 +197,18 @@ class AgentManager:
 
         main_item = cleaned[0]
         support_items = []
+        main_key = normalize_title(main_item["title"])
         for entry in cleaned[1:]:
-            if normalize_title(entry["title"]) == normalize_title(main_item["title"]):
+            entry_key = normalize_title(entry["title"])
+            if entry_key == main_key:
                 continue
             support_items.append(entry)
-            if len(support_items) >= 1:
+            if len(support_items) >= 2:
                 break
 
-        blocks = [f"主知识点：{main_item['title']}\n教材内容：{main_item['content'][:900]}"]
+        blocks = [f"主知识点：{main_item['title']}\n教材内容：{main_item['content'][:1200]}"]
         for entry in support_items:
-            blocks.append(f"补充知识点：{entry['title']}\n教材内容：{entry['content'][:420]}")
+            blocks.append(f"补充知识点：{entry['title']}\n教材内容：{entry['content'][:700]}")
         return "\n\n".join(blocks)
     @staticmethod
     def _empty_resource(resource_type: str, stage: Dict[str, Any], stage_sources: List[dict]) -> Dict[str, Any]:
@@ -334,6 +340,13 @@ class AgentManager:
             task_plan["selected_primary_knowledge_title"] = primary_title
             task_plan["selected_knowledge_points"] = stage_context["selected_knowledge_points"]
             if not stage_sources:
+                logger.warning(
+                    "[ResourceAgent] No knowledge sources retrieved, empty resource will be used. resource_type=%s stage_title=%s stage_points=%s query=%s",
+                    resource_type,
+                    stage.get("stage_title"),
+                    stage.get("stage_points") or [],
+                    stage_query or query,
+                )
                 resource = self._empty_resource(resource_type, stage, [])
                 quality = {"total": 0, "passed": False, "problems": ["未检索到对应知识库片段"], "checks": {}}
                 resource["quality"] = quality

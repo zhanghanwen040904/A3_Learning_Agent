@@ -157,6 +157,7 @@ import { useRoute, useRouter } from "vue-router";
 import { ElMessage, ElMessageBox } from "element-plus";
 import {
   Connection,
+  Collection,
   Cpu,
   DataAnalysis,
   Delete,
@@ -177,6 +178,7 @@ const primaryNav = [
   { path: "/student-portrait", label: "学生画像", icon: User },
   { path: "/path", label: "学习路径", icon: Connection },
   { path: "/evaluation", label: "学习评估", icon: DataAnalysis },
+  { path: "/wrong-book", label: "错题本", icon: Collection },
 ];
 
 const secondaryNav = [

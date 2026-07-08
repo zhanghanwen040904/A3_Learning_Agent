@@ -138,6 +138,35 @@ def ensure_extended_tables() -> None:
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         """,
         """
+        CREATE TABLE IF NOT EXISTS quiz_wrong_book (
+            id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+            user_id BIGINT UNSIGNED NOT NULL,
+            quiz_result_id BIGINT UNSIGNED NULL,
+            question TEXT NOT NULL,
+            question_type VARCHAR(64) NULL,
+            options_json JSON NULL,
+            answer TEXT NULL,
+            reference_answer TEXT NULL,
+            explanation TEXT NULL,
+            common_mistake TEXT NULL,
+            scoring_points JSON NULL,
+            knowledge_point VARCHAR(255) NULL,
+            knowledge_path VARCHAR(255) NULL,
+            chapter VARCHAR(255) NULL,
+            difficulty VARCHAR(64) NULL,
+            score INT NOT NULL DEFAULT 0,
+            feedback TEXT NULL,
+            last_result JSON NULL,
+            review_count INT NOT NULL DEFAULT 0,
+            create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY idx_quiz_wrong_book_user_id (user_id),
+            KEY idx_quiz_wrong_book_knowledge_point (knowledge_point),
+            KEY idx_quiz_wrong_book_chapter (chapter)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        """,
+        """
         CREATE TABLE IF NOT EXISTS resource_feedback (
             id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
             user_id BIGINT UNSIGNED NOT NULL,
