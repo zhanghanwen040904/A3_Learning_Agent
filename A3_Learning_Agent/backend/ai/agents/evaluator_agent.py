@@ -1,5 +1,9 @@
+import json
 import re
 
+from ai.langchain_parsers import parse_json_with_fallback
+from ai.llm_adapter import PlatformLLM
+from config import config
 from .base_agent import AgentSpec
 
 DOMAIN_KEYWORDS = [
@@ -147,6 +151,72 @@ class EvaluatorAgent:
             "weak_reason": weak_reason,
         }
 
+    def _personalize_analysis(
+        self,
+        base_result: dict,
+        question: str,
+        answer: str,
+        reference: str,
+        knowledge_point: str,
+        original_explanation: str = "",
+        original_common_mistake: str = "",
+    ) -> dict:
+        if config.MOCK_AI:
+            return base_result
+        try:
+            prompt = f"""
+你是一名严谨的课程学习评估老师。请根据题目、学生作答和参考答案，生成有针对性的判题反馈。
+
+要求：
+1. 不能只是复述参考答案或题库解析。
+2. 必须指出学生答案具体答到了什么、漏了什么、为什么扣分。
+3. 解析要围绕学生答案与参考答案的差距展开。
+4. 如果学生只写了很短或无关内容，要明确说明问题。
+5. score 必须由你根据学生答案质量给出 0-100 分，不要照抄系统初判；系统初判只作为参考。
+6. 只输出 JSON，不要 markdown。
+
+输出格式：
+{{
+  "score": 0,
+  "is_correct": false,
+  "feedback": "一句总体反馈",
+  "explanation": "结合学生答案的针对性解析，说明哪些点对、哪些点缺失、应该如何补充",
+  "common_mistake": "本题暴露出的易错点或理解偏差",
+  "weak_reason": "形成薄弱点记录的一句话原因",
+  "missed_keywords": ["遗漏点1"],
+  "matched_keywords": ["命中点1"]
+}}
+
+知识点：{knowledge_point}
+题目：{question}
+学生答案：{answer}
+参考答案：{reference}
+题库原解析：{original_explanation}
+题库原易错点：{original_common_mistake}
+系统初判：{json.dumps(base_result, ensure_ascii=False)}
+""".strip()
+            data = parse_json_with_fallback(PlatformLLM().invoke(prompt))
+            if not isinstance(data, dict):
+                return base_result
+            result = dict(base_result)
+            try:
+                if data.get("score") is not None:
+                    result["score"] = max(0, min(100, int(float(data.get("score")))))
+                    result["is_correct"] = bool(data.get("is_correct", result["score"] >= 70))
+            except Exception:
+                pass
+            for key in ["feedback", "explanation", "common_mistake", "weak_reason"]:
+                value = str(data.get(key) or "").strip()
+                if value:
+                    result[key] = value
+            for key in ["missed_keywords", "matched_keywords"]:
+                value = data.get(key)
+                if isinstance(value, list):
+                    result[key] = [str(item).strip() for item in value if str(item).strip()][:8]
+            return result
+        except Exception:
+            return base_result
+
     def grade(
         self,
         question: str,
@@ -166,7 +236,7 @@ class EvaluatorAgent:
         question_type = str(question_type or "").strip().lower()
 
         if question_type in {"单选题", "多选题", "判断题", "single_choice", "multiple_choice", "true_false"}:
-            return self._grade_objective(
+            base_result = self._grade_objective(
                 answer_text,
                 reference,
                 knowledge_point,
@@ -176,6 +246,7 @@ class EvaluatorAgent:
                 feedback_correct,
                 feedback_wrong,
             )
+            return self._personalize_analysis(base_result, question, answer_text, reference, knowledge_point, explanation, common_mistake)
 
         normalized_answer = self._normalize_text(answer_text)
         normalized_reference = self._normalize_text(reference)
@@ -221,7 +292,7 @@ class EvaluatorAgent:
         else:
             feedback = "回答不够充分，建议先回到知识点原文重新梳理。"
 
-        return {
+        base_result = {
             "score": score,
             "is_correct": is_correct,
             "feedback": feedback,
@@ -238,6 +309,7 @@ class EvaluatorAgent:
                 else "当前答案已覆盖主要关键点，可以继续做更高阶题目。"
             ),
         }
+        return self._personalize_analysis(base_result, question, answer_text, reference, knowledge_point, explanation, common_mistake)
 
     def _extract_keywords(self, reference: str, knowledge_point: str, scoring_points: list) -> list[str]:
         result = []

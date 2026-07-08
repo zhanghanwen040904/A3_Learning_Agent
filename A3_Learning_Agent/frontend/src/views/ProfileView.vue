@@ -627,7 +627,7 @@ function focusInput() {
 }
 
 async function saveConversationRemote() {
-  if (!activeSessionId.value) return;
+  if (!activeSessionId.value || !messages.value.length) return;
   try {
     await profileApi.saveConversation({ ...snapshotState(), answer_map: {}, extra_notes: [], current_index: 0 });
   } catch {
@@ -659,7 +659,7 @@ async function loadSessions() {
   if (id) {
     activeSessionId.value = Number(id);
     setActiveProfileSessionId(id);
-  } else {
+  } else if (!activeSessionId.value && !localStorage.getItem(ACTIVE_PROFILE_SESSION_KEY)) {
     activeSessionId.value = "";
     setActiveProfileSessionId("");
   }
@@ -840,12 +840,13 @@ async function sendMessage() {
     await loadSessions();
     window.dispatchEvent(new CustomEvent("a3-profile-session-refresh"));
     const syncSessionId = Number(res.data.profile_session_id || activeSessionId.value || 0);
+    const syncedMessages = messages.value.map((item) => ({ role: item.role, content: item.content }));
     syncEnhancementInBackground(payloadMessages, assistantReply, assistantIndex, {
       profile_session_id: syncSessionId,
       need_diagram: res.data.need_diagram,
       need_quiz: res.data.need_quiz,
     });
-    syncProfileInBackground(payloadMessages, syncSessionId);
+    syncProfileInBackground(syncedMessages, syncSessionId);
   } catch (error) {
     messages.value.push(assistantMessage("大模型对话接口异常，请确认后端已启动，并检查模型配置。"));
     ElMessage.error(error?.message || "发送失败，请重试");

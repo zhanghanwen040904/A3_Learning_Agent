@@ -74,7 +74,7 @@ export const profileApi = {
   create: (data) => http.post("/profile/create", withProfileSession(data)),
   update: (data) => http.post("/profile/update", withProfileSession(data)),
   get: () => http.get("/profile/", { params: profileSessionParams() }),
-  getAggregate: () => http.get("/profile/aggregate"),
+  getAggregate: () => http.get("/profile/aggregate", { params: profileSessionParams() }),
   getConversation: () => http.get("/profile/conversation", { params: profileSessionParams() }),
   saveConversation: (data) => http.post("/profile/conversation", withProfileSession(data)),
   clearConversation: () => http.delete("/profile/conversation", { params: profileSessionParams() }),
@@ -126,6 +126,10 @@ export const evaluationApi = {
   questions: (data = {}) => http.post("/evaluation/questions", data),
   submit: (data) => http.post("/evaluation/submit", data),
   summary: () => http.get("/evaluation/summary"),
+  wrongBook: () => http.get("/evaluation/wrong-book"),
+  addWrongBook: (data) => http.post("/evaluation/wrong-book", data),
+  submitWrongBook: (id, data) => http.post(`/evaluation/wrong-book/${id}/submit`, data),
+  deleteWrongBook: (id) => http.delete(`/evaluation/wrong-book/${id}`),
   event: (data) => http.post("/evaluation/event", data),
 };
 

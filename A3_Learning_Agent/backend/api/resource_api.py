@@ -7,7 +7,7 @@ from pathlib import Path
 from flask import Blueprint, Response, request, stream_with_context
 
 from ai.agents import agent_manager
-from ai.rag import generated_kb_dir
+from ai.rag import generated_kb_dir, retrieve_knowledge_items
 from importlib import import_module
 from db import mysql_db
 from utils import fail, success
@@ -135,7 +135,7 @@ def _safe_evidence_item(item):
         return None
     return {
         "title": title or "未命名知识点",
-        "content_preview": content_preview[:220],
+        "content_preview": content_preview[:900],
         "section_path": section_path,
         "learning_location": learning_location,
         "pages": _safe_list(_pick_text(item, "pages")),
@@ -249,99 +249,163 @@ def _rewrite_main_explanation(payload, evidence_items):
         return primary_content
 
 
-def _sanitize_core_concepts(payload, evidence_items):
-    concepts = []
-    for item in _safe_list(payload.get("core_concepts")):
-        if not isinstance(item, dict):
-            continue
-        name = str(_pick_text(item, "name", "title")).strip()
-        if not name:
-            continue
-        concepts.append(
+
+def _items_from_retrieval(title: str, top_k: int = 3) -> list[dict]:
+    if not str(title or "").strip():
+        return []
+    items = []
+    for raw in retrieve_knowledge_items(title, top_k=top_k):
+        metadata = raw.get("metadata") or {}
+        item = _safe_evidence_item(
             {
-                "name": name,
-                "definition": str(_pick_text(item, "definition", "content", default="")).strip(),
-                "why_it_matters": str(_pick_text(item, "why_it_matters", default="")).strip(),
-                "example": str(_pick_text(item, "example", default="")).strip(),
-                "common_misunderstanding": str(_pick_text(item, "common_misunderstanding", default="")).strip(),
+                "title": metadata.get("title") or metadata.get("knowledge_point") or title,
+                "content": raw.get("content") or metadata.get("content_preview") or "",
+                "content_preview": raw.get("content") or metadata.get("content_preview") or "",
+                "section_path": metadata.get("section_path") or [],
+                "learning_location": metadata.get("learning_location") or {},
+                "pages": metadata.get("pages") or [],
+                "source_file": metadata.get("source") or raw.get("source") or "",
             }
         )
-    if not concepts:
-        for evidence in evidence_items[:6]:
-            concepts.append(
-                {
-                    "name": evidence["title"],
-                    "definition": evidence["content_preview"],
-                    "why_it_matters": "",
-                    "example": "",
-                    "common_misunderstanding": "",
-                }
+        if item:
+            items.append(item)
+    return items
+
+
+def _evidence_for_title(title: str, evidence_items: list[dict], top_k: int = 3) -> list[dict]:
+    title_norm = _normalize_compare_text(title)
+    matched = []
+    for item in evidence_items or []:
+        item_title = item.get("title") or ""
+        item_norm = _normalize_compare_text(item_title)
+        if title_norm and (item_norm == title_norm or title_norm in item_norm or item_norm in title_norm):
+            matched.append(item)
+    retrieved = _items_from_retrieval(title, top_k=top_k)
+    return _dedupe_list(
+        [*matched, *retrieved],
+        lambda item: "{}|{}".format(_normalize_compare_text(item.get("title")), _normalize_compare_text(item.get("content_preview"))),
+    )[:top_k]
+
+
+def _format_evidence_for_prompt(items: list[dict]) -> str:
+    blocks = []
+    for index, item in enumerate(items or [], start=1):
+        blocks.append(
+            "\n".join(
+                [
+                    f"片段{index}标题：{item.get('title') or ''}",
+                    f"章节：{' / '.join(item.get('section_path') or [])}",
+                    f"页码：{'、'.join(str(x) for x in (item.get('pages') or []))}",
+                    f"内容：{_clean_explanation_text(item.get('content_preview') or '')}",
+                ]
             )
-    else:
-        primary, _ = _build_primary_evidence(evidence_items)
-        if primary and not any(_normalize_compare_text(item.get("name")) == _normalize_compare_text(primary.get("title")) for item in concepts):
-            concepts.insert(
-                0,
-                {
-                    "name": primary.get("title", ""),
-                    "definition": primary.get("content_preview", ""),
-                    "why_it_matters": "",
-                    "example": "",
-                    "common_misunderstanding": "",
-                },
-            )
-    return _dedupe_list(concepts, lambda item: _normalize_compare_text(item.get("name")))
+        )
+    return "\n\n".join(blocks)
+
+
+def _generate_natural_knowledge_text(title: str, evidence_items: list[dict], mode: str = "core") -> str:
+    title = str(title or "").strip()
+    evidence_text = _format_evidence_for_prompt(evidence_items)
+    fallback = _clean_explanation_text((evidence_items[0].get("content_preview") if evidence_items else "") or "")
+    if not title or not evidence_text:
+        return fallback
+    mode_text = "核心知识点" if mode == "core" else "补充知识点"
+    prompt = f"""
+你是软件工程课程讲解助手。请只依据给定教材片段，为学生生成一段自然流畅的{mode_text}讲解。
+
+知识点：{title}
+教材片段：
+{evidence_text}
+
+写作要求：
+1. 不要输出“标题、章节、页码、内容、教材片段”等标签。
+2. 不要照抄片段，不要罗列检索结果，要像老师讲课一样连贯解释。
+3. 如果是核心知识点，重点说明它解决什么问题、在软件工程流程中的位置、输入输出和后续影响。
+4. 如果是补充知识点，重点说明它和核心知识点的关联、相同点/差异、为什么能帮助理解核心知识点。
+5. 只输出 120 到 220 字中文正文，不要 JSON，不要 Markdown 标题。
+""".strip()
+    try:
+        text = spark_chat(prompt)
+        text = _clean_explanation_text(text)
+        return text or fallback
+    except Exception:
+        return fallback
+
+
+def _infer_candidate_titles(payload, evidence_items):
+    titles = []
+    for item in _safe_list(payload.get("core_concepts")):
+        if isinstance(item, dict):
+            title = str(_pick_text(item, "name", "title")).strip()
+            if title:
+                titles.append(title)
+    for item in _safe_list(payload.get("knowledge_explanation")):
+        if isinstance(item, dict):
+            title = str(_pick_text(item, "title", "name")).strip()
+            if title:
+                titles.append(title)
+    for item in evidence_items or []:
+        title = str(item.get("title") or "").strip()
+        if title:
+            titles.append(title)
+    return _dedupe_list(titles, _normalize_compare_text)
+
+
+def _sanitize_core_concepts(payload, evidence_items):
+    primary, _ = _build_primary_evidence(evidence_items)
+    candidate_titles = _infer_candidate_titles(payload, evidence_items)
+    primary_title = str(primary.get("title") or (candidate_titles[0] if candidate_titles else "")).strip()
+    if not primary_title:
+        return []
+    core_evidence = _evidence_for_title(primary_title, evidence_items, top_k=3) or ([primary] if primary else [])
+    definition = _generate_natural_knowledge_text(primary_title, core_evidence, mode="core")
+    return [
+        {
+            "name": primary_title,
+            "definition": definition,
+            "why_it_matters": "它帮助学生把知识点放回软件工程流程中理解，进一步判断它怎样影响后续活动。",
+            "example": "可以结合课程项目，从它依赖什么输入、形成什么产物、支撑什么后续工作三个角度来说明。",
+            "common_misunderstanding": "常见误区是只背概念名称，而没有理解它与前后阶段、相近概念之间的关系。",
+        }
+    ]
+
+
+def _pick_related_evidence(primary_title: str, evidence_items: list[dict], limit: int = 2) -> list[dict]:
+    primary_norm = _normalize_compare_text(primary_title)
+    candidates = []
+    for item in evidence_items or []:
+        title = str(item.get("title") or "").strip()
+        if title and _normalize_compare_text(title) != primary_norm:
+            candidates.append(item)
+    if len(candidates) < limit:
+        retrieved = _items_from_retrieval(f"{primary_title} 相关 相近 前置 后续 区别", top_k=6)
+        for item in retrieved:
+            title = str(item.get("title") or "").strip()
+            if title and _normalize_compare_text(title) != primary_norm:
+                candidates.append(item)
+    return _dedupe_list(candidates, lambda item: _normalize_compare_text(item.get("title")))[:limit]
 
 
 def _sanitize_explanations(payload, evidence_items):
+    primary, _ = _build_primary_evidence(evidence_items)
+    primary_title = str(primary.get("title") or "").strip()
+    related = _pick_related_evidence(primary_title, evidence_items, limit=2)
     items = []
-    for item in _safe_list(payload.get("knowledge_explanation")):
-        if not isinstance(item, dict):
-            continue
-        title = str(_pick_text(item, "title", "name")).strip()
-        explanation = str(_pick_text(item, "explanation", "content", default="")).strip()
-        if not title and not explanation:
-            continue
+    for evidence in related:
+        title = str(evidence.get("title") or "").strip()
+        point_evidence = _evidence_for_title(title, evidence_items, top_k=3) or [evidence]
+        explanation = _generate_natural_knowledge_text(title, point_evidence, mode="supplement")
         items.append(
             {
-                "title": title or "知识点讲解",
+                "title": title,
                 "explanation": explanation,
-                "process": [str(step).strip() for step in _safe_list(item.get("process")) if str(step).strip()],
-                "input_output": item.get("input_output") if isinstance(item.get("input_output"), dict) else None,
-                "example": str(_pick_text(item, "example", default="")).strip(),
-                "exam_focus": str(_pick_text(item, "exam_focus", default="")).strip(),
+                "process": ["先找到它与核心知识点的关系", "再比较二者在任务和产物上的差异", "最后结合课程案例理解适用场景"],
+                "input_output": None,
+                "example": f"学习“{primary_title}”时，可以把“{title}”作为相近或前后衔接的参照点。",
+                "exam_focus": "重点关注概念边界、阶段关系和与核心知识点的区别。",
             }
         )
-    if not items:
-        for evidence in evidence_items[:6]:
-            items.append(
-                {
-                    "title": evidence["title"],
-                    "explanation": evidence["content_preview"],
-                    "process": [],
-                    "input_output": None,
-                    "example": "",
-                    "exam_focus": "",
-                }
-            )
-    else:
-        for item in items:
-            item["explanation"] = _clean_explanation_text(item.get("explanation"))
-    primary, _ = _build_primary_evidence(evidence_items)
-    if primary and not any(_normalize_compare_text(item.get("title")) == _normalize_compare_text(primary.get("title")) for item in items):
-        items.insert(
-            0,
-            {
-                "title": primary.get("title", ""),
-                "explanation": _clean_explanation_text(primary.get("content_preview", "")),
-                "process": [],
-                "input_output": None,
-                "example": "",
-                "exam_focus": "",
-            },
-        )
     return _dedupe_list(items, lambda item: _normalize_compare_text(item.get("title")))
-
 
 def _sanitize_mistakes(payload, evidence_items):
     mistakes = []
