@@ -31,9 +31,9 @@ class QualityAgent:
         problems = []
         if len(content) < min_length:
             problems.append(f"内容偏短，建议不少于{min_length}字符")
-        if resource_type == "mindmap" and not content.lstrip().startswith("mindmap"):
+        if resource_type == "mindmap" and not content.lstrip().startswith("#"):
             format_ok = False
-            problems.append("思维导图不是合法的Mermaid mindmap源码")
+            problems.append("思维导图不是合法的Markdown大纲")
         if resource_type == "code":
             fenced = re.search(r"```python\s*([\s\S]*?)```", content, flags=re.IGNORECASE)
             code = fenced.group(1) if fenced else content if "import " in content else ""

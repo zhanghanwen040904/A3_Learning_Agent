@@ -159,16 +159,18 @@
 
 <script setup>
 import { computed,nextTick,onMounted,ref,watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute,useRouter } from 'vue-router';
 import { Transformer } from 'markmap-lib';
 import { Markmap } from 'markmap-view';
 import MarkdownIt from 'markdown-it';
 import { ElMessage } from 'element-plus';
-import { pathApi,profileApi,resourceApi } from '../api';
+import { activeProfileSessionId,pathApi,profileApi,resourceApi } from '../api';
 const router=useRouter();
+const route=useRoute();
 const autoGenerating=ref(false);
 const paths=ref([]),resources=ref([]),profile=ref({}),integrated=ref({}),loading=ref(false),progress=ref(0),completed=ref([]),hint=ref(''),openStages=ref({}),openResources=ref({}),assessmentRecords=ref([]),agentSteps=ref([]),activeStageIndex=ref(0),activeResourceTabs=ref({});
 const detailDialog=ref({visible:false,type:'basis',resource:null});
+let pathLoadToken=0;
 const agents=[{name:'PlannerAgent',short:'PL',desc:'读取画像并规划阶段目标',p:18},{name:'RetrieverAgent',short:'RG',desc:'检索课程知识库和章节依据',p:34},{name:'ResourceAgents',short:'RA',desc:'生成讲解、练习、思维导图等资源',p:64},{name:'AuditAgent',short:'AU',desc:'校验事实准确性和格式质量',p:82},{name:'PackagerAgent',short:'PK',desc:'按阶段挂载资源并刷新页面',p:100}];
 const markmapTransformer=new Transformer();
 const markdownRenderer=new MarkdownIt({html:false,linkify:true,breaks:true});
@@ -263,12 +265,34 @@ function mergeDocJson(jsonDocs,docs,stage){
 }
 function fallbackDocJson(docs,stage){
   const points=[...new Set(docs.flatMap(r=>kps(r)).concat(stage.points||[]))].filter(Boolean);
-  const mainPoint=points[0]||stage.title||'软件工程核心知识';
-  return {resourcetype:'doc',resourcetitle:`${stage.title}・综合讲解文档`,knowledgelevel:'待观察',studystyle:'综合学习',weakpoints:points,studygoal:stage.goal||`理解${mainPoint}`,estimatedtime:'25分钟',overview:{title:'本阶段学习导入',content:`本阶段重点围绕${mainPoint}展开，目标不是背结论，而是理解它在软件工程流程中的作用、输入输出以及和后续活动的关系。`},main_explanation:{title:mainPoint,content:`${mainPoint}位于当前学习阶段的核心位置，理解它之前，首先要先看清它所属的大阶段以及这一阶段要完成的整体任务。只有把它放回完整的软件工程流程中，才能真正明白这个知识点为什么会出现。
-
-接下来要进一步看清它在本阶段中的具体作用。它不是单独存在的术语，而是承担着明确问题、组织信息、形成阶段结论或支撑后续决策的任务。因此，学习时不能只记名称，还要同时关注它依赖什么输入、通过什么活动推进、最后形成什么产物。
-
-更重要的是，这个知识点通常不会停留在本阶段内部。它的结论、文档、模型或判断结果，往往会直接影响后续设计、实现、测试或维护活动。学习它的关键，不是背定义，而是能够说明它解决什么问题、为什么重要、容易与哪些概念混淆，以及理解偏差会给后续工作带来什么影响。`},core_concepts:points.slice(0,3).map(p=>({name:p,definition:`${p}是本阶段的重要知识点。`,why_it_matters:'它会影响后续软件工程活动的理解与决策。',example:`可结合课程项目分析${p}的实际作用。`,common_misunderstanding:'只记名称，不理解边界、输入输出和适用场景。'})),knowledge_explanation:points.slice(1,3).map(p=>({title:p,explanation:`${p}可以作为对主知识点的补充理解，重点关注它与当前阶段目标的关系、典型应用方式以及与相近概念的区别。`,process:['明确概念边界','联系课程场景','理解前后衔接'],input_output:{input:'课程知识片段或案例',output:'对知识点的准确理解'},example:`结合软件工程案例说明${p}如何在当前阶段发挥作用。`,exam_focus:'关注定义、作用和与主知识点的联系。'})),lifecycle_position:{phase:'当前阶段',before:'前置课程概念和阶段资料',after:'后续设计、实现、测试、维护或质量评估',connection:`${mainPoint}和前后阶段紧密衔接，理解上下游关系有助于形成系统化认知。`},case_study:{title:'课程项目案例讲解',scenario:'以课程项目为例，从当前阶段目标出发分析该知识点如何落地。',analysis:`如果只停留在字面定义上，学生容易在做题或做项目时出现概念混淆。把${mainPoint}放入真实的软件工程场景后，可以更清楚地看到它如何影响任务推进、质量控制和阶段衔接。`,takeaway:'理解知识点的最好方式，是说明它解决什么问题以及会影响哪些后续活动。'},mistakes:[{mistake:'只背定义',reason:'没有联系软件工程流程',correction:'结合输入、输出、作用和场景一起理解',example:'回答时同时说明它在项目中承担什么任务。'},{mistake:'和相近概念混淆',reason:'没有比较边界',correction:'通过目标、阶段产物和使用场景区分',example:'说明它和前后相关知识点的差异。'}],learning_path:['先讲清主知识点是什么','再理解它在软件工程流程中的位置','最后结合案例和题目完成迁移应用'],summary:{key_takeaways:[`${mainPoint}要放在软件工程流程中理解`,'学习重点是作用、输入输出和前后衔接','通过案例和题目验证是否真正掌握'],one_sentence:`本阶段先讲透${mainPoint}，再扩展到相关补充知识点。`},self_check:[{question:`请说明${mainPoint}解决什么问题？`,hint:'从目标、输入和输出角度回答。'},{question:`${mainPoint}会影响哪些后续活动？`,hint:'联系设计、实现、测试或维护。'}],learningresources:docs.flatMap(r=>resourceJson(r)?.learningresources||[])};
+  const mainPoint=points[0]||stage.title||'课程核心知识';
+  const evidence=docs.flatMap(r=>resourceJson(r)?.learningresources||[]).filter(Boolean);
+  return {
+    resourcetype:'doc',
+    resourcetitle:`${stage.title}・讲解文档待生成`,
+    knowledgelevel:'待观察',
+    studystyle:'综合学习',
+    weakpoints:points,
+    studygoal:stage.goal||`理解${mainPoint}`,
+    estimatedtime:'待知识库检索成功后生成',
+    overview:{
+      title:'知识库依据暂不可用',
+      content:'当前阶段暂未检索到可用于生成讲解文档的课程知识库片段。为避免把泛化模板误展示为教材讲解，本页面不再自动编造核心知识解释。请重新生成资源，或检查知识库索引与检索结果。'
+    },
+    main_explanation:{title:mainPoint,content:''},
+    core_concepts:[],
+    knowledge_explanation:[],
+    lifecycle_position:null,
+    case_study:null,
+    mistakes:[],
+    learning_path:['检查当前阶段是否有课程知识库依据','重新生成学习资源','确认讲解文档中出现课程知识库来源后再学习'],
+    summary:{
+      key_takeaways:['当前讲解文档缺少知识库依据','系统已阻止泛化兜底讲解冒充教材内容','请重新生成或检查知识库检索配置'],
+      one_sentence:'当前阶段讲解文档待基于知识库重新生成。'
+    },
+    self_check:[],
+    learningresources:evidence
+  };
 }
 function displayResources(items,stage){const mergedDoc=mergedDocResource(items,stage);const mindmap=items.find(r=>r.resource_type==='mindmap')||fallbackMindmapResource(stage);const reading=items.find(r=>r.resource_type==='reading');const video=items.find(r=>r.resource_type==='video');return [mindmap,mergedDoc,video,reading].filter(Boolean)}
 function fallbackMindmapResource(stage){const points=stage.points?.length?stage.points:['课程核心知识'];return {id:`fallback-mindmap-${stage.title}`,resource_type:'mindmap',title:`${stage.title}・阶段知识导图`,content:[`# ${stage.title}`,'## 阶段目标',`### 学习任务\n- ${stage.goal||'理解本阶段核心知识'}`,'## 知识点展开',...points.map(p=>`### ${p}\n- ⭐ 概念定义\n- 关键作用\n- 典型应用场景\n- 与本阶段目标的关系`),'## 易错提醒','### 概念边界\n- ⚠️ 注意与相近概念区分\n- ⚠️ 不要只记结论，要理解适用条件','### 学习建议\n- 结合教材图示和案例理解流程\n- 完成基础练习后进入阶段评估'].join('\n'),knowledge_points:points,quality_score:85,sources:[]}}
@@ -427,7 +451,7 @@ async function renderMarkmaps(){
   }
 }function pagesText(value){return Array.isArray(value)?value.join('、'):String(value||'')}
 function resourceText(r){const raw=String(r.content||r.personalization||'点击学习资源页面查看完整内容。');if(hasModelError(raw))return `${typeName(r.resource_type)}已挂载到当前阶段，建议结合本阶段目标学习对应内容。`;const parsed=resourceJson(r);if(parsed)return clean(parsed.content||parsed.studygoal||parsed.resourcetitle||r.title);return clean(extractJsonText(raw))}
-function resourceOpen(r){return !!openResources.value[rid(r)]}
+function resourceOpen(r){const id=rid(r);return openResources.value[id]??true}
 function openResourceDetail(resource,type){detailDialog.value={visible:true,type,resource}}
 function toggleResource(r){const id=rid(r);openResources.value={...openResources.value,[id]:!openResources.value[id]}}
 function toggleStage(i){if(i>current.value&&!done(i)){ElMessage.warning('请先完成前置阶段，再解锁后续学习内容');return}openStages.value={...openStages.value,[i]:!(openStages.value[i]??i===current.value)}}
@@ -449,28 +473,30 @@ function nextStage(){const i=activeStageIndex.value;if(!done(i)){toggle(i)}if(i<
 function stageRecord(i){return assessmentRecords.value.find(item=>Number(item.stageIndex)===i)}
 function loadAssessmentRecords(){try{assessmentRecords.value=JSON.parse(localStorage.getItem('a3_stage_assessment_records')||'[]')}catch{assessmentRecords.value=[]}}
 function goStageEvaluation(s,i){router.push({path:'/evaluation',query:{stage:String(i),from:'path',title:s.title,points:(s.points||[]).join('、')}})}
-async function loadAll(){const[ig,p,r,pf]=await Promise.all([pathApi.integrated(),pathApi.list(),resourceApi.list(),profileApi.get()]);if(ig.code===200)integrated.value=ig.data||{};if(p.code===200)paths.value=p.data||[];if(r.code===200)resources.value=(ig.code===200&&Array.isArray(ig.data?.resources))?ig.data.resources:(r.data||[]);if(pf.code===200)profile.value=pf.data||{};try{completed.value=JSON.parse(localStorage.getItem('a3_path_done')||'[]')}catch{completed.value=[]}loadAssessmentRecords();await nextTick();ensureActiveResourceTabs()}
+function currentSessionId(){return String(route.query.sessionId||activeProfileSessionId()||'')}
+async function loadAll(sessionId=currentSessionId()){const token=++pathLoadToken;const[ig,p,r,pf]=await Promise.all([pathApi.integrated(sessionId),pathApi.list(sessionId),resourceApi.list(sessionId),profileApi.get(sessionId)]);if(token!==pathLoadToken)return;if(ig.code===200)integrated.value=ig.data||{};if(p.code===200)paths.value=p.data||[];if(r.code===200)resources.value=(ig.code===200&&Array.isArray(ig.data?.resources))?ig.data.resources:(r.data||[]);if(pf.code===200)profile.value=pf.data||{};try{completed.value=JSON.parse(localStorage.getItem('a3_path_done')||'[]')}catch{completed.value=[]}loadAssessmentRecords();await nextTick();if(token!==pathLoadToken)return;ensureActiveResourceTabs()}
 async function generateAll(extra=''){
   loading.value=true;progress.value=5;resetAgentSteps();
   const timer=setInterval(()=>progress.value=Math.min(progress.value+3,94),700);
   try{
     const need=[profile.value.study_goal,profile.value.error_prone_points||profile.value.weak_points,hint.value,extra].filter(Boolean).join('；');
     setAgentStep('PlannerAgent','running','规划中');progress.value=14;
-    const pr=await pathApi.generate({learning_need:need,adjustment:hint.value});
+    const sessionId=currentSessionId();
+    const pr=await pathApi.generate({learning_need:need,adjustment:hint.value},sessionId);
     if(pr.code!==200)throw new Error(pr.msg||'学习路径生成失败');
     setAgentStep('PlannerAgent','done','已完成');
     setAgentStep('RetrieverAgent','running','检索中');progress.value=32;
     await new Promise(resolve=>setTimeout(resolve,350));
     setAgentStep('RetrieverAgent','done','已关联');
     setAgentStep('ResourceAgents','running','生成中');progress.value=52;
-    const rr=await resourceApi.generate({learning_need:need});
+    const rr=await resourceApi.generate({learning_need:need,path_content:pr.data?.path_content||''},sessionId);
     if(rr.code!==200)throw new Error(rr.msg||'学习资源生成失败');
     setAgentStep('ResourceAgents','done','已完成');
     setAgentStep('AuditAgent','running','审核中');progress.value=78;
     await new Promise(resolve=>setTimeout(resolve,450));
     setAgentStep('AuditAgent','done','已通过');
     setAgentStep('PackagerAgent','running','挂载中');progress.value=90;
-    await loadAll();completed.value=[];localStorage.setItem('a3_path_done','[]');
+    await loadAll(sessionId);completed.value=[];localStorage.setItem('a3_path_done','[]');
     setAgentStep('PackagerAgent','done','已刷新');progress.value=100;
     ElMessage.success('路径与资源一体化方案生成成功')
   }catch(e){agentSteps.value=agentSteps.value.map(item=>item.status==='running'?{...item,status:'error',statusText:'失败'}:item);ElMessage.error(e?.message||'一体化生成失败')}
@@ -482,7 +508,7 @@ async function triggerAutoGenerate(){
   if(autoGenerating.value||loading.value)return;
   autoGenerating.value=true;
   try{
-    await loadAll();
+    await loadAll(currentSessionId());
     await generateAll();
   }finally{
     autoGenerating.value=false;
@@ -494,12 +520,13 @@ function hasExistingLearningPath(){
   return false;
 }
 onMounted(async()=>{
-  await loadAll();
+  await loadAll(currentSessionId());
   renderMarkmaps();
   if(!hasExistingLearningPath()){
     await triggerAutoGenerate();
   }
 });
+watch(()=>route.query.sessionId,async()=>{await loadAll(currentSessionId());renderMarkmaps()});
 watch(stages,()=>{if(activeStageIndex.value>=stages.value.length)activeStageIndex.value=Math.max(stages.value.length-1,0);ensureActiveResourceTabs();renderMarkmaps()},{deep:true,flush:'post'});
 watch(current,(value)=>{if(!done(activeStageIndex.value)&&activeStageIndex.value<value)activeStageIndex.value=value});
 </script>
