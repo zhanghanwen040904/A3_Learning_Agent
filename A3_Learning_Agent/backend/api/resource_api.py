@@ -16,7 +16,7 @@ from utils.jwt_utils import verify_token
 from utils.profile_session import resolve_profile_session
 
 _llm_api = import_module("ai.llm_api")
-audit_content = getattr(_llm_api, "audit_content")
+content_audit = getattr(_llm_api, "audit_content")
 
 if hasattr(_llm_api, "llm_chat"):
     llm_chat = getattr(_llm_api, "llm_chat")
@@ -26,7 +26,6 @@ elif hasattr(_llm_api, "PlatformLLM"):
 else:
     raise ImportError("ai.llm_api 中缺少 llm_chat 或 PlatformLLM，无法进行模型文本生成")
 
-content_audit = audit_content
 spark_chat = llm_chat
 resource_bp = Blueprint("resource", __name__)
 IMAGE_PATTERN = re.compile(r"(?:[A-Za-z]:\\[^\n\r，,；;）)]+|images[\\/][^\n\r，,；;）)]+)\.(?:png|jpg|jpeg|webp|gif)", re.IGNORECASE)
@@ -352,23 +351,30 @@ def _infer_candidate_titles(payload, evidence_items):
 
 
 def _sanitize_core_concepts(payload, evidence_items):
-    primary, _ = _build_primary_evidence(evidence_items)
-    candidate_titles = _infer_candidate_titles(payload, evidence_items)
-    primary_title = str(primary.get("title") or (candidate_titles[0] if candidate_titles else "")).strip()
-    if not primary_title:
-        return []
-    core_evidence = _evidence_for_title(primary_title, evidence_items, top_k=3) or ([primary] if primary else [])
-    definition = _generate_natural_knowledge_text(primary_title, core_evidence, mode="core")
-    return [
-        {
-            "name": primary_title,
-            "definition": definition,
-            "why_it_matters": "它帮助学生把知识点放回软件工程流程中理解，进一步判断它怎样影响后续活动。",
-            "example": "可以结合课程项目，从它依赖什么输入、形成什么产物、支撑什么后续工作三个角度来说明。",
-            "common_misunderstanding": "常见误区是只背概念名称，而没有理解它与前后阶段、相近概念之间的关系。",
-        }
-    ]
-
+    evidence_titles = _dedupe_list(
+        [str(item.get("title") or "").strip() for item in evidence_items or []],
+        _normalize_compare_text,
+    )
+    if not evidence_titles:
+        evidence_titles = _infer_candidate_titles(payload, evidence_items)
+    core_concepts = []
+    for title in evidence_titles[:3]:
+        if not title:
+            continue
+        core_evidence = _evidence_for_title(title, evidence_items, top_k=3)
+        definition = _generate_natural_knowledge_text(title, core_evidence, mode="core")
+        if not definition:
+            continue
+        core_concepts.append(
+            {
+                "name": title,
+                "definition": definition,
+                "why_it_matters": "它帮助学生把知识点放回软件工程流程中理解，进一步判断它怎样影响后续活动。",
+                "example": f"可以结合课程项目，从它依赖什么输入、形成什么产物、支撑什么后续工作三个角度说明“{title}”的实际作用。",
+                "common_misunderstanding": "常见误区是只背概念名称，而没有理解它与前后阶段、相近概念之间的关系。",
+            }
+        )
+    return core_concepts
 
 def _pick_related_evidence(primary_title: str, evidence_items: list[dict], limit: int = 2) -> list[dict]:
     primary_norm = _normalize_compare_text(primary_title)
@@ -676,59 +682,7 @@ def _select_groups_with_llm(resource: dict, groups: list[dict]) -> list[dict]:
     if not groups:
         return []
     ranked = sorted(groups, key=lambda item: _group_score(resource, item), reverse=True)
-    candidates = []
-    for index, group in enumerate(ranked[:6], start=1):
-        candidates.append(
-            {
-                "id": index,
-                "label": group["label"],
-                "section": group["section"],
-                "source": group["source"],
-                "content": group["content"],
-                "image_count": len(group["images"]),
-                "paths": [img["path"] for img in group["images"]],
-            }
-        )
-    knowledge_points = _safe_json_loads(resource.get("knowledge_points"), [])
-    if not isinstance(knowledge_points, list):
-        knowledge_points = [str(knowledge_points)]
-    prompt = (
-        "You review textbook image groups for a learning resource. "
-        "Keep only image groups that directly explain the current knowledge points. "
-        "If one image is insufficient and two images together are required to explain the same concept, set mode to pair. "
-        "Delete unrelated screenshots, form pages, decorative images, or images unrelated to the knowledge points. "
-        "Return strict JSON only.\n\n"
-        f"resource_title: {resource.get('title', '')}\n"
-        f"resource_type: {resource.get('resource_type', '')}\n"
-        f"knowledge_points: {json.dumps(knowledge_points, ensure_ascii=False)}\n"
-        f"candidate_groups: {json.dumps(candidates, ensure_ascii=False)}\n\n"
-        '{"keep_ids":[1,2],"group_mode":{"1":"pair","2":"single"}}'
-    )
-    try:
-        raw = spark_chat(prompt)
-        start = raw.find("{")
-        end = raw.rfind("}")
-        if start < 0 or end <= start:
-            return ranked[:2]
-        data = json.loads(raw[start : end + 1])
-        keep_ids = set()
-        for item in data.get("keep_ids", []):
-            try:
-                keep_ids.add(int(item))
-            except Exception:
-                continue
-        modes = data.get("group_mode") or {}
-        selected = []
-        for index, group in enumerate(ranked[:6], start=1):
-            if index not in keep_ids:
-                continue
-            mode = str(modes.get(str(index)) or modes.get(index) or "single").lower()
-            keep_count = 2 if mode == "pair" else 1
-            selected.append({**group, "images": group["images"][:keep_count]})
-        return selected or ranked[:2]
-    except Exception:
-        return ranked[:2]
-
+    return ranked[:2]
 
 def _strip_image_hint_sections(content: str) -> str:
     text = str(content or "")
@@ -799,7 +753,7 @@ def generate_resources():
             return fail("当前画像为空，请先生成学生画像，再生成学习资源", 404)
 
         dialogue = str(payload.get("dialogue") or payload.get("learning_need") or "")
-        if dialogue and not audit_content(dialogue):
+        if dialogue and not content_audit(dialogue):
             return fail("资源生成输入未通过内容审核", 403)
 
         latest_path = mysql_db.query_one(
@@ -826,7 +780,7 @@ def generate_resources():
         for item in result.get("resource_list", []):
             item = _append_images_to_resource(item)
             content = str(item.get("content", ""))
-            if content and audit_content(content):
+            if content and (not payload.get("full_generation") or content_audit(content)):
                 metadata = _safe_json_loads(item.get("metadata"), {})
                 metadata.update(
                     {
@@ -932,20 +886,6 @@ def list_my_resources():
                 "SELECT source_name AS source, chunk_index, relevance_score AS score, retrieval_mode FROM resource_source WHERE resource_id=%s",
                 (item["id"],),
             )
-            original_content = str(item.get("content") or "")
-            original_metadata = json.dumps(item.get("metadata") or {}, ensure_ascii=False, sort_keys=True)
-            _append_images_to_resource(item)
-            updated_metadata = json.dumps(item.get("metadata") or {}, ensure_ascii=False, sort_keys=True)
-            if str(item.get("content") or "") != original_content or updated_metadata != original_metadata:
-                mysql_db.update(
-                    "study_resource",
-                    {
-                        "content": item.get("content"),
-                        "metadata": json.dumps(item.get("metadata") or {}, ensure_ascii=False),
-                    },
-                    "id=%s",
-                    (item["id"],),
-                )
         return success(resources, "查询成功")
     except Exception as exc:
         return fail("资源查询失败", 500, {"error": str(exc)})
@@ -974,7 +914,7 @@ def _persist_stream_result(result: dict, user_id: int, session_id: int) -> dict:
     for item in result.get("resource_list", []):
         item = _append_images_to_resource(item)
         content = str(item.get("content", ""))
-        if content and audit_content(content):
+        if content and content_audit(content):
             metadata = _safe_json_loads(item.get("metadata"), {})
             metadata.update({"format": item.get("format"), "quality": item.get("quality"), "retry_count": item.get("retry_count", 0), "duration_ms": item.get("duration_ms", 0), "video_url": item.get("video_url"), "stage_id": item.get("stage_id"), "stage_index": item.get("stage_index"), "stage_title": item.get("stage_title"), "stage_points": item.get("stage_points", [])})
             resource_id = mysql_db.insert(
@@ -1074,7 +1014,7 @@ def generate_resources_stream():
                     push({"type": "error", "message": "当前画像为空，请先生成学生画像，再生成学习资源"})
                     return
                 dialogue = str(payload.get("dialogue") or payload.get("learning_need") or "")
-                if dialogue and not audit_content(dialogue):
+                if dialogue and not content_audit(dialogue):
                     push({"type": "error", "message": "资源生成输入未通过内容审核"})
                     return
                 latest_path = mysql_db.query_one(

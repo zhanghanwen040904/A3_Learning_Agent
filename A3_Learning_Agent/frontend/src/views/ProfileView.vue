@@ -196,6 +196,7 @@ const sessions = ref([]);
 const activeSessionId = ref("");
 let saveTimer = null;
 let profileSyncToken = 0;
+let sessionLoadToken = 0;
 
 const showHome = computed(() => {
   const meaningfulMessages = messages.value.filter((item) => item.role === "user");
@@ -635,13 +636,14 @@ async function saveConversationRemote() {
   }
 }
 
-async function loadConversationRemote() {
+async function loadConversationRemote(expectedToken = sessionLoadToken) {
   if (!activeSessionId.value) {
     messages.value = [];
     return;
   }
   try {
     const res = await profileApi.getConversation();
+    if (expectedToken !== sessionLoadToken) return;
     if (res.code === 200 && Array.isArray(res.data?.messages) && res.data.messages.length) {
       messages.value = cleanMessages(res.data.messages);
       persistState();
@@ -649,6 +651,20 @@ async function loadConversationRemote() {
   } catch {
     // ignore
   }
+}
+
+async function loadSessionState(targetSessionId = "") {
+  const token = ++sessionLoadToken;
+  const savedId = targetSessionId || localStorage.getItem(ACTIVE_PROFILE_SESSION_KEY) || "";
+  activeSessionId.value = savedId ? Number(savedId) : "";
+  Object.keys(profile).forEach((key) => delete profile[key]);
+  if (!restoreState()) initConversation();
+  await loadConversationRemote(token);
+  if (token !== sessionLoadToken) return;
+  await loadAggregateProfile(token);
+  if (token !== sessionLoadToken) return;
+  scrollToBottom();
+  focusInput();
 }
 
 async function loadSessions() {
@@ -665,9 +681,10 @@ async function loadSessions() {
   }
 }
 
-async function loadAggregateProfile() {
+async function loadAggregateProfile(expectedToken = sessionLoadToken) {
   try {
     const res = await profileApi.getAggregate();
+    if (expectedToken !== sessionLoadToken) return;
     Object.keys(aggregateProfile).forEach((key) => delete aggregateProfile[key]);
     if (res.code === 200 && res.data && Object.keys(res.data).length > 0) {
       Object.assign(aggregateProfile, res.data);
@@ -684,22 +701,11 @@ async function switchSession(id) {
   if (res.code !== 200) return;
   activeSessionId.value = Number(id);
   setActiveProfileSessionId(id);
-  Object.keys(profile).forEach((key) => delete profile[key]);
-  if (!restoreState()) initConversation();
-  await loadConversationRemote();
-  await loadAggregateProfile();
-  scrollToBottom();
+  await loadSessionState(String(id));
 }
 
 async function reloadFromActiveSession() {
-  const savedId = localStorage.getItem(ACTIVE_PROFILE_SESSION_KEY) || "";
-  activeSessionId.value = savedId ? Number(savedId) : "";
-  Object.keys(profile).forEach((key) => delete profile[key]);
-  if (!restoreState()) initConversation();
-  await loadConversationRemote();
-  await loadAggregateProfile();
-  scrollToBottom();
-  focusInput();
+  await loadSessionState();
 }
 
 function bindGlobalSidebarEvents() {
@@ -872,7 +878,7 @@ async function resetConversation() {
     await profileApi.resetSession(activeSessionId.value);
   }
   clearCurrentSessionState();
-  await loadAggregateProfile();
+  await loadSessionState();
   persistState();
   window.dispatchEvent(new CustomEvent("a3-profile-session-refresh"));
   scrollToBottom();
@@ -897,8 +903,7 @@ onMounted(async () => {
   else activeSessionId.value = "";
   await loadSessions();
   if (!restoreState()) initConversation();
-  await loadConversationRemote();
-  await loadAggregateProfile();
+  await loadSessionState();
   bindGlobalSidebarEvents();
   scrollToBottom();
   focusInput();

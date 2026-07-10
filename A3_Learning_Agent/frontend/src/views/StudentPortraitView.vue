@@ -189,6 +189,9 @@ const loading = ref(false);
 const aggregateProfile = reactive({});
 const sessions = ref([]);
 let radarChart = null;
+let refreshTimer = null;
+let refreshRequestId = 0;
+let refreshPending = false;
 
 const DEFAULT_VALUE = "待进一步观察";
 const corePrompts = [
@@ -476,12 +479,20 @@ function renderRadar() {
 }
 
 async function refreshData() {
+  if (loading.value) {
+    refreshPending = true;
+    return;
+  }
+  refreshPending = false;
+  const requestId = ++refreshRequestId;
   loading.value = true;
   try {
     const [aggregateRes, sessionRes] = await Promise.all([
       profileApi.getAggregate(),
       profileApi.sessions(),
     ]);
+
+    if (requestId !== refreshRequestId) return;
 
     Object.keys(aggregateProfile).forEach((key) => delete aggregateProfile[key]);
     if (aggregateRes.code === 200 && aggregateRes.data) {
@@ -494,12 +505,21 @@ async function refreshData() {
 
     renderRadar();
   } finally {
-    loading.value = false;
+    if (requestId === refreshRequestId) {
+      loading.value = false;
+      if (refreshPending) {
+        refreshData();
+      }
+    }
   }
 }
 
 function handleRefreshEvent() {
-  refreshData();
+  if (refreshTimer) clearTimeout(refreshTimer);
+  refreshTimer = setTimeout(() => {
+    refreshTimer = null;
+    refreshData();
+  }, 350);
 }
 
 onMounted(() => {
@@ -509,6 +529,10 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
+  if (refreshTimer) {
+    clearTimeout(refreshTimer);
+    refreshTimer = null;
+  }
   window.removeEventListener("resize", renderRadar);
   window.removeEventListener("a3-profile-session-refresh", handleRefreshEvent);
   if (radarChart) {

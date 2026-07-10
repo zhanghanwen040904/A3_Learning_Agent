@@ -188,7 +188,12 @@ def _load_knowledge_points_items() -> List[dict]:
             payload = _read_json(path)
         except Exception:
             continue
-        rows = payload.get("knowledge_points") or payload.get("items") or payload if isinstance(payload, list) else []
+        if isinstance(payload, list):
+            rows = payload
+        elif isinstance(payload, dict):
+            rows = payload.get("knowledge_points") or payload.get("textbook_knowledge") or payload.get("items") or []
+        else:
+            rows = []
         for row in rows:
             if not isinstance(row, dict):
                 continue
@@ -221,7 +226,12 @@ def _load_textbook_knowledge_items() -> List[dict]:
             payload = _read_json(path)
         except Exception:
             continue
-        rows = payload.get("knowledge_points") or payload.get("items") or payload if isinstance(payload, list) else []
+        if isinstance(payload, list):
+            rows = payload
+        elif isinstance(payload, dict):
+            rows = payload.get("knowledge_points") or payload.get("textbook_knowledge") or payload.get("items") or []
+        else:
+            rows = []
         for row in rows:
             if not isinstance(row, dict):
                 continue
@@ -520,12 +530,77 @@ def _profile_terms(profile: dict | None = None, stage: dict | None = None) -> Li
     return terms
 
 
+def _stage_level(stage: dict | None = None) -> int:
+    stage = stage or {}
+    try:
+        index = int(stage.get("stage_index") or 0)
+    except Exception:
+        index = 0
+    if index <= 1:
+        return 1
+    if index == 2:
+        return 2
+    return 3
+
+
+def _stage_title_text(stage: dict | None = None) -> str:
+    stage = stage or {}
+    return clean_text(
+        " ".join(
+            [
+                str(stage.get("stage_title") or ""),
+                str(stage.get("stage_goal") or ""),
+                " ".join(stage.get("stage_points") or []),
+            ]
+        )
+    )
+
+
+def _stage_progressive_bonus(item: dict, stage: dict | None = None) -> float:
+    if not stage:
+        return 0.0
+    level = _stage_level(stage)
+    title = clean_text(item.get("title") or "")
+    content = clean_text(item.get("content") or "")
+    tags_text = clean_text(" ".join(item.get("tags") or []))
+    section_text = clean_text(" / ".join(item.get("section_path") or []))
+    corpus = f"{title} {content} {tags_text} {section_text}"
+    knowledge_level = clean_text(item.get("knowledge_level") or "").lower()
+
+    def hit(words: List[str]) -> bool:
+        return any(word and word in corpus for word in words)
+
+    bonus = 0.0
+    if level == 1:
+        if item.get("is_primary_knowledge"):
+            bonus += 10.0
+        if knowledge_level in {"core", "primary", "basic", "important"}:
+            bonus += 5.0
+        if hit(["定义", "概念", "作用", "任务", "特点", "基础", "简介", "是什么", "输入", "输出"]):
+            bonus += 6.0
+        if hit(["案例", "实操", "练习", "题", "编程", "代码", "易错", "风险", "比较"]):
+            bonus -= 4.0
+    elif level == 2:
+        if hit(["流程", "步骤", "方法", "关系", "过程", "阶段", "结构", "建模", "衔接", "比较"]):
+            bonus += 8.0
+        if item.get("parent_titles") or item.get("child_titles") or item.get("related_knowledge_titles"):
+            bonus += 3.5
+        if hit(["定义", "概念", "简介"]) and not hit(["流程", "关系", "方法", "步骤"]):
+            bonus -= 2.0
+    else:
+        if hit(["案例", "应用", "实践", "项目", "练习", "题", "测试", "质量", "风险", "易错", "缺点", "优缺点", "选择"]):
+            bonus += 9.0
+        if hit(["定义", "概念", "简介"]) and not hit(["案例", "应用", "实践", "易错", "风险"]):
+            bonus -= 3.0
+    return bonus
+
+
 def _primary_bonus(item: dict) -> float:
     bonus = 0.0
     if item.get("is_primary_knowledge"):
         bonus += 8.0
     level = clean_text(item.get("knowledge_level") or "")
-    if level in {"core", "primary", "important", "??", "??"}:
+    if level in {"core", "primary", "important", "basic"}:
         bonus += 4.0
     if item.get("parent_titles") or item.get("child_titles"):
         bonus += 1.5
@@ -575,17 +650,20 @@ def select_profile_knowledge_items(query: str, profile: dict | None = None, stag
             terms.append(token)
 
     weak_points = clean_text((profile or {}).get("weak_points") or "")
+    stage_text = _stage_title_text(stage)
+    stage_text_norm = _normalize_string(stage_text)
     stage_points = [clean_text(item) for item in ((stage or {}).get("stage_points") or []) if clean_text(item)]
     scored = []
     for index, item in enumerate(items):
         score = _score_item(terms, item) + _primary_bonus(item)
+        score += _stage_progressive_bonus(item, stage)
         title_norm = _normalize_string(item.get("normalized_title") or item.get("title") or "")
         related_norm = [_normalize_string(v) for v in (item.get("related_knowledge_titles") or [])]
         parent_norm = [_normalize_string(v) for v in (item.get("parent_titles") or [])]
         child_norm = [_normalize_string(v) for v in (item.get("child_titles") or [])]
         for point in stage_points:
             point_norm = _normalize_string(point)
-            if point_norm and point_norm == title_norm:
+            if point_norm and (point_norm == title_norm or point_norm in title_norm or title_norm in point_norm):
                 score += 16.0
             elif point_norm and (point_norm in related_norm or point_norm in parent_norm or point_norm in child_norm):
                 score += 7.0
@@ -594,6 +672,8 @@ def select_profile_knowledge_items(query: str, profile: dict | None = None, stag
             score += 10.0
         elif weak_norm and weak_norm in related_norm:
             score += 4.0
+        if stage_text_norm and stage_text_norm in _normalize_string(clean_text(item.get("content") or "")):
+            score += 2.0
         if score <= 0:
             continue
         scored.append((score, index, item))

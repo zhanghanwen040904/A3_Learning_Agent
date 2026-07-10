@@ -6,7 +6,6 @@ from flask import Blueprint, request
 from ai.agents import SafetyAgent
 from ai.rag import retrieve_knowledge, retrieve_knowledge_items
 from ai.llm_api import audit_content, llm_chat
-from api.resource_api import _append_images_to_resource
 # 兼容下面原来使用的函数名
 content_audit = audit_content
 spark_chat = llm_chat
@@ -99,6 +98,26 @@ def _parse_path_stages(path_content: str) -> list[dict]:
                 "resources": [],
             }
         )
+    if len(stages) >= 3:
+        return stages
+    if stages:
+        merged_points = []
+        for stage in stages:
+            for point in stage.get("points") or []:
+                if point and point not in merged_points:
+                    merged_points.append(point)
+        fallback_specs = [
+            {"title": "方法关系建构", "duration": "预计3天", "goal": "建立相关方法、流程和阶段之间的关系。", "points": merged_points or ["课程核心知识"]},
+            {"title": "练习与实操巩固", "duration": "预计2天", "goal": "通过练习、案例和应用任务完成迁移。", "points": merged_points or ["课程核心知识"]},
+        ]
+        existing_titles = {stage.get("title") for stage in stages}
+        for item in fallback_specs:
+            if len(stages) >= 3:
+                break
+            if item["title"] in existing_titles:
+                continue
+            next_index = len(stages) + 1
+            stages.append({"index": next_index, "raw": "", "status": "pending", "resources": [], **item})
     return stages
 
 
@@ -162,7 +181,6 @@ def _normalize_resource(resource: dict) -> dict:
     if _is_model_error_text(item.get("content")):
         item["content"] = _friendly_resource_content(item)
     item["metadata"] = _safe_json(item.get("metadata"), {})
-    item = _append_images_to_resource(item)
     stage_meta = item["metadata"].get("stage") if isinstance(item.get("metadata"), dict) else None
     if isinstance(stage_meta, dict):
         item["stage_id"] = item.get("stage_id") or stage_meta.get("stage_id")
@@ -258,18 +276,43 @@ def generate_learning_path():
 
 输出要求：
 1. 只输出普通 Markdown 正文，不要代码围栏，不要 JSON，不要 ASCII 图，不要复杂表格，不要 emoji。
-2. 标题层级必须统一：一级标题用“# 个性化学习路径”，二级标题用“## 阶段一：...”，三级标题用“### 学习安排”。
-3. 每个阶段固定包含五项，且五项名称必须一致：目标、学习任务、推荐资源、练习方式、评估指标。
-4. 每个阶段写成短段落和项目符号，不要把所有内容挤在一行。
-5. 内容要清楚说明学习顺序、为什么这样学、需要用到哪些文档/题库/视频/案例。
-6. 最后添加“## 动态调整建议”和“## 参考依据”两个小节。
-7. 只能依据教材原文和学生画像，不要编造不存在的页码、图片和结论。
+2. 标题层级必须统一：一级标题用“# 个性化学习路径”，二级标题用“## 阶段一：...”“## 阶段二：...”“## 阶段三：...”，三级标题用“### 学习安排”。
+3. 必须生成 3 个学习阶段，不能只生成 1 个阶段；三个阶段应体现“基础理解 → 方法建构 → 练习应用”的递进关系。
+4. 每个阶段固定包含五项，且五项名称必须一致：目标、学习任务、推荐资源、练习方式、评估指标。
+5. 每个阶段写成短段落和项目符号，不要把所有内容挤在一行。
+6. 内容要清楚说明学习顺序、为什么这样学、需要用到哪些文档/题库/视频/案例。
+7. 最后添加“## 动态调整建议”和“## 参考依据”两个小节。
+8. 只能依据教材原文和学生画像，不要编造不存在的页码、图片和结论。
 
-请严格按这个模板组织：
+请严格按这个模板组织，三个阶段都必须保留：
 
 # 个性化学习路径
 
-## 阶段一：阶段名称
+## 阶段一：基础理解与概念澄清
+### 学习安排
+**目标：** ...
+**学习任务：**
+- ...
+**推荐资源：**
+- ...
+**练习方式：**
+- ...
+**评估指标：**
+- ...
+
+## 阶段二：方法关系与流程建构
+### 学习安排
+**目标：** ...
+**学习任务：**
+- ...
+**推荐资源：**
+- ...
+**练习方式：**
+- ...
+**评估指标：**
+- ...
+
+## 阶段三：案例练习与迁移应用
 ### 学习安排
 **目标：** ...
 **学习任务：**

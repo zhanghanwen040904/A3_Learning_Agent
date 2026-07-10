@@ -325,6 +325,7 @@ def _persist_profile_result(user_id: int, session_id: int, session: dict, profil
     aggregate_profile = _aggregate_profile_payload(
         user_id,
         _refresh_aggregate_profile(user_id, transient_profile=profile_result.get("profile")),
+        refresh_scoring=True,
     )
     _persist_portrait_snapshot(
         user_id=user_id,
@@ -802,9 +803,41 @@ def _portrait_dimension_scores(user_id: int, profile: dict) -> dict:
         return _portrait_score_fallback(profile, evidence)
 
 
-def _aggregate_profile_payload(user_id: int, profile: dict) -> dict:
+def _latest_portrait_snapshot(user_id: int) -> dict:
+    row = mysql_db.query_one(
+        """
+        SELECT id, profile_summary, portrait_scoring, profile_snapshot, create_time
+        FROM portrait_snapshot
+        WHERE user_id=%s
+        ORDER BY id DESC
+        LIMIT 1
+        """,
+        (user_id,),
+    )
+    return row or {}
+
+
+def _cached_portrait_scoring(user_id: int, profile: dict) -> Optional[dict]:
+    latest = _latest_portrait_snapshot(user_id)
+    scoring = _json_loads(latest.get("portrait_scoring"), {})
+    if not isinstance(scoring, dict) or not scoring.get("dimensions"):
+        return None
+
+    cached_snapshot = _json_loads(latest.get("profile_snapshot"), {})
+    current_snapshot = _snapshot_profile_view(profile or {})
+    if cached_snapshot == current_snapshot:
+        scoring["method"] = scoring.get("method") or "读取最近一次画像评分缓存"
+        return scoring
+    return None
+
+
+def _aggregate_profile_payload(user_id: int, profile: dict, refresh_scoring: bool = False) -> dict:
     payload = dict(profile or {})
-    payload["portrait_scoring"] = _portrait_dimension_scores(user_id, payload)
+    if refresh_scoring:
+        payload["portrait_scoring"] = _portrait_dimension_scores(user_id, payload)
+    else:
+        cached_scoring = _cached_portrait_scoring(user_id, payload)
+        payload["portrait_scoring"] = cached_scoring or _portrait_score_fallback(payload, {})
     payload["portrait_history"] = _portrait_history(user_id, limit=6)
     return payload
 
@@ -1193,6 +1226,7 @@ def create_profile():
         aggregate_profile = _aggregate_profile_payload(
             request.user_id,
             _refresh_aggregate_profile(request.user_id, transient_profile=profile),
+            refresh_scoring=True,
         )
         _persist_portrait_snapshot(
             user_id=request.user_id,
@@ -1238,6 +1272,7 @@ def update_profile():
         aggregate_profile = _aggregate_profile_payload(
             request.user_id,
             _refresh_aggregate_profile(request.user_id, transient_profile=data),
+            refresh_scoring=True,
         )
         _persist_portrait_snapshot(
             user_id=request.user_id,
@@ -1272,22 +1307,10 @@ def get_my_profile():
 def get_aggregate_profile():
     try:
         profile = _cached_aggregate_profile(request.user_id)
-        if not _has_meaningful_profile(profile):
-            _ensure_session_profile_from_conversation(request.user_id, _resolve_session(request.user_id, create_if_missing=False))
-            profile = _refresh_aggregate_profile(request.user_id)
         if not profile:
             profile = _refresh_aggregate_profile(request.user_id)
-        profile = _merge_personal_info(profile, _user_personal_info(request.user_id))
-        payload = _aggregate_profile_payload(request.user_id, profile)
-        if not payload.get("portrait_history"):
-            _persist_portrait_snapshot(
-                user_id=request.user_id,
-                profile_session_id=AGGREGATE_PROFILE_SESSION_ID,
-                profile=payload,
-                portrait_scoring=payload.get("portrait_scoring") or {},
-                trigger_source="aggregate_read_init",
-            )
-            payload["portrait_history"] = _portrait_history(request.user_id, limit=6)
+        profile = _merge_personal_info(profile or _empty_profile(), _user_personal_info(request.user_id))
+        payload = _aggregate_profile_payload(request.user_id, profile, refresh_scoring=False)
         return success(payload, "综合画像读取成功")
     except Exception as exc:
         if _is_missing_schema_error(exc):
