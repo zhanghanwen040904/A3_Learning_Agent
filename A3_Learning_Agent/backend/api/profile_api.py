@@ -1,4 +1,4 @@
-import json
+﻿import json
 import re
 from typing import Any, Optional
 
@@ -49,23 +49,27 @@ PROFILE_FIELDS = [
 ]
 
 CORE_PROFILE_DIMENSIONS = [
-    "current_topic",
-    "mastery_level",
-    "current_difficulty",
-    "task_goal",
-    "support_preference",
+    "knowledge_foundation",
+    "knowledge_mastery",
+    "weak_point_distribution",
+    "learning_progress",
     "engagement_level",
+    "support_match",
+    "error_pattern_stability",
+    "goal_attainment_risk",
 ]
 
 DEFAULT_VALUE = "待进一步观察"
 AGGREGATE_PROFILE_SESSION_ID = 0
 DIMENSION_LABELS = {
-    "current_topic": "当前学习主题",
-    "mastery_level": "掌握程度",
-    "current_difficulty": "当前困难点",
-    "task_goal": "当前任务目标",
-    "support_preference": "适配支持方式",
-    "engagement_level": "学习投入状态",
+    "knowledge_foundation": "知识基础",
+    "knowledge_mastery": "知识点掌握",
+    "weak_point_distribution": "薄弱点分布",
+    "learning_progress": "学习进度",
+    "engagement_level": "学习投入",
+    "support_match": "支持方式匹配",
+    "error_pattern_stability": "易错类型稳定性",
+    "goal_attainment_risk": "目标达成把握",
 }
 
 
@@ -94,43 +98,43 @@ PORTRAIT_SCORE_PROMPT_TEMPLATE = """
 7. 只能输出 JSON，不要输出 markdown，不要输出解释性前后缀。
 
 六个核心维度的评分含义如下：
-- current_topic：学生当前聚焦内容是否明确，学习主线是否稳定。分高表示主线清晰，不飘散。
-- mastery_level：学生对当前学习内容的真实掌握程度。分高表示理解较扎实、能迁移或能说清。
-- current_difficulty：学生当前卡点的严重程度与可化解程度。分高表示困难较聚焦、可拆解、可解决；分低表示困难明显且阻碍较大。
-- task_goal：学生眼下的学习目标是否明确、具体、可执行。分高表示目标清楚且有行动方向。
-- support_preference：适合学生的帮助方式是否已经比较明确。分高表示已经能判断出更适合讲解、例题、图示、拆步骤等哪种支持。
-- engagement_level：学生投入度、持续性和主动性。分高表示学习意愿较稳定、互动积极、能持续推进。
+- knowledge_foundation：学生在本课程上的起点基础。分高表示前置概念较稳，不是完全依赖外部扶着走。
+- knowledge_mastery：学生对当前学习章节和已接触知识点的真实掌握程度。分高表示能理解、能做题、能迁移。
+- weak_point_load：当前薄弱知识点带来的学习压力。注意这里分高表示薄弱点压力较小、可控；分低表示薄弱点多且集中。
+- learning_progress：学生的学习推进状态。分高表示阶段清晰、学习路径持续前进，而不是停留在同一困惑上。
+- engagement_level：学生投入度、持续性和主动性。分高表示学习意愿稳定、互动积极、最近有持续学习行为。
+- support_match：系统当前给出的帮助方式与学生需求是否匹配。分高表示已经能判断出学生更适合哪类支持，且支持方向较有效。
 
 请输出严格符合以下 JSON 结构：
 {{
   "teacher_summary": "",
   "overall_comment": "",
   "dimensions": {{
-    "current_topic": {{
+    "knowledge_foundation": {{
       "score": 0,
       "level": "低",
       "teacher_judgement": "",
       "reason": ""
     }},
-    "mastery_level": {{
+    "knowledge_mastery": {{
       "score": 0,
       "level": "低",
       "teacher_judgement": "",
       "reason": ""
     }},
-    "current_difficulty": {{
+    "weak_point_load": {{
       "score": 0,
       "level": "低",
       "teacher_judgement": "",
       "reason": ""
     }},
-    "task_goal": {{
+    "learning_progress": {{
       "score": 0,
       "level": "低",
       "teacher_judgement": "",
       "reason": ""
     }},
-    "support_preference": {{
+    "support_match": {{
       "score": 0,
       "level": "低",
       "teacher_judgement": "",
@@ -500,6 +504,26 @@ def _safe_float(value: Any, fallback: float = 0.0) -> float:
         return fallback
 
 
+def _safe_ratio(numerator: float, denominator: float) -> float:
+    if denominator <= 0:
+        return 0.0
+    return numerator / denominator
+
+
+def _clamp_percent(value: float) -> int:
+    return max(0, min(100, int(round(value))))
+
+
+def _score_band_text(score: int) -> str:
+    if score >= 85:
+        return "较强"
+    if score >= 70:
+        return "稳定提升"
+    if score >= 55:
+        return "建立中"
+    return "需重点支持"
+
+
 def _trim_text(value: Any, limit: int = 120) -> str:
     text = _normalize_text(value)
     if not text:
@@ -612,27 +636,30 @@ def _conversation_evidence_snapshot(user_id: int, limit_sessions: int = 8, limit
 
 
 def _portrait_score_fallback(profile: dict, evidence: dict) -> dict:
+    dynamic = _derive_learning_profile(profile, evidence)
+    dynamic_scores = dynamic.get("dynamic_scores") or {}
     dimensions = {}
     for key, label in DIMENSION_LABELS.items():
-        filled = bool(_normalize_text(profile.get(key)))
-        score = 50 if filled else 35
+        score = _safe_int(dynamic_scores.get(key), 45)
+        dynamic_value = _trim_text(dynamic.get(key), 120)
         dimensions[key] = {
             "score": score,
             "level": _score_level(score),
-            "reason": f"{label}本轮暂未完成模型评估，当前展示为系统兜底结果。",
+            "teacher_judgement": dynamic_value or f"{label}已根据近期学习证据完成判断",
+            "reason": f"{label}当前基于答题、掌握度、错题和学习行为自动生成；后续继续学习后会持续修正该维度。",
         }
     return {
         "dimensions": dimensions,
         "overall_score": round(sum(item["score"] for item in dimensions.values()) / max(len(dimensions), 1), 1),
-        "completion_ratio": round(len([k for k in CORE_PROFILE_DIMENSIONS if _normalize_text(profile.get(k))]) / max(len(CORE_PROFILE_DIMENSIONS), 1), 2),
-        "confidence_label": "低",
+        "completion_ratio": round(len([k for k in CORE_PROFILE_DIMENSIONS if _safe_int(dynamic_scores.get(k), 0) > 0]) / max(len(CORE_PROFILE_DIMENSIONS), 1), 2),
+        "confidence_label": "中",
         "evidence": evidence,
-        "method": "大模型评分暂未成功返回，当前为系统兜底展示。",
-        "evidence_summary": "本次画像评分未获得有效模型输出。",
-        "teacher_summary": "当前画像评分暂未成功生成，建议先继续补充对话，再重新获取更稳定的教师式评估。",
-        "overall_comment": "先继续补充学习情况与真实困惑，再进行画像评估会更准确。",
+        "method": "当前按学习证据规则生成动态画像，若大模型评分返回成功会进一步细化教师评语。",
+        "evidence_summary": f"已读取对话、练习、掌握度、错题与资源行为证据；当前综合掌握约 {dynamic.get('overall_mastery_score', 0)} 分。",
+        "teacher_summary": f"系统已根据学习记录形成动态画像：当前学习阶段为“{dynamic.get('current_stage_label', '待观察')}”，薄弱知识点主要集中在“{dynamic.get('weak_knowledge_points', DEFAULT_VALUE)}”。",
+        "overall_comment": dynamic.get("goal_risk") or "建议继续围绕薄弱知识点完成练习、反馈和再次验证。",
+        "dynamic_profile": dynamic,
     }
-
 
 def _build_portrait_scoring_evidence(user_id: int, profile: dict) -> dict:
     quiz_rows = mysql_db.query_all(
@@ -653,6 +680,16 @@ def _build_portrait_scoring_evidence(user_id: int, profile: dict) -> dict:
     )
     resource_rows = mysql_db.query_all(
         "SELECT resource_type, title, create_time FROM study_resource WHERE user_id=%s ORDER BY create_time DESC LIMIT 50",
+        (user_id,),
+    )
+    wrong_book_rows = mysql_db.query_all(
+        """
+        SELECT question, knowledge_point, score, feedback, common_mistake, create_time
+        FROM quiz_wrong_book
+        WHERE user_id=%s
+        ORDER BY create_time DESC, id DESC
+        LIMIT 50
+        """,
         (user_id,),
     )
 
@@ -727,6 +764,17 @@ def _build_portrait_scoring_evidence(user_id: int, profile: dict) -> dict:
             }
             for item in resource_rows[:15]
         ],
+        "wrong_book": [
+            {
+                "knowledge_point": _trim_text(item.get("knowledge_point"), 80),
+                "score": _safe_int(item.get("score"), 0),
+                "feedback": _trim_text(item.get("feedback"), 120),
+                "common_mistake": _trim_text(item.get("common_mistake"), 120),
+                "question": _trim_text(item.get("question"), 120),
+                "time": str(item.get("create_time") or ""),
+            }
+            for item in wrong_book_rows[:15]
+        ],
         "counts": {
             "session_count": len(_conversation_evidence_snapshot(user_id)),
             "quiz_count": len(quiz_rows),
@@ -734,19 +782,165 @@ def _build_portrait_scoring_evidence(user_id: int, profile: dict) -> dict:
             "event_count": len(event_rows),
             "resource_feedback_count": len(resource_feedback_rows),
             "resource_count": len(resource_rows),
+            "wrong_book_count": len(wrong_book_rows),
         },
     }
 
+def _derive_learning_profile(profile: dict, evidence: dict) -> dict:
+    quiz_items = ((evidence or {}).get("quiz_summary") or {}).get("items") or []
+    mastery_items = ((evidence or {}).get("mastery_summary") or {}).get("items") or []
+    learning_events = (evidence or {}).get("learning_events") or []
+    resource_feedback = (evidence or {}).get("resource_feedback") or []
+    resource_usage = (evidence or {}).get("resource_usage") or []
+    wrong_book = (evidence or {}).get("wrong_book") or []
+
+    avg_quiz = _safe_float(((evidence or {}).get("quiz_summary") or {}).get("avg_score"), 0.0)
+    avg_mastery = _safe_float(((evidence or {}).get("mastery_summary") or {}).get("avg_mastery"), 0.0)
+
+    weak_points = [item for item in mastery_items if _safe_int(item.get("mastery_score"), 0) < 70]
+    strong_points = [item for item in mastery_items if _safe_int(item.get("mastery_score"), 0) >= 85]
+
+    current_topic = _trim_text(profile.get("current_topic"), 160)
+    weak_summary = "、".join(
+        item.get("knowledge_point") for item in weak_points[:5] if _trim_text(item.get("knowledge_point"), 80)
+    ) or _trim_text(profile.get("weak_knowledge_points"), 200)
+    strong_summary = "、".join(
+        item.get("knowledge_point") for item in strong_points[:5] if _trim_text(item.get("knowledge_point"), 80)
+    )
+
+    foundation_score = _clamp_percent(
+        0.45 * avg_mastery
+        + 0.20 * avg_quiz
+        + 15 * (1 if _normalize_text(profile.get("learning_background")) else 0)
+        + 10 * (1 if _normalize_text(profile.get("major")) else 0)
+    )
+    mastery_score = _clamp_percent(0.65 * avg_mastery + 0.35 * avg_quiz)
+    weak_distribution_score = _clamp_percent(
+        100
+        - min(len(weak_points), 6) * 9
+        - min(len(wrong_book), 8) * 4
+        - max(0, 70 - avg_mastery) * 0.35
+    )
+    progress_score = _clamp_percent(
+        25 * min(len(strong_points), 3)
+        + 15 * min(len(quiz_items), 4)
+        + 10 * min(len(resource_usage), 4)
+        + 10 * (1 if current_topic else 0)
+    )
+    engagement_score = _clamp_percent(
+        15 * min(len(learning_events), 4)
+        + 10 * min(len(quiz_items), 3)
+        + 8 * min(len(resource_usage), 4)
+        + 8 * (1 if _normalize_text(profile.get("engagement_level")) else 0)
+    )
+    avg_feedback = round(
+        sum(_safe_int(item.get("rating"), 0) for item in resource_feedback) / len(resource_feedback),
+        1,
+    ) if resource_feedback else 0.0
+    support_match_score = _clamp_percent(
+        40 * (1 if _normalize_text(profile.get("support_preference")) else 0)
+        + 30 * (1 if _normalize_text(profile.get("preferred_resource")) else 0)
+        + 6 * avg_feedback
+    )
+
+    common_mistake_text = " ".join(
+        part for part in [
+            " ".join(_trim_text(item.get("common_mistake"), 120) for item in wrong_book),
+            " ".join(_trim_text(item.get("feedback"), 120) for item in wrong_book),
+            " ".join(_trim_text(item.get("detail"), 120) for item in learning_events),
+        ] if part
+    )
+
+    stage_label = current_topic or _trim_text(profile.get("recent_progress"), 160) or "课程起步阶段"
+
+    error_pattern = DEFAULT_VALUE
+    error_pattern_score = 58
+    if any(keyword in common_mistake_text for keyword in ["概念", "定义", "理解"]):
+        error_pattern = "概念理解型错误偏多"
+        error_pattern_score = 60 if len(wrong_book) >= 3 else 68
+    elif any(keyword in common_mistake_text for keyword in ["步骤", "流程", "顺序"]):
+        error_pattern = "步骤遗漏型错误偏多"
+        error_pattern_score = 62 if len(wrong_book) >= 3 else 70
+    elif any(keyword in common_mistake_text for keyword in ["计算", "公式", "推导"]):
+        error_pattern = "公式推导或计算型错误偏多"
+        error_pattern_score = 61 if len(wrong_book) >= 3 else 69
+    elif weak_summary and weak_summary != DEFAULT_VALUE:
+        error_pattern = "错误主要集中在当前薄弱知识点"
+        error_pattern_score = 72 if len(weak_points) <= 2 else 64
+    error_pattern_score = _clamp_percent(error_pattern_score + max(0, 3 - min(len(wrong_book), 3)) * 6)
+
+    knowledge_map = []
+    for item in mastery_items[:20]:
+        score = _safe_int(item.get("mastery_score"), 0)
+        knowledge_map.append(
+            {
+                "knowledge_point": _trim_text(item.get("knowledge_point"), 80),
+                "mastery_score": score,
+                "status": "薄弱" if score < 70 else "稳定" if score < 85 else "较好",
+                "weak_reason": _trim_text(item.get("weak_reason"), 120),
+                "trend": "up" if score >= 70 else "down",
+            }
+        )
+
+    goal_text = _trim_text(profile.get("task_goal"), 160)
+    goal_risk = DEFAULT_VALUE
+    goal_risk_score = 55
+    target_match = re.search(r"(\d{2,3})\s*[分%]?", goal_text)
+    if target_match:
+        target = _safe_int(target_match.group(1), 0)
+        current = mastery_score or foundation_score
+        gap = max(0, target - current)
+        if gap <= 8:
+            goal_risk = "目标达成把握较高"
+            goal_risk_score = 88
+        elif gap <= 20:
+            goal_risk = "目标可以达成，但还需要持续补弱"
+            goal_risk_score = 72
+        else:
+            goal_risk = "目标存在明显压力，需要先补齐关键薄弱点"
+            goal_risk_score = 54
+    elif goal_text:
+        goal_risk = "已有目标方向，但尚未量化到可跟踪标准"
+        goal_risk_score = 66
+
+    return {
+        "knowledge_foundation": f"{_score_band_text(foundation_score)}（{foundation_score}分）",
+        "knowledge_mastery": f"{_score_band_text(mastery_score)}（{mastery_score}分）",
+        "weak_point_distribution": "薄弱点较集中，需要优先补弱" if weak_distribution_score < 55 else ("薄弱点存在但可控" if weak_distribution_score < 75 else "薄弱点分布较稳定"),
+        "learning_progress": f"{stage_label}；当前推进度 {progress_score}分",
+        "engagement_level": f"{_score_band_text(engagement_score)}（{engagement_score}分）",
+        "support_match": f"{_score_band_text(support_match_score)}（{support_match_score}分）",
+        "error_pattern_stability": error_pattern or DEFAULT_VALUE,
+        "goal_attainment_risk": goal_risk or DEFAULT_VALUE,
+        "current_stage_label": stage_label,
+        "strong_knowledge_points": strong_summary or DEFAULT_VALUE,
+        "weak_knowledge_points": weak_summary or DEFAULT_VALUE,
+        "error_pattern": error_pattern,
+        "goal_risk": goal_risk,
+        "overall_mastery_score": mastery_score,
+        "knowledge_mastery_map": knowledge_map,
+        "dynamic_scores": {
+            "knowledge_foundation": foundation_score,
+            "knowledge_mastery": mastery_score,
+            "weak_point_distribution": weak_distribution_score,
+            "learning_progress": progress_score,
+            "engagement_level": engagement_score,
+            "support_match": support_match_score,
+            "error_pattern_stability": error_pattern_score,
+            "goal_attainment_risk": goal_risk_score,
+        },
+    }
 
 def _portrait_dimension_scores(user_id: int, profile: dict) -> dict:
     evidence = _build_portrait_scoring_evidence(user_id, profile)
+    dynamic_profile = _derive_learning_profile(profile, evidence)
 
     if not profile or config.MOCK_AI:
         return _portrait_score_fallback(profile, evidence)
 
     try:
         prompt = PORTRAIT_SCORE_PROMPT_TEMPLATE.format(
-            profile_json=json.dumps(profile, ensure_ascii=False, indent=2),
+            profile_json=json.dumps({**profile, **dynamic_profile}, ensure_ascii=False, indent=2),
             evidence_json=json.dumps(evidence, ensure_ascii=False, indent=2),
         )
         raw = PlatformLLM().invoke(prompt)
@@ -756,14 +950,18 @@ def _portrait_dimension_scores(user_id: int, profile: dict) -> dict:
         dimensions = {}
         for key in CORE_PROFILE_DIMENSIONS:
             item = dimensions_raw.get(key) if isinstance(dimensions_raw, dict) else {}
-            score = _clamp_score(_safe_int(item.get("score"), 0))
+            fallback_score = _safe_int((dynamic_profile.get("dynamic_scores") or {}).get(key), 45)
+            fallback_value = _trim_text(dynamic_profile.get(key), 120)
+            score = _clamp_score(_safe_int(item.get("score"), fallback_score))
             level = str(item.get("level") or _score_level(score)).strip() or _score_level(score)
-            teacher_judgement = str(item.get("teacher_judgement") or "").strip()
+            teacher_judgement = str(item.get("teacher_judgement") or fallback_value or "").strip()
             reason = str(item.get("reason") or "").strip()
             if teacher_judgement and reason:
                 merged_reason = f"{teacher_judgement}；{reason}"
             else:
                 merged_reason = teacher_judgement or reason or f"{DIMENSION_LABELS[key]}当前仍需更多学习证据支撑。"
+            if not reason:
+                merged_reason = f"{DIMENSION_LABELS[key]}当前已接入学习行为与答题证据，后续会继续随学随新。"
             dimensions[key] = {
                 "score": score,
                 "level": level,
@@ -774,7 +972,7 @@ def _portrait_dimension_scores(user_id: int, profile: dict) -> dict:
         if not dimensions:
             return _portrait_score_fallback(profile, evidence)
 
-        filled_core_count = len([key for key in CORE_PROFILE_DIMENSIONS if _normalize_text(profile.get(key))])
+        filled_core_count = len([key for key in CORE_PROFILE_DIMENSIONS if _normalize_text(dynamic_profile.get(key))])
         overall_score = round(
             _safe_float(data.get("overall_score"), sum(item["score"] for item in dimensions.values()) / max(len(dimensions), 1)),
             1,
@@ -798,6 +996,7 @@ def _portrait_dimension_scores(user_id: int, profile: dict) -> dict:
             "evidence_summary": str(data.get("evidence_summary") or "").strip(),
             "teacher_summary": str(data.get("teacher_summary") or "").strip(),
             "overall_comment": str(data.get("overall_comment") or "").strip(),
+            "dynamic_profile": dynamic_profile,
         }
     except Exception:
         return _portrait_score_fallback(profile, evidence)
@@ -838,9 +1037,9 @@ def _aggregate_profile_payload(user_id: int, profile: dict, refresh_scoring: boo
     else:
         cached_scoring = _cached_portrait_scoring(user_id, payload)
         payload["portrait_scoring"] = cached_scoring or _portrait_score_fallback(payload, {})
+    payload["dynamic_profile"] = (payload.get("portrait_scoring") or {}).get("dynamic_profile") or {}
     payload["portrait_history"] = _portrait_history(user_id, limit=6)
     return payload
-
 
 def _snapshot_profile_view(profile: dict) -> dict:
     return {
@@ -852,9 +1051,9 @@ def _snapshot_profile_view(profile: dict) -> dict:
         "task_goal": _trim_text(profile.get("task_goal"), 160),
         "support_preference": _trim_text(profile.get("support_preference"), 120),
         "engagement_level": _trim_text(profile.get("engagement_level"), 120),
+        "weak_knowledge_points": _trim_text(profile.get("weak_knowledge_points"), 160),
         "profile_summary": _trim_text(profile.get("profile_summary"), 240),
     }
-
 
 def _snapshot_dimension_signature(portrait_scoring: dict) -> dict:
     dimensions = portrait_scoring.get("dimensions") if isinstance(portrait_scoring, dict) else {}

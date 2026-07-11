@@ -36,9 +36,43 @@ def _read_json_file(path: Path):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _preferred_json_path(folder_name: str) -> Path | None:
+    files = _iter_json_files(_json_dir(folder_name))
+    if not files:
+        return None
+
+    preferred_names = {
+        "reading_content_json": [
+            "学习辅导",
+        ],
+        "question_bank_json": [
+            "rebuilt_question_bank.json",
+            "rebuilt",
+        ],
+        "answers_json": [
+            "rebuilt_answers.json",
+            "rebuilt",
+        ],
+    }
+    patterns = preferred_names.get(folder_name) or []
+    for pattern in patterns:
+        for file_path in files:
+            if pattern == file_path.name or pattern in file_path.name:
+                return file_path
+    return files[0]
+
+
 def _load_first_json(folder_name: str, default):
+    preferred = _preferred_json_path(folder_name)
+    if preferred:
+        try:
+            return _read_json_file(preferred)
+        except Exception:
+            pass
     folder = _json_dir(folder_name)
     for file_path in _iter_json_files(folder):
+        if preferred and file_path == preferred:
+            continue
         try:
             return _read_json_file(file_path)
         except Exception:
@@ -223,6 +257,10 @@ def _answers_for_chapter(chapter_no: int | None) -> list[dict]:
         return []
     if not chapter_no:
         return items
+    chapter_key = f"chapter_{chapter_no}"
+    keyed = [item for item in items if _clean_chapter_key(item.get("answer_chapter_key") or "") == chapter_key]
+    if keyed:
+        return keyed
     groups = _group_answers_by_resets(items)
     if 1 <= chapter_no <= len(groups):
         return groups[chapter_no - 1]
@@ -289,6 +327,10 @@ def _workbook_questions_for_chapter(chapter_no: int | None) -> list[dict]:
         return []
     if not chapter_no:
         return items
+    chapter_key = f"chapter_{chapter_no}"
+    keyed = [item for item in items if _clean_chapter_key(item.get("question_chapter_key") or "") == chapter_key]
+    if keyed:
+        return keyed
     groups = _group_question_bank_by_resets(items)
     if 1 <= chapter_no <= len(groups):
         return groups[chapter_no - 1]
@@ -384,12 +426,64 @@ def _clean_formula_text(text: str) -> str:
     return _tidy_reading_text(value)
 
 
+def _clean_chapter_key(value: str) -> str:
+    text = str(value or "").strip()
+    return re.sub(r"\s+", "", text)
+
+
+def _chapter_no_from_key(value: str) -> int | None:
+    match = re.search(r"chapter_(\d+)", str(value or ""))
+    return int(match.group(1)) if match else None
+
+
 def _sort_sub_question_no(value: str) -> tuple[int, str]:
     text = str(value or "").strip()
     match = re.match(r"(\d+)", text)
     if match:
         return (int(match.group(1)), text)
     return (10**9, text)
+
+
+def _combine_question_group(item: dict) -> dict:
+    sub_questions = item.get("sub_questions") or []
+    if not sub_questions:
+        item["stem"] = _clean_text(item.get("stem") or item.get("content") or "")
+        item["content"] = item["stem"]
+        item["reference_answer"] = _clean_formula_text(item.get("reference_answer") or item.get("answer") or "")
+        item["answer"] = item["reference_answer"]
+        item["analysis"] = _clean_formula_text(item.get("analysis") or item.get("explanation") or item["reference_answer"])
+        item["explanation"] = item["analysis"]
+        return item
+
+    question_parts = []
+    answer_parts = []
+    base_stem = _clean_text(item.get("stem") or item.get("content") or "")
+    if base_stem:
+        question_parts.append(base_stem)
+
+    base_answer = _clean_formula_text(item.get("reference_answer") or item.get("answer") or "")
+    if base_answer:
+        answer_parts.append(base_answer)
+
+    for sub in sub_questions:
+        sub_no = str(sub.get("sub_question_no") or "").strip()
+        prefix = f"({sub_no})" if sub_no else ""
+        sub_stem = _clean_text(sub.get("stem") or "")
+        sub_answer = _clean_formula_text(sub.get("reference_answer") or sub.get("answer") or "")
+        if sub_stem:
+            question_parts.append(f"{prefix}{sub_stem}" if prefix and not sub_stem.startswith(prefix) else sub_stem)
+        if sub_answer:
+            answer_parts.append(f"{prefix} {sub_answer}".strip() if prefix else sub_answer)
+
+    merged = dict(item)
+    merged["stem"] = "\n".join(part for part in question_parts if part).strip()
+    merged["content"] = merged["stem"]
+    merged["reference_answer"] = "\n".join(part for part in answer_parts if part).strip()
+    merged["answer"] = merged["reference_answer"]
+    merged["analysis"] = merged["reference_answer"]
+    merged["explanation"] = merged["reference_answer"]
+    merged["has_answer"] = bool(merged["reference_answer"])
+    return merged
 
 
 def _group_exercise_questions(items: list[dict]) -> list[dict]:
@@ -461,6 +555,209 @@ def _group_exercise_questions(items: list[dict]) -> list[dict]:
             item.get("id") or "",
         ),
     )
+
+
+def _chapter_title_defaults() -> dict[int, str]:
+    return {
+        1: "第 1 章 软件工程概论",
+        2: "第 2 章 结构化分析",
+        3: "第 3 章 结构化设计",
+        4: "第 4 章 结构化实现",
+        5: "第 5 章 维护",
+        6: "第 6 章 面向对象方法学引论",
+        7: "第 7 章 面向对象分析",
+        8: "第 8 章 面向对象设计",
+        9: "第 9 章 面向对象实现",
+        10: "第 10 章 软件项目管理",
+    }
+
+
+def _normalize_numbered_prefix(title: str) -> tuple[int, ...]:
+    match = re.match(r"\s*(\d+(?:\.\d+)+)", str(title or ""))
+    if not match:
+        return ()
+    try:
+        return tuple(int(part) for part in match.group(1).split("."))
+    except Exception:
+        return ()
+
+
+def _is_exercise_or_answer_title(title: str) -> bool:
+    compact = _clean_chapter_key(title)
+    return compact in {"习题", "习题解答"}
+
+
+def _is_display_noise_title(title: str) -> bool:
+    text = _tidy_reading_text(title or "")
+    compact = _clean_chapter_key(text)
+    if not text:
+        return True
+    if any(keyword in compact for keyword in ["满分100分", "满分", "注意", "试卷一", "试卷二", "试卷三", "模拟试题参考答案"]):
+        return True
+    if re.fullmatch(r"[（(]?\d+[)）]?\s*[\u4e00-\u9fa5A-Za-z]+[-—–]+\s*[\u4e00-\u9fa5A-Za-z]+[。.]?\s*0?", compact):
+        return True
+    if re.fullmatch(r"[（(]?\d+[)）]?.{0,60}0", compact) and "--" in text:
+        return True
+    return False
+
+
+def _path_contains_exercise_or_answer(path) -> bool:
+    for item in _normalize_path(path or []):
+        if _is_exercise_or_answer_title(item):
+            return True
+    return False
+
+
+def _infer_reading_chapter_no(node: dict) -> int | None:
+    title = _tidy_reading_text(node.get("title") or "")
+    path_text = " ".join(_normalize_path(node.get("path") or []))
+    if any(keyword in title for keyword in ["附录", "参考文献", "试卷", "模拟试题"]):
+        return None
+    for candidate in [title, path_text]:
+        chapter_no = _chapter_no_from_text(candidate)
+        if chapter_no is not None:
+            return chapter_no
+
+    numbered = _normalize_numbered_prefix(title)
+    if numbered:
+        return numbered[0]
+
+    combined = f"{title} {path_text}"
+    keyword_map = [
+        (10, ["软件项目管理"]),
+        (9, ["面向对象实现"]),
+        (8, ["面向对象设计"]),
+        (7, ["面向对象分析"]),
+        (6, ["面向对象方法学引论"]),
+        (5, ["维护"]),
+        (4, ["结构化实现"]),
+        (3, ["结构化设计"]),
+        (2, ["结构化分析"]),
+        (1, ["软件工程概论", "软件危机", "软件工程", "软件生命周期", "软件过程"]),
+    ]
+    for chapter_no, keywords in keyword_map:
+        if any(keyword in combined for keyword in keywords):
+            return chapter_no
+
+    start_page = node.get("start_page")
+    if isinstance(start_page, int) and start_page < 27:
+        return 1
+    return None
+
+
+def _is_chapter_marker_node(node: dict, chapter_no: int | None = None) -> bool:
+    title = _tidy_reading_text(node.get("title") or "")
+    inferred = chapter_no if chapter_no is not None else _infer_reading_chapter_no(node)
+    if re.search(r"第\s*\d+\s*章", title):
+        return True
+    if inferred == 2 and title == "结构化分析":
+        return True
+    if inferred == 10 and title == "软件项目管理":
+        return True
+    return False
+
+
+def _iter_tree_nodes_with_parent(nodes: list[dict], parent: dict | None = None):
+    for node in nodes or []:
+        if not isinstance(node, dict):
+            continue
+        yield node, parent
+        yield from _iter_tree_nodes_with_parent(node.get("children") or [], node)
+
+
+def _clone_chapter_subtree(node: dict, chapter_no: int) -> dict | None:
+    if not isinstance(node, dict):
+        return None
+    title = _tidy_reading_text(node.get("title") or "")
+    if not title or _is_exercise_or_answer_title(title) or _is_display_noise_title(title) or _path_contains_exercise_or_answer(node.get("path") or []):
+        return None
+    inferred = _infer_reading_chapter_no(node)
+    if inferred != chapter_no:
+        return None
+
+    clone = {**node}
+    clone["title"] = title
+    clone["path"] = [_tidy_reading_text(item) for item in _normalize_path(node.get("path") or [])]
+    clone["children"] = []
+    for child in node.get("children") or []:
+        child_clone = _clone_chapter_subtree(child, chapter_no)
+        if child_clone:
+            clone["children"].append(child_clone)
+    return clone
+
+
+def _retitle_path_for_chapter_nodes(nodes: list[dict], root_title: str, chapter_title: str, prefix: list[str] | None = None):
+    base_prefix = list(prefix or [root_title, chapter_title])
+    for node in nodes:
+        node["path"] = [*base_prefix, node.get("title") or ""]
+        if node.get("children"):
+            _retitle_path_for_chapter_nodes(node["children"], root_title, chapter_title, node["path"])
+
+
+def _build_restructured_reading_tree(reading_tree: list[dict]) -> list[dict]:
+    formatted = _format_reading_tree_nodes(reading_tree)
+    if not formatted:
+        return []
+
+    original_root = formatted[0]
+    root_title = _tidy_reading_text(original_root.get("title") or get_course_name() or "教材资源")
+    chapter_map: dict[int, dict] = {}
+    chapter_titles = _chapter_title_defaults()
+
+    top_nodes_by_chapter: dict[int, list[dict]] = {}
+    for node, parent in _iter_tree_nodes_with_parent(formatted, None):
+        if node.get("node_id") == original_root.get("node_id"):
+            continue
+        title = _tidy_reading_text(node.get("title") or "")
+        if not title or _is_exercise_or_answer_title(title) or _is_display_noise_title(title) or _path_contains_exercise_or_answer(node.get("path") or []):
+            continue
+        chapter_no = _infer_reading_chapter_no(node)
+        if chapter_no is None or chapter_no > 10:
+            continue
+        if title in chapter_titles.values():
+            chapter_titles[chapter_no] = title
+        if _is_chapter_marker_node(node, chapter_no):
+            continue
+
+        if isinstance(parent, dict) and parent.get("node_id") == original_root.get("node_id"):
+            top_nodes_by_chapter.setdefault(chapter_no, []).append(node)
+            continue
+
+        parent_chapter = _infer_reading_chapter_no(parent) if isinstance(parent, dict) else None
+        parent_title = _tidy_reading_text(parent.get("title") or "") if isinstance(parent, dict) else ""
+        if parent_chapter != chapter_no or _is_chapter_marker_node(parent or {}, parent_chapter) or _is_exercise_or_answer_title(parent_title):
+            top_nodes_by_chapter.setdefault(chapter_no, []).append(node)
+
+    chapter_children = []
+    for chapter_no in sorted(top_nodes_by_chapter):
+        chapter_title = chapter_titles.get(chapter_no) or f"第 {chapter_no} 章"
+        children = []
+        for top_node in sorted(top_nodes_by_chapter[chapter_no], key=lambda item: (item.get("start_page") or 10**9, item.get("title") or "")):
+            clone = _clone_chapter_subtree(top_node, chapter_no)
+            if clone:
+                children.append(clone)
+        _retitle_path_for_chapter_nodes(children, root_title, chapter_title)
+        chapter_children.append(
+            {
+                "node_id": f"reading_chapter_{chapter_no}",
+                "parent_id": original_root.get("node_id"),
+                "title": chapter_title,
+                "level": 1,
+                "path": [root_title, chapter_title],
+                "children": children,
+                "is_synthetic_chapter": True,
+                "reading_chapter_no": chapter_no,
+            }
+        )
+
+    return [
+        {
+            **original_root,
+            "title": root_title,
+            "path": [root_title],
+            "children": chapter_children,
+        }
+    ]
 
 def _normalize_section_path_local(value) -> list[str]:
     if isinstance(value, list):
@@ -871,13 +1168,189 @@ def _format_reading_tree_nodes(nodes: list[dict]) -> list[dict]:
     return formatted
 
 
+def _iter_reading_nodes(nodes: list[dict]):
+    for node in nodes or []:
+        if not isinstance(node, dict):
+            continue
+        yield node
+        yield from _iter_reading_nodes(node.get("children") or [])
+
+
+def _build_exercise_tree_for_reading(reading_tree: list[dict]) -> list[dict]:
+    question_bank = _load_question_bank_items()
+    if not question_bank:
+        return []
+
+    chapter_groups: dict[int, list[dict]] = {}
+    for item in question_bank:
+        chapter_no = _chapter_no_from_key(item.get("question_chapter_key") or "")
+        if chapter_no is None or chapter_no > 10:
+            continue
+        chapter_groups.setdefault(chapter_no, []).append(item)
+    if not chapter_groups:
+        return []
+
+    chapter_title_map = _chapter_title_defaults()
+    for node in _iter_reading_nodes(reading_tree):
+        title = _tidy_reading_text(node.get("title") or "")
+        chapter_no = _infer_reading_chapter_no(node)
+        if chapter_no is not None and chapter_no in chapter_title_map and _is_chapter_marker_node(node, chapter_no):
+            chapter_title_map[chapter_no] = title
+
+    children = []
+    for index in sorted(chapter_groups):
+        group = chapter_groups[index]
+        if not group:
+            continue
+        chapter_title = chapter_title_map.get(index) or f"第 {index} 章"
+        children.append(
+            {
+                "node_id": f"exercise_chapter_{index}",
+                "parent_id": "exercise_root",
+                "title": f"{chapter_title}习题",
+                "level": 1,
+                "path": ["习题", f"{chapter_title}习题"],
+                "children": [],
+                "is_exercise_node": True,
+                "exercise_chapter_no": index,
+            }
+        )
+
+    if not children:
+        return []
+
+    return [
+        {
+            "node_id": "exercise_root",
+            "parent_id": None,
+            "title": "习题",
+            "level": 0,
+            "path": ["习题"],
+            "children": children,
+            "is_exercise_node": True,
+        }
+    ]
+
+
+def _append_exercise_tree(reading_tree: list[dict]) -> list[dict]:
+    formatted = _build_restructured_reading_tree(reading_tree)
+    if len(formatted) != 1:
+        return formatted
+    root = dict(formatted[0])
+    children = list(root.get("children") or [])
+    children.extend(_build_exercise_tree_for_reading(formatted))
+    root["children"] = children
+    return [root]
+
+
+def _exercise_payload_for_node(node_id: str) -> dict | None:
+    if node_id == "exercise_root":
+        return {
+            "node_id": node_id,
+            "title": "习题",
+            "path": ["习题"],
+            "start_page": None,
+            "images": [],
+            "sections": [],
+            "exercise_questions": [],
+            "content_mode": "exercise_root",
+        }
+
+    match = re.fullmatch(r"exercise_chapter_(\d+)", str(node_id or ""))
+    if not match:
+        return None
+
+    chapter_no = int(match.group(1))
+    workbook_items = _workbook_questions_for_chapter(chapter_no)
+    questions = []
+    if workbook_items:
+        grouped = _group_exercise_questions([_format_bank_question(item, chapter_no=chapter_no) for item in workbook_items])
+        questions = [_combine_question_group(dict(item)) for item in grouped]
+    return {
+        "node_id": node_id,
+        "title": f"{_chapter_title_defaults().get(chapter_no, f'第 {chapter_no} 章')}习题",
+        "path": ["习题", f"{_chapter_title_defaults().get(chapter_no, f'第 {chapter_no} 章')}习题"],
+        "start_page": None,
+        "images": [],
+        "sections": [],
+        "exercise_questions": questions,
+        "content_mode": "exercise_only",
+    }
+
+
+def _collect_display_descendant_ids(nodes: list[dict]) -> list[str]:
+    node_ids: list[str] = []
+    for node in nodes or []:
+        if not isinstance(node, dict):
+            continue
+        if node.get("node_id"):
+            node_ids.append(node["node_id"])
+        node_ids.extend(_collect_display_descendant_ids(node.get("children") or []))
+    return node_ids
+
+
+def _synthetic_chapter_payload(node: dict, include_children: bool = True) -> dict:
+    sections_map = _get_reading_sections_map()
+    target_ids = _collect_display_descendant_ids(node.get("children") or [])
+    target_sections = [sections_map[node_id] for node_id in target_ids if node_id in sections_map]
+    target_sections.sort(key=lambda item: (item.get("start_page") or 10**9, item.get("title") or ""))
+
+    pages = []
+    seen_page_keys = set()
+    for section in target_sections:
+        section_pages = section.get("combined_pages") if include_children else section.get("pages")
+        if not section_pages:
+            section_pages = section.get("combined_pages") or section.get("pages") or []
+        for page in section_pages:
+            if not isinstance(page, dict):
+                continue
+            page_key = (page.get("page"), page.get("text"))
+            if page_key in seen_page_keys:
+                continue
+            seen_page_keys.add(page_key)
+            pages.append(page)
+
+    start_page = min((section.get("start_page") for section in target_sections if isinstance(section.get("start_page"), int)), default=None)
+    title = _tidy_reading_text(node.get("title") or "")
+    path = [_tidy_reading_text(item) for item in _normalize_path(node.get("path") or [])]
+    section_images = _images_for_reading_section(title, path, pages)
+    paragraphs = _attach_images_to_paragraphs(_format_reading_pages(pages, title), section_images)
+    return {
+        "node_id": node.get("node_id"),
+        "title": title,
+        "path": path,
+        "start_page": start_page,
+        "images": section_images,
+        "sections": [
+            {
+                "node_id": node.get("node_id"),
+                "title": title,
+                "level": int(node.get("level") or 1),
+                "path": path,
+                "start_page": start_page,
+                "images": section_images,
+                "paragraphs": paragraphs,
+                "content_mode": "complete_textbook",
+            }
+        ],
+        "exercise_questions": [],
+        "content_mode": "complete_textbook",
+    }
+
+
 def _section_payload_from_reading(node_id: str, include_children: bool = True) -> dict | None:
-    tree = _get_reading_tree()
+    exercise_payload = _exercise_payload_for_node(node_id)
+    if exercise_payload is not None:
+        return exercise_payload
+
+    tree = _build_restructured_reading_tree(_get_reading_tree())
     sections_map = _get_reading_sections_map()
     node = _find_tree_node(node_id, tree) or sections_map.get(node_id)
     section = sections_map.get(node_id)
     if not node and not section:
         return None
+    if isinstance(node, dict) and node.get("is_synthetic_chapter"):
+        return _synthetic_chapter_payload(node, include_children)
 
     base = section or node or {}
     pages = base.get("combined_pages") if include_children else base.get("pages")
@@ -915,7 +1388,8 @@ def _section_payload_from_reading(node_id: str, include_children: bool = True) -
                 "content_mode": "complete_textbook",
             }
         ],
-        "exercise_questions": _exercise_questions_for_reading_node(node_id),
+        "exercise_questions": [],
+        "content_mode": "complete_textbook",
     }
 
 
@@ -1657,7 +2131,7 @@ def chapter_browser():
     try:
         reading_tree = _get_reading_tree()
         if reading_tree:
-            return success({"course_name": get_course_name(), "tree": _format_reading_tree_nodes(reading_tree)}, "Chapter browser loaded")
+            return success({"course_name": get_course_name(), "tree": _append_exercise_tree(reading_tree)}, "Chapter browser loaded")
         sections = _query_sections()
         if sections:
             return success({"course_name": get_course_name(), "tree": _build_tree(sections)}, "Chapter browser loaded")
@@ -1672,7 +2146,7 @@ def tree():
     try:
         reading_tree = _get_reading_tree()
         if reading_tree:
-            return success(_format_reading_tree_nodes(reading_tree), "Tree loaded")
+            return success(_append_exercise_tree(reading_tree), "Tree loaded")
         sections = _query_sections()
         return success(_build_tree(sections), "Tree loaded")
     except Exception as exc:

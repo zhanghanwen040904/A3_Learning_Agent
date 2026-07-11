@@ -103,6 +103,8 @@ export const pathApi = {
   generate: (data = {}, profileSessionId = "") => http.post("/path/generate", withExplicitProfileSession(data, profileSessionId)),
   list: (profileSessionId = "") => http.get("/path/", { params: explicitProfileSessionParams({}, profileSessionId) }),
   integrated: (profileSessionId = "") => http.get("/path/integrated", { params: explicitProfileSessionParams({}, profileSessionId) }),
+  stageProgress: (profileSessionId = "") => http.get("/path/stage-progress", { params: explicitProfileSessionParams({}, profileSessionId) }),
+  saveStageProgress: (data = {}, profileSessionId = "") => http.post("/path/stage-progress", withExplicitProfileSession(data, profileSessionId)),
 };
 
 export const chatApi = {

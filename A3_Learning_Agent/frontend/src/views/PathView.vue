@@ -603,7 +603,25 @@ function toggleStage(i){if(i>current.value&&!done(i)){ElMessage.warning('请先�
 function q(r){return r.quality||r.metadata?.quality||{}}function qScore(r){return Number(r.quality_score||q(r).total||80)}function qPass(r){return q(r).passed!==false&&qScore(r)>=75}
 function sourceText(r){const n=[...new Set((r.sources||[]).map(s=>s.source||s.source_name).filter(Boolean))].length;return n?`已关联 ${n} 个课程知识库来源，并保留防幻觉审核信息。`:'建议在资源页复核课程依据。'}
 function done(i){return completed.value.includes(i)}function state(i){return done(i)?'completed':i===current.value?'current':'pending'}function label(i){return{completed:'已完成',current:'当前阶段',pending:'未开始'}[state(i)]}function tag(i){return{completed:'success',current:'primary',pending:'info'}[state(i)]}
-function toggle(i){completed.value=done(i)?completed.value.filter(x=>x!==i):[...completed.value,i];localStorage.setItem('a3_path_done',JSON.stringify(completed.value))}
+async function toggle(i){
+  const stage=stages.value[i];
+  if(!stage)return;
+  const nextCompleted=!done(i);
+  const previous=[...completed.value];
+  const nextList=nextCompleted?[...completed.value,i]:completed.value.filter(x=>x!==i);
+  completed.value=nextList;
+  localStorage.setItem('a3_path_done',JSON.stringify(nextList));
+  try{
+    const sessionId=currentSessionId();
+    const res=await pathApi.saveStageProgress({stage_index:i+1,stage_title:stage.title,completed:nextCompleted,knowledge_points:stage.points||[],path_id:latest.value?.id||integrated.value?.path_id||null},sessionId);
+    if(res.code!==200)throw new Error(res.msg||'阶段进度保存失败');
+    window.dispatchEvent(new CustomEvent('a3-profile-session-refresh'));
+  }catch(e){
+    completed.value=previous;
+    localStorage.setItem('a3_path_done',JSON.stringify(previous));
+    ElMessage.error(e?.message||'阶段进度保存失败');
+  }
+}
 function ensureActiveResourceTabs(){
   const next={...activeResourceTabs.value};
   stages.value.forEach((stage,index)=>{
@@ -614,12 +632,12 @@ function ensureActiveResourceTabs(){
 }
 function selectStage(i){if(i>current.value&&!done(i)){ElMessage.warning('请先完成前置阶段，再解锁后续学习内容');return}activeStageIndex.value=i;ensureActiveResourceTabs();renderMarkmaps()}
 function prevStage(){if(activeStageIndex.value>0)selectStage(activeStageIndex.value-1)}
-function nextStage(){const i=activeStageIndex.value;if(!done(i)){toggle(i)}if(i<stages.value.length-1)selectStage(i+1)}
+async function nextStage(){const i=activeStageIndex.value;if(!done(i)){await toggle(i)}if(i<stages.value.length-1)selectStage(i+1)}
 function stageRecord(i){return assessmentRecords.value.find(item=>Number(item.stageIndex)===i)}
 function loadAssessmentRecords(){try{assessmentRecords.value=JSON.parse(localStorage.getItem('a3_stage_assessment_records')||'[]')}catch{assessmentRecords.value=[]}}
 function goStageEvaluation(s,i){router.push({path:'/evaluation',query:{stage:String(i),from:'path',title:s.title,points:(s.points||[]).join('、')}})}
 function currentSessionId(){return String(route.query.sessionId||activeProfileSessionId()||'')}
-async function loadAll(sessionId=currentSessionId()){const token=++pathLoadToken;const[ig,p,r,pf]=await Promise.all([pathApi.integrated(sessionId),pathApi.list(sessionId),resourceApi.list(sessionId),profileApi.get(sessionId)]);if(token!==pathLoadToken)return;if(ig.code===200)integrated.value=ig.data||{};if(p.code===200)paths.value=p.data||[];if(r.code===200)resources.value=(ig.code===200&&Array.isArray(ig.data?.resources))?ig.data.resources:(r.data||[]);if(pf.code===200)profile.value=pf.data||{};try{completed.value=JSON.parse(localStorage.getItem('a3_path_done')||'[]')}catch{completed.value=[]}loadAssessmentRecords();await nextTick();if(token!==pathLoadToken)return;ensureActiveResourceTabs()}
+async function loadAll(sessionId=currentSessionId()){const token=++pathLoadToken;const[ig,p,r,pf,sp]=await Promise.all([pathApi.integrated(sessionId),pathApi.list(sessionId),resourceApi.list(sessionId),profileApi.get(sessionId),pathApi.stageProgress(sessionId)]);if(token!==pathLoadToken)return;if(ig.code===200)integrated.value=ig.data||{};if(p.code===200)paths.value=p.data||[];if(r.code===200)resources.value=(ig.code===200&&Array.isArray(ig.data?.resources))?ig.data.resources:(r.data||[]);if(pf.code===200)profile.value=pf.data||{};if(sp.code===200&&Array.isArray(sp.data?.items)){completed.value=sp.data.items.filter(item=>item.completed).map(item=>Math.max(Number(item.stage_index||0)-1,0));localStorage.setItem('a3_path_done',JSON.stringify(completed.value))}else{try{completed.value=JSON.parse(localStorage.getItem('a3_path_done')||'[]')}catch{completed.value=[]}}loadAssessmentRecords();await nextTick();if(token!==pathLoadToken)return;ensureActiveResourceTabs()}
 async function generateAll(extra=''){
   loading.value=true;progress.value=5;resetAgentSteps();
   const timer=setInterval(()=>progress.value=Math.min(progress.value+3,94),700);
@@ -652,7 +670,7 @@ async function generateAll(extra=''){
     await new Promise(resolve=>setTimeout(resolve,450));
     setAgentStep('AuditAgent','done','已通过');
     setAgentStep('PackagerAgent','running','挂载中');progress.value=90;
-    await loadAll(sessionId);completed.value=[];localStorage.setItem('a3_path_done','[]');
+    await loadAll(sessionId);
     setAgentStep('PackagerAgent','done','已刷新');progress.value=100;
     ElMessage.success('路径与资源一体化方案生成成功')
   }catch(e){
