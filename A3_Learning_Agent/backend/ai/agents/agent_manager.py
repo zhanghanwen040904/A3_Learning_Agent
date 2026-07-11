@@ -172,18 +172,19 @@ class AgentManager:
     def _apply_stage_progression(cls, stage: Dict[str, Any], context: Dict[str, Any]) -> Dict[str, Any]:
         stage_index = int(stage.get("stage_index") or 1)
         raw_points = stage.get("stage_points") or cls._extract_stage_points(" ".join(str(context.get(key) or "") for key in ["weak_points", "study_goal", "current_need"]))
+        raw_points = [str(point).strip() for point in raw_points if str(point).strip()]
         profile = cls._stage_learning_profile(stage_index, raw_points)
-        merged_points = []
-        for point in profile.get("stage_points") or []:
-            if point and point not in merged_points:
-                merged_points.append(point)
-        for point in raw_points or []:
-            if point and point not in merged_points and len(merged_points) < 6:
-                merged_points.append(point)
+        retrieval_terms = []
+        for point in raw_points + [stage.get("stage_title"), stage.get("stage_goal")]:
+            if point and point not in retrieval_terms:
+                retrieval_terms.append(point)
         return {
             **stage,
-            **profile,
-            "stage_points": merged_points[:6],
+            "difficulty_label": profile.get("difficulty_label"),
+            "retrieval_terms": retrieval_terms[:8],
+            "retrieval_focus": f"只检索与当前阶段知识点“{'、'.join(raw_points)}”直接相关的定义、任务、输入输出、产物和案例，不混入其他阶段知识点。",
+            "analysis_focus": f"当前阶段讲解必须只围绕“{'、'.join(raw_points)}”展开，标题、目标、思维导图、讲解文档、阅读材料和视频都要与这些知识点一一对应。",
+            "stage_points": raw_points[:6] or [stage.get("stage_title") or "课程核心知识"],
         }
 
     @staticmethod
@@ -371,6 +372,8 @@ class AgentManager:
         task_plan: Dict[str, Any],
     ) -> Dict[str, Any]:
         agent = self.resource_agents[resource_type]
+        if resource_type == "video":
+            return agent.generate(stage_context, knowledge_text, task_plan)
         if resource_type == "doc" and hasattr(agent, "_fallback_doc_resource"):
             return agent._fallback_doc_resource(stage_context, knowledge_text)
         resource = agent._fallback_resource(stage_context, knowledge_text)
@@ -517,7 +520,7 @@ class AgentManager:
         trace("RetrieveAgent", "completed" if sources else "warning", f"召回 {len(sources)} 个本地知识库片段", int((time.perf_counter() - start) * 1000))
 
         stage_specs = self._parse_stage_specs((request_data or {}).get("path_content") or "", context)
-        default_resource_types = ["doc", "mindmap"]
+        default_resource_types = ["doc", "mindmap", "video"]
         full_resource_types = list(self.resource_agents.keys())
         use_full_generation = bool((request_data or {}).get("full_generation"))
         allow_quality_retry = use_full_generation
@@ -542,7 +545,7 @@ class AgentManager:
             if use_full_generation:
                 return full_resource_types
             types = list(default_resource_types)
-            if stage.get("stage_index") == len(stage_specs):
+            if "reading" not in types:
                 types.append("reading")
             return types
 

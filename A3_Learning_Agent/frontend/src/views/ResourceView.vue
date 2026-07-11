@@ -320,6 +320,7 @@ const traceId = ref("");
 const generationProgress = ref(0);
 const currentStageIndex = ref(0);
 const eventSource = ref(null);
+const streamCompleted = ref(false);
 const plan = reactive({});
 const mindmapSvgs = reactive({});
 const requestForm = reactive({ major: "软件工程", course: "软件工程", learning_need: "希望围绕软件工程中的需求分析、总体设计、详细设计、编码测试和维护等知识短板，通过图解、分层练习和案例形成完整学习资料。" });
@@ -639,8 +640,14 @@ function knowledgePoints(item) {
   try { return JSON.parse(item.knowledge_points || "[]"); } catch { return []; }
 }
 function uniqueSources(sources = []) { return [...new Set((sources || []).map((item) => item.source || item.source_name).filter(Boolean))]; }
-function videoUrl(item) { return item.video_url || item.metadata?.video_url || ""; }
-function playableVideo(item) { const url = videoUrl(item); return /^https?:\/\//.test(url) && !url.includes("example.com"); }
+function videoUrl(item) {
+  const url = item.video_url || item.metadata?.video_url || "";
+  if (!url) return "";
+  if (/^https?:\/\//.test(url)) return url;
+  if (url.startsWith("/api/")) return `${apiBase.replace(/\/api$/, "")}${url}`;
+  return url;
+}
+function playableVideo(item) { const url = videoUrl(item); return Boolean(url) && !url.includes("example.com"); }
 
 function closeEventSource() {
   if (eventSource.value) {
@@ -752,6 +759,8 @@ function handleStreamResult(payload) {
   Object.keys(plan).forEach((key) => delete plan[key]);
   Object.assign(plan, result.plan || {});
   displayMode.value = "current";
+  streamCompleted.value = true;
+  closeEventSource();
   finishProgress(100);
   loading.value = false;
   renderMindmaps();
@@ -759,6 +768,7 @@ function handleStreamResult(payload) {
 }
 
 function handleStreamError(payload) {
+  if (streamCompleted.value || !loading.value) return;
   finishProgress(Math.max(generationProgress.value, 60));
   loading.value = false;
   displayMode.value = resources.value.length ? "history" : "empty";
@@ -768,6 +778,7 @@ function handleStreamError(payload) {
 
 async function generate() {
   loading.value = true;
+  streamCompleted.value = false;
   displayMode.value = "current";
   resetRunArtifacts();
   finishProgress(0);
@@ -783,6 +794,7 @@ async function generate() {
   });
   source.addEventListener("result", (event) => handleStreamResult(JSON.parse(event.data || "{}")));
   source.addEventListener("error", (event) => {
+    if (streamCompleted.value) return;
     if (event.data) {
       handleStreamError(JSON.parse(event.data || "{}"));
     } else if (loading.value) {
@@ -790,6 +802,7 @@ async function generate() {
     }
   });
   source.onerror = () => {
+    if (streamCompleted.value) return;
     if (loading.value) handleStreamError({ message: "SSE 连接中断，请确认后端服务正常运行" });
   };
 }

@@ -41,8 +41,90 @@ RESOURCE_TYPE_LABELS = {
 }
 KNOWN_POINTS = [
     "需求分析", "总体设计", "详细设计", "软件测试", "软件生命周期", "用例图", "类图", "时序图",
-    "数据流图", "模块划分", "编码实现", "软件维护", "可行性研究", "软件设计", "调试",
+    "数据流图", "模块划分", "编码实现", "软件维护", "可行性研究", "软件设计", "调试", "瀑布模型",
 ]
+
+
+def _profile_points(profile: dict, payload: dict | None = None) -> list[str]:
+    payload = payload or {}
+    text = " ".join(
+        str(item or "")
+        for item in [
+            payload.get("learning_need"),
+            payload.get("adjustment"),
+            profile.get("error_prone_points"),
+            profile.get("weak_points"),
+            profile.get("study_goal"),
+            profile.get("current_topic"),
+        ]
+    )
+    points = [item for item in KNOWN_POINTS if item in text]
+    if not points:
+        points = ["软件生命周期", "可行性研究", "需求分析"]
+    result = []
+    for point in points:
+        if point and point not in result:
+            result.append(point)
+    return result[:6]
+
+
+def _build_fast_path_content(profile: dict, payload: dict | None = None) -> str:
+    points = _profile_points(profile, payload)
+    first = points[0] if len(points) > 0 else "软件生命周期"
+    second = points[1] if len(points) > 1 else "可行性研究"
+    third = points[2] if len(points) > 2 else "需求分析"
+    goal = str((payload or {}).get("learning_need") or profile.get("study_goal") or "掌握软件工程核心知识").strip()
+    return normalize_markdown(f"""
+# 个性化学习路径
+
+## 阶段一：{first}基础理解
+### 学习安排
+**目标：** 理解{first}的核心概念、阶段位置、输入输出和基本作用，并联系当前学习目标：{goal}。
+**学习任务：**
+- 阅读课程知识库中与{first}直接相关的教材片段。
+- 梳理它解决的问题、依赖的信息和形成的阶段产物。
+- 用自己的话解释它与后续阶段的关系。
+**推荐资源：**
+- 讲解文档、阶段知识导图、教学短视频和拓展阅读。
+**练习方式：**
+- 完成基础概念判断题和阶段顺序梳理题。
+**评估指标：**
+- 能准确说出{first}的定义、作用、输入输出和常见误区。
+
+## 阶段二：{second}方法关系建构
+### 学习安排
+**目标：** 建立{second}与前后阶段之间的方法关系，理解它在软件工程流程中的衔接作用。
+**学习任务：**
+- 对照教材片段梳理{second}的步骤、判断依据和阶段产物。
+- 比较它与{first}、{third}之间的边界。
+- 结合案例说明忽略该环节会产生的风险。
+**推荐资源：**
+- 讲解文档、阶段知识导图、教学短视频和拓展阅读。
+**练习方式：**
+- 完成流程排序题、案例分析题和输入输出匹配题。
+**评估指标：**
+- 能说明{second}的任务、产物、风险和与相邻阶段的联系。
+
+## 阶段三：{third}案例练习与迁移应用
+### 学习安排
+**目标：** 将{third}迁移到实际软件项目案例中，形成分析、判断和复审能力。
+**学习任务：**
+- 阅读{third}相关教材依据和案例材料。
+- 总结常见错误、质量风险和复审要点。
+- 用案例解释系统“应该做什么”和“不应该混淆什么”。
+**推荐资源：**
+- 讲解文档、阶段知识导图、教学短视频和拓展阅读。
+**练习方式：**
+- 完成案例判断题、简答题和阶段测评。
+**评估指标：**
+- 能独立判断{third}中的关键信息、常见误区和应用场景。
+
+## 动态调整建议
+根据练习结果，如果基础概念错误较多，回到阶段一补充定义和输入输出；如果案例题错误较多，强化阶段三的迁移练习。
+
+## 参考依据
+本路径依据当前学生画像、学习目标、薄弱知识点和本地软件工程课程知识库生成。
+""")
 
 
 def _safe_json(value, default):
@@ -66,13 +148,13 @@ def _section_value(block: str, label: str) -> str:
 
 
 def _stage_points(block: str, title: str) -> list[str]:
-    hits = [item for item in KNOWN_POINTS if item in block]
+    title_hits = [item for item in KNOWN_POINTS if item in str(title or "")]
+    hits = title_hits or [item for item in KNOWN_POINTS if item in block]
     result = []
     for item in hits or [title or "课程核心知识"]:
         if item and item not in result:
             result.append(item)
     return result[:5]
-
 
 def _stage_duration(block: str, index: int) -> str:
     match = re.search(r"(\d+)\s*天", block)
@@ -269,72 +351,76 @@ def generate_learning_path():
             return fail("画像内容未通过讯飞内容审核", 403)
 
         query = str(profile.get("weak_points") or profile.get("study_goal") or "软件工程")
-        knowledge = retrieve_knowledge(query, top_k=3)
-        sources = retrieve_knowledge_items(query, top_k=3)
-        prompt = f"""
-你是软件工程课程学习规划师。请基于学生画像和教材原文生成个性化学习路径。
+        if not payload.get("full_generation"):
+            sources = []
+            path_content = _build_fast_path_content(profile, payload)
+        else:
+            sources = retrieve_knowledge_items(query, top_k=3)
+            knowledge = retrieve_knowledge(query, top_k=3)
+            prompt = f"""
+    你是软件工程课程学习规划师。请基于学生画像和教材原文生成个性化学习路径。
 
-输出要求：
-1. 只输出普通 Markdown 正文，不要代码围栏，不要 JSON，不要 ASCII 图，不要复杂表格，不要 emoji。
-2. 标题层级必须统一：一级标题用“# 个性化学习路径”，二级标题用“## 阶段一：...”“## 阶段二：...”“## 阶段三：...”，三级标题用“### 学习安排”。
-3. 必须生成 3 个学习阶段，不能只生成 1 个阶段；三个阶段应体现“基础理解 → 方法建构 → 练习应用”的递进关系。
-4. 每个阶段固定包含五项，且五项名称必须一致：目标、学习任务、推荐资源、练习方式、评估指标。
-5. 每个阶段写成短段落和项目符号，不要把所有内容挤在一行。
-6. 内容要清楚说明学习顺序、为什么这样学、需要用到哪些文档/题库/视频/案例。
-7. 最后添加“## 动态调整建议”和“## 参考依据”两个小节。
-8. 只能依据教材原文和学生画像，不要编造不存在的页码、图片和结论。
+    输出要求：
+    1. 只输出普通 Markdown 正文，不要代码围栏，不要 JSON，不要 ASCII 图，不要复杂表格，不要 emoji。
+    2. 标题层级必须统一：一级标题用“# 个性化学习路径”，二级标题用“## 阶段一：...”“## 阶段二：...”“## 阶段三：...”，三级标题用“### 学习安排”。
+    3. 必须生成 3 个学习阶段，不能只生成 1 个阶段；三个阶段应体现“基础理解 → 方法建构 → 练习应用”的递进关系。
+    4. 每个阶段固定包含五项，且五项名称必须一致：目标、学习任务、推荐资源、练习方式、评估指标。
+    5. 每个阶段写成短段落和项目符号，不要把所有内容挤在一行。
+    6. 内容要清楚说明学习顺序、为什么这样学、需要用到哪些文档/题库/视频/案例。
+    7. 最后添加“## 动态调整建议”和“## 参考依据”两个小节。
+    8. 只能依据教材原文和学生画像，不要编造不存在的页码、图片和结论。
 
-请严格按这个模板组织，三个阶段都必须保留：
+    请严格按这个模板组织，三个阶段都必须保留：
 
-# 个性化学习路径
+    # 个性化学习路径
 
-## 阶段一：基础理解与概念澄清
-### 学习安排
-**目标：** ...
-**学习任务：**
-- ...
-**推荐资源：**
-- ...
-**练习方式：**
-- ...
-**评估指标：**
-- ...
+    ## 阶段一：基础理解与概念澄清
+    ### 学习安排
+    **目标：** ...
+    **学习任务：**
+    - ...
+    **推荐资源：**
+    - ...
+    **练习方式：**
+    - ...
+    **评估指标：**
+    - ...
 
-## 阶段二：方法关系与流程建构
-### 学习安排
-**目标：** ...
-**学习任务：**
-- ...
-**推荐资源：**
-- ...
-**练习方式：**
-- ...
-**评估指标：**
-- ...
+    ## 阶段二：方法关系与流程建构
+    ### 学习安排
+    **目标：** ...
+    **学习任务：**
+    - ...
+    **推荐资源：**
+    - ...
+    **练习方式：**
+    - ...
+    **评估指标：**
+    - ...
 
-## 阶段三：案例练习与迁移应用
-### 学习安排
-**目标：** ...
-**学习任务：**
-- ...
-**推荐资源：**
-- ...
-**练习方式：**
-- ...
-**评估指标：**
-- ...
+    ## 阶段三：案例练习与迁移应用
+    ### 学习安排
+    **目标：** ...
+    **学习任务：**
+    - ...
+    **推荐资源：**
+    - ...
+    **练习方式：**
+    - ...
+    **评估指标：**
+    - ...
 
-学生画像：
-{profile_text}
+    学生画像：
+    {profile_text}
 
-教材原文：
-{knowledge}
-""".strip()
-        path_content = normalize_markdown(spark_chat(prompt))
+    教材原文：
+    {knowledge}
+    """.strip()
+            path_content = normalize_markdown(spark_chat(prompt))
         if not content_audit(path_content):
             return fail("生成的学习路径未通过讯飞内容审核", 403)
 
-        safety = safety_agent.review(path_content, sources)
+        safety = safety_agent.review(path_content, sources) if payload.get("full_generation") else {"passed": True, "risk": "快速路径本地模板生成", "sources": []}
         path_id = mysql_db.insert("study_path", {"user_id": user_id, "profile_session_id": session_id, "path_content": path_content, "status": "active"})
         return success({"id": path_id, "user_id": user_id, "profile_session_id": session_id, "path_content": path_content, "status": "active", "sources": sources, "safety": safety}, "学习路径生成成功")
     except Exception as exc:

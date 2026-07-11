@@ -34,3 +34,4 @@ logs/
 *.sqlite
 *.sqlite3
 .cache/
+A3_Learning_Agent/rag_data/

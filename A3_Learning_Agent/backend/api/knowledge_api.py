@@ -12,6 +12,7 @@ from utils.auth_decorator import login_required
 
 knowledge_bp = Blueprint("knowledge", __name__)
 SUPPORTED_IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".webp", ".gif"}
+SUPPORTED_VIDEO_SUFFIXES = {".mp4", ".webm", ".ogg", ".mov", ".m4v"}
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DOCUMENT_STATUS_MAP = {"imported": "已导入", "built": "已构建"}
 
@@ -1060,3 +1061,56 @@ def image():
         return send_file(str(image_path))
     except Exception as exc:
         return fail(f"Image read failed: {exc}", 500)
+
+
+def candidate_video_paths(raw_path: str) -> list[Path]:
+    kb_root = generated_kb_dir().resolve()
+    video_root = (kb_root / "videos").resolve()
+    normalized = raw_path.strip().strip('"').strip("'").replace("\\", "/")
+    candidates: list[Path] = []
+    raw_candidate = Path(raw_path)
+    if raw_candidate.is_absolute():
+        candidates.append(raw_candidate)
+    if normalized.startswith("videos/"):
+        candidates.append(kb_root / normalized)
+        candidates.append(video_root / normalized[len("videos/") :])
+    marker = "/videos/"
+    if marker in normalized:
+        candidates.append(video_root / normalized.split(marker, 1)[1])
+    if not raw_candidate.is_absolute():
+        candidates.append(video_root / raw_path)
+    unique = []
+    seen = set()
+    for candidate in candidates:
+        try:
+            resolved = candidate.resolve()
+        except Exception:
+            continue
+        key = str(resolved).lower()
+        if key not in seen:
+            seen.add(key)
+            unique.append(resolved)
+    return unique
+
+
+def resolve_video_path(raw_path: str) -> Path | None:
+    video_root = (generated_kb_dir() / "videos").resolve()
+    for video_path in candidate_video_paths(raw_path):
+        if video_path.exists() and video_path.suffix.lower() in SUPPORTED_VIDEO_SUFFIXES:
+            if video_path == video_root or video_root in video_path.parents:
+                return video_path
+    return None
+
+
+@knowledge_bp.get("/video")
+def video():
+    raw_path = request.args.get("path", "").strip()
+    if not raw_path:
+        return fail("Missing video path", 400)
+    try:
+        video_path = resolve_video_path(raw_path)
+        if not video_path:
+            return fail("Video not found or unsupported", 404)
+        return send_file(str(video_path), conditional=True)
+    except Exception as exc:
+        return fail(f"Video read failed: {exc}", 500)

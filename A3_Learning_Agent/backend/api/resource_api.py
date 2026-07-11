@@ -1,4 +1,5 @@
 import json
+import logging
 import queue
 import re
 import threading
@@ -27,6 +28,7 @@ else:
     raise ImportError("ai.llm_api 中缺少 llm_chat 或 PlatformLLM，无法进行模型文本生成")
 
 spark_chat = llm_chat
+logger = logging.getLogger(__name__)
 resource_bp = Blueprint("resource", __name__)
 IMAGE_PATTERN = re.compile(r"(?:[A-Za-z]:\\[^\n\r，,；;）)]+|images[\\/][^\n\r，,；;）)]+)\.(?:png|jpg|jpeg|webp|gif)", re.IGNORECASE)
 IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".webp", ".gif"}
@@ -744,6 +746,7 @@ def generate_resources():
     try:
         payload = request.get_json(silent=True) or {}
         user_id = request.user_id
+        logger.info("Resource generation request received user_id=%s profile_session_id=%s", user_id, payload.get("profile_session_id"))
         session = resolve_profile_session(user_id, payload, create_if_missing=False)
         if not session:
             return fail("请先新建画像对话并生成画像", 404)
@@ -764,86 +767,111 @@ def generate_resources():
             payload["path_content"] = latest_path.get("path_content")
 
         result = agent_manager.run_pipeline(dialogue, stored_profile=profile, request_data=payload)
-        batch_id = mysql_db.insert(
-            "generation_batch",
-            {
-                "trace_id": result["trace_id"],
-                "user_id": user_id,
-                "profile_session_id": session_id,
-                "profile_snapshot": json.dumps(result.get("context", {}), ensure_ascii=False),
-                "plan": json.dumps(result.get("plan", {}), ensure_ascii=False),
-                "status": "completed" if not result.get("errors") else "completed_with_warnings",
-                "error_summary": "；".join(result.get("errors", [])),
-            },
-        )
-        saved_resources = []
-        for item in result.get("resource_list", []):
-            item = _append_images_to_resource(item)
-            content = str(item.get("content", ""))
-            if content and (not payload.get("full_generation") or content_audit(content)):
-                metadata = _safe_json_loads(item.get("metadata"), {})
-                metadata.update(
-                    {
-                        "format": item.get("format"),
-                        "quality": item.get("quality"),
-                        "retry_count": item.get("retry_count", 0),
-                        "duration_ms": item.get("duration_ms", 0),
-                        "video_url": item.get("video_url"),
-                        "stage_id": item.get("stage_id"),
-                        "stage_index": item.get("stage_index"),
-                        "stage_title": item.get("stage_title"),
-                        "stage_points": item.get("stage_points", []),
-                    }
-                )
-                resource_id = mysql_db.insert(
-                    "study_resource",
-                    {
-                        "user_id": user_id,
-                        "profile_session_id": session_id,
-                        "resource_type": item.get("resource_type", "unknown"),
-                        "title": item.get("title", "未命名资源"),
-                        "content": content,
-                        "batch_id": batch_id,
-                        "agent_name": item.get("agent_name"),
-                        "knowledge_points": json.dumps(item.get("knowledge_points", []), ensure_ascii=False),
-                        "personalization": item.get("personalization"),
-                        "quality_score": item.get("quality_score"),
-                        "audit_status": "passed" if item.get("quality", {}).get("passed") else "warning",
-                        "metadata": json.dumps(metadata, ensure_ascii=False),
-                    },
-                )
-                for source in item.get("sources", []):
-                    mysql_db.insert(
-                        "resource_source",
-                        {
-                            "resource_id": resource_id,
-                            "source_name": source.get("source", "unknown"),
-                            "chunk_index": source.get("chunk_index"),
-                            "relevance_score": source.get("score"),
-                            "retrieval_mode": source.get("retrieval_mode"),
-                        },
-                    )
-                saved_resources.append({"id": resource_id, **item, "content": content})
-        score_by_agent = {item.get("agent_name"): item.get("quality_score") for item in result.get("resource_list", [])}
-        for event in result.get("trace", []):
-            mysql_db.insert(
-                "agent_execution",
+        try:
+            batch_id = mysql_db.insert(
+                "generation_batch",
                 {
-                    "batch_id": batch_id,
-                    "agent_name": event.get("agent"),
-                    "status": event.get("status", "unknown"),
-                    "message": event.get("message"),
-                    "score": score_by_agent.get(event.get("agent")),
-                    "retry_count": event.get("retry_count", 0),
-                    "duration_ms": event.get("duration_ms", 0),
+                    "trace_id": result["trace_id"],
+                    "user_id": user_id,
+                    "profile_session_id": session_id,
+                    "profile_snapshot": json.dumps(result.get("context", {}), ensure_ascii=False, default=str),
+                    "plan": json.dumps(result.get("plan", {}), ensure_ascii=False, default=str),
+                    "status": "completed" if not result.get("errors") else "completed_with_warnings",
+                    "error_summary": "；".join(str(item) for item in result.get("errors", [])),
                 },
             )
-        mysql_db.execute("UPDATE generation_batch SET finish_time=NOW() WHERE id=%s", (batch_id,))
+        except Exception as batch_exc:
+            logger.exception("Failed to persist generation batch")
+            result.setdefault("errors", []).append(f"资源批次保存失败：{batch_exc}")
+            batch_id = None
+        saved_resources = []
+        for item in result.get("resource_list", []):
+            try:
+                item = _append_images_to_resource(item)
+                content = str(item.get("content", ""))
+                if content and (not payload.get("full_generation") or content_audit(content)):
+                    metadata = _safe_json_loads(item.get("metadata"), {})
+                    metadata.update(
+                        {
+                            "format": item.get("format"),
+                            "quality": item.get("quality"),
+                            "retry_count": item.get("retry_count", 0),
+                            "duration_ms": item.get("duration_ms", 0),
+                            "video_url": item.get("video_url"),
+                            "stage_id": item.get("stage_id"),
+                            "stage_index": item.get("stage_index"),
+                            "stage_title": item.get("stage_title"),
+                            "stage_points": item.get("stage_points", []),
+                        }
+                    )
+                    resource_id = mysql_db.insert(
+                        "study_resource",
+                        {
+                            "user_id": user_id,
+                            "profile_session_id": session_id,
+                            "resource_type": item.get("resource_type", "unknown"),
+                            "title": item.get("title", "未命名资源"),
+                            "content": content,
+                            "batch_id": batch_id,
+                            "agent_name": item.get("agent_name"),
+                            "knowledge_points": json.dumps(item.get("knowledge_points", []), ensure_ascii=False, default=str),
+                            "personalization": item.get("personalization"),
+                            "quality_score": item.get("quality_score"),
+                            "audit_status": "passed" if item.get("quality", {}).get("passed") else "warning",
+                            "metadata": json.dumps(metadata, ensure_ascii=False, default=str),
+                        },
+                    )
+                    for source in item.get("sources", []):
+                        try:
+                            mysql_db.insert(
+                                "resource_source",
+                                {
+                                    "resource_id": resource_id,
+                                    "source_name": source.get("source", "unknown"),
+                                    "chunk_index": source.get("chunk_index"),
+                                    "relevance_score": source.get("score"),
+                                    "retrieval_mode": source.get("retrieval_mode"),
+                                },
+                            )
+                        except Exception as source_exc:
+                            logger.exception("Failed to persist resource source")
+                            result.setdefault("errors", []).append(f"资源来源保存失败：{source_exc}")
+                    saved_resources.append({"id": resource_id, **item, "content": content})
+            except Exception as save_exc:
+                logger.exception("Failed to persist generated resource")
+                result.setdefault("errors", []).append(f"资源保存失败：{item.get('title', '未命名资源')} - {save_exc}")
+        score_by_agent = {item.get("agent_name"): item.get("quality_score") for item in result.get("resource_list", [])}
+        for event in result.get("trace", []):
+            if batch_id is None:
+                break
+            try:
+                mysql_db.insert(
+                    "agent_execution",
+                    {
+                        "batch_id": batch_id,
+                        "agent_name": event.get("agent"),
+                        "status": event.get("status", "unknown"),
+                        "message": event.get("message"),
+                        "score": score_by_agent.get(event.get("agent")),
+                        "retry_count": event.get("retry_count", 0),
+                        "duration_ms": event.get("duration_ms", 0),
+                    },
+                )
+            except Exception as trace_exc:
+                logger.exception("Failed to persist agent execution trace")
+                result.setdefault("errors", []).append(f"执行轨迹保存失败：{trace_exc}")
+        try:
+            if batch_id is not None:
+                mysql_db.execute("UPDATE generation_batch SET finish_time=NOW() WHERE id=%s", (batch_id,))
+        except Exception as finish_exc:
+            logger.exception("Failed to update generation batch finish time")
+            result.setdefault("errors", []).append(f"资源批次完成时间更新失败：{finish_exc}")
         result["resource_list"] = saved_resources or result.get("resource_list", [])
         result["batch_id"] = batch_id
         result["profile_session_id"] = session_id
         return success(result, "资源生成成功")
     except Exception as exc:
+        logger.exception("Resource generation failed")
         return fail("资源生成失败", 500, {"error": str(exc)})
 
 
@@ -898,69 +926,93 @@ def list_resources(user_id: int):
 
 
 def _persist_stream_result(result: dict, user_id: int, session_id: int) -> dict:
-    batch_id = mysql_db.insert(
-        "generation_batch",
-        {
-            "trace_id": result["trace_id"],
-            "user_id": user_id,
-            "profile_session_id": session_id,
-            "profile_snapshot": json.dumps(result.get("context", {}), ensure_ascii=False),
-            "plan": json.dumps(result.get("plan", {}), ensure_ascii=False),
-            "status": "completed" if not result.get("errors") else "completed_with_warnings",
-            "error_summary": "；".join(result.get("errors", [])),
-        },
-    )
-    saved_resources = []
-    for item in result.get("resource_list", []):
-        item = _append_images_to_resource(item)
-        content = str(item.get("content", ""))
-        if content and content_audit(content):
-            metadata = _safe_json_loads(item.get("metadata"), {})
-            metadata.update({"format": item.get("format"), "quality": item.get("quality"), "retry_count": item.get("retry_count", 0), "duration_ms": item.get("duration_ms", 0), "video_url": item.get("video_url"), "stage_id": item.get("stage_id"), "stage_index": item.get("stage_index"), "stage_title": item.get("stage_title"), "stage_points": item.get("stage_points", [])})
-            resource_id = mysql_db.insert(
-                "study_resource",
-                {
-                    "user_id": user_id,
-                    "profile_session_id": session_id,
-                    "resource_type": item.get("resource_type", "unknown"),
-                    "title": item.get("title", "未命名资源"),
-                    "content": content,
-                    "batch_id": batch_id,
-                    "agent_name": item.get("agent_name"),
-                    "knowledge_points": json.dumps(item.get("knowledge_points", []), ensure_ascii=False),
-                    "personalization": item.get("personalization"),
-                    "quality_score": item.get("quality_score"),
-                    "audit_status": "passed" if item.get("quality", {}).get("passed") else "warning",
-                    "metadata": json.dumps(metadata, ensure_ascii=False),
-                },
-            )
-            for source in item.get("sources", []):
-                mysql_db.insert(
-                    "resource_source",
-                    {
-                        "resource_id": resource_id,
-                        "source_name": source.get("source", "unknown"),
-                        "chunk_index": source.get("chunk_index"),
-                        "relevance_score": source.get("score"),
-                        "retrieval_mode": source.get("retrieval_mode"),
-                    },
-                )
-            saved_resources.append({"id": resource_id, **item, "content": content})
-    score_by_agent = {item.get("agent_name"): item.get("quality_score") for item in result.get("resource_list", [])}
-    for event in result.get("trace", []):
-        mysql_db.insert(
-            "agent_execution",
+    try:
+        batch_id = mysql_db.insert(
+            "generation_batch",
             {
-                "batch_id": batch_id,
-                "agent_name": event.get("agent"),
-                "status": event.get("status", "unknown"),
-                "message": event.get("message"),
-                "score": score_by_agent.get(event.get("agent")),
-                "retry_count": event.get("retry_count", 0),
-                "duration_ms": event.get("duration_ms", 0),
+                "trace_id": result["trace_id"],
+                "user_id": user_id,
+                "profile_session_id": session_id,
+                "profile_snapshot": json.dumps(result.get("context", {}), ensure_ascii=False, default=str),
+                "plan": json.dumps(result.get("plan", {}), ensure_ascii=False, default=str),
+                "status": "completed" if not result.get("errors") else "completed_with_warnings",
+                "error_summary": "；".join(str(item) for item in result.get("errors", [])),
             },
         )
-    mysql_db.execute("UPDATE generation_batch SET finish_time=NOW() WHERE id=%s", (batch_id,))
+    except Exception as batch_exc:
+        logger.exception("Failed to persist generation batch")
+        result.setdefault("errors", []).append(f"资源批次保存失败：{batch_exc}")
+        batch_id = None
+    saved_resources = []
+    for item in result.get("resource_list", []):
+        try:
+            item = _append_images_to_resource(item)
+            content = str(item.get("content", ""))
+            if content and content_audit(content):
+                metadata = _safe_json_loads(item.get("metadata"), {})
+                metadata.update({"format": item.get("format"), "quality": item.get("quality"), "retry_count": item.get("retry_count", 0), "duration_ms": item.get("duration_ms", 0), "video_url": item.get("video_url"), "stage_id": item.get("stage_id"), "stage_index": item.get("stage_index"), "stage_title": item.get("stage_title"), "stage_points": item.get("stage_points", [])})
+                resource_id = mysql_db.insert(
+                    "study_resource",
+                    {
+                        "user_id": user_id,
+                        "profile_session_id": session_id,
+                        "resource_type": item.get("resource_type", "unknown"),
+                        "title": item.get("title", "未命名资源"),
+                        "content": content,
+                        "batch_id": batch_id,
+                        "agent_name": item.get("agent_name"),
+                        "knowledge_points": json.dumps(item.get("knowledge_points", []), ensure_ascii=False, default=str),
+                        "personalization": item.get("personalization"),
+                        "quality_score": item.get("quality_score"),
+                        "audit_status": "passed" if item.get("quality", {}).get("passed") else "warning",
+                        "metadata": json.dumps(metadata, ensure_ascii=False, default=str),
+                    },
+                )
+                for source in item.get("sources", []):
+                    try:
+                        mysql_db.insert(
+                            "resource_source",
+                            {
+                                "resource_id": resource_id,
+                                "source_name": source.get("source", "unknown"),
+                                "chunk_index": source.get("chunk_index"),
+                                "relevance_score": source.get("score"),
+                                "retrieval_mode": source.get("retrieval_mode"),
+                            },
+                        )
+                    except Exception as source_exc:
+                        logger.exception("Failed to persist stream resource source")
+                        result.setdefault("errors", []).append(f"资源来源保存失败：{source_exc}")
+                saved_resources.append({"id": resource_id, **item, "content": content})
+        except Exception as save_exc:
+            logger.exception("Failed to persist stream generated resource")
+            result.setdefault("errors", []).append(f"资源保存失败：{item.get('title', '未命名资源')} - {save_exc}")
+    score_by_agent = {item.get("agent_name"): item.get("quality_score") for item in result.get("resource_list", [])}
+    for event in result.get("trace", []):
+        if batch_id is None:
+            break
+        try:
+            mysql_db.insert(
+                "agent_execution",
+                {
+                    "batch_id": batch_id,
+                    "agent_name": event.get("agent"),
+                    "status": event.get("status", "unknown"),
+                    "message": event.get("message"),
+                    "score": score_by_agent.get(event.get("agent")),
+                    "retry_count": event.get("retry_count", 0),
+                    "duration_ms": event.get("duration_ms", 0),
+                },
+            )
+        except Exception as trace_exc:
+            logger.exception("Failed to persist agent execution trace")
+            result.setdefault("errors", []).append(f"执行轨迹保存失败：{trace_exc}")
+    try:
+        if batch_id is not None:
+            mysql_db.execute("UPDATE generation_batch SET finish_time=NOW() WHERE id=%s", (batch_id,))
+    except Exception as finish_exc:
+        logger.exception("Failed to update generation batch finish time")
+        result.setdefault("errors", []).append(f"资源批次完成时间更新失败：{finish_exc}")
     result["resource_list"] = saved_resources or result.get("resource_list", [])
     result["batch_id"] = batch_id
     result["profile_session_id"] = session_id
@@ -968,7 +1020,7 @@ def _persist_stream_result(result: dict, user_id: int, session_id: int) -> dict:
 
 
 def _sse(event: str, data: dict) -> str:
-    return f"event: {event}\ndata: {json.dumps(data, ensure_ascii=False)}\n\n"
+    return f"event: {event}\ndata: {json.dumps(data, ensure_ascii=False, default=str)}\n\n"
 
 
 def _user_from_stream_request():
@@ -1027,6 +1079,7 @@ def generate_resources_stream():
                 saved = _persist_stream_result(result, user_id, session_id)
                 push({"type": "result", "message": "资源生成成功", "result": saved})
             except Exception as exc:
+                logger.exception("Stream resource generation failed")
                 push({"type": "error", "message": "资源生成失败", "error": str(exc)})
             finally:
                 events.put(done)
