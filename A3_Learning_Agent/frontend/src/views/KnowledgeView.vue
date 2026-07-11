@@ -96,7 +96,66 @@
 
         <el-scrollbar height="640px" v-loading="sectionLoading">
           <template v-if="hasSectionContent">
-            <article v-for="section in sectionDetail.sections" :key="section.node_id" class="section-block">
+            <div v-if="exerciseQuestions.length" class="exercise-list">
+              <article v-for="question in exerciseQuestions" :key="question.id" class="exercise-card">
+                <div class="exercise-head">
+                  <div>
+                    <el-space wrap>
+                      <el-tag type="primary">{{ exerciseQuestionLabel(question) }}</el-tag>
+                      <el-tag :type="question.has_answer ? 'success' : 'warning'">{{ question.answer_status }}</el-tag>
+                    </el-space>
+                    <p v-if="question.stem" class="exercise-stem">{{ question.stem }}</p>
+                    <div v-if="question.question_images?.length" class="exercise-image-list">
+                      <figure v-for="image in question.question_images" :key="image.image_id || image.path" class="exercise-image-card">
+                        <img :src="knowledgeImageUrl(image)" :alt="image.caption || image.figure_label || '题目图片'" loading="lazy" />
+                        <figcaption>
+                          <span>{{ image.caption || image.figure_label || `第 ${image.page || ''} 页题图` }}</span>
+                        </figcaption>
+                      </figure>
+                    </div>
+                    <div v-if="question.sub_questions?.length" class="exercise-sub-list">
+                      <section v-for="sub in question.sub_questions" :key="sub.id || sub.sub_question_no" class="exercise-sub-item">
+                        <p class="exercise-sub-stem">
+                          <strong>{{ subQuestionLabel(sub) }}</strong>
+                          <span>{{ sub.stem }}</span>
+                        </p>
+                        <div v-if="sub.question_images?.length" class="exercise-image-list">
+                          <figure v-for="image in sub.question_images" :key="image.image_id || image.path" class="exercise-image-card">
+                            <img :src="knowledgeImageUrl(image)" :alt="image.caption || image.figure_label || '题目图片'" loading="lazy" />
+                            <figcaption>
+                              <span>{{ image.caption || image.figure_label || `第 ${image.page || ''} 页题图` }}</span>
+                            </figcaption>
+                          </figure>
+                        </div>
+                      </section>
+                    </div>
+                  </div>
+                  <el-button size="small" type="success" plain @click="toggleExerciseAnswer(question)">
+                    {{ question.showAnswer ? '收起答案' : '查看答案' }}
+                  </el-button>
+                </div>
+                <div v-if="question.showAnswer" class="exercise-answer">
+                  <template v-if="question.sub_questions?.length">
+                    <div v-if="question.reference_answer || question.answer" class="exercise-answer-block">
+                      <p><strong>主问题答案：</strong>{{ question.reference_answer || question.answer }}</p>
+                      <p v-if="showExerciseAnalysis(question)"><strong>解析：</strong>{{ question.analysis || question.explanation }}</p>
+                      <p v-if="exerciseAnswerSource(question)" class="exercise-source"><strong>来源：</strong>{{ exerciseAnswerSource(question) }}</p>
+                    </div>
+                    <div v-for="sub in question.sub_questions" :key="`answer-${sub.id || sub.sub_question_no}`" class="exercise-answer-block">
+                      <p><strong>{{ subQuestionLabel(sub) }}答案：</strong>{{ sub.reference_answer || sub.answer || "知识库中暂未匹配到本题答案" }}</p>
+                      <p v-if="showExerciseAnalysis(sub)"><strong>解析：</strong>{{ sub.analysis || sub.explanation }}</p>
+                      <p v-if="exerciseAnswerSource(sub)" class="exercise-source"><strong>来源：</strong>{{ exerciseAnswerSource(sub) }}</p>
+                    </div>
+                  </template>
+                  <template v-else>
+                    <p><strong>对应答案：</strong>{{ question.reference_answer || question.answer || "知识库中暂未匹配到本题答案" }}</p>
+                    <p v-if="showExerciseAnalysis(question)"><strong>解析：</strong>{{ question.analysis || question.explanation }}</p>
+                    <p v-if="exerciseAnswerSource(question)" class="exercise-source"><strong>来源：</strong>{{ exerciseAnswerSource(question) }}</p>
+                  </template>
+                </div>
+              </article>
+            </div>
+            <article v-else v-for="section in sectionDetail.sections" :key="section.node_id" class="section-block">
               <div v-if="section.paragraphs?.length" class="paragraph-list">
                 <div
                   v-for="(paragraph, index) in section.paragraphs"
@@ -104,7 +163,27 @@
                   class="paragraph-item"
                 >
                   <p>{{ paragraph.text }}</p>
+                  <div v-if="paragraph.images?.length" class="knowledge-image-list inline">
+                    <figure v-for="image in paragraph.images" :key="image.image_id" class="knowledge-image-card">
+                      <img :src="knowledgeImageUrl(image)" :alt="image.caption || image.figure_label || '知识图片'" loading="lazy" />
+                      <figcaption>
+                        <strong>{{ [image.figure_label, image.caption].filter(Boolean).join(' ') }}</strong>
+                        <span v-if="image.image_summary">{{ image.image_summary }}</span>
+                        <em v-if="image.page">第 {{ image.page }} 页</em>
+                      </figcaption>
+                    </figure>
+                  </div>
                 </div>
+              </div>
+              <div v-if="!section.paragraphs?.length && section.images?.length" class="knowledge-image-list">
+                <figure v-for="image in section.images" :key="image.image_id" class="knowledge-image-card">
+                  <img :src="knowledgeImageUrl(image)" :alt="image.caption || image.figure_label || '知识图片'" loading="lazy" />
+                  <figcaption>
+                    <strong>{{ [image.figure_label, image.caption].filter(Boolean).join(' ') }}</strong>
+                    <span v-if="image.image_summary">{{ image.image_summary }}</span>
+                    <em v-if="image.page">第 {{ image.page }} 页</em>
+                  </figcaption>
+                </figure>
               </div>
             </article>
           </template>
@@ -177,12 +256,48 @@ const treeRef = ref(null);
 const defaultExpandedKeys = ref([]);
 
 const hasSectionContent = computed(() =>
-  (sectionDetail.value.sections || []).some((section) => (section.paragraphs || []).length > 0)
+  exerciseQuestions.value.length > 0 ||
+  (sectionDetail.value.sections || []).some(
+    (section) => (section.paragraphs || []).length > 0 || (section.images || []).length > 0
+  )
 );
+const exerciseQuestions = computed(() => sectionDetail.value.exercise_questions || []);
 
 function unwrap(response) {
   if (response?.code === 200 || response?.success === true) return response.data;
   throw new Error(response?.msg || response?.message || "请求失败");
+}
+
+function toggleExerciseAnswer(question) {
+  question.showAnswer = !question.showAnswer;
+}
+
+function exerciseQuestionLabel(question) {
+  return question?.question_no ? `第 ${question.question_no} 题` : "练习题";
+}
+
+function subQuestionLabel(question) {
+  const value = String(question?.sub_question_no || "").trim();
+  return value ? `(${value})` : "子问";
+}
+
+function exerciseAnswerSource(question) {
+  const pages = question.answer_pages || question.answer_links?.[0]?.answer_pages || [];
+  const pageText = Array.isArray(pages) && pages.length ? `答案页：${pages.join("、")}` : "";
+  const method = question.answer_link_method ? `匹配方式：${question.answer_link_method}` : "";
+  return [pageText, method].filter(Boolean).join("；");
+}
+function showExerciseAnalysis(question) {
+  const answer = String(question.reference_answer || question.answer || "").trim();
+  const analysis = String(question.analysis || question.explanation || "").trim();
+  return Boolean(analysis && analysis !== answer);
+}
+
+
+function knowledgeImageUrl(image) {
+  const baseUrl = (import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api").replace(/\/$/, "");
+  const imagePath = image?.path || "";
+  return `${baseUrl}/knowledge/image?path=${encodeURIComponent(imagePath)}`;
 }
 
 function findDefaultNode(nodes) {
@@ -238,7 +353,7 @@ async function loadSection(nodeId) {
   if (!nodeId) return;
   sectionLoading.value = true;
   try {
-    sectionDetail.value = unwrap(await knowledgeApi.section(nodeId, { include_children: false }));
+    sectionDetail.value = unwrap(await knowledgeApi.section(nodeId, { include_children: true }));
   } catch (error) {
     sectionDetail.value = { sections: [] };
     ElMessage.error(error.message || "章节内容加载失败");
@@ -392,6 +507,7 @@ onMounted(async () => {
 .status-card,
 .result-card,
 .section-block,
+.exercise-card,
 .import-bar,
 .search-bar {
   border: 1px solid #e5e7eb;
@@ -483,6 +599,164 @@ onMounted(async () => {
   word-break: break-word;
   text-align: justify;
   font-size: 15px;
+}
+
+
+.knowledge-image-list {
+  display: grid;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.knowledge-image-list.inline {
+  margin: 16px 0 4px;
+}
+
+.knowledge-image-card {
+  margin: 0;
+  padding: 16px;
+  border: 1px solid #dbeafe;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #f8fbff, #ffffff);
+}
+
+.knowledge-image-card img {
+  display: block;
+  max-width: 100%;
+  max-height: 520px;
+  margin: 0 auto;
+  object-fit: contain;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+}
+
+.knowledge-image-card figcaption {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+  color: #475569;
+  line-height: 1.7;
+}
+
+.knowledge-image-card figcaption strong {
+  color: #0f172a;
+}
+
+.knowledge-image-card figcaption em {
+  color: #64748b;
+  font-style: normal;
+  font-size: 13px;
+}
+
+
+.exercise-list {
+  display: grid;
+  gap: 14px;
+}
+
+.exercise-card {
+  padding: 16px;
+  background: linear-gradient(135deg, #ffffff, #f8fbff);
+}
+
+.exercise-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.exercise-stem {
+  margin: 12px 0 0;
+  color: #0f172a;
+  line-height: 1.9;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.exercise-sub-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.exercise-sub-item {
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.exercise-sub-stem {
+  margin: 0;
+  color: #0f172a;
+  line-height: 1.9;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.exercise-sub-stem strong {
+  margin-right: 8px;
+}
+
+.exercise-image-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.exercise-image-card {
+  margin: 0;
+  padding: 10px;
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.exercise-image-card img {
+  display: block;
+  max-width: 100%;
+  max-height: 360px;
+  margin: 0 auto;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.exercise-image-card figcaption {
+  margin-top: 8px;
+  color: #64748b;
+  font-size: 12px;
+  text-align: center;
+}
+
+.exercise-answer {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border: 1px solid #bbf7d0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f0fdf4, #ffffff);
+  display: grid;
+  gap: 8px;
+}
+
+.exercise-answer p {
+  margin: 0;
+  color: #334155;
+  line-height: 1.85;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.exercise-source {
+  color: #64748b !important;
+  font-size: 13px;
+}
+
+.exercise-answer-block + .exercise-answer-block {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed #d1d5db;
 }
 
 .search-result-list {

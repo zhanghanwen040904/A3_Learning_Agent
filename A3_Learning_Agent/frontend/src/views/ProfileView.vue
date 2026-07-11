@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="portrait-page">
     <div class="chat-home" v-if="showHome">
       <div class="home-center">

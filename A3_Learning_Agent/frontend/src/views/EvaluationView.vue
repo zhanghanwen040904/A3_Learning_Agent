@@ -120,8 +120,19 @@
 
             <div class="question-actions">
               <el-button type="primary" :loading="submitting" @click="submitQuestion(currentQuestion)">提交并判题</el-button>
+              <el-button type="success" plain @click="currentQuestion.showAnswer = !currentQuestion.showAnswer">
+                {{ currentQuestion.showAnswer ? '收起答案与解析' : '查看答案与解析' }}
+              </el-button>
               <el-button v-if="activeQuestionIndex > 0" @click="activeQuestionIndex -= 1">上一题</el-button>
               <el-button v-if="activeQuestionIndex < questions.length - 1" @click="activeQuestionIndex += 1">下一题</el-button>
+            </div>
+
+            <div v-if="currentQuestion.showAnswer" class="answer-box">
+              <div class="answer-title">知识库对应答案</div>
+              <p><strong>题目：</strong>{{ currentQuestion.prompt }}</p>
+              <p><strong>参考答案：</strong>{{ answerText(currentQuestion) }}</p>
+              <p><strong>答案解析：</strong>{{ explanationText(currentQuestion) }}</p>
+              <p v-if="answerSourceText(currentQuestion)" class="answer-source"><strong>答案来源：</strong>{{ answerSourceText(currentQuestion) }}</p>
             </div>
 
             <div v-if="currentQuestion.result" class="result-box">
@@ -180,6 +191,17 @@
 
             <div class="question-actions">
               <el-button type="primary" :loading="submittingId === question.id" @click="submitQuestion(question)">提交并判题</el-button>
+              <el-button type="success" plain @click="question.showAnswer = !question.showAnswer">
+                {{ question.showAnswer ? '收起答案与解析' : '查看答案与解析' }}
+              </el-button>
+            </div>
+
+            <div v-if="question.showAnswer" class="answer-box">
+              <div class="answer-title">知识库对应答案</div>
+              <p><strong>题目：</strong>{{ question.prompt }}</p>
+              <p><strong>参考答案：</strong>{{ answerText(question) }}</p>
+              <p><strong>答案解析：</strong>{{ explanationText(question) }}</p>
+              <p v-if="answerSourceText(question)" class="answer-source"><strong>答案来源：</strong>{{ answerSourceText(question) }}</p>
             </div>
 
             <div v-if="question.result" class="result-box">
@@ -340,6 +362,24 @@ function scoreClass(score) {
   return "score-low";
 }
 
+function answerText(question) {
+  return question?.reference_answer || question?.answer || question?.result?.reference_answer || "暂无标准答案";
+}
+
+function explanationText(question) {
+  return question?.analysis || question?.explanation || question?.result?.explanation || "暂无解析";
+}
+
+function answerSourceText(question) {
+  const links = Array.isArray(question?.answer_links) ? question.answer_links : [];
+  const first = links[0] || {};
+  const pages = first.answer_pages || question?.pages || [];
+  const pageText = Array.isArray(pages) && pages.length ? `答案页：${pages.join("、")}` : "";
+  const method = question?.answer_link_method || first.match_method || "";
+  const confidence = question?.answer_link_confidence || first.match_confidence || "";
+  return [pageText, method ? `匹配方式：${method}` : "", confidence ? `置信度：${confidence}` : ""].filter(Boolean).join("；");
+}
+
 function saveStageRecordIfFinished() {
   if (!stageContext.value.active || !questions.value.length || answeredCount.value < questions.value.length) return;
   const scores = questions.value.map((item) => Number(item.result?.score || 0));
@@ -412,6 +452,7 @@ async function generateQuestions() {
         ...item,
         userAnswer: "",
         result: null,
+        showAnswer: false,
       }));
       ElMessage.success(`已生成 ${questions.value.length} 道个性化检测题`);
     } else {
@@ -647,10 +688,39 @@ onMounted(async () => {
   border: 1px solid #f3e5c8;
 }
 
-.result-box {
+.result-box,
+.answer-box {
   margin-top: 16px;
+  padding: 14px 16px;
+  border-radius: 12px;
   display: grid;
   gap: 8px;
+}
+
+.result-box {
+  background: #f8fbff;
+  border: 1px solid #dbeafe;
+}
+
+.answer-box {
+  background: linear-gradient(135deg, #f0fdf4, #ffffff);
+  border: 1px solid #bbf7d0;
+}
+
+.answer-title {
+  color: #15803d;
+  font-weight: 700;
+}
+
+.answer-box p {
+  margin: 0;
+  color: #334155;
+  line-height: 1.8;
+}
+
+.answer-source {
+  color: #64748b !important;
+  font-size: 13px;
 }
 
 .score-list {

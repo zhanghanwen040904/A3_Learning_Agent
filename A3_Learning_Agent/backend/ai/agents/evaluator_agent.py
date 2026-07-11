@@ -75,6 +75,49 @@ class EvaluatorAgent:
             return 0.0
         return len(answer_chars & reference_chars) / len(reference_chars)
 
+    def _is_empty_or_no_knowledge_answer(self, answer: str) -> bool:
+        text = self._normalize_text(answer)
+        if not text:
+            return True
+        no_answer_patterns = [
+            "不知道", "不会", "不清楚", "没学", "不会做", "不懂", "不知道答案", "随便", "不知道怎么写",
+            "idontknow", "dontknow", "unknown", "noidea",
+        ]
+        return any(pattern in text for pattern in no_answer_patterns) or len(text) <= 1
+
+    def _important_term_hits(self, answer: str, keywords: list[str], reference: str, knowledge_point: str) -> list[str]:
+        answer_norm = self._normalize_text(answer)
+        terms = []
+        for item in [knowledge_point, *keywords, *DOMAIN_KEYWORDS]:
+            item_text = str(item or "").strip()
+            item_norm = self._normalize_text(item_text)
+            if len(item_norm) >= 2 and item_text not in terms:
+                terms.append(item_text)
+        for token in re.findall(r"[一-龥A-Za-z0-9]{2,}", str(reference or "")):
+            if 2 <= len(token) <= 12 and token not in terms:
+                terms.append(token)
+            if len(terms) >= 24:
+                break
+        return [term for term in terms if self._normalize_text(term) and self._normalize_text(term) in answer_norm]
+
+    def _is_clearly_unrelated_answer(self, answer: str, reference: str, keywords: list[str], knowledge_point: str) -> bool:
+        if self._is_empty_or_no_knowledge_answer(answer):
+            return True
+        answer_text = str(answer or "").strip()
+        reference_text = str(reference or "").strip()
+        if not reference_text:
+            return False
+        important_hits = self._important_term_hits(answer_text, keywords, reference_text, knowledge_point)
+        unit_ratio = self._unit_coverage_ratio(answer_text, reference_text)
+        char_ratio = self._char_overlap_ratio(answer_text, reference_text)
+        if not important_hits and unit_ratio <= 0 and char_ratio < 0.08:
+            return True
+        if len(important_hits) <= 1 and unit_ratio <= 0 and char_ratio < 0.25 and len(answer_text) <= 14:
+            return True
+        if len(answer_text) <= 4 and not important_hits:
+            return True
+        return False
+
     def _unit_coverage_ratio(self, answer: str, reference: str) -> float:
         answer_norm = self._normalize_text(answer)
         ref_units = self._split_units(reference)
@@ -136,6 +179,7 @@ class EvaluatorAgent:
             matched_keywords = []
             missed_keywords = [reference_code or reference_text or knowledge_point]
             weak_reason = f"当前题目未正确命中客观题答案：{reference_code or reference_text or knowledge_point}"
+            force_zero = True
 
         return {
             "score": score,
@@ -149,6 +193,7 @@ class EvaluatorAgent:
             "matched_keywords": matched_keywords,
             "missed_keywords": missed_keywords,
             "weak_reason": weak_reason,
+            **({"force_zero": True} if 'force_zero' in locals() and force_zero else {}),
         }
 
     def _personalize_analysis(
@@ -161,7 +206,7 @@ class EvaluatorAgent:
         original_explanation: str = "",
         original_common_mistake: str = "",
     ) -> dict:
-        if config.MOCK_AI:
+        if config.MOCK_AI or base_result.get("force_zero"):
             return base_result
         try:
             prompt = f"""
@@ -171,9 +216,11 @@ class EvaluatorAgent:
 1. 不能只是复述参考答案或题库解析。
 2. 必须指出学生答案具体答到了什么、漏了什么、为什么扣分。
 3. 解析要围绕学生答案与参考答案的差距展开。
-4. 如果学生只写了很短或无关内容，要明确说明问题。
-5. score 必须由你根据学生答案质量给出 0-100 分，不要照抄系统初判；系统初判只作为参考。
-6. 只输出 JSON，不要 markdown。
+4. 如果学生只写了很短、无关、乱答、答非所问、与参考答案没有实质重合，score 必须给 0。
+5. 如果学生答案完全错误，不允许给安慰分、格式分、字数分。
+6. score 必须由你根据学生答案质量给出 0-100 分，不要照抄系统初判；系统初判只作为参考。
+7. 评分标准：0=完全错误或无关；1-39=仅有零散相关词但没有有效解释；40-59=有少量正确点但关键内容大多缺失；60-74=部分正确；75-89=基本正确；90-100=完整准确。
+8. 只输出 JSON，不要 markdown。
 
 输出格式：
 {{
@@ -251,6 +298,23 @@ class EvaluatorAgent:
         normalized_answer = self._normalize_text(answer_text)
         normalized_reference = self._normalize_text(reference)
         keywords = self._extract_keywords(reference, knowledge_point, scoring_points)
+        if self._is_clearly_unrelated_answer(answer_text, reference, keywords, knowledge_point):
+            base_result = {
+                "score": 0,
+                "is_correct": False,
+                "feedback": "回答与参考答案缺少实质关联，判定为完全错误。",
+                "knowledge_point": knowledge_point,
+                "reference_answer": reference,
+                "explanation": explanation or "该答案没有覆盖标准答案中的核心概念、关键步骤或结论，需要回到教材答案重新学习。",
+                "common_mistake": common_mistake or "常见问题是答非所问，或只写无关内容而没有回应题目要求。",
+                "scoring_points": scoring_points,
+                "matched_keywords": [],
+                "missed_keywords": keywords[:8] or [knowledge_point],
+                "weak_reason": "当前答案与标准答案无实质匹配，需重新学习该知识点。",
+                "force_zero": True,
+            }
+            return base_result
+
         matched_keywords = [word for word in keywords if self._normalize_text(word) and self._normalize_text(word) in normalized_answer]
         missed_keywords = [word for word in keywords if self._normalize_text(word) and self._normalize_text(word) not in normalized_answer]
         keyword_ratio = len(matched_keywords) / max(len(keywords), 1) if keywords else 0.0
@@ -276,11 +340,13 @@ class EvaluatorAgent:
             elif blended_ratio >= 0.6:
                 score = 74
             elif blended_ratio >= 0.4:
-                score = 60
+                score = 55
+            elif blended_ratio >= 0.2:
+                score = 25
             else:
-                score = 40
+                score = 0
         else:
-            score = 75 if len(answer_text) >= 20 else 55
+            score = 30 if len(answer_text) >= 20 else 0
 
         is_correct = score >= 70
         if score >= 90:

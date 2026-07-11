@@ -1,5 +1,6 @@
 ﻿import json
 import re
+from difflib import SequenceMatcher
 from pathlib import Path
 
 from flask import Blueprint, request, send_file
@@ -59,6 +60,85 @@ def get_detailed_knowledge_tree():
 def get_reading_content():
     return _load_first_json("reading_content_json", {})
 
+def get_images_data():
+    return _load_first_json("images_json", {})
+
+
+def _image_url(raw_path: str) -> str:
+    return f"/knowledge/image?path={raw_path}"
+
+
+def _format_knowledge_image(item: dict) -> dict:
+    raw_path = str(item.get("path") or item.get("absolute_path") or "").strip()
+    return {
+        "image_id": item.get("image_id") or raw_path,
+        "figure_label": item.get("figure_label") or "",
+        "caption": item.get("caption") or "",
+        "image_summary": item.get("image_summary") or "",
+        "image_type": item.get("image_type") or "",
+        "page": item.get("page"),
+        "path": raw_path,
+        "url": _image_url(raw_path) if raw_path else "",
+        "width": item.get("width"),
+        "height": item.get("height"),
+        "related_knowledge_titles": item.get("related_knowledge_titles") or [],
+        "match_confidence": item.get("match_confidence") or item.get("confidence") or 0,
+    }
+
+
+def _section_page_numbers(pages) -> set[int]:
+    result: set[int] = set()
+    if not isinstance(pages, list):
+        return result
+    for page in pages:
+        if not isinstance(page, dict):
+            continue
+        try:
+            value = page.get("page")
+            if value not in (None, ""):
+                result.add(int(value))
+        except Exception:
+            continue
+    return result
+
+
+def _images_for_reading_section(title: str, path: list[str], pages) -> list[dict]:
+    payload = get_images_data()
+    images = payload.get("images") if isinstance(payload, dict) else []
+    if not isinstance(images, list):
+        return []
+
+    title_candidates = [_normalize_text(title), *[_normalize_text(item) for item in path or []]]
+    title_candidates = [item for item in title_candidates if item]
+    page_numbers = _section_page_numbers(pages)
+    matched = []
+    seen = set()
+    for image in images:
+        if not isinstance(image, dict) or image.get("keep") is False or image.get("is_knowledge_image") is False:
+            continue
+        related_titles = [_normalize_text(item) for item in image.get("related_knowledge_titles") or []]
+        title_hit = any(
+            related and candidate and (related in candidate or candidate in related)
+            for related in related_titles
+            for candidate in title_candidates
+        )
+        page_hit = False
+        try:
+            image_page = int(image.get("page"))
+            page_hit = image_page in page_numbers
+        except Exception:
+            page_hit = False
+        if not title_hit and not page_hit:
+            continue
+        formatted = _format_knowledge_image(image)
+        if not formatted["path"] or formatted["image_id"] in seen:
+            continue
+        seen.add(formatted["image_id"])
+        formatted["match_reason"] = "knowledge_title" if title_hit else "page"
+        matched.append(formatted)
+
+    return sorted(matched, key=lambda item: (int(item.get("page") or 10**9), item.get("figure_label") or ""))
+
 
 def _get_reading_tree() -> list[dict]:
     payload = get_reading_content()
@@ -77,6 +157,592 @@ def _get_reading_sections_map() -> dict:
     if isinstance(sections, list):
         return {item.get("node_id"): item for item in sections if isinstance(item, dict) and item.get("node_id")}
     return {}
+
+
+def _load_question_bank_items() -> list[dict]:
+    payload = _load_first_json("question_bank_json", {})
+    rows = payload.get("questions") if isinstance(payload, dict) else payload if isinstance(payload, list) else []
+    return [item for item in rows if isinstance(item, dict)]
+
+
+def _load_answers_items() -> list[dict]:
+    payload = _load_first_json("answers_json", {})
+    rows = payload.get("answers") if isinstance(payload, dict) else payload if isinstance(payload, list) else []
+    return [item for item in rows if isinstance(item, dict)]
+
+
+def _group_question_bank_by_resets(items: list[dict]) -> list[list[dict]]:
+    groups: list[list[dict]] = []
+    current: list[dict] = []
+    previous_no: int | None = None
+    for item in items:
+        no = _question_no_int(item.get("question_no"))
+        if current and no is not None and previous_no is not None and no < previous_no:
+            groups.append(current)
+            current = []
+        current.append(item)
+        if no is not None:
+            previous_no = no
+    if current:
+        groups.append(current)
+    return groups
+
+
+def _answer_no_int(value) -> int | None:
+    try:
+        text = str(value or "").strip()
+        if text.isdigit():
+            return int(text)
+        match = re.match(r"\s*(\d+)", text)
+        return int(match.group(1)) if match else None
+    except Exception:
+        return None
+
+
+def _group_answers_by_resets(items: list[dict]) -> list[list[dict]]:
+    groups: list[list[dict]] = []
+    current: list[dict] = []
+    previous_no: int | None = None
+    for item in items:
+        no = _answer_no_int(item.get("answer_no"))
+        if current and no is not None and previous_no is not None and no < previous_no:
+            groups.append(current)
+            current = []
+        current.append(item)
+        if no is not None:
+            previous_no = no
+    if current:
+        groups.append(current)
+    return groups
+
+
+def _answers_for_chapter(chapter_no: int | None) -> list[dict]:
+    items = _load_answers_items()
+    if not items:
+        return []
+    if not chapter_no:
+        return items
+    groups = _group_answers_by_resets(items)
+    if 1 <= chapter_no <= len(groups):
+        return groups[chapter_no - 1]
+    return []
+
+
+def _extract_sub_answer(answer_text: str, sub_question_no: str = "") -> str:
+    text = _clean_text(answer_text)
+    target = str(sub_question_no or "").strip()
+    if not text or not target:
+        return text
+    pattern = re.compile(r"[（(]\s*(\d+)\s*[)）]")
+    matches = list(pattern.finditer(text))
+    if not matches:
+        return text
+    for index, match in enumerate(matches):
+        if match.group(1) != target:
+            continue
+        start = match.start()
+        end = matches[index + 1].start() if index + 1 < len(matches) else len(text)
+        return text[start:end].strip()
+    return text
+
+
+def _resolve_answer_from_answers_json(item: dict, chapter_no: int | None = None) -> dict:
+    question_no = _question_no_int(item.get("question_no"))
+    sub_question_no = str(item.get("sub_question_no") or "").strip()
+    if question_no is None:
+        return {}
+    chapter_answers = _answers_for_chapter(chapter_no)
+    answer_item = next((row for row in chapter_answers if _answer_no_int(row.get("answer_no")) == question_no), None)
+    if not answer_item:
+        return {}
+    raw_answer = str(
+        answer_item.get("reference_answer")
+        or answer_item.get("content")
+        or answer_item.get("analysis")
+        or ""
+    ).strip()
+    resolved_answer = _extract_sub_answer(raw_answer, sub_question_no)
+    if not resolved_answer:
+        return {}
+    answer_pages = answer_item.get("pages") or []
+    answer_id = answer_item.get("answer_id")
+    return {
+        "answer": resolved_answer,
+        "reference_answer": resolved_answer,
+        "analysis": resolved_answer,
+        "explanation": resolved_answer,
+        "has_answer": True,
+        "answer_status": "已按答案库匹配答案",
+        "answer_ids": [answer_id] if answer_id else [],
+        "answer_link_ids": item.get("answer_link_ids") or [],
+        "answer_links": item.get("answer_links") or [],
+        "answer_link_confidence": item.get("answer_link_confidence") or 0,
+        "answer_link_method": item.get("answer_link_method") or "answers_json_chapter_question_match",
+        "answer_pages": answer_pages,
+    }
+
+
+def _workbook_questions_for_chapter(chapter_no: int | None) -> list[dict]:
+    items = _load_question_bank_items()
+    if not items:
+        return []
+    if not chapter_no:
+        return items
+    groups = _group_question_bank_by_resets(items)
+    if 1 <= chapter_no <= len(groups):
+        return groups[chapter_no - 1]
+    return []
+
+
+def _question_no_int(value) -> int | None:
+    try:
+        text = str(value or "").strip()
+        if text.isdigit():
+            return int(text)
+        match = re.match(r"\s*(\d+)", text)
+        return int(match.group(1)) if match else None
+    except Exception:
+        return None
+
+
+def _chapter_no_from_text(value: str) -> int | None:
+    match = re.search(r"第\s*(\d+)\s*章", str(value or ""))
+    if match:
+        return int(match.group(1))
+    match = re.search(r"第\s*([一二三四五六七八九十]+)\s*章", str(value or ""))
+    if not match:
+        return None
+    chars = match.group(1)
+    numbers = {"一": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6, "七": 7, "八": 8, "九": 9, "十": 10}
+    if chars == "十":
+        return 10
+    if chars.startswith("十"):
+        return 10 + numbers.get(chars[-1], 0)
+    if "十" in chars:
+        left, _, right = chars.partition("十")
+        return numbers.get(left, 1) * 10 + numbers.get(right, 0)
+    return numbers.get(chars)
+
+
+def _extract_exercise_questions_from_text(text: str) -> list[dict]:
+    source = str(text or "").replace("\r\n", "\n")
+    pattern = re.compile(r"(?m)^\s*(\d+)\s*[.．、]\s*")
+    matches = list(pattern.finditer(source))
+    questions = []
+    for index, match in enumerate(matches):
+        start = match.start()
+        end = matches[index + 1].start() if index + 1 < len(matches) else len(source)
+        block = _tidy_reading_text(source[start:end])
+        if not block:
+            continue
+        no = int(match.group(1))
+        questions.append({"question_no": str(no), "question_no_int": no, "stem": block, "content": block})
+    return questions
+
+
+def _question_similarity(left: str, right: str) -> float:
+    left_text = _clean_text(left)
+    right_text = _clean_text(right)
+    concept_terms = ["Rational 统一过程", "RUP", "微软过程", "敏捷过程", "软件过程", "软件生命周期模型", "瀑布模型", "快速原型模型", "增量模型", "螺旋模型", "喷泉模型", "软件危机", "软件工程"]
+    left_terms = {term for term in concept_terms if term.lower() in left_text.lower()}
+    right_terms = {term for term in concept_terms if term.lower() in right_text.lower()}
+    if left_terms and right_terms and left_terms.isdisjoint(right_terms):
+        return 0.0
+    intent_terms = ["优缺点", "适用范围", "适用于", "关系", "区别", "比较", "为什么", "是什么"]
+    for intent in intent_terms:
+        if intent in left_text and intent not in right_text:
+            return 0.0
+    a = _normalize_text(left_text)[:240]
+    b = _normalize_text(right_text)[:240]
+    if not a or not b:
+        return 0.0
+    if a in b or b in a:
+        return 1.0
+    score = SequenceMatcher(None, a, b).ratio()
+    if left_terms and left_terms & right_terms:
+        score += 0.12
+    return min(score, 1.0)
+
+
+def _clean_formula_text(text: str) -> str:
+    value = str(text or "").strip()
+    if not value:
+        return ""
+    value = value.replace("$$", "").replace("\\(", "").replace("\\)", "").replace("\\[", "").replace("\\]", "")
+    value = value.replace("\\%", "%").replace("\\{", "{").replace("\\}", "}").replace("\\$", "$")
+    value = re.sub(r"\\frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}", r"\1/\2", value)
+    value = re.sub(r"\\(?:mathrm|text|operatorname)\s*\{([^{}]+)\}", r"\1", value)
+    value = re.sub(r"\\(?:quad|qquad|space|,|;|!)+", " ", value)
+    value = value.replace("\\times", "×").replace("\\cdot", "·").replace("\\leq", "≤").replace("\\geq", "≥")
+    value = value.replace("\\neq", "≠").replace("\\approx", "≈").replace("\\infty", "∞")
+    value = re.sub(r"\\([A-Za-z]+)", r"\1", value)
+    value = re.sub(r"(?<=\d)\s+(?=\d)", "", value)
+    value = re.sub(r"\s*([/%=+×·<>≤≥≈])\s*", r" \1 ", value)
+    value = re.sub(r"\s+", " ", value)
+    value = value.replace("$", "")
+    return _tidy_reading_text(value)
+
+
+def _sort_sub_question_no(value: str) -> tuple[int, str]:
+    text = str(value or "").strip()
+    match = re.match(r"(\d+)", text)
+    if match:
+        return (int(match.group(1)), text)
+    return (10**9, text)
+
+
+def _group_exercise_questions(items: list[dict]) -> list[dict]:
+    grouped: dict[int, list[dict]] = {}
+    ordered_keys: list[int] = []
+    singles: list[dict] = []
+    for item in items:
+        question_no_int = item.get("question_no_int")
+        if question_no_int is None:
+            item["sub_questions"] = []
+            singles.append(item)
+            continue
+        if question_no_int not in grouped:
+            grouped[question_no_int] = []
+            ordered_keys.append(question_no_int)
+        grouped[question_no_int].append(item)
+
+    result: list[dict] = []
+    result.extend(singles)
+    for question_no_int in ordered_keys:
+        group = grouped[question_no_int]
+        group.sort(key=lambda item: (0 if not str(item.get("sub_question_no") or "").strip() else 1, _sort_sub_question_no(item.get("sub_question_no") or "")))
+        if len(group) == 1:
+            only = group[0]
+            only["sub_questions"] = []
+            result.append(only)
+            continue
+
+        main_item = next((item for item in group if not str(item.get("sub_question_no") or "").strip()), group[0])
+        sub_questions = []
+        for item in group:
+            if item is main_item and main_item is not group[0]:
+                continue
+            if item is main_item and not str(main_item.get("sub_question_no") or "").strip():
+                continue
+            sub_questions.append(
+                {
+                    "id": item.get("id"),
+                    "question_id": item.get("question_id"),
+                    "sub_question_no": str(item.get("sub_question_no") or ""),
+                    "stem": item.get("stem") or item.get("content") or "",
+                    "answer": item.get("answer") or "",
+                    "reference_answer": item.get("reference_answer") or "",
+                    "analysis": item.get("analysis") or "",
+                    "explanation": item.get("explanation") or "",
+                    "has_answer": bool(item.get("has_answer")),
+                    "answer_status": item.get("answer_status") or "",
+                    "answer_pages": item.get("answer_pages") or [],
+                    "answer_link_method": item.get("answer_link_method") or "",
+                    "question_images": item.get("question_images") or [],
+                    "images": item.get("images") or [],
+                }
+            )
+
+        merged = dict(main_item)
+        merged["sub_questions"] = sub_questions
+        merged["has_sub_questions"] = bool(sub_questions)
+        if main_item is group[0] and str(main_item.get("sub_question_no") or "").strip():
+            merged["stem"] = ""
+            merged["content"] = ""
+        result.append(merged)
+
+    return sorted(
+        result,
+        key=lambda item: (
+            item.get("question_no_int") is None,
+            item.get("question_no_int") or 10**9,
+            _sort_sub_question_no(item.get("sub_question_no") or ""),
+            item.get("id") or "",
+        ),
+    )
+
+def _normalize_section_path_local(value) -> list[str]:
+    if isinstance(value, list):
+        return [str(item).strip() for item in value if str(item).strip()]
+    if isinstance(value, str) and value.strip():
+        return [part.strip() for part in re.split(r"[>/|｜]", value) if part.strip()]
+    return []
+
+
+def _reading_section_text(section: dict) -> str:
+    parts: list[str] = []
+    if section.get("full_text"):
+        parts.append(str(section.get("full_text") or ""))
+    for page in section.get("pages") or []:
+        if not isinstance(page, dict):
+            continue
+        if page.get("text"):
+            parts.append(str(page.get("text") or ""))
+        for block in page.get("blocks") or []:
+            if isinstance(block, dict) and block.get("text"):
+                parts.append(str(block.get("text") or ""))
+    return _clean_text("\n".join(parts))
+
+
+def _extract_reading_answer_terms(stem: str) -> list[str]:
+    text = _clean_text(stem)
+    terms: list[str] = []
+    priority_terms = [
+        "软件危机", "软件工程", "可行性研究", "需求分析", "形式化", "总体设计", "详细设计",
+        "编码", "测试", "维护", "面向对象", "对象模型", "动态模型", "功能模型", "软件项目管理",
+        "成本", "进度", "风险", "CMM", "能力成熟度", "生命周期", "瀑布模型", "原型模型", "螺旋模型",
+    ]
+    for term in priority_terms:
+        if term and term.lower() in text.lower() and term not in terms:
+            terms.append(term)
+    for token in re.findall(r"[\u4e00-\u9fa5A-Za-z0-9]{2,}", text):
+        if token in {"什么", "哪些", "为什么", "如何", "说明", "简述", "试述", "它有", "它是", "典型", "表现", "原因"}:
+            continue
+        if token not in terms:
+            terms.append(token)
+        if len(terms) >= 8:
+            break
+    return terms
+
+
+def _section_pages(section: dict) -> list[int]:
+    pages: list[int] = []
+    for value in [section.get("start_page"), section.get("end_page")]:
+        if isinstance(value, int) and value not in pages:
+            pages.append(value)
+    for page in section.get("pages") or []:
+        if isinstance(page, dict) and isinstance(page.get("page"), int) and page.get("page") not in pages:
+            pages.append(page.get("page"))
+    return sorted(pages)
+
+
+def _fallback_answer_from_reading_sections(stem: str, exercise_node: dict) -> dict | None:
+    sections_map = _get_reading_sections_map()
+    if not sections_map:
+        return None
+    exercise_path = _normalize_section_path_local(exercise_node.get("path") or [])
+    chapter_hint = exercise_path[1] if len(exercise_path) > 1 else ""
+    terms = _extract_reading_answer_terms(stem)
+    if not terms:
+        return None
+
+    scored: list[tuple[int, dict, str]] = []
+    for section in sections_map.values():
+        if not isinstance(section, dict):
+            continue
+        title = _clean_text(section.get("title") or "")
+        if not title or "习题" in title:
+            continue
+        path = _normalize_section_path_local(section.get("path") or [])
+        same_chapter = bool(chapter_hint and chapter_hint in " ".join(path))
+        title_has_term = any(term and term in title for term in terms)
+        if not same_chapter and not title_has_term:
+            continue
+        body = _reading_section_text(section)
+        if not body:
+            continue
+        haystack = f"{title}\n{body}"
+        score = 0
+        if same_chapter:
+            score += 8
+        for term in terms:
+            if term in title:
+                score += 12
+            if term in body:
+                score += 5
+        if "为什么" in stem or "原因" in stem:
+            if "原因" in title:
+                score += 12
+            if "原因" in body[:500]:
+                score += 4
+        if "表现" in stem or "哪些" in stem:
+            if "表现" in body[:800] or "典型表现" in body[:800]:
+                score += 10
+        if "什么是" in stem or "是什么" in stem:
+            if "是指" in body[:500] or "称为" in body[:500]:
+                score += 8
+        if score > 0:
+            scored.append((score, section, body))
+
+    if not scored:
+        return None
+    scored.sort(key=lambda item: (-item[0], item[1].get("start_page") or 10**9))
+    selected = scored[:3]
+    answer_parts: list[str] = []
+    pages: list[int] = []
+    sources: list[str] = []
+    for _, section, body in selected:
+        title = _clean_text(section.get("title") or "教材正文")
+        excerpt = body[:900].strip()
+        if not excerpt:
+            continue
+        answer_parts.append(f"【{title}】{excerpt}")
+        sources.append(title)
+        for page in _section_pages(section):
+            if page not in pages:
+                pages.append(page)
+    if not answer_parts:
+        return None
+    answer = _clean_text("\n\n".join(answer_parts))
+    return {
+        "answer": answer,
+        "reference_answer": answer,
+        "analysis": answer,
+        "explanation": answer,
+        "has_answer": True,
+        "answer_status": "已按教材正文匹配答案",
+        "answer_link_confidence": None,
+        "answer_link_method": "reading_content_keyword_fallback",
+        "answer_pages": pages,
+        "source": "教材正文知识点：" + "、".join(dict.fromkeys(sources)),
+        "related_knowledge_titles": sources,
+    }
+
+
+def _format_bank_question(item: dict, fallback_stem: str = "", chapter_no: int | None = None) -> dict:
+    links = item.get("answer_links") or []
+    first_link = links[0] if links else {}
+    answer = _clean_formula_text(item.get("reference_answer") or item.get("answer") or first_link.get("answer_part_preview") or "")
+    analysis = _clean_formula_text(item.get("analysis") or item.get("explanation") or answer)
+    stem = _clean_text(item.get("stem") or item.get("content") or fallback_stem)
+    formatted = {
+        "id": item.get("question_id") or item.get("id") or f"question_{_question_no_int(item.get('question_no')) or len(stem)}",
+        "question_id": item.get("question_id") or item.get("id") or "",
+        "question_no": str(item.get("question_no") or ""),
+        "question_no_int": _question_no_int(item.get("question_no")),
+        "sub_question_no": str(item.get("sub_question_no") or ""),
+        "stem": stem,
+        "content": stem,
+        "question_type": item.get("question_type") or "练习题",
+        "difficulty_level": item.get("difficulty_level") or item.get("difficulty") or "",
+        "answer": answer,
+        "reference_answer": answer,
+        "analysis": analysis,
+        "explanation": analysis,
+        "has_answer": bool(answer),
+        "answer_status": "已匹配答案" if answer else "暂无匹配答案",
+        "answer_ids": item.get("answer_ids") or [],
+        "answer_link_ids": item.get("answer_link_ids") or [],
+        "answer_links": links,
+        "answer_link_confidence": item.get("answer_link_confidence") or first_link.get("match_confidence") or 0,
+        "answer_link_method": item.get("answer_link_method") or first_link.get("match_method") or "",
+        "pages": item.get("pages") or [],
+        "question_images": item.get("question_images") or item.get("images") or [],
+        "images": item.get("question_images") or item.get("images") or [],
+        "image_count": len(item.get("question_images") or item.get("images") or []),
+        "has_question_images": bool(item.get("question_images") or item.get("images")),
+        "answer_pages": first_link.get("answer_pages") or [],
+        "source": item.get("source_file") or "",
+        "related_knowledge_titles": item.get("related_knowledge_titles") or item.get("knowledge_points") or [],
+        "sub_questions": [],
+        "has_sub_questions": False,
+    }
+    resolved = _resolve_answer_from_answers_json(item, chapter_no)
+    if resolved:
+        formatted.update(resolved)
+        formatted["answer"] = _clean_formula_text(formatted.get("answer") or "")
+        formatted["reference_answer"] = _clean_formula_text(formatted.get("reference_answer") or "")
+        formatted["analysis"] = _clean_formula_text(formatted.get("analysis") or "")
+        formatted["explanation"] = _clean_formula_text(formatted.get("explanation") or "")
+    return formatted
+
+
+def _exercise_questions_for_reading_node(node_id: str) -> list[dict]:
+    sections_map = _get_reading_sections_map()
+    node = sections_map.get(node_id) or {}
+    title = _clean_text(node.get("title") or "")
+    if "习题" not in title:
+        return []
+
+    raw_text = "\n".join(str(page.get("text") or "") for page in node.get("pages") or [] if isinstance(page, dict))
+    extracted = _extract_exercise_questions_from_text(raw_text)
+    chapter_no = _chapter_no_from_text(" ".join([title, *[str(item) for item in node.get("path") or []]]))
+    workbook_items = _workbook_questions_for_chapter(chapter_no)
+    if workbook_items:
+        formatted_items = [_format_bank_question(item, chapter_no=chapter_no) for item in workbook_items]
+        return _group_exercise_questions(formatted_items)
+
+    question_bank = _load_question_bank_items()
+    bank_by_no: dict[int, list[dict]] = {}
+    chapter_items: list[dict] = []
+    chapter_key_prefix = f"第{chapter_no}章" if chapter_no else ""
+    chapter_key_alt = f"chapter_{chapter_no}" if chapter_no else ""
+    for item in question_bank:
+        links = item.get("answer_links") or []
+        key_text = " ".join(str(link.get("question_chapter_key") or "") for link in links)
+        if chapter_key_prefix and chapter_key_prefix not in key_text and chapter_key_alt not in key_text:
+            continue
+        chapter_items.append(item)
+        no = _question_no_int(item.get("question_no"))
+        if no is not None:
+            bank_by_no.setdefault(no, []).append(item)
+
+    result = []
+    used_ids = set()
+    for raw in extracted:
+        candidates = list(bank_by_no.get(raw["question_no_int"], []))
+        for item in chapter_items:
+            if item not in candidates:
+                candidates.append(item)
+        best_item = None
+        best_score = 0.0
+        for candidate in candidates:
+            score = _question_similarity(raw["stem"], candidate.get("stem") or candidate.get("content") or "")
+            if score > best_score:
+                best_score = score
+                best_item = candidate
+        if best_item and best_score >= 0.7:
+            formatted = _format_bank_question(best_item, raw["stem"], chapter_no)
+            formatted["stem"] = raw["stem"]
+            formatted["content"] = raw["stem"]
+            formatted["match_score"] = round(best_score, 4)
+            formatted["answer_status"] = "已按题号匹配答案" if formatted["has_answer"] else "暂无匹配答案"
+            result.append(formatted)
+            used_ids.add(formatted["question_id"])
+        else:
+            result.append(
+                {
+                    "id": f"reading_{node_id}_{raw['question_no_int']}",
+                    "question_id": "",
+                    "question_no": raw["question_no"],
+                    "question_no_int": raw["question_no_int"],
+                    "sub_question_no": "",
+                    "stem": raw["stem"],
+                    "content": raw["content"],
+                    "question_type": "练习题",
+                    "difficulty_level": "",
+                    "answer": "",
+                    "reference_answer": "",
+                    "analysis": "",
+                    "explanation": "",
+                    "has_answer": False,
+                    "answer_status": "暂无练习册匹配答案",
+                    "answer_ids": [],
+                    "answer_link_ids": [],
+                    "answer_links": [],
+                    "answer_link_confidence": 0,
+                    "answer_link_method": "",
+                    "pages": [],
+                    "answer_pages": [],
+                    "question_images": [],
+                    "images": [],
+                    "image_count": 0,
+                    "has_question_images": False,
+                    "source": "教材习题正文",
+                    "related_knowledge_titles": [],
+                }
+            )
+
+    if result:
+        return _group_exercise_questions(result)
+
+    fallback_items = []
+    for items in bank_by_no.values():
+        for item in items:
+            formatted = _format_bank_question(item, chapter_no=chapter_no)
+            if formatted["question_id"] not in used_ids:
+                fallback_items.append(formatted)
+    return _group_exercise_questions(fallback_items)
 
 
 def _find_tree_node(node_id: str, nodes: list[dict]) -> dict | None:
@@ -164,7 +830,30 @@ def _format_reading_pages(pages, section_title: str = "") -> list[dict]:
         for paragraph in re.split(r"\n\s*\n+", block):
             text = _tidy_reading_text(paragraph)
             if text and not _is_reading_noise_line(text):
-                paragraphs.append({"text": text})
+                paragraphs.append({"page": item.get("page"), "text": text})
+    return paragraphs
+
+
+def _attach_images_to_paragraphs(paragraphs: list[dict], images: list[dict]) -> list[dict]:
+    if not paragraphs or not images:
+        return paragraphs
+    page_to_indexes: dict[int, list[int]] = {}
+    for index, paragraph in enumerate(paragraphs):
+        try:
+            page = int(paragraph.get("page"))
+        except Exception:
+            continue
+        page_to_indexes.setdefault(page, []).append(index)
+    for image in images:
+        try:
+            page = int(image.get("page"))
+        except Exception:
+            continue
+        indexes = page_to_indexes.get(page) or []
+        if not indexes:
+            continue
+        target_index = indexes[-1]
+        paragraphs[target_index].setdefault("images", []).append(image)
     return paragraphs
 
 
@@ -204,11 +893,15 @@ def _section_payload_from_reading(node_id: str, include_children: bool = True) -
     if start_page in (None, ""):
         start_page = base.get("start_page") or node_start_page
 
+    section_images = _images_for_reading_section(title, path, pages)
+    paragraphs = _attach_images_to_paragraphs(_format_reading_pages(pages, title), section_images)
+
     return {
         "node_id": node_id,
         "title": title,
         "path": path,
         "start_page": start_page,
+        "images": section_images,
         "sections": [
             {
                 "node_id": node_id,
@@ -216,10 +909,12 @@ def _section_payload_from_reading(node_id: str, include_children: bool = True) -
                 "level": int(base.get("level") or node_level or 0),
                 "path": path,
                 "start_page": start_page,
-                "paragraphs": _format_reading_pages(pages, title),
+                "images": section_images,
+                "paragraphs": paragraphs,
                 "content_mode": "complete_textbook",
             }
         ],
+        "exercise_questions": _exercise_questions_for_reading_node(node_id),
     }
 
 
