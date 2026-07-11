@@ -12,6 +12,14 @@ KNOWLEDGE_POINTS_PATH = ASSESSMENT_DIR / "knowledge_points.json"
 QUESTION_BANK_PATH = ASSESSMENT_DIR / "question_bank.json"
 MANUAL_QUESTION_BANK_PATH = Path(config.RAG_SOURCE_DIR).parent / "manual_question_bank" / "manual_question_bank_system.json"
 GENERATED_QUESTION_BANK_DIR = generated_kb_dir() / "question_bank_json"
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+PREFERRED_QUESTION_BANK_DIRS = [
+    GENERATED_QUESTION_BANK_DIR,
+    PROJECT_ROOT / "MY" / "software_engineering_exercise_bank" / "question_bank_json",
+    PROJECT_ROOT / "MY" / "software_engineering_exercise_bank_v20_full" / "question_bank_json",
+    PROJECT_ROOT / "MY" / "software_engineering_exercise_bank_v20_27p" / "question_bank_json",
+    PROJECT_ROOT / "MY" / "software_engineering_exercise_bank_v19_27p" / "question_bank_json",
+]
 
 DEFAULT_COUNT = 5
 DOMAIN_TERMS = [
@@ -50,8 +58,8 @@ def _extract_keywords(text: str, title: str = "", limit: int = 6) -> List[str]:
             results.append(term)
         if len(results) >= limit:
             return results[:limit]
-    for part in re.split(r"[，、；;\n]", source):
-        token = part.strip(" 。！？!?，,；;")
+    for part in re.split(r"[锛屻€侊紱;\n]", source):
+        token = part.strip(" 銆傦紒锛??锛?锛?")
         if 2 <= len(token) <= 12 and token not in results:
             results.append(token)
         if len(results) >= limit:
@@ -64,34 +72,34 @@ def _make_reference_answer(content: str) -> str:
 
 
 def _make_explanation(knowledge_point: str, content: str) -> str:
-    title = normalize_title(knowledge_point)
+    title = normalize_title(knowledge_point) or "该知识点"
     sentences = split_sentences(content)
     if not sentences:
-        return f"这道题主要考查你是否真正理解“{title}”的定义、核心特征和应用场景。"
+        return f"这道题主要考查你是否真正理解“{title}”的定义、关键特征和应用场景。"
     parts = [f"这道题的关键不是只背结论，而是说清“{title}”到底在讲什么。"]
-    parts.append(f"其中最核心的一层意思是：{sentences[0]}。")
+    parts.append(f"最核心的一点是：{sentences[0]}。")
     if len(sentences) > 1:
-        parts.append(f"进一步作答时，还可以补上：{sentences[1]}。")
+        parts.append(f"进一步作答时，可以补充：{sentences[1]}。")
     if len(sentences) > 2:
-        parts.append(f"如果想拿到更高分，最好再结合“{sentences[2]}”来展开。")
+        parts.append(f"如果想拿更高分，最好再结合“{sentences[2]}”展开说明。")
     return "".join(parts)
 
 
 def _make_common_mistake(knowledge_point: str, content: str) -> str:
-    title = normalize_title(knowledge_point)
+    title = normalize_title(knowledge_point) or "该知识点"
     text = str(content or "")
     keywords = _extract_keywords(text, title=knowledge_point, limit=4)
-    if "区别" in text or "不同" in text or "对比" in text:
-        return f"这类题最容易失分的地方，是只把“{title}”单独解释一遍，却没有和相近概念做出清晰区分。"
-    if "步骤" in text or "流程" in text or "阶段" in text:
+    if any(token in text for token in ["区别", "不同", "对比"]):
+        return f"这类题最容易失分的地方，是只单独解释“{title}”，却没有和相近概念做清楚区分。"
+    if any(token in text for token in ["步骤", "流程", "阶段"]):
         return f"这类题常见的问题是只写出几个关键词，却没有按顺序说明“{title}”的关键步骤。"
-    if "优点" in text or "缺点" in text:
-        return f"回答“{title}”时，很多同学会只写优点或只写缺点，导致观点不完整。"
-    if "应用" in text or "场景" in text:
+    if any(token in text for token in ["优点", "缺点"]):
+        return f"回答“{title}”时，常见失分点是只写优点或只写缺点，导致观点不完整。"
+    if any(token in text for token in ["应用", "场景"]):
         return f"关于“{title}”，常见失分点是只会背定义，却说不出它适合解决什么问题、能用在哪些场景。"
     if keywords:
-        return f"这道题常见的问题是答案写得比较笼统，没有围绕“{'、'.join(keywords[:3])}”这些关键点展开。"
-    return f"这道题常见失分点是只给出笼统表述，没有把“{title}”的定义、特点和实际意义说完整。"
+        return f"这道题常见的问题是答案写得比较零散，没有围绕“{'、'.join(keywords[:3])}”这些关键点展开。"
+    return f"这道题常见失分点是只给出笼统表述，没有把“{title}”的定义、特点和实际意义说明完整。"
 
 
 def _make_scoring_points(knowledge_point: str, content: str) -> List[str]:
@@ -119,13 +127,13 @@ def _make_scoring_points(knowledge_point: str, content: str) -> List[str]:
 
 
 def _make_prompt(knowledge_point: str, knowledge_type: str, tags: List[str]) -> str:
-    title = normalize_title(knowledge_point)
+    title = normalize_title(knowledge_point) or "该知识点"
     if knowledge_type == "comparison":
         return f"请说明“{title}”与相关概念的区别，并概括其核心要点。"
     if knowledge_type in {"method", "process_model", "phase"}:
         return f"请结合步骤或阶段，解释知识点“{title}”。"
     if tags:
-        return f"请围绕“{title}”说明其核心内容，并适当提及 { '、'.join(tags[:2]) }。"
+        return f"请围绕“{title}”说明其核心内容，并适当提及{'、'.join(tags[:2])}。"
     return f"请解释知识点“{title}”。"
 
 
@@ -161,29 +169,60 @@ def _build_knowledge_points_from_question_bank(question_bank: List[dict]) -> Lis
         return node_id
 
     for item in question_bank:
-        raw_path = str(item.get("knowledge_path") or "").strip()
-        path_parts = [normalize_title(part) for part in raw_path.split("/") if normalize_title(part)]
-        if not path_parts:
-            fallback = normalize_title(item.get("knowledge_point") or "软件工程")
-            path_parts = [fallback]
-
-        summary = str(item.get("explanation") or item.get("reference_answer") or "").strip()
+        summary = str(item.get("explanation") or item.get("analysis") or item.get("reference_answer") or "").strip()
         keywords = item.get("keywords") or _extract_keywords(
             " ".join(
                 [
-                    str(item.get("prompt") or ""),
-                    str(item.get("reference_answer") or ""),
+                    str(item.get("prompt") or item.get("stem") or ""),
+                    str(item.get("reference_answer") or item.get("answer") or ""),
                     str(item.get("knowledge_point") or ""),
+                    " ".join(str(part or "") for part in (item.get("related_knowledge_titles") or [])),
                 ]
             ),
             str(item.get("knowledge_point") or ""),
         )
         source = str(item.get("source_document") or "")
 
-        for depth in range(1, len(path_parts) + 1):
-            ensure_node(path_parts[:depth], source, summary, keywords)
+        raw_path = str(item.get("knowledge_path") or "").strip()
+        path_parts = [normalize_title(part) for part in raw_path.split("/") if normalize_title(part)]
+        if not path_parts:
+            section_path = item.get("section_path") or []
+            if isinstance(section_path, list):
+                path_parts = [normalize_title(part) for part in section_path if normalize_title(part)]
+
+        primary_titles = [
+            normalize_title(part)
+            for part in (
+                item.get("primary_knowledge_titles")
+                or item.get("related_knowledge_titles")
+                or item.get("knowledge_points")
+                or []
+            )
+            if normalize_title(part)
+        ]
+        fallback = normalize_title(item.get("knowledge_point") or "软件工程")
+        root_path = path_parts[:] if path_parts else [fallback]
+
+        for depth in range(1, len(root_path) + 1):
+            ensure_node(root_path[:depth], source, summary, keywords)
+
+        for title in primary_titles or [fallback]:
+            point_path = root_path[:] if root_path else [title]
+            if point_path[-1] != title:
+                point_path.append(title)
+            for depth in range(1, len(point_path) + 1):
+                ensure_node(point_path[:depth], source, summary, keywords)
 
     return knowledge_points
+
+def _load_generated_knowledge_points() -> List[dict]:
+    rag_points = _load_rag_knowledge_points()
+    if rag_points:
+        return rag_points
+    generated_question_bank = _load_generated_question_bank()
+    if generated_question_bank:
+        return _build_knowledge_points_from_question_bank(generated_question_bank)
+    return []
 
 
 def _load_manual_question_bank() -> List[dict]:
@@ -290,8 +329,14 @@ def build_assessment_assets(force: bool = False) -> dict:
         knowledge_points = _build_knowledge_points_from_question_bank(question_bank)
         source = "manual"
     else:
-        knowledge_points, question_bank = _build_from_semantic_chunks()
-        source = "semantic_generated"
+        generated_question_bank = _load_generated_question_bank()
+        if generated_question_bank:
+            question_bank = generated_question_bank
+            knowledge_points = _load_generated_knowledge_points() or _build_knowledge_points_from_question_bank(question_bank)
+            source = "generated_question_bank"
+        else:
+            knowledge_points, question_bank = _build_from_semantic_chunks()
+            source = "semantic_generated"
     KNOWLEDGE_POINTS_PATH.write_text(json.dumps(knowledge_points, ensure_ascii=False, indent=2), encoding="utf-8")
     QUESTION_BANK_PATH.write_text(json.dumps(question_bank, ensure_ascii=False, indent=2), encoding="utf-8")
     return {
@@ -323,7 +368,10 @@ def _load_rag_knowledge_points() -> List[dict]:
             payload = json.loads(path.read_text(encoding="utf-8"))
         except Exception:
             continue
-        rows = payload.get("knowledge_points") or payload.get("items") or payload if isinstance(payload, list) else []
+        if isinstance(payload, list):
+            rows = payload
+        else:
+            rows = payload.get("knowledge_points") or payload.get("items") or []
         for row in rows:
             if not isinstance(row, dict):
                 continue
@@ -350,9 +398,21 @@ def _load_rag_knowledge_points() -> List[dict]:
 
 
 def _normalize_difficulty(value) -> str:
-    text = str(value or 'basic').strip().lower()
-    mapping = {'基础': 'basic', '基础题': 'basic', 'basic': 'basic', '提高': 'improve', '提升': 'improve', 'improve': 'improve', '应用': 'application', '应用题': 'application', 'application': 'application', '高级': 'advanced', 'advanced': 'advanced'}
-    return mapping.get(text, text or 'basic')
+    text = str(value or "basic").strip().lower()
+    mapping = {
+        "基础": "basic",
+        "基础题": "basic",
+        "basic": "basic",
+        "提高": "improve",
+        "提升": "improve",
+        "improve": "improve",
+        "应用": "application",
+        "应用题": "application",
+        "application": "application",
+        "高级": "advanced",
+        "advanced": "advanced",
+    }
+    return mapping.get(text, text or "basic")
 
 
 def _normalize_generated_question_item(item: dict) -> dict:
@@ -375,7 +435,14 @@ def _normalize_generated_question_item(item: dict) -> dict:
         "stem": stem,
         "options": item.get("options") or [],
         "reference_answer": item.get("reference_answer") or item.get("answer") or "",
+        "answer": item.get("answer") or item.get("reference_answer") or "",
         "explanation": item.get("analysis") or item.get("explanation") or "",
+        "analysis": item.get("analysis") or item.get("explanation") or "",
+        "answer_ids": item.get("answer_ids") or [],
+        "answer_link_ids": item.get("answer_link_ids") or [],
+        "answer_links": item.get("answer_links") or [],
+        "answer_link_confidence": item.get("answer_link_confidence") or 0,
+        "answer_link_method": item.get("answer_link_method") or "",
         "common_mistake": item.get("common_mistake") or "",
         "scoring_points": item.get("scoring_points") or [],
         "keywords": item.get("keywords") or [],
@@ -395,15 +462,19 @@ def _normalize_generated_question_item(item: dict) -> dict:
 
 
 def _load_generated_question_bank() -> List[dict]:
-    questions_dir = GENERATED_QUESTION_BANK_DIR
-    if questions_dir.exists():
+    for questions_dir in PREFERRED_QUESTION_BANK_DIRS:
+        if not questions_dir.exists():
+            continue
         items: List[dict] = []
         for path in sorted(questions_dir.glob("*.json")):
             try:
                 payload = json.loads(path.read_text(encoding="utf-8"))
             except Exception:
                 continue
-            rows = payload.get("questions") or payload.get("items") or payload if isinstance(payload, list) else []
+            if isinstance(payload, list):
+                rows = payload
+            else:
+                rows = payload.get("questions") or payload.get("items") or []
             for item in rows:
                 if isinstance(item, dict):
                     items.append(_normalize_generated_question_item(item))
@@ -451,7 +522,7 @@ def _expand_focus_terms(focus_points: List[str]) -> List[str]:
         if not raw:
             continue
         candidates = [raw]
-        candidates.extend(re.split(r"[、，,；;>/-]+", raw))
+        candidates.extend(re.split(r"[銆侊紝,锛?>/-]+", raw))
         for candidate in candidates:
             normalized = normalize_title(candidate)
             cleaned = _normalize_match_text(candidate)
@@ -543,7 +614,7 @@ def _score_question_match(item: dict, focus_terms: List[str], target: str, prefe
 
 def _parse_profile_focus(profile: dict, mastery_records: List[dict]) -> List[str]:
     weak_points = str((profile or {}).get("weak_points") or "")
-    profile_keywords = [item.strip() for item in re.split(r"[、，；;\s]+", weak_points) if item.strip()]
+    profile_keywords = [item.strip() for item in re.split(r"[銆侊紝锛?\s]+", weak_points) if item.strip()]
     mastery_keywords = [
         str(item.get("knowledge_point") or "").strip()
         for item in mastery_records
@@ -644,3 +715,10 @@ def assessment_status() -> dict:
         "manual_question_bank_exists": MANUAL_QUESTION_BANK_PATH.exists(),
         "manual_question_bank_path": str(MANUAL_QUESTION_BANK_PATH),
     }
+
+
+
+
+
+
+

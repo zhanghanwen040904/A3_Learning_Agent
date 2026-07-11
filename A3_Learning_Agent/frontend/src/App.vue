@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <el-config-provider>
     <el-container class="app-shell">
       <el-aside v-if="!isAuthPage" width="292px" class="sidebar">
