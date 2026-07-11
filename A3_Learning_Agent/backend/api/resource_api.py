@@ -893,13 +893,17 @@ def list_my_resources():
             SELECT sr.*
             FROM study_resource sr
             INNER JOIN (
-                SELECT resource_type, MAX(id) AS max_id
+                SELECT resource_type,
+                       COALESCE(JSON_UNQUOTE(JSON_EXTRACT(metadata, '$.stage_index')), '0') AS stage_idx,
+                       MAX(id) AS max_id
                 FROM study_resource
                 WHERE user_id=%s AND profile_session_id=%s
-                GROUP BY resource_type
-            ) latest ON sr.resource_type = latest.resource_type AND sr.id = latest.max_id
+                GROUP BY resource_type, stage_idx
+            ) latest ON sr.id = latest.max_id
             WHERE sr.user_id=%s AND sr.profile_session_id=%s
-            ORDER BY FIELD(sr.resource_type, 'doc', 'quiz', 'reading', 'mindmap', 'code', 'video'), sr.id DESC
+            ORDER BY FIELD(sr.resource_type, 'doc', 'quiz', 'reading', 'mindmap', 'code', 'video'),
+                     CAST(COALESCE(JSON_UNQUOTE(JSON_EXTRACT(sr.metadata, '$.stage_index')), '0') AS UNSIGNED),
+                     sr.id DESC
             """,
             (request.user_id, session["id"], request.user_id, session["id"]),
         )
