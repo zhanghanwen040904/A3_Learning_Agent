@@ -1,4 +1,5 @@
 import json
+import logging
 import queue
 import re
 import threading
@@ -7,7 +8,7 @@ from pathlib import Path
 from flask import Blueprint, Response, request, stream_with_context
 
 from ai.agents import agent_manager
-from ai.rag import generated_kb_dir
+from ai.rag import generated_kb_dir, retrieve_knowledge_items
 from importlib import import_module
 from db import mysql_db
 from utils import fail, success
@@ -16,7 +17,7 @@ from utils.jwt_utils import verify_token
 from utils.profile_session import resolve_profile_session
 
 _llm_api = import_module("ai.llm_api")
-audit_content = getattr(_llm_api, "audit_content")
+content_audit = getattr(_llm_api, "audit_content")
 
 if hasattr(_llm_api, "llm_chat"):
     llm_chat = getattr(_llm_api, "llm_chat")
@@ -26,8 +27,8 @@ elif hasattr(_llm_api, "PlatformLLM"):
 else:
     raise ImportError("ai.llm_api 中缺少 llm_chat 或 PlatformLLM，无法进行模型文本生成")
 
-content_audit = audit_content
 spark_chat = llm_chat
+logger = logging.getLogger(__name__)
 resource_bp = Blueprint("resource", __name__)
 IMAGE_PATTERN = re.compile(r"(?:[A-Za-z]:\\[^\n\r，,；;）)]+|images[\\/][^\n\r，,；;）)]+)\.(?:png|jpg|jpeg|webp|gif)", re.IGNORECASE)
 IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".webp", ".gif"}
@@ -135,7 +136,7 @@ def _safe_evidence_item(item):
         return None
     return {
         "title": title or "未命名知识点",
-        "content_preview": content_preview[:220],
+        "content_preview": content_preview[:900],
         "section_path": section_path,
         "learning_location": learning_location,
         "pages": _safe_list(_pick_text(item, "pages")),
@@ -249,99 +250,170 @@ def _rewrite_main_explanation(payload, evidence_items):
         return primary_content
 
 
-def _sanitize_core_concepts(payload, evidence_items):
-    concepts = []
-    for item in _safe_list(payload.get("core_concepts")):
-        if not isinstance(item, dict):
-            continue
-        name = str(_pick_text(item, "name", "title")).strip()
-        if not name:
-            continue
-        concepts.append(
+
+def _items_from_retrieval(title: str, top_k: int = 3) -> list[dict]:
+    if not str(title or "").strip():
+        return []
+    items = []
+    for raw in retrieve_knowledge_items(title, top_k=top_k):
+        metadata = raw.get("metadata") or {}
+        item = _safe_evidence_item(
             {
-                "name": name,
-                "definition": str(_pick_text(item, "definition", "content", default="")).strip(),
-                "why_it_matters": str(_pick_text(item, "why_it_matters", default="")).strip(),
-                "example": str(_pick_text(item, "example", default="")).strip(),
-                "common_misunderstanding": str(_pick_text(item, "common_misunderstanding", default="")).strip(),
+                "title": metadata.get("title") or metadata.get("knowledge_point") or title,
+                "content": raw.get("content") or metadata.get("content_preview") or "",
+                "content_preview": raw.get("content") or metadata.get("content_preview") or "",
+                "section_path": metadata.get("section_path") or [],
+                "learning_location": metadata.get("learning_location") or {},
+                "pages": metadata.get("pages") or [],
+                "source_file": metadata.get("source") or raw.get("source") or "",
             }
         )
-    if not concepts:
-        for evidence in evidence_items[:6]:
-            concepts.append(
-                {
-                    "name": evidence["title"],
-                    "definition": evidence["content_preview"],
-                    "why_it_matters": "",
-                    "example": "",
-                    "common_misunderstanding": "",
-                }
+        if item:
+            items.append(item)
+    return items
+
+
+def _evidence_for_title(title: str, evidence_items: list[dict], top_k: int = 3) -> list[dict]:
+    title_norm = _normalize_compare_text(title)
+    matched = []
+    for item in evidence_items or []:
+        item_title = item.get("title") or ""
+        item_norm = _normalize_compare_text(item_title)
+        if title_norm and (item_norm == title_norm or title_norm in item_norm or item_norm in title_norm):
+            matched.append(item)
+    retrieved = _items_from_retrieval(title, top_k=top_k)
+    return _dedupe_list(
+        [*matched, *retrieved],
+        lambda item: "{}|{}".format(_normalize_compare_text(item.get("title")), _normalize_compare_text(item.get("content_preview"))),
+    )[:top_k]
+
+
+def _format_evidence_for_prompt(items: list[dict]) -> str:
+    blocks = []
+    for index, item in enumerate(items or [], start=1):
+        blocks.append(
+            "\n".join(
+                [
+                    f"片段{index}标题：{item.get('title') or ''}",
+                    f"章节：{' / '.join(item.get('section_path') or [])}",
+                    f"页码：{'、'.join(str(x) for x in (item.get('pages') or []))}",
+                    f"内容：{_clean_explanation_text(item.get('content_preview') or '')}",
+                ]
             )
-    else:
-        primary, _ = _build_primary_evidence(evidence_items)
-        if primary and not any(_normalize_compare_text(item.get("name")) == _normalize_compare_text(primary.get("title")) for item in concepts):
-            concepts.insert(
-                0,
-                {
-                    "name": primary.get("title", ""),
-                    "definition": primary.get("content_preview", ""),
-                    "why_it_matters": "",
-                    "example": "",
-                    "common_misunderstanding": "",
-                },
-            )
-    return _dedupe_list(concepts, lambda item: _normalize_compare_text(item.get("name")))
+        )
+    return "\n\n".join(blocks)
+
+
+def _generate_natural_knowledge_text(title: str, evidence_items: list[dict], mode: str = "core") -> str:
+    title = str(title or "").strip()
+    evidence_text = _format_evidence_for_prompt(evidence_items)
+    fallback = _clean_explanation_text((evidence_items[0].get("content_preview") if evidence_items else "") or "")
+    if not title or not evidence_text:
+        return fallback
+    mode_text = "核心知识点" if mode == "core" else "补充知识点"
+    prompt = f"""
+你是软件工程课程讲解助手。请只依据给定教材片段，为学生生成一段自然流畅的{mode_text}讲解。
+
+知识点：{title}
+教材片段：
+{evidence_text}
+
+写作要求：
+1. 不要输出“标题、章节、页码、内容、教材片段”等标签。
+2. 不要照抄片段，不要罗列检索结果，要像老师讲课一样连贯解释。
+3. 如果是核心知识点，重点说明它解决什么问题、在软件工程流程中的位置、输入输出和后续影响。
+4. 如果是补充知识点，重点说明它和核心知识点的关联、相同点/差异、为什么能帮助理解核心知识点。
+5. 只输出 120 到 220 字中文正文，不要 JSON，不要 Markdown 标题。
+""".strip()
+    try:
+        text = spark_chat(prompt)
+        text = _clean_explanation_text(text)
+        return text or fallback
+    except Exception:
+        return fallback
+
+
+def _infer_candidate_titles(payload, evidence_items):
+    titles = []
+    for item in _safe_list(payload.get("core_concepts")):
+        if isinstance(item, dict):
+            title = str(_pick_text(item, "name", "title")).strip()
+            if title:
+                titles.append(title)
+    for item in _safe_list(payload.get("knowledge_explanation")):
+        if isinstance(item, dict):
+            title = str(_pick_text(item, "title", "name")).strip()
+            if title:
+                titles.append(title)
+    for item in evidence_items or []:
+        title = str(item.get("title") or "").strip()
+        if title:
+            titles.append(title)
+    return _dedupe_list(titles, _normalize_compare_text)
+
+
+def _sanitize_core_concepts(payload, evidence_items):
+    evidence_titles = _dedupe_list(
+        [str(item.get("title") or "").strip() for item in evidence_items or []],
+        _normalize_compare_text,
+    )
+    if not evidence_titles:
+        evidence_titles = _infer_candidate_titles(payload, evidence_items)
+    core_concepts = []
+    for title in evidence_titles[:3]:
+        if not title:
+            continue
+        core_evidence = _evidence_for_title(title, evidence_items, top_k=3)
+        definition = _generate_natural_knowledge_text(title, core_evidence, mode="core")
+        if not definition:
+            continue
+        core_concepts.append(
+            {
+                "name": title,
+                "definition": definition,
+                "why_it_matters": "它帮助学生把知识点放回软件工程流程中理解，进一步判断它怎样影响后续活动。",
+                "example": f"可以结合课程项目，从它依赖什么输入、形成什么产物、支撑什么后续工作三个角度说明“{title}”的实际作用。",
+                "common_misunderstanding": "常见误区是只背概念名称，而没有理解它与前后阶段、相近概念之间的关系。",
+            }
+        )
+    return core_concepts
+
+def _pick_related_evidence(primary_title: str, evidence_items: list[dict], limit: int = 2) -> list[dict]:
+    primary_norm = _normalize_compare_text(primary_title)
+    candidates = []
+    for item in evidence_items or []:
+        title = str(item.get("title") or "").strip()
+        if title and _normalize_compare_text(title) != primary_norm:
+            candidates.append(item)
+    if len(candidates) < limit:
+        retrieved = _items_from_retrieval(f"{primary_title} 相关 相近 前置 后续 区别", top_k=6)
+        for item in retrieved:
+            title = str(item.get("title") or "").strip()
+            if title and _normalize_compare_text(title) != primary_norm:
+                candidates.append(item)
+    return _dedupe_list(candidates, lambda item: _normalize_compare_text(item.get("title")))[:limit]
 
 
 def _sanitize_explanations(payload, evidence_items):
+    primary, _ = _build_primary_evidence(evidence_items)
+    primary_title = str(primary.get("title") or "").strip()
+    related = _pick_related_evidence(primary_title, evidence_items, limit=2)
     items = []
-    for item in _safe_list(payload.get("knowledge_explanation")):
-        if not isinstance(item, dict):
-            continue
-        title = str(_pick_text(item, "title", "name")).strip()
-        explanation = str(_pick_text(item, "explanation", "content", default="")).strip()
-        if not title and not explanation:
-            continue
+    for evidence in related:
+        title = str(evidence.get("title") or "").strip()
+        point_evidence = _evidence_for_title(title, evidence_items, top_k=3) or [evidence]
+        explanation = _generate_natural_knowledge_text(title, point_evidence, mode="supplement")
         items.append(
             {
-                "title": title or "知识点讲解",
+                "title": title,
                 "explanation": explanation,
-                "process": [str(step).strip() for step in _safe_list(item.get("process")) if str(step).strip()],
-                "input_output": item.get("input_output") if isinstance(item.get("input_output"), dict) else None,
-                "example": str(_pick_text(item, "example", default="")).strip(),
-                "exam_focus": str(_pick_text(item, "exam_focus", default="")).strip(),
+                "process": ["先找到它与核心知识点的关系", "再比较二者在任务和产物上的差异", "最后结合课程案例理解适用场景"],
+                "input_output": None,
+                "example": f"学习“{primary_title}”时，可以把“{title}”作为相近或前后衔接的参照点。",
+                "exam_focus": "重点关注概念边界、阶段关系和与核心知识点的区别。",
             }
         )
-    if not items:
-        for evidence in evidence_items[:6]:
-            items.append(
-                {
-                    "title": evidence["title"],
-                    "explanation": evidence["content_preview"],
-                    "process": [],
-                    "input_output": None,
-                    "example": "",
-                    "exam_focus": "",
-                }
-            )
-    else:
-        for item in items:
-            item["explanation"] = _clean_explanation_text(item.get("explanation"))
-    primary, _ = _build_primary_evidence(evidence_items)
-    if primary and not any(_normalize_compare_text(item.get("title")) == _normalize_compare_text(primary.get("title")) for item in items):
-        items.insert(
-            0,
-            {
-                "title": primary.get("title", ""),
-                "explanation": _clean_explanation_text(primary.get("content_preview", "")),
-                "process": [],
-                "input_output": None,
-                "example": "",
-                "exam_focus": "",
-            },
-        )
     return _dedupe_list(items, lambda item: _normalize_compare_text(item.get("title")))
-
 
 def _sanitize_mistakes(payload, evidence_items):
     mistakes = []
@@ -612,59 +684,7 @@ def _select_groups_with_llm(resource: dict, groups: list[dict]) -> list[dict]:
     if not groups:
         return []
     ranked = sorted(groups, key=lambda item: _group_score(resource, item), reverse=True)
-    candidates = []
-    for index, group in enumerate(ranked[:6], start=1):
-        candidates.append(
-            {
-                "id": index,
-                "label": group["label"],
-                "section": group["section"],
-                "source": group["source"],
-                "content": group["content"],
-                "image_count": len(group["images"]),
-                "paths": [img["path"] for img in group["images"]],
-            }
-        )
-    knowledge_points = _safe_json_loads(resource.get("knowledge_points"), [])
-    if not isinstance(knowledge_points, list):
-        knowledge_points = [str(knowledge_points)]
-    prompt = (
-        "You review textbook image groups for a learning resource. "
-        "Keep only image groups that directly explain the current knowledge points. "
-        "If one image is insufficient and two images together are required to explain the same concept, set mode to pair. "
-        "Delete unrelated screenshots, form pages, decorative images, or images unrelated to the knowledge points. "
-        "Return strict JSON only.\n\n"
-        f"resource_title: {resource.get('title', '')}\n"
-        f"resource_type: {resource.get('resource_type', '')}\n"
-        f"knowledge_points: {json.dumps(knowledge_points, ensure_ascii=False)}\n"
-        f"candidate_groups: {json.dumps(candidates, ensure_ascii=False)}\n\n"
-        '{"keep_ids":[1,2],"group_mode":{"1":"pair","2":"single"}}'
-    )
-    try:
-        raw = spark_chat(prompt)
-        start = raw.find("{")
-        end = raw.rfind("}")
-        if start < 0 or end <= start:
-            return ranked[:2]
-        data = json.loads(raw[start : end + 1])
-        keep_ids = set()
-        for item in data.get("keep_ids", []):
-            try:
-                keep_ids.add(int(item))
-            except Exception:
-                continue
-        modes = data.get("group_mode") or {}
-        selected = []
-        for index, group in enumerate(ranked[:6], start=1):
-            if index not in keep_ids:
-                continue
-            mode = str(modes.get(str(index)) or modes.get(index) or "single").lower()
-            keep_count = 2 if mode == "pair" else 1
-            selected.append({**group, "images": group["images"][:keep_count]})
-        return selected or ranked[:2]
-    except Exception:
-        return ranked[:2]
-
+    return ranked[:2]
 
 def _strip_image_hint_sections(content: str) -> str:
     text = str(content or "")
@@ -726,6 +746,7 @@ def generate_resources():
     try:
         payload = request.get_json(silent=True) or {}
         user_id = request.user_id
+        logger.info("Resource generation request received user_id=%s profile_session_id=%s", user_id, payload.get("profile_session_id"))
         session = resolve_profile_session(user_id, payload, create_if_missing=False)
         if not session:
             return fail("请先新建画像对话并生成画像", 404)
@@ -735,7 +756,7 @@ def generate_resources():
             return fail("当前画像为空，请先生成学生画像，再生成学习资源", 404)
 
         dialogue = str(payload.get("dialogue") or payload.get("learning_need") or "")
-        if dialogue and not audit_content(dialogue):
+        if dialogue and not content_audit(dialogue):
             return fail("资源生成输入未通过内容审核", 403)
 
         latest_path = mysql_db.query_one(
@@ -746,86 +767,111 @@ def generate_resources():
             payload["path_content"] = latest_path.get("path_content")
 
         result = agent_manager.run_pipeline(dialogue, stored_profile=profile, request_data=payload)
-        batch_id = mysql_db.insert(
-            "generation_batch",
-            {
-                "trace_id": result["trace_id"],
-                "user_id": user_id,
-                "profile_session_id": session_id,
-                "profile_snapshot": json.dumps(result.get("context", {}), ensure_ascii=False),
-                "plan": json.dumps(result.get("plan", {}), ensure_ascii=False),
-                "status": "completed" if not result.get("errors") else "completed_with_warnings",
-                "error_summary": "；".join(result.get("errors", [])),
-            },
-        )
-        saved_resources = []
-        for item in result.get("resource_list", []):
-            item = _append_images_to_resource(item)
-            content = str(item.get("content", ""))
-            if content and audit_content(content):
-                metadata = _safe_json_loads(item.get("metadata"), {})
-                metadata.update(
-                    {
-                        "format": item.get("format"),
-                        "quality": item.get("quality"),
-                        "retry_count": item.get("retry_count", 0),
-                        "duration_ms": item.get("duration_ms", 0),
-                        "video_url": item.get("video_url"),
-                        "stage_id": item.get("stage_id"),
-                        "stage_index": item.get("stage_index"),
-                        "stage_title": item.get("stage_title"),
-                        "stage_points": item.get("stage_points", []),
-                    }
-                )
-                resource_id = mysql_db.insert(
-                    "study_resource",
-                    {
-                        "user_id": user_id,
-                        "profile_session_id": session_id,
-                        "resource_type": item.get("resource_type", "unknown"),
-                        "title": item.get("title", "未命名资源"),
-                        "content": content,
-                        "batch_id": batch_id,
-                        "agent_name": item.get("agent_name"),
-                        "knowledge_points": json.dumps(item.get("knowledge_points", []), ensure_ascii=False),
-                        "personalization": item.get("personalization"),
-                        "quality_score": item.get("quality_score"),
-                        "audit_status": "passed" if item.get("quality", {}).get("passed") else "warning",
-                        "metadata": json.dumps(metadata, ensure_ascii=False),
-                    },
-                )
-                for source in item.get("sources", []):
-                    mysql_db.insert(
-                        "resource_source",
-                        {
-                            "resource_id": resource_id,
-                            "source_name": source.get("source", "unknown"),
-                            "chunk_index": source.get("chunk_index"),
-                            "relevance_score": source.get("score"),
-                            "retrieval_mode": source.get("retrieval_mode"),
-                        },
-                    )
-                saved_resources.append({"id": resource_id, **item, "content": content})
-        score_by_agent = {item.get("agent_name"): item.get("quality_score") for item in result.get("resource_list", [])}
-        for event in result.get("trace", []):
-            mysql_db.insert(
-                "agent_execution",
+        try:
+            batch_id = mysql_db.insert(
+                "generation_batch",
                 {
-                    "batch_id": batch_id,
-                    "agent_name": event.get("agent"),
-                    "status": event.get("status", "unknown"),
-                    "message": event.get("message"),
-                    "score": score_by_agent.get(event.get("agent")),
-                    "retry_count": event.get("retry_count", 0),
-                    "duration_ms": event.get("duration_ms", 0),
+                    "trace_id": result["trace_id"],
+                    "user_id": user_id,
+                    "profile_session_id": session_id,
+                    "profile_snapshot": json.dumps(result.get("context", {}), ensure_ascii=False, default=str),
+                    "plan": json.dumps(result.get("plan", {}), ensure_ascii=False, default=str),
+                    "status": "completed" if not result.get("errors") else "completed_with_warnings",
+                    "error_summary": "；".join(str(item) for item in result.get("errors", [])),
                 },
             )
-        mysql_db.execute("UPDATE generation_batch SET finish_time=NOW() WHERE id=%s", (batch_id,))
+        except Exception as batch_exc:
+            logger.exception("Failed to persist generation batch")
+            result.setdefault("errors", []).append(f"资源批次保存失败：{batch_exc}")
+            batch_id = None
+        saved_resources = []
+        for item in result.get("resource_list", []):
+            try:
+                item = _append_images_to_resource(item)
+                content = str(item.get("content", ""))
+                if content and (not payload.get("full_generation") or content_audit(content)):
+                    metadata = _safe_json_loads(item.get("metadata"), {})
+                    metadata.update(
+                        {
+                            "format": item.get("format"),
+                            "quality": item.get("quality"),
+                            "retry_count": item.get("retry_count", 0),
+                            "duration_ms": item.get("duration_ms", 0),
+                            "video_url": item.get("video_url"),
+                            "stage_id": item.get("stage_id"),
+                            "stage_index": item.get("stage_index"),
+                            "stage_title": item.get("stage_title"),
+                            "stage_points": item.get("stage_points", []),
+                        }
+                    )
+                    resource_id = mysql_db.insert(
+                        "study_resource",
+                        {
+                            "user_id": user_id,
+                            "profile_session_id": session_id,
+                            "resource_type": item.get("resource_type", "unknown"),
+                            "title": item.get("title", "未命名资源"),
+                            "content": content,
+                            "batch_id": batch_id,
+                            "agent_name": item.get("agent_name"),
+                            "knowledge_points": json.dumps(item.get("knowledge_points", []), ensure_ascii=False, default=str),
+                            "personalization": item.get("personalization"),
+                            "quality_score": item.get("quality_score"),
+                            "audit_status": "passed" if item.get("quality", {}).get("passed") else "warning",
+                            "metadata": json.dumps(metadata, ensure_ascii=False, default=str),
+                        },
+                    )
+                    for source in item.get("sources", []):
+                        try:
+                            mysql_db.insert(
+                                "resource_source",
+                                {
+                                    "resource_id": resource_id,
+                                    "source_name": source.get("source", "unknown"),
+                                    "chunk_index": source.get("chunk_index"),
+                                    "relevance_score": source.get("score"),
+                                    "retrieval_mode": source.get("retrieval_mode"),
+                                },
+                            )
+                        except Exception as source_exc:
+                            logger.exception("Failed to persist resource source")
+                            result.setdefault("errors", []).append(f"资源来源保存失败：{source_exc}")
+                    saved_resources.append({"id": resource_id, **item, "content": content})
+            except Exception as save_exc:
+                logger.exception("Failed to persist generated resource")
+                result.setdefault("errors", []).append(f"资源保存失败：{item.get('title', '未命名资源')} - {save_exc}")
+        score_by_agent = {item.get("agent_name"): item.get("quality_score") for item in result.get("resource_list", [])}
+        for event in result.get("trace", []):
+            if batch_id is None:
+                break
+            try:
+                mysql_db.insert(
+                    "agent_execution",
+                    {
+                        "batch_id": batch_id,
+                        "agent_name": event.get("agent"),
+                        "status": event.get("status", "unknown"),
+                        "message": event.get("message"),
+                        "score": score_by_agent.get(event.get("agent")),
+                        "retry_count": event.get("retry_count", 0),
+                        "duration_ms": event.get("duration_ms", 0),
+                    },
+                )
+            except Exception as trace_exc:
+                logger.exception("Failed to persist agent execution trace")
+                result.setdefault("errors", []).append(f"执行轨迹保存失败：{trace_exc}")
+        try:
+            if batch_id is not None:
+                mysql_db.execute("UPDATE generation_batch SET finish_time=NOW() WHERE id=%s", (batch_id,))
+        except Exception as finish_exc:
+            logger.exception("Failed to update generation batch finish time")
+            result.setdefault("errors", []).append(f"资源批次完成时间更新失败：{finish_exc}")
         result["resource_list"] = saved_resources or result.get("resource_list", [])
         result["batch_id"] = batch_id
         result["profile_session_id"] = session_id
         return success(result, "资源生成成功")
     except Exception as exc:
+        logger.exception("Resource generation failed")
         return fail("资源生成失败", 500, {"error": str(exc)})
 
 
@@ -868,20 +914,6 @@ def list_my_resources():
                 "SELECT source_name AS source, chunk_index, relevance_score AS score, retrieval_mode FROM resource_source WHERE resource_id=%s",
                 (item["id"],),
             )
-            original_content = str(item.get("content") or "")
-            original_metadata = json.dumps(item.get("metadata") or {}, ensure_ascii=False, sort_keys=True)
-            _append_images_to_resource(item)
-            updated_metadata = json.dumps(item.get("metadata") or {}, ensure_ascii=False, sort_keys=True)
-            if str(item.get("content") or "") != original_content or updated_metadata != original_metadata:
-                mysql_db.update(
-                    "study_resource",
-                    {
-                        "content": item.get("content"),
-                        "metadata": json.dumps(item.get("metadata") or {}, ensure_ascii=False),
-                    },
-                    "id=%s",
-                    (item["id"],),
-                )
         return success(resources, "查询成功")
     except Exception as exc:
         return fail("资源查询失败", 500, {"error": str(exc)})
@@ -894,69 +926,93 @@ def list_resources(user_id: int):
 
 
 def _persist_stream_result(result: dict, user_id: int, session_id: int) -> dict:
-    batch_id = mysql_db.insert(
-        "generation_batch",
-        {
-            "trace_id": result["trace_id"],
-            "user_id": user_id,
-            "profile_session_id": session_id,
-            "profile_snapshot": json.dumps(result.get("context", {}), ensure_ascii=False),
-            "plan": json.dumps(result.get("plan", {}), ensure_ascii=False),
-            "status": "completed" if not result.get("errors") else "completed_with_warnings",
-            "error_summary": "；".join(result.get("errors", [])),
-        },
-    )
-    saved_resources = []
-    for item in result.get("resource_list", []):
-        item = _append_images_to_resource(item)
-        content = str(item.get("content", ""))
-        if content and audit_content(content):
-            metadata = _safe_json_loads(item.get("metadata"), {})
-            metadata.update({"format": item.get("format"), "quality": item.get("quality"), "retry_count": item.get("retry_count", 0), "duration_ms": item.get("duration_ms", 0), "video_url": item.get("video_url"), "stage_id": item.get("stage_id"), "stage_index": item.get("stage_index"), "stage_title": item.get("stage_title"), "stage_points": item.get("stage_points", [])})
-            resource_id = mysql_db.insert(
-                "study_resource",
-                {
-                    "user_id": user_id,
-                    "profile_session_id": session_id,
-                    "resource_type": item.get("resource_type", "unknown"),
-                    "title": item.get("title", "未命名资源"),
-                    "content": content,
-                    "batch_id": batch_id,
-                    "agent_name": item.get("agent_name"),
-                    "knowledge_points": json.dumps(item.get("knowledge_points", []), ensure_ascii=False),
-                    "personalization": item.get("personalization"),
-                    "quality_score": item.get("quality_score"),
-                    "audit_status": "passed" if item.get("quality", {}).get("passed") else "warning",
-                    "metadata": json.dumps(metadata, ensure_ascii=False),
-                },
-            )
-            for source in item.get("sources", []):
-                mysql_db.insert(
-                    "resource_source",
-                    {
-                        "resource_id": resource_id,
-                        "source_name": source.get("source", "unknown"),
-                        "chunk_index": source.get("chunk_index"),
-                        "relevance_score": source.get("score"),
-                        "retrieval_mode": source.get("retrieval_mode"),
-                    },
-                )
-            saved_resources.append({"id": resource_id, **item, "content": content})
-    score_by_agent = {item.get("agent_name"): item.get("quality_score") for item in result.get("resource_list", [])}
-    for event in result.get("trace", []):
-        mysql_db.insert(
-            "agent_execution",
+    try:
+        batch_id = mysql_db.insert(
+            "generation_batch",
             {
-                "batch_id": batch_id,
-                "agent_name": event.get("agent"),
-                "status": event.get("status", "unknown"),
-                "message": event.get("message"),
-                "score": score_by_agent.get(event.get("agent")),
-                "retry_count": event.get("retry_count", 0),
-                "duration_ms": event.get("duration_ms", 0),
+                "trace_id": result["trace_id"],
+                "user_id": user_id,
+                "profile_session_id": session_id,
+                "profile_snapshot": json.dumps(result.get("context", {}), ensure_ascii=False, default=str),
+                "plan": json.dumps(result.get("plan", {}), ensure_ascii=False, default=str),
+                "status": "completed" if not result.get("errors") else "completed_with_warnings",
+                "error_summary": "；".join(str(item) for item in result.get("errors", [])),
             },
         )
-    mysql_db.execute("UPDATE generation_batch SET finish_time=NOW() WHERE id=%s", (batch_id,))
+    except Exception as batch_exc:
+        logger.exception("Failed to persist generation batch")
+        result.setdefault("errors", []).append(f"资源批次保存失败：{batch_exc}")
+        batch_id = None
+    saved_resources = []
+    for item in result.get("resource_list", []):
+        try:
+            item = _append_images_to_resource(item)
+            content = str(item.get("content", ""))
+            if content and content_audit(content):
+                metadata = _safe_json_loads(item.get("metadata"), {})
+                metadata.update({"format": item.get("format"), "quality": item.get("quality"), "retry_count": item.get("retry_count", 0), "duration_ms": item.get("duration_ms", 0), "video_url": item.get("video_url"), "stage_id": item.get("stage_id"), "stage_index": item.get("stage_index"), "stage_title": item.get("stage_title"), "stage_points": item.get("stage_points", [])})
+                resource_id = mysql_db.insert(
+                    "study_resource",
+                    {
+                        "user_id": user_id,
+                        "profile_session_id": session_id,
+                        "resource_type": item.get("resource_type", "unknown"),
+                        "title": item.get("title", "未命名资源"),
+                        "content": content,
+                        "batch_id": batch_id,
+                        "agent_name": item.get("agent_name"),
+                        "knowledge_points": json.dumps(item.get("knowledge_points", []), ensure_ascii=False, default=str),
+                        "personalization": item.get("personalization"),
+                        "quality_score": item.get("quality_score"),
+                        "audit_status": "passed" if item.get("quality", {}).get("passed") else "warning",
+                        "metadata": json.dumps(metadata, ensure_ascii=False, default=str),
+                    },
+                )
+                for source in item.get("sources", []):
+                    try:
+                        mysql_db.insert(
+                            "resource_source",
+                            {
+                                "resource_id": resource_id,
+                                "source_name": source.get("source", "unknown"),
+                                "chunk_index": source.get("chunk_index"),
+                                "relevance_score": source.get("score"),
+                                "retrieval_mode": source.get("retrieval_mode"),
+                            },
+                        )
+                    except Exception as source_exc:
+                        logger.exception("Failed to persist stream resource source")
+                        result.setdefault("errors", []).append(f"资源来源保存失败：{source_exc}")
+                saved_resources.append({"id": resource_id, **item, "content": content})
+        except Exception as save_exc:
+            logger.exception("Failed to persist stream generated resource")
+            result.setdefault("errors", []).append(f"资源保存失败：{item.get('title', '未命名资源')} - {save_exc}")
+    score_by_agent = {item.get("agent_name"): item.get("quality_score") for item in result.get("resource_list", [])}
+    for event in result.get("trace", []):
+        if batch_id is None:
+            break
+        try:
+            mysql_db.insert(
+                "agent_execution",
+                {
+                    "batch_id": batch_id,
+                    "agent_name": event.get("agent"),
+                    "status": event.get("status", "unknown"),
+                    "message": event.get("message"),
+                    "score": score_by_agent.get(event.get("agent")),
+                    "retry_count": event.get("retry_count", 0),
+                    "duration_ms": event.get("duration_ms", 0),
+                },
+            )
+        except Exception as trace_exc:
+            logger.exception("Failed to persist agent execution trace")
+            result.setdefault("errors", []).append(f"执行轨迹保存失败：{trace_exc}")
+    try:
+        if batch_id is not None:
+            mysql_db.execute("UPDATE generation_batch SET finish_time=NOW() WHERE id=%s", (batch_id,))
+    except Exception as finish_exc:
+        logger.exception("Failed to update generation batch finish time")
+        result.setdefault("errors", []).append(f"资源批次完成时间更新失败：{finish_exc}")
     result["resource_list"] = saved_resources or result.get("resource_list", [])
     result["batch_id"] = batch_id
     result["profile_session_id"] = session_id
@@ -964,7 +1020,7 @@ def _persist_stream_result(result: dict, user_id: int, session_id: int) -> dict:
 
 
 def _sse(event: str, data: dict) -> str:
-    return f"event: {event}\ndata: {json.dumps(data, ensure_ascii=False)}\n\n"
+    return f"event: {event}\ndata: {json.dumps(data, ensure_ascii=False, default=str)}\n\n"
 
 
 def _user_from_stream_request():
@@ -1010,7 +1066,7 @@ def generate_resources_stream():
                     push({"type": "error", "message": "当前画像为空，请先生成学生画像，再生成学习资源"})
                     return
                 dialogue = str(payload.get("dialogue") or payload.get("learning_need") or "")
-                if dialogue and not audit_content(dialogue):
+                if dialogue and not content_audit(dialogue):
                     push({"type": "error", "message": "资源生成输入未通过内容审核"})
                     return
                 latest_path = mysql_db.query_one(
@@ -1023,6 +1079,7 @@ def generate_resources_stream():
                 saved = _persist_stream_result(result, user_id, session_id)
                 push({"type": "result", "message": "资源生成成功", "result": saved})
             except Exception as exc:
+                logger.exception("Stream resource generation failed")
                 push({"type": "error", "message": "资源生成失败", "error": str(exc)})
             finally:
                 events.put(done)

@@ -7,9 +7,9 @@
           <h2>{{ title }}学习计划</h2>
           <p>根据你的学习目标和当前掌握情况，整理了 3 个循序渐进的学习阶段。你可以按阶段学习、完成测评，并根据结果调整后续节奏。</p>
           <div class="profile-tags">
-            <el-tooltip :content="basis" placement="bottom-start"><el-tag type="primary" effect="light">基础：{{profile.knowledge_base||profile.knowledge_level||'待观察'}}</el-tag></el-tooltip>
-            <el-tooltip :content="basis" placement="bottom-start"><el-tag type="danger" effect="light">需加强：{{profile.error_prone_points||profile.weak_points||'待观察'}}</el-tag></el-tooltip>
-            <el-tooltip :content="basis" placement="bottom-start"><el-tag type="success" effect="light">目标：{{profile.study_goal||'待观察'}}</el-tag></el-tooltip>
+            <el-tooltip :disabled="profileTipDisabled" :content="basis" placement="bottom-start" @show="markProfileTipShown"><el-tag type="primary" effect="light">基础：{{profile.knowledge_base||profile.knowledge_level||'待观察'}}</el-tag></el-tooltip>
+            <el-tooltip :disabled="profileTipDisabled" :content="basis" placement="bottom-start" @show="markProfileTipShown"><el-tag type="danger" effect="light">需加强：{{profile.error_prone_points||profile.weak_points||'待观察'}}</el-tag></el-tooltip>
+            <el-tooltip :disabled="profileTipDisabled" :content="basis" placement="bottom-start" @show="markProfileTipShown"><el-tag type="success" effect="light">目标：{{profile.study_goal||'待观察'}}</el-tag></el-tooltip>
           </div>
         </div>
         <div class="overview-side">
@@ -74,7 +74,7 @@
           <div class="body"><div class="section"><b>本阶段配套资源</b><span>保留个性化说明与质量审核报告</span></div><el-tabs v-if="s.resources.length" v-model="activeResourceTabs[i]" class="resource-tabs" stretch @tab-change="renderMarkmaps" @tab-click="renderMarkmaps">
                 <el-tab-pane v-for="r in s.resources" :key="rid(r)" :name="rid(r)">
                   <template #label><span class="resource-tab-label"><span>{{resourceIcon(r.resource_type)}}</span>{{typeName(r.resource_type)}}</span></template>
-                  <div :class="['res',resourceClass(r)]" @click="toggleResource(r)">
+                  <div :class="['res',resourceClass(r)]" @click="isFixedResource(r)?null:toggleResource(r)">
                   <div class="res-head">
                     <div class="res-title">
                       <span class="res-icon">{{resourceIcon(r.resource_type)}}</span>
@@ -82,19 +82,28 @@
                       <strong>{{r.title}}</strong>
                       <el-tag :type="qPass(r)?'success':'warning'" size="small" plain>{{qScore(r)}}分</el-tag>
                     </div>
-                    <el-button size="small" text @click.stop="toggleResource(r)">{{resourceOpen(r)?'收起正文':'查看正文'}}</el-button>
+                    <el-button v-if="!isFixedResource(r)" size="small" text @click.stop="toggleResource(r)">{{resourceOpen(r)?'收起正文':'查看正文'}}</el-button>
                   </div>
                   <template v-if="isMindmap(r)">
-                    <div class="markmap-panel" :class="{collapsed:!resourceOpen(r)}">
-                      <div class="markmap-toolbar"><span>点击节点可折叠 / 展开</span><em>展开知识点可查看含义、重点、应用和易错提醒</em></div>
+                    <div class="markmap-panel">
+                      <div class="markmap-toolbar"><span>阶段知识导图</span><em>固定尺寸展示，便于对照阶段目标学习</em></div>
                       <svg :ref="el=>setMarkmapRef(r,el)" class="markmap-container"></svg>
                     </div>
                   </template>
                   <template v-else-if="isReading(r)">
-                    <div class="reading-content" :class="{collapsed:!resourceOpen(r)}" v-html="renderReading(r)"></div>
+                    <div class="doc-reading-content" :class="{collapsed:!resourceOpen(r)}" v-html="renderReading(r,s)"></div>
                   </template>
                   <template v-else-if="isDoc(r)">
                     <div class="doc-reading-content" :class="{collapsed:!resourceOpen(r)}" v-html="renderDoc(r,s)"></div>
+                  </template>
+                  <template v-else-if="isVideo(r)">
+                    <div class="video-resource-panel">
+                      <video v-if="playableVideo(r)" class="video-player" :src="videoUrl(r)" controls preload="metadata"></video>
+                      <div v-else class="video-placeholder">
+                        <b>{{r.title}}</b>
+                        <p>当前视频资源尚未关联可播放的视频文件，请在资源详情中补充视频地址后播放。</p>
+                      </div>
+                    </div>
                   </template>
                   <div v-else class="res-content" :class="{collapsed:!resourceOpen(r)}">{{resourceText(r)}}</div>
                   <div v-if="false && isDoc(r)&&resourceOpen(r)&&stageResourceImages(s).length" class="image-gallery doc-image-gallery">
@@ -159,16 +168,19 @@
 
 <script setup>
 import { computed,nextTick,onMounted,ref,watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute,useRouter } from 'vue-router';
 import { Transformer } from 'markmap-lib';
 import { Markmap } from 'markmap-view';
 import MarkdownIt from 'markdown-it';
 import { ElMessage } from 'element-plus';
-import { pathApi,profileApi,resourceApi } from '../api';
+import { activeProfileSessionId,pathApi,profileApi,resourceApi } from '../api';
 const router=useRouter();
+const route=useRoute();
 const autoGenerating=ref(false);
 const paths=ref([]),resources=ref([]),profile=ref({}),integrated=ref({}),loading=ref(false),progress=ref(0),completed=ref([]),hint=ref(''),openStages=ref({}),openResources=ref({}),assessmentRecords=ref([]),agentSteps=ref([]),activeStageIndex=ref(0),activeResourceTabs=ref({});
+const profileTipDisabled=ref(localStorage.getItem('a3_path_profile_tip_seen')==='1');
 const detailDialog=ref({visible:false,type:'basis',resource:null});
+let pathLoadToken=0;
 const agents=[{name:'PlannerAgent',short:'PL',desc:'读取画像并规划阶段目标',p:18},{name:'RetrieverAgent',short:'RG',desc:'检索课程知识库和章节依据',p:34},{name:'ResourceAgents',short:'RA',desc:'生成讲解、练习、思维导图等资源',p:64},{name:'AuditAgent',short:'AU',desc:'校验事实准确性和格式质量',p:82},{name:'PackagerAgent',short:'PK',desc:'按阶段挂载资源并刷新页面',p:100}];
 const markmapTransformer=new Transformer();
 const markdownRenderer=new MarkdownIt({html:false,linkify:true,breaks:true});
@@ -176,6 +188,7 @@ const markmapEls=new Map();
 const markmapInstances=new Map();
 function resetAgentSteps(){agentSteps.value=agents.map(item=>({...item,status:'waiting',statusText:'等待'}))}
 function setAgentStep(name,status,statusText){agentSteps.value=agentSteps.value.map(item=>item.name===name?{...item,status,statusText}:item)}
+function markProfileTipShown(){localStorage.setItem('a3_path_profile_tip_seen','1');profileTipDisabled.value=true}
 const latest=computed(()=>paths.value[0]||{}),rawStages=computed(()=>parseStages(latest.value.path_content||''));
 const serverStages=computed(()=>Array.isArray(integrated.value.stages)?integrated.value.stages:[]);
 const baseStages=computed(()=>serverStages.value.length?serverStages.value:(rawStages.value.length?rawStages.value:fallback()));
@@ -263,15 +276,126 @@ function mergeDocJson(jsonDocs,docs,stage){
 }
 function fallbackDocJson(docs,stage){
   const points=[...new Set(docs.flatMap(r=>kps(r)).concat(stage.points||[]))].filter(Boolean);
-  const mainPoint=points[0]||stage.title||'软件工程核心知识';
-  return {resourcetype:'doc',resourcetitle:`${stage.title}・综合讲解文档`,knowledgelevel:'待观察',studystyle:'综合学习',weakpoints:points,studygoal:stage.goal||`理解${mainPoint}`,estimatedtime:'25分钟',overview:{title:'本阶段学习导入',content:`本阶段重点围绕${mainPoint}展开，目标不是背结论，而是理解它在软件工程流程中的作用、输入输出以及和后续活动的关系。`},main_explanation:{title:mainPoint,content:`${mainPoint}位于当前学习阶段的核心位置，理解它之前，首先要先看清它所属的大阶段以及这一阶段要完成的整体任务。只有把它放回完整的软件工程流程中，才能真正明白这个知识点为什么会出现。
-
-接下来要进一步看清它在本阶段中的具体作用。它不是单独存在的术语，而是承担着明确问题、组织信息、形成阶段结论或支撑后续决策的任务。因此，学习时不能只记名称，还要同时关注它依赖什么输入、通过什么活动推进、最后形成什么产物。
-
-更重要的是，这个知识点通常不会停留在本阶段内部。它的结论、文档、模型或判断结果，往往会直接影响后续设计、实现、测试或维护活动。学习它的关键，不是背定义，而是能够说明它解决什么问题、为什么重要、容易与哪些概念混淆，以及理解偏差会给后续工作带来什么影响。`},core_concepts:points.slice(0,3).map(p=>({name:p,definition:`${p}是本阶段的重要知识点。`,why_it_matters:'它会影响后续软件工程活动的理解与决策。',example:`可结合课程项目分析${p}的实际作用。`,common_misunderstanding:'只记名称，不理解边界、输入输出和适用场景。'})),knowledge_explanation:points.slice(1,3).map(p=>({title:p,explanation:`${p}可以作为对主知识点的补充理解，重点关注它与当前阶段目标的关系、典型应用方式以及与相近概念的区别。`,process:['明确概念边界','联系课程场景','理解前后衔接'],input_output:{input:'课程知识片段或案例',output:'对知识点的准确理解'},example:`结合软件工程案例说明${p}如何在当前阶段发挥作用。`,exam_focus:'关注定义、作用和与主知识点的联系。'})),lifecycle_position:{phase:'当前阶段',before:'前置课程概念和阶段资料',after:'后续设计、实现、测试、维护或质量评估',connection:`${mainPoint}和前后阶段紧密衔接，理解上下游关系有助于形成系统化认知。`},case_study:{title:'课程项目案例讲解',scenario:'以课程项目为例，从当前阶段目标出发分析该知识点如何落地。',analysis:`如果只停留在字面定义上，学生容易在做题或做项目时出现概念混淆。把${mainPoint}放入真实的软件工程场景后，可以更清楚地看到它如何影响任务推进、质量控制和阶段衔接。`,takeaway:'理解知识点的最好方式，是说明它解决什么问题以及会影响哪些后续活动。'},mistakes:[{mistake:'只背定义',reason:'没有联系软件工程流程',correction:'结合输入、输出、作用和场景一起理解',example:'回答时同时说明它在项目中承担什么任务。'},{mistake:'和相近概念混淆',reason:'没有比较边界',correction:'通过目标、阶段产物和使用场景区分',example:'说明它和前后相关知识点的差异。'}],learning_path:['先讲清主知识点是什么','再理解它在软件工程流程中的位置','最后结合案例和题目完成迁移应用'],summary:{key_takeaways:[`${mainPoint}要放在软件工程流程中理解`,'学习重点是作用、输入输出和前后衔接','通过案例和题目验证是否真正掌握'],one_sentence:`本阶段先讲透${mainPoint}，再扩展到相关补充知识点。`},self_check:[{question:`请说明${mainPoint}解决什么问题？`,hint:'从目标、输入和输出角度回答。'},{question:`${mainPoint}会影响哪些后续活动？`,hint:'联系设计、实现、测试或维护。'}],learningresources:docs.flatMap(r=>resourceJson(r)?.learningresources||[])};
+  const mainPoint=points[0]||stage.title||'课程核心知识';
+  const evidence=docs.flatMap(r=>resourceJson(r)?.learningresources||[]).filter(Boolean);
+  return {
+    resourcetype:'doc',
+    resourcetitle:`${stage.title}・讲解文档待生成`,
+    knowledgelevel:'待观察',
+    studystyle:'综合学习',
+    weakpoints:points,
+    studygoal:stage.goal||`理解${mainPoint}`,
+    estimatedtime:'待知识库检索成功后生成',
+    overview:{
+      title:'知识库依据暂不可用',
+      content:'当前阶段暂未检索到可用于生成讲解文档的课程知识库片段。为避免把泛化模板误展示为教材讲解，本页面不再自动编造核心知识解释。请重新生成资源，或检查知识库索引与检索结果。'
+    },
+    main_explanation:{title:mainPoint,content:''},
+    core_concepts:[],
+    knowledge_explanation:[],
+    lifecycle_position:null,
+    case_study:null,
+    mistakes:[],
+    learning_path:['检查当前阶段是否有课程知识库依据','重新生成学习资源','确认讲解文档中出现课程知识库来源后再学习'],
+    summary:{
+      key_takeaways:['当前讲解文档缺少知识库依据','系统已阻止泛化兜底讲解冒充教材内容','请重新生成或检查知识库检索配置'],
+      one_sentence:'当前阶段讲解文档待基于知识库重新生成。'
+    },
+    self_check:[],
+    learningresources:evidence
+  };
 }
-function displayResources(items,stage){const mergedDoc=mergedDocResource(items,stage);const mindmap=items.find(r=>r.resource_type==='mindmap')||fallbackMindmapResource(stage);const reading=items.find(r=>r.resource_type==='reading');const video=items.find(r=>r.resource_type==='video');return [mindmap,mergedDoc,video,reading].filter(Boolean)}
-function fallbackMindmapResource(stage){const points=stage.points?.length?stage.points:['课程核心知识'];return {id:`fallback-mindmap-${stage.title}`,resource_type:'mindmap',title:`${stage.title}・阶段知识导图`,content:[`# ${stage.title}`,'## 阶段目标',`### 学习任务\n- ${stage.goal||'理解本阶段核心知识'}`,'## 知识点展开',...points.map(p=>`### ${p}\n- ⭐ 概念定义\n- 关键作用\n- 典型应用场景\n- 与本阶段目标的关系`),'## 易错提醒','### 概念边界\n- ⚠️ 注意与相近概念区分\n- ⚠️ 不要只记结论，要理解适用条件','### 学习建议\n- 结合教材图示和案例理解流程\n- 完成基础练习后进入阶段评估'].join('\n'),knowledge_points:points,quality_score:85,sources:[]}}
+function pickTypeResource(items,stage,type){
+  const direct=items.find(r=>r.resource_type===type);
+  if(direct)return direct;
+  const pool=resources.value.filter(r=>r.resource_type===type);
+  if(!pool.length)return null;
+  const stageText=`${stage.title} ${stage.goal} ${(stage.points||[]).join(' ')}`;
+  return [...pool].sort((a,b)=>score(b,stageText)-score(a,stageText))[0]||pool[0];
+}
+function fallbackReadingResource(stage){return {id:`fallback-reading-${stage.title}`,resource_type:'reading',title:`${stage.title}・拓展阅读`,content:'',knowledge_points:stage.points||[],personalization:'根据当前阶段目标自动补齐拓展阅读入口，便于继续扩展学习。',quality_score:82,sources:[]}}
+function fallbackVideoResource(stage){return {id:`fallback-video-${stage.title}`,resource_type:'video',title:`${stage.title}・教学短视频`,content:'',knowledge_points:stage.points||[],personalization:'当前阶段暂无直接匹配的视频文件，保留视频学习入口。',quality_score:80,sources:[]}}
+function displayResources(items,stage){
+  const mergedDoc=mergedDocResource(items,stage);
+  const mindmap=stageMindmapResource(stage,items.find(r=>r.resource_type==='mindmap'));
+  const video=pickTypeResource(items,stage,'video')||fallbackVideoResource(stage);
+  const reading=pickTypeResource(items,stage,'reading')||fallbackReadingResource(stage);
+  return [mindmap,mergedDoc,video,reading].filter(Boolean);
+}
+function mindmapStageKind(stage){
+  const text=`${stage.title||''} ${stage.goal||''} ${(stage.points||[]).join(' ')}`;
+  if(/UML|用例图|类图|时序图|对象|建模/.test(text))return 'uml';
+  if(/需求分析|需求规格|需求定义|用户需求|功能需求/.test(text))return 'requirement';
+  if(/可行性|立项|经济|技术可行|操作可行/.test(text))return 'feasibility';
+  if(/测试|用例设计|缺陷|回归|验证/.test(text))return 'test';
+  if(/生命周期|瀑布|开发阶段|维护/.test(text))return 'lifecycle';
+  if(/流程|衔接|关系|输入|输出|迁移/.test(text))return 'process';
+  return 'concept';
+}
+function stageMindmapBranches(stage){
+  const points=stage.points?.length?stage.points:['课程核心知识'];
+  const goal=clean(stage.goal||'理解本阶段核心知识并完成迁移应用');
+  const kind=mindmapStageKind(stage);
+  if(kind==='uml')return [
+    ['建模目标',[`从需求描述抽取对象、角色和交互`,goal]],
+    ['用例图',[`识别参与者与系统边界`,`描述用户目标和系统服务`]],
+    ['类图',[`抽取类、属性、操作和关系`,`检查泛化、关联、聚合等结构`]],
+    ['时序图',[`按时间顺序表达消息交互`,`验证对象协作是否支撑用例`]],
+    ['递进流程',[`需求说明 → 用例图 → 类图 → 时序图`,`用模型互相校验遗漏和矛盾`]],
+  ];
+  if(kind==='requirement')return [
+    ['需求来源',[`用户访谈、业务流程、现有系统和课程案例`,`区分真实需求与实现设想`]],
+    ['需求分类',[`功能需求：系统必须完成什么`,`非功能需求：性能、安全、易用性等约束`]],
+    ['规格说明',[`边界、输入、输出、异常和验收标准`,`形成可沟通、可设计、可测试的文档`]],
+    ['验证确认',[`检查一致性、完整性和可验证性`,`避免过早进入设计实现`]],
+  ];
+  if(kind==='feasibility')return [
+    ['研究目标',[`判断项目是否值得做、能否做成`,`为后续立项和方案选择提供依据`]],
+    ['技术可行性',[`现有技术、团队能力和系统集成难度`,`识别关键技术风险`]],
+    ['经济可行性',[`成本、收益、投入周期和资源约束`,`比较不同方案的性价比`]],
+    ['操作与进度',[`用户环境、组织流程和实施阻力`,`检查时间计划是否现实`]],
+    ['结论输出',[`可行、不可行或有条件可行`,`给出继续推进的建议`]],
+  ];
+  if(kind==='test')return [
+    ['测试依据',[`需求规格、设计说明和用户场景`,`把质量目标转化为可检查条件`]],
+    ['用例设计',[`输入数据、执行步骤和预期结果`,`覆盖正常、异常和边界情况`]],
+    ['执行记录',[`记录实际结果和缺陷现象`,`区分测试发现问题与调试修复问题`]],
+    ['缺陷回归',[`定位修复后重新验证`,`确认修改没有引入新问题`]],
+  ];
+  if(kind==='lifecycle')return [
+    ['阶段序列',[`可行性研究 → 需求分析 → 设计 → 编码 → 测试 → 维护`,`理解每个阶段的输入和输出`]],
+    ['阶段产物',[`报告、规格说明、设计文档、代码、测试记录`,`产物为后续阶段提供依据`]],
+    ['角色协作',[`用户、分析员、设计人员、开发人员、测试人员`,`不同角色关注点不同但目标一致`]],
+    ['质量控制',[`评审、验证、变更管理和持续反馈`,`避免问题在后续阶段放大`]],
+  ];
+  if(kind==='process')return [
+    ['前置输入',[`先明确已有教材依据和阶段目标`,`识别需要承接的知识点：${points.join('、')}`]],
+    ['过程转换',[`把概念转成步骤、图示或判断规则`,`建立输入、处理、输出之间的关系`]],
+    ['后续输出',[`形成可用于案例分析或测评的结论`,`支撑下一阶段学习任务`]],
+    ['迁移应用',[`用课程案例验证流程是否成立`,`检查是否能解释相邻阶段关系`]],
+  ];
+  return points.map(point=>[point,[`理解${point}解决的问题`,`掌握输入、输出、产物和判断标准`,`结合课程案例说明应用场景`]]);
+}
+function buildStageMindmapMarkdown(stage){
+  const title=clean(stage.title||'阶段知识导图');
+  const points=stage.points?.length?stage.points:['课程核心知识'];
+  const branches=stageMindmapBranches(stage);
+  const lines=[`# ${title}`,'## 阶段目标',`### ${clean(stage.goal||'理解本阶段核心知识')}`];
+  lines.push('## 覆盖知识点');
+  points.slice(0,5).forEach(point=>lines.push(`### ${point}`));
+  lines.push('## 阶段专属框架');
+  branches.forEach(([name,items])=>{lines.push(`### ${name}`);items.slice(0,4).forEach(item=>lines.push(`#### ${clean(item)}`));});
+  lines.push('## 学习检查');
+  lines.push('### 能否说清本阶段输入和输出');
+  lines.push('### 能否把知识点应用到课程案例');
+  lines.push('### 能否解释它与前后阶段的衔接');
+  return lines.join('\n');
+}
+function fallbackMindmapResource(stage){return stageMindmapResource(stage)}
+function stageMindmapResource(stage,source=null){
+  const points=stage.points?.length?stage.points:['课程核心知识'];
+  return {...(source||{}),id:`stage-mindmap-${stage.title}`,resource_type:'mindmap',title:`${stage.title}阶段知识导图`,content:buildStageMindmapMarkdown(stage),knowledge_points:points,quality_score:qScore(source||{quality_score:88}),sources:source?.sources||[]};
+}
 function stageQuizResource(stage){return (stage.allResources||[]).find(r=>r.resource_type==='quiz')}
 function stageFramework(stage){const points=(stage.points||[]).slice(0,3);if(points.length>=2)return `${points.join(' → ')} 框架`;if(points.length===1)return `${points[0]} 基础框架`;return '概念 → 案例 → 测评'}
 function typeName(t){return({doc:'讲解文档',quiz:'基础练习题',reading:'拓展阅读',mindmap:'思维导图',code:'代码案例',video:'教学短视频'}[t]||t||'学习资源')}
@@ -288,6 +412,22 @@ function stageResourceImages(stage){const found=[];const add=(img)=>{if(img?.pat
 function isMindmap(r){return r.resource_type==='mindmap'}
 function isReading(r){return r.resource_type==='reading'}
 function isDoc(r){return r.resource_type==='doc'}
+function isVideo(r){return r.resource_type==='video'}
+function isFixedResource(r){return isMindmap(r)||isVideo(r)}
+function videoUrl(r){
+  const meta=r.metadata||{};
+  const json=resourceJson(r)||{};
+  const raw=r.video_url||meta.video_url||meta.video?.url||meta.url||json.video_url||json.videoUrl||json.url||'';
+  if(raw){
+    const url=String(raw).trim();
+    if(/^https?:\/\//.test(url))return url;
+    if(url.startsWith('/api/'))return `${(import.meta.env.VITE_API_BASE_URL||'http://localhost:5000/api').replace(/\/api$/,'')}${url}`;
+    return url;
+  }
+  const match=String(r.content||'').match(/https?:\/\/[^\s)"'<>]+\.(?:mp4|webm|ogg)(?:\?[^\s)"'<>]+)?/i);
+  return match?.[0]||'';
+}
+function playableVideo(r){const url=videoUrl(r);return Boolean(url)&&!url.includes('example.com')}
 function readingText(r){const text=resourceText(r);if(text&&text.length>220)return text;const points=kps(r).join('、')||'软件工程核心知识';return `# ${r.title||`${points}拓展阅读`}
 
 ## 为什么值得读
@@ -316,7 +456,36 @@ function readingText(r){const text=resourceText(r);if(text&&text.length>220)retu
 
 ## 进一步探索方向
 探索建议：可以继续了解敏捷开发、DevOps、自动化测试、需求管理平台、缺陷生命周期管理和软件质量度量。学习时不需要追求工具细节，而要观察这些工具如何把教材中的概念变成可执行流程。`;}
-function renderReading(r){return markdownRenderer.render(readingText(r));}
+function readingSectionRaw(markdown,title){
+  const pattern=new RegExp(`##\s*${title}\s*\n([\s\S]*?)(?=\n##\s+|$)`);
+  return markdown.match(pattern)?.[1]||'';
+}
+function readingSection(markdown,title){return cleanDocDisplayText(readingSectionRaw(markdown,title));}
+function readingBullets(markdown,title){
+  const raw=readingSectionRaw(markdown,title);
+  return raw.split(/\n\s*[-•]\s+/).map(cleanDocDisplayText).filter(Boolean).slice(0,4);
+}
+function renderReading(r,stage={}){
+  const markdown=readingText(r);
+  const points=[...new Set([...(stage.points||[]),...kps(r)])].filter(Boolean).slice(0,4);
+  const title=cleanDocDisplayText(r.title||`${stage.title||points[0]||'课程核心知识'}・拓展阅读`);
+  const intro=readingSection(markdown,'为什么值得读')||resourceText(r)||stage.goal||'通过拓展阅读，把本阶段知识点放到更完整的软件工程场景中理解。';
+  const connection=readingSection(markdown,'与课程知识点的连接')||`本阅读围绕${points.join('、')||'课程核心知识'}展开，帮助你理解概念、流程、产物和应用边界。`;
+  const explanation=readingSection(markdown,'拓展知识讲解')||'';
+  const caseText=readingSection(markdown,'真实场景示例')||'';
+  const guide=readingBullets(markdown,'阅读导读');
+  const questions=readingBullets(markdown,'思考问题');
+  const explore=readingSection(markdown,'进一步探索方向');
+  const lines=[`# ${title}`,'',`> 预计时长：20分钟 · 关键词：${points.join('、')||'课程核心知识'}`,''];
+  lines.push('## 本阶段阅读导入',cleanDocDisplayText(intro),'');
+  lines.push('## 与课程知识点的连接',cleanDocDisplayText(connection),'');
+  if(explanation)lines.push('## 拓展知识讲解',cleanDocDisplayText(explanation),'');
+  if(caseText)lines.push('## 真实场景示例',cleanDocDisplayText(caseText),'');
+  if(guide.length){lines.push('## 阅读导读');guide.forEach((item,index)=>lines.push(`${index+1}. ${item}`));lines.push('')}
+  if(questions.length){lines.push('## 思考问题');questions.forEach(item=>lines.push(`- ${item}`));lines.push('')}
+  if(explore)lines.push('## 进一步探索方向',cleanDocDisplayText(explore));
+  return markdownRenderer.render(lines.filter(line=>line!==null&&line!==undefined).join('\n'));
+}
 function cleanDocDisplayText(value){
   return clean(String(value||''))
     .replace(/\\n/g,' ')
@@ -427,7 +596,7 @@ async function renderMarkmaps(){
   }
 }function pagesText(value){return Array.isArray(value)?value.join('、'):String(value||'')}
 function resourceText(r){const raw=String(r.content||r.personalization||'点击学习资源页面查看完整内容。');if(hasModelError(raw))return `${typeName(r.resource_type)}已挂载到当前阶段，建议结合本阶段目标学习对应内容。`;const parsed=resourceJson(r);if(parsed)return clean(parsed.content||parsed.studygoal||parsed.resourcetitle||r.title);return clean(extractJsonText(raw))}
-function resourceOpen(r){return !!openResources.value[rid(r)]}
+function resourceOpen(r){const id=rid(r);return openResources.value[id]??true}
 function openResourceDetail(resource,type){detailDialog.value={visible:true,type,resource}}
 function toggleResource(r){const id=rid(r);openResources.value={...openResources.value,[id]:!openResources.value[id]}}
 function toggleStage(i){if(i>current.value&&!done(i)){ElMessage.warning('请先完成前置阶段，再解锁后续学习内容');return}openStages.value={...openStages.value,[i]:!(openStages.value[i]??i===current.value)}}
@@ -449,31 +618,55 @@ function nextStage(){const i=activeStageIndex.value;if(!done(i)){toggle(i)}if(i<
 function stageRecord(i){return assessmentRecords.value.find(item=>Number(item.stageIndex)===i)}
 function loadAssessmentRecords(){try{assessmentRecords.value=JSON.parse(localStorage.getItem('a3_stage_assessment_records')||'[]')}catch{assessmentRecords.value=[]}}
 function goStageEvaluation(s,i){router.push({path:'/evaluation',query:{stage:String(i),from:'path',title:s.title,points:(s.points||[]).join('、')}})}
-async function loadAll(){const[ig,p,r,pf]=await Promise.all([pathApi.integrated(),pathApi.list(),resourceApi.list(),profileApi.get()]);if(ig.code===200)integrated.value=ig.data||{};if(p.code===200)paths.value=p.data||[];if(r.code===200)resources.value=(ig.code===200&&Array.isArray(ig.data?.resources))?ig.data.resources:(r.data||[]);if(pf.code===200)profile.value=pf.data||{};try{completed.value=JSON.parse(localStorage.getItem('a3_path_done')||'[]')}catch{completed.value=[]}loadAssessmentRecords();await nextTick();ensureActiveResourceTabs()}
+function currentSessionId(){return String(route.query.sessionId||activeProfileSessionId()||'')}
+async function loadAll(sessionId=currentSessionId()){const token=++pathLoadToken;const[ig,p,r,pf]=await Promise.all([pathApi.integrated(sessionId),pathApi.list(sessionId),resourceApi.list(sessionId),profileApi.get(sessionId)]);if(token!==pathLoadToken)return;if(ig.code===200)integrated.value=ig.data||{};if(p.code===200)paths.value=p.data||[];if(r.code===200)resources.value=(ig.code===200&&Array.isArray(ig.data?.resources))?ig.data.resources:(r.data||[]);if(pf.code===200)profile.value=pf.data||{};try{completed.value=JSON.parse(localStorage.getItem('a3_path_done')||'[]')}catch{completed.value=[]}loadAssessmentRecords();await nextTick();if(token!==pathLoadToken)return;ensureActiveResourceTabs()}
 async function generateAll(extra=''){
   loading.value=true;progress.value=5;resetAgentSteps();
   const timer=setInterval(()=>progress.value=Math.min(progress.value+3,94),700);
   try{
     const need=[profile.value.study_goal,profile.value.error_prone_points||profile.value.weak_points,hint.value,extra].filter(Boolean).join('；');
     setAgentStep('PlannerAgent','running','规划中');progress.value=14;
-    const pr=await pathApi.generate({learning_need:need,adjustment:hint.value});
+    const sessionId=currentSessionId();
+    const pr=await pathApi.generate({learning_need:need,adjustment:hint.value},sessionId);
     if(pr.code!==200)throw new Error(pr.msg||'学习路径生成失败');
+    if(pr.data?.path_content)paths.value=[pr.data,...paths.value.filter(item=>item.id!==pr.data.id)];
     setAgentStep('PlannerAgent','done','已完成');
     setAgentStep('RetrieverAgent','running','检索中');progress.value=32;
     await new Promise(resolve=>setTimeout(resolve,350));
     setAgentStep('RetrieverAgent','done','已关联');
     setAgentStep('ResourceAgents','running','生成中');progress.value=52;
-    const rr=await resourceApi.generate({learning_need:need});
-    if(rr.code!==200)throw new Error(rr.msg||'学习资源生成失败');
+    const existingResources=resources.value.length?resources.value:(Array.isArray(integrated.value?.resources)?integrated.value.resources:[]);
+    if(existingResources.length){
+      resources.value=existingResources;
+      console.info('PathView resource generation skipped because existing resources are available', {count: existingResources.length});
+    }else{
+      console.info('PathView resource generation request start', {sessionId, needLength: need.length});
+      const rr=await resourceApi.generate({learning_need:need,path_content:pr.data?.path_content||''},sessionId);
+      console.info('PathView resource generation response', rr);
+      const generatedResources=rr?.data?.resource_list||[];
+      if(rr.code!==200&&!generatedResources.length){const detail=rr?.data?.error?`：${rr.data.error}`:'';throw new Error((rr.msg||'学习资源生成失败')+detail)}
+      if(generatedResources.length)resources.value=generatedResources;
+    }
     setAgentStep('ResourceAgents','done','已完成');
     setAgentStep('AuditAgent','running','审核中');progress.value=78;
     await new Promise(resolve=>setTimeout(resolve,450));
     setAgentStep('AuditAgent','done','已通过');
     setAgentStep('PackagerAgent','running','挂载中');progress.value=90;
-    await loadAll();completed.value=[];localStorage.setItem('a3_path_done','[]');
+    await loadAll(sessionId);completed.value=[];localStorage.setItem('a3_path_done','[]');
     setAgentStep('PackagerAgent','done','已刷新');progress.value=100;
     ElMessage.success('路径与资源一体化方案生成成功')
-  }catch(e){agentSteps.value=agentSteps.value.map(item=>item.status==='running'?{...item,status:'error',statusText:'失败'}:item);ElMessage.error(e?.message||'一体化生成失败')}
+  }catch(e){
+    console.warn('Path/resource generation warning', e);
+    const hasVisibleResult=resources.value.length>0||stages.value.length>0;
+    if(hasVisibleResult){
+      agentSteps.value=agentSteps.value.map(item=>item.status==='running'?{...item,status:'done',statusText:'已完成'}:item);
+      progress.value=Math.max(progress.value,100);
+      ElMessage.warning('资源已生成并显示，部分刷新步骤返回了警告，可继续学习');
+    }else{
+      agentSteps.value=agentSteps.value.map(item=>item.status==='running'?{...item,status:'error',statusText:'失败'}:item);
+      ElMessage.error(e?.message||'一体化生成失败');
+    }
+  }
   finally{clearInterval(timer);setTimeout(()=>{loading.value=false},650)}
 }
 function pace(c){hint.value=({fast:'学习节奏加快，资源更精炼。',slow:'学习节奏放慢，增加概念解释和基础练习。',practice:'增加练习题、代码案例和应用任务比例。'}[c]||'');generateAll(hint.value)}
@@ -482,7 +675,7 @@ async function triggerAutoGenerate(){
   if(autoGenerating.value||loading.value)return;
   autoGenerating.value=true;
   try{
-    await loadAll();
+    await loadAll(currentSessionId());
     await generateAll();
   }finally{
     autoGenerating.value=false;
@@ -494,18 +687,19 @@ function hasExistingLearningPath(){
   return false;
 }
 onMounted(async()=>{
-  await loadAll();
+  await loadAll(currentSessionId());
   renderMarkmaps();
   if(!hasExistingLearningPath()){
     await triggerAutoGenerate();
   }
 });
+watch(()=>route.query.sessionId,async()=>{await loadAll(currentSessionId());renderMarkmaps()});
 watch(stages,()=>{if(activeStageIndex.value>=stages.value.length)activeStageIndex.value=Math.max(stages.value.length-1,0);ensureActiveResourceTabs();renderMarkmaps()},{deep:true,flush:'post'});
 watch(current,(value)=>{if(!done(activeStageIndex.value)&&activeStageIndex.value<value)activeStageIndex.value=value});
 </script>
 
 <style scoped>
-.path-page{display:grid;gap:22px;background:#f7f9fc}.overview-card{overflow:hidden;border:1px solid #dbeafe;background:linear-gradient(135deg,#ffffff 0%,#f8fbff 62%,#eef6ff 100%);box-shadow:0 18px 48px rgba(15,23,42,.06)}.overview-grid{display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:24px;align-items:start}.overview-main h2{margin:14px 0 8px;font-size:30px;color:#0f172a;letter-spacing:-.02em}.overview-main p{max-width:760px;color:#475569;line-height:1.85}.profile-tags{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.profile-tags :deep(.el-tag){max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.overview-side{display:grid;gap:14px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.stats div{min-height:102px;padding:18px;border:1px solid #dbeafe;border-radius:22px;background:rgba(255,255,255,.88);box-shadow:0 12px 28px rgba(37,99,235,.06)}.stats b{display:block;font-size:25px;color:#0f172a}.stats span{display:block;margin-top:6px;color:#64748b}.overview-actions{display:flex;justify-content:flex-end;gap:12px}.overview-progress{display:grid;grid-template-columns:minmax(0,1fr) 90px;gap:14px;align-items:center;margin-top:20px}.overview-progress span{color:#64748b;text-align:right;font-size:13px}.line,.stage-head,.res-head,.feedback{display:flex;align-items:center;justify-content:space-between;gap:14px}.run-grid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px;margin-top:18px}.agent-flow{display:grid;gap:10px}.run-step{display:grid;grid-template-columns:42px minmax(0,1fr) 64px;align-items:center;gap:12px;padding:12px;border:1px solid #e2e8f0;border-radius:16px;background:#fff;color:#64748b;transition:.2s ease}.run-step b{display:grid;width:34px;height:34px;place-items:center;border-radius:12px;background:#e2e8f0;color:#475569}.run-step strong,.run-step span{display:block}.run-step span{font-size:12px}.run-step em{font-style:normal;font-size:12px;text-align:right}.run-step.running{border-color:#60a5fa;background:#eff6ff;color:#1d4ed8;box-shadow:0 10px 28px rgba(37,99,235,.12)}.run-step.running b{background:linear-gradient(135deg,#2563eb,#06b6d4);color:#fff}.run-step.done{border-color:#86efac;background:#f0fdf4;color:#15803d}.run-step.done b{background:#22c55e;color:#fff}.run-step.error{border-color:#fecaca;background:#fef2f2;color:#dc2626}.run-step.error b{background:#ef4444;color:#fff}.live-preview{padding:16px;border:1px solid #dbeafe;border-radius:18px;background:linear-gradient(135deg,#f8fbff,#fff)}.live-preview b{display:block;color:#0f172a}.live-preview p{color:#1d4ed8;line-height:1.7}.live-preview small{color:#64748b;line-height:1.6}.timeline{position:relative;display:grid;gap:20px;margin-left:26px}.timeline:before{position:absolute;top:12px;bottom:12px;left:17px;width:3px;border-radius:999px;background:#dbeafe;content:""}.stage{position:relative;display:grid;grid-template-columns:56px 1fr;gap:16px}.dot{z-index:1;display:flex;justify-content:center;padding-top:18px}.dot span{display:grid;width:38px;height:38px;place-items:center;border-radius:999px;background:#cbd5e1;color:#fff;font-weight:800}.stage.current .dot span{background:#2563eb;box-shadow:0 0 0 8px #dbeafe}.stage.completed .dot span{background:#16a34a}.stage-card{border-radius:22px}.stage.current .stage-card{border-color:#93c5fd;box-shadow:0 16px 36px rgba(37,99,235,.12)}.stage-title-block{min-width:0;flex:1}.stage-head-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}.stage-head h3{margin:10px 0 6px;color:#0f172a}.stage-head p{margin:0;color:#64748b}.stage-brief{display:grid;grid-template-columns:minmax(260px,1.1fr) minmax(240px,.9fr);gap:12px;margin-top:14px}.stage-brief-goal,.stage-brief-points{padding:14px 16px;border:1px solid #dbeafe;border-radius:16px;background:linear-gradient(135deg,#f8fbff,#ffffff)}.stage-brief b{display:block;margin-bottom:7px;color:#1d4ed8;font-size:13px}.stage-brief span{color:#334155;line-height:1.75}.stage-brief-points div{display:flex;flex-wrap:wrap;gap:7px}.body{display:grid;gap:16px}.goal{padding:16px;border:1px solid #dbeafe;border-radius:16px;background:#f8fbff}.stage-eval{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border:1px solid #bbf7d0;border-radius:16px;background:linear-gradient(135deg,#f0fdf4,#fff)}.stage-eval.stage-eval-standalone{margin-top:4px;border-color:#bfdbfe;background:linear-gradient(135deg,#eff6ff,#ffffff)}.stage-eval.stage-eval-standalone b{color:#1d4ed8}.stage-eval b{color:#15803d}.stage-eval p{margin:6px 0;color:#334155}.stage-eval span{color:#64748b;font-size:12px}.goal b,.section b,.feedback b{color:#1d4ed8}.goal p,.feedback p{margin:8px 0 0;color:#334155;line-height:1.8}.tags{display:flex;flex-wrap:wrap;gap:8px;align-items:center;color:#64748b}.section{display:flex;justify-content:space-between;color:#64748b}.res-list{display:grid;gap:16px}.res{position:relative;display:grid;gap:10px;padding:14px 14px 14px 16px;border:1px solid #dbeafe;border-left:5px solid #3b82f6;border-radius:18px;background:linear-gradient(135deg,#fff,#f8fbff);box-shadow:0 10px 24px rgba(15,23,42,.045);cursor:pointer;transition:.18s ease}.res:hover{transform:translateY(-2px);box-shadow:0 18px 36px rgba(15,23,42,.08)}.res-doc{border-left-color:#3b82f6}.res-mindmap{border-left-color:#8b5cf6}.res-quiz{border-left-color:#22c55e;background:linear-gradient(135deg,#f0fdf4,#ffffff)}.res-code{border-left-color:#f97316}.res-video{border-left-color:#ef4444}.res-reading{border-left-color:#64748b}.res-icon{display:grid;width:30px;height:30px;place-items:center;border-radius:10px;background:#f1f5f9;font-size:16px}.res-head{justify-content:space-between;flex-wrap:wrap;margin-bottom:2px}.res-title{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0}.res-title strong{min-width:0;overflow:visible;white-space:normal;color:#0f172a;font-size:16px;line-height:1.5}.res-content,.json-doc{padding:16px;border:1px solid #e2e8f0;border-radius:18px;background:#fff;color:#334155;line-height:1.9;font-size:14px;white-space:normal;word-break:break-word}.res-content{white-space:pre-wrap}.res-content.collapsed,.json-doc.collapsed{display:-webkit-box;height:380px;max-height:380px;overflow:hidden;-webkit-line-clamp:13;-webkit-box-orient:vertical;color:#475569}.doc-reading-content,.reading-content{min-height:220px;padding:18px 20px;border:1px solid #e2e8f0;border-radius:16px;background:linear-gradient(135deg,#ffffff,#f8fafc);color:#334155;line-height:1.85;font-size:14px;overflow:hidden}.doc-reading-content.collapsed{display:-webkit-box;height:380px;max-height:380px;-webkit-line-clamp:13;-webkit-box-orient:vertical}.reading-content.collapsed{display:-webkit-box;max-height:300px;-webkit-line-clamp:10;-webkit-box-orient:vertical}.doc-reading-content :deep(h1),.reading-content :deep(h1){margin:0 0 16px;color:#0f172a;font-size:22px;line-height:1.4}.doc-reading-content :deep(h2),.reading-content :deep(h2){margin:22px 0 10px;padding-left:10px;border-left:4px solid #3b82f6;color:#1d4ed8;font-size:17px}.doc-reading-content :deep(h3),.reading-content :deep(h3){margin:16px 0 8px;color:#0f172a;font-size:15px}.doc-reading-content :deep(p),.reading-content :deep(p){margin:8px 0;color:#334155}.doc-reading-content :deep(ul),.doc-reading-content :deep(ol),.reading-content :deep(ul){margin:8px 0 8px 18px;padding:0}.doc-reading-content :deep(li),.reading-content :deep(li){margin:5px 0}.doc-reading-content :deep(strong),.reading-content :deep(strong){color:#0f172a}.doc-reading-content :deep(blockquote){margin:0 0 16px;padding:10px 14px;border-left:4px solid #93c5fd;border-radius:10px;background:#eff6ff;color:#475569}.json-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;white-space:normal}.json-summary div{padding:14px;border-radius:16px;background:linear-gradient(135deg,#f8fbff,#fff);border:1px solid #dbeafe}.json-summary span{display:block;color:#64748b;font-size:12px}.json-summary b{display:block;margin-top:4px;color:#0f172a;line-height:1.5}.doc-hero{padding:18px;border:1px solid #bfdbfe;border-radius:18px;background:linear-gradient(135deg,#eff6ff,#ffffff)}.doc-hero h3{margin:0 0 8px;color:#1d4ed8}.doc-hero p{margin:0;line-height:1.9}.json-block{margin-top:16px;padding-top:16px;border-top:1px dashed #dbeafe;white-space:normal}.json-block h4{margin:0 0 12px;color:#1d4ed8;font-size:16px}.json-block p{margin:7px 0;line-height:1.9}.concept-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.concept-card,.explain-card,.mistake-list>div,.check-list>div{padding:14px;border:1px solid #e2e8f0;border-radius:16px;background:#f8fafc}.concept-card b,.mistake-list b,.check-list b{display:block;color:#0f172a}.concept-card small,.concept-card em,.mistake-list small{display:block;margin-top:6px;color:#64748b;font-style:normal;line-height:1.7}.explain-card{margin-top:10px;background:#fff}.explain-card h5{margin:0 0 8px;color:#0f172a;font-size:15px}.step-list{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.step-list span{padding:7px 10px;border-radius:999px;background:#eef6ff;color:#1d4ed8;font-size:12px}.io-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:10px 0}.io-grid div{padding:10px 12px;border-radius:14px;background:#f8fafc;border:1px solid #e2e8f0}.io-grid span{display:block;color:#64748b;font-size:12px}.io-grid b{display:block;margin-top:4px;color:#0f172a;line-height:1.6}.lifecycle-box,.case-box,.summary-box{padding:14px 16px;border:1px solid #bfdbfe;border-radius:16px;background:linear-gradient(135deg,#f8fbff,#fff)}.mistake-list,.check-list{display:grid;gap:10px}.summary-box ul{margin:8px 0 0 18px;padding:0}.kb-item{padding:10px 12px;margin-top:8px;border-radius:14px;background:#f8fbff}.kb-item b,.kb-item em{display:block}.kb-item em{margin-top:4px;color:#64748b;font-style:normal;font-size:12px}.markmap-panel{padding:8px;border:1px solid #e9d5ff;border-radius:16px;background:linear-gradient(135deg,#fbf7ff,#ffffff);overflow:hidden}.markmap-toolbar{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:8px;padding:7px 10px;border-radius:12px;background:#f5f3ff;color:#6d28d9;font-size:12px}.markmap-toolbar em{font-style:normal;color:#64748b}.markmap-panel.collapsed{max-height:396px}.markmap-container{display:block;width:100%;height:350px;border-radius:12px;background:#fafbfc;font-family:Inter,Microsoft YaHei,sans-serif}.markmap-container :deep(.markmap-node){cursor:pointer}.markmap-container :deep(.markmap-node text){font-size:13px;fill:#0f172a}.markmap-container :deep(.markmap-link){stroke-width:1.8px}.image-gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;padding:12px;border:1px dashed #bfdbfe;border-radius:18px;background:#f8fbff}.kb-image{padding:10px;border:1px solid #dbeafe;border-radius:16px;background:#fff;box-shadow:0 8px 18px rgba(15,23,42,.04)}.kb-image img{display:block;width:100%;height:190px;object-fit:contain;border-radius:12px;background:#fff}.kb-image p{margin:8px 0 0;color:#64748b;font-size:12px;line-height:1.5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.res-meta{display:flex;flex-wrap:wrap;gap:8px;color:#64748b;font-size:12px}.res-meta span{padding:5px 9px;border-radius:999px;background:#f1f5f9}.res-actions{display:flex;justify-content:flex-end;align-items:center;gap:4px;padding-top:2px}.res-actions :deep(.el-button){padding:4px 6px;color:#64748b;font-size:13px}.res-actions :deep(.el-button:hover){color:#2563eb;background:transparent}.detail-dialog-body{display:grid;gap:14px;color:#334155;line-height:1.8}.detail-dialog-body h3{margin:0;color:#0f172a;font-size:18px}.detail-dialog-body p{margin:0;padding:12px 14px;border-radius:14px;background:#f8fafc}.detail-kv{display:flex;justify-content:space-between;gap:16px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:12px;background:#fff}.detail-kv span{color:#64748b}.detail-kv b{color:#0f172a;text-align:right}.stage-workspace{display:grid;gap:18px}.stage-stepper-card{border:1px solid #dbeafe;background:linear-gradient(135deg,#ffffff,#f8fbff);border-radius:22px}.stage-switcher{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}.stage-switch-item{display:grid;grid-template-columns:38px minmax(0,1fr);grid-template-areas:"num title" "num state";align-items:center;gap:2px 10px;padding:13px 14px;border:1px solid #e2e8f0;border-radius:16px;background:#fff;color:#64748b;text-align:left;cursor:pointer;transition:.18s ease}.stage-switch-item span{grid-area:num;display:grid;width:34px;height:34px;place-items:center;border-radius:999px;background:#e2e8f0;color:#475569;font-weight:800}.stage-switch-item b{grid-area:title;color:#0f172a;font-size:14px}.stage-switch-item em{grid-area:state;font-style:normal;font-size:12px}.stage-switch-item.active{border-color:#60a5fa;background:#eff6ff;box-shadow:0 10px 26px rgba(37,99,235,.12)}.stage-switch-item.active span{background:#2563eb;color:#fff}.stage-switch-item.completed span{background:#16a34a;color:#fff}.stage-switch-item.locked{opacity:.55}.stage-progress-inline{display:grid;grid-template-columns:minmax(0,1fr) 90px;gap:12px;align-items:center;margin-top:14px}.stage-progress-inline span{color:#64748b;text-align:right;font-size:13px}.compact-timeline{margin-left:0}.compact-timeline:before{display:none}.compact-timeline .stage{grid-template-columns:minmax(0,1fr)}.resource-tabs{padding:6px 8px 12px;border:1px solid #dbeafe;border-radius:16px;background:#ffffff}.resource-tabs :deep(.el-tabs__header){margin-bottom:10px}.resource-tabs :deep(.el-tabs__content){overflow:visible}.resource-tab-label{display:inline-flex;align-items:center;gap:6px}.stage-nav-actions{display:flex;justify-content:space-between;gap:12px;padding:16px;border:1px solid #dbeafe;border-radius:18px;background:linear-gradient(135deg,#f8fbff,#ffffff)}.stage-nav-actions .el-button{min-width:120px}.feedback-card b{display:block;margin-top:10px;color:#0f172a;font-size:18px}.feedback p{max-width:760px}.feedback>div:last-child{display:flex;gap:10px;flex-wrap:wrap}@media(max-width:1200px){.overview-grid{grid-template-columns:1fr}.run-grid,.stage-brief,.json-summary,.concept-grid,.io-grid,.image-gallery{grid-template-columns:1fr}}.prestudy-plan{padding:20px 22px;border:1px solid #dbeafe;border-radius:22px;background:linear-gradient(135deg,#ffffff,#f8fbff);box-shadow:0 14px 38px rgba(15,23,42,.055)}.prestudy-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:16px}.prestudy-head h3{margin:8px 0 6px;color:#0f172a;font-size:21px}.prestudy-head p{margin:0;color:#64748b;line-height:1.7}.prestudy-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}.prestudy-card{display:grid;grid-template-columns:54px 1fr;gap:14px;padding:16px;border:1px solid #e2e8f0;border-radius:18px;background:#fff;cursor:pointer;transition:.18s ease}.prestudy-card:hover{transform:translateY(-2px);border-color:#93c5fd;box-shadow:0 12px 30px rgba(37,99,235,.1)}.prestudy-card.current{border-color:#60a5fa;background:linear-gradient(135deg,#eff6ff,#fff)}.prestudy-card.completed{border-color:#bbf7d0;background:linear-gradient(135deg,#f0fdf4,#fff)}.prestudy-index{display:grid;place-items:center;align-content:center;gap:5px}.prestudy-index span{display:grid;place-items:center;width:36px;height:36px;border-radius:999px;background:#2563eb;color:#fff;font-weight:800}.prestudy-index em{font-style:normal;color:#64748b;font-size:12px}.prestudy-body h4{margin:0 0 8px;color:#0f172a;font-size:16px}.prestudy-body p{min-height:44px;margin:0 0 10px;color:#475569;line-height:1.65}.prestudy-points{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}.prestudy-meta{display:flex;flex-wrap:wrap;gap:8px;color:#64748b;font-size:12px}.prestudy-meta span{padding:4px 8px;border-radius:999px;background:#f1f5f9}
+.path-page{display:grid;gap:22px;background:#f7f9fc}.overview-card{overflow:hidden;border:1px solid #dbeafe;background:linear-gradient(135deg,#ffffff 0%,#f8fbff 62%,#eef6ff 100%);box-shadow:0 18px 48px rgba(15,23,42,.06)}.overview-grid{display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:24px;align-items:start}.overview-main h2{margin:14px 0 8px;font-size:30px;color:#0f172a;letter-spacing:-.02em}.overview-main p{max-width:760px;color:#475569;line-height:1.85}.profile-tags{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.profile-tags :deep(.el-tag){max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.overview-side{display:grid;gap:14px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.stats div{min-height:102px;padding:18px;border:1px solid #dbeafe;border-radius:22px;background:rgba(255,255,255,.88);box-shadow:0 12px 28px rgba(37,99,235,.06)}.stats b{display:block;font-size:25px;color:#0f172a}.stats span{display:block;margin-top:6px;color:#64748b}.overview-actions{display:flex;justify-content:flex-end;gap:12px}.overview-progress{display:grid;grid-template-columns:minmax(0,1fr) 90px;gap:14px;align-items:center;margin-top:20px}.overview-progress span{color:#64748b;text-align:right;font-size:13px}.line,.stage-head,.res-head,.feedback{display:flex;align-items:center;justify-content:space-between;gap:14px}.run-grid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px;margin-top:18px}.agent-flow{display:grid;gap:10px}.run-step{display:grid;grid-template-columns:42px minmax(0,1fr) 64px;align-items:center;gap:12px;padding:12px;border:1px solid #e2e8f0;border-radius:16px;background:#fff;color:#64748b;transition:.2s ease}.run-step b{display:grid;width:34px;height:34px;place-items:center;border-radius:12px;background:#e2e8f0;color:#475569}.run-step strong,.run-step span{display:block}.run-step span{font-size:12px}.run-step em{font-style:normal;font-size:12px;text-align:right}.run-step.running{border-color:#60a5fa;background:#eff6ff;color:#1d4ed8;box-shadow:0 10px 28px rgba(37,99,235,.12)}.run-step.running b{background:linear-gradient(135deg,#2563eb,#06b6d4);color:#fff}.run-step.done{border-color:#86efac;background:#f0fdf4;color:#15803d}.run-step.done b{background:#22c55e;color:#fff}.run-step.error{border-color:#fecaca;background:#fef2f2;color:#dc2626}.run-step.error b{background:#ef4444;color:#fff}.live-preview{padding:16px;border:1px solid #dbeafe;border-radius:18px;background:linear-gradient(135deg,#f8fbff,#fff)}.live-preview b{display:block;color:#0f172a}.live-preview p{color:#1d4ed8;line-height:1.7}.live-preview small{color:#64748b;line-height:1.6}.timeline{position:relative;display:grid;gap:20px;margin-left:26px}.timeline:before{position:absolute;top:12px;bottom:12px;left:17px;width:3px;border-radius:999px;background:#dbeafe;content:""}.stage{position:relative;display:grid;grid-template-columns:56px 1fr;gap:16px}.dot{z-index:1;display:flex;justify-content:center;padding-top:18px}.dot span{display:grid;width:38px;height:38px;place-items:center;border-radius:999px;background:#cbd5e1;color:#fff;font-weight:800}.stage.current .dot span{background:#2563eb;box-shadow:0 0 0 8px #dbeafe}.stage.completed .dot span{background:#16a34a}.stage-card{border-radius:22px}.stage.current .stage-card{border-color:#93c5fd;box-shadow:0 16px 36px rgba(37,99,235,.12)}.stage-title-block{min-width:0;flex:1}.stage-head-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}.stage-head h3{margin:10px 0 6px;color:#0f172a}.stage-head p{margin:0;color:#64748b}.stage-brief{display:grid;grid-template-columns:minmax(260px,1.1fr) minmax(240px,.9fr);gap:12px;margin-top:14px}.stage-brief-goal,.stage-brief-points{padding:14px 16px;border:1px solid #dbeafe;border-radius:16px;background:linear-gradient(135deg,#f8fbff,#ffffff)}.stage-brief b{display:block;margin-bottom:7px;color:#1d4ed8;font-size:13px}.stage-brief span{color:#334155;line-height:1.75}.stage-brief-points div{display:flex;flex-wrap:wrap;gap:7px}.body{display:grid;gap:16px}.goal{padding:16px;border:1px solid #dbeafe;border-radius:16px;background:#f8fbff}.stage-eval{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border:1px solid #bbf7d0;border-radius:16px;background:linear-gradient(135deg,#f0fdf4,#fff)}.stage-eval.stage-eval-standalone{margin-top:4px;border-color:#bfdbfe;background:linear-gradient(135deg,#eff6ff,#ffffff)}.stage-eval.stage-eval-standalone b{color:#1d4ed8}.stage-eval b{color:#15803d}.stage-eval p{margin:6px 0;color:#334155}.stage-eval span{color:#64748b;font-size:12px}.goal b,.section b,.feedback b{color:#1d4ed8}.goal p,.feedback p{margin:8px 0 0;color:#334155;line-height:1.8}.tags{display:flex;flex-wrap:wrap;gap:8px;align-items:center;color:#64748b}.section{display:flex;justify-content:space-between;color:#64748b}.res-list{display:grid;gap:16px}.res{position:relative;display:grid;gap:10px;padding:14px 14px 14px 16px;border:1px solid #dbeafe;border-left:5px solid #3b82f6;border-radius:18px;background:linear-gradient(135deg,#fff,#f8fbff);box-shadow:0 10px 24px rgba(15,23,42,.045);cursor:pointer;transition:.18s ease}.res:hover{transform:translateY(-2px);box-shadow:0 18px 36px rgba(15,23,42,.08)}.res-doc{border-left-color:#3b82f6}.res-mindmap{border-left-color:#8b5cf6}.res-quiz{border-left-color:#22c55e;background:linear-gradient(135deg,#f0fdf4,#ffffff)}.res-code{border-left-color:#f97316}.res-video{border-left-color:#ef4444}.res-reading{border-left-color:#64748b}.res-icon{display:grid;width:30px;height:30px;place-items:center;border-radius:10px;background:#f1f5f9;font-size:16px}.res-head{justify-content:space-between;flex-wrap:wrap;margin-bottom:2px}.res-title{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0}.res-title strong{min-width:0;overflow:visible;white-space:normal;color:#0f172a;font-size:16px;line-height:1.5}.res-content,.json-doc{padding:16px;border:1px solid #e2e8f0;border-radius:18px;background:#fff;color:#334155;line-height:1.9;font-size:14px;white-space:normal;word-break:break-word}.res-content{white-space:pre-wrap}.res-content.collapsed,.json-doc.collapsed{display:-webkit-box;height:380px;max-height:380px;overflow:hidden;-webkit-line-clamp:13;-webkit-box-orient:vertical;color:#475569}.doc-reading-content,.reading-content{min-height:220px;padding:18px 20px;border:1px solid #e2e8f0;border-radius:16px;background:linear-gradient(135deg,#ffffff,#f8fafc);color:#334155;line-height:1.85;font-size:14px;overflow:hidden}.doc-reading-content.collapsed{display:-webkit-box;height:380px;max-height:380px;-webkit-line-clamp:13;-webkit-box-orient:vertical}.reading-content.collapsed{display:-webkit-box;max-height:300px;-webkit-line-clamp:10;-webkit-box-orient:vertical}.doc-reading-content :deep(h1),.reading-content :deep(h1){margin:0 0 16px;color:#0f172a;font-size:22px;line-height:1.4}.doc-reading-content :deep(h2),.reading-content :deep(h2){margin:22px 0 10px;padding-left:10px;border-left:4px solid #3b82f6;color:#1d4ed8;font-size:17px}.doc-reading-content :deep(h3),.reading-content :deep(h3){margin:16px 0 8px;color:#0f172a;font-size:15px}.doc-reading-content :deep(p),.reading-content :deep(p){margin:8px 0;color:#334155}.doc-reading-content :deep(ul),.doc-reading-content :deep(ol),.reading-content :deep(ul){margin:8px 0 8px 18px;padding:0}.doc-reading-content :deep(li),.reading-content :deep(li){margin:5px 0}.doc-reading-content :deep(strong),.reading-content :deep(strong){color:#0f172a}.doc-reading-content :deep(blockquote){margin:0 0 16px;padding:10px 14px;border-left:4px solid #93c5fd;border-radius:10px;background:#eff6ff;color:#475569}.json-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;white-space:normal}.json-summary div{padding:14px;border-radius:16px;background:linear-gradient(135deg,#f8fbff,#fff);border:1px solid #dbeafe}.json-summary span{display:block;color:#64748b;font-size:12px}.json-summary b{display:block;margin-top:4px;color:#0f172a;line-height:1.5}.doc-hero{padding:18px;border:1px solid #bfdbfe;border-radius:18px;background:linear-gradient(135deg,#eff6ff,#ffffff)}.doc-hero h3{margin:0 0 8px;color:#1d4ed8}.doc-hero p{margin:0;line-height:1.9}.json-block{margin-top:16px;padding-top:16px;border-top:1px dashed #dbeafe;white-space:normal}.json-block h4{margin:0 0 12px;color:#1d4ed8;font-size:16px}.json-block p{margin:7px 0;line-height:1.9}.concept-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.concept-card,.explain-card,.mistake-list>div,.check-list>div{padding:14px;border:1px solid #e2e8f0;border-radius:16px;background:#f8fafc}.concept-card b,.mistake-list b,.check-list b{display:block;color:#0f172a}.concept-card small,.concept-card em,.mistake-list small{display:block;margin-top:6px;color:#64748b;font-style:normal;line-height:1.7}.explain-card{margin-top:10px;background:#fff}.explain-card h5{margin:0 0 8px;color:#0f172a;font-size:15px}.step-list{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.step-list span{padding:7px 10px;border-radius:999px;background:#eef6ff;color:#1d4ed8;font-size:12px}.io-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:10px 0}.io-grid div{padding:10px 12px;border-radius:14px;background:#f8fafc;border:1px solid #e2e8f0}.io-grid span{display:block;color:#64748b;font-size:12px}.io-grid b{display:block;margin-top:4px;color:#0f172a;line-height:1.6}.lifecycle-box,.case-box,.summary-box{padding:14px 16px;border:1px solid #bfdbfe;border-radius:16px;background:linear-gradient(135deg,#f8fbff,#fff)}.mistake-list,.check-list{display:grid;gap:10px}.summary-box ul{margin:8px 0 0 18px;padding:0}.kb-item{padding:10px 12px;margin-top:8px;border-radius:14px;background:#f8fbff}.kb-item b,.kb-item em{display:block}.kb-item em{margin-top:4px;color:#64748b;font-style:normal;font-size:12px}.markmap-panel{height:430px;padding:8px;border:1px solid #e9d5ff;border-radius:16px;background:linear-gradient(135deg,#fbf7ff,#ffffff);overflow:hidden}.markmap-toolbar{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:8px;padding:7px 10px;border-radius:12px;background:#f5f3ff;color:#6d28d9;font-size:12px}.markmap-toolbar em{font-style:normal;color:#64748b}.markmap-container{display:block;width:100%;height:382px;border-radius:12px;background:#fafbfc;font-family:Inter,Microsoft YaHei,sans-serif;pointer-events:none}.markmap-container :deep(.markmap-node){cursor:default}.markmap-container :deep(.markmap-node text){font-size:13px;fill:#0f172a}.markmap-container :deep(.markmap-link){stroke-width:1.8px}.video-resource-panel{height:460px;padding:14px;border:1px solid #fecaca;border-radius:18px;background:linear-gradient(135deg,#fff7f7,#ffffff);overflow:hidden}.video-player{display:block;width:100%;height:100%;object-fit:contain;border-radius:14px;background:#0f172a;box-shadow:0 14px 34px rgba(15,23,42,.12)}.video-placeholder{display:grid;place-items:center;height:100%;padding:24px;border:1px dashed #fecaca;border-radius:14px;background:#fff;color:#64748b;text-align:center}.video-placeholder b{color:#0f172a;font-size:16px}.video-placeholder p{max-width:520px;margin:8px 0 0;line-height:1.7}.image-gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;padding:12px;border:1px dashed #bfdbfe;border-radius:18px;background:#f8fbff}.kb-image{padding:10px;border:1px solid #dbeafe;border-radius:16px;background:#fff;box-shadow:0 8px 18px rgba(15,23,42,.04)}.kb-image img{display:block;width:100%;height:190px;object-fit:contain;border-radius:12px;background:#fff}.kb-image p{margin:8px 0 0;color:#64748b;font-size:12px;line-height:1.5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.res-meta{display:flex;flex-wrap:wrap;gap:8px;color:#64748b;font-size:12px}.res-meta span{padding:5px 9px;border-radius:999px;background:#f1f5f9}.res-actions{display:flex;justify-content:flex-end;align-items:center;gap:4px;padding-top:2px}.res-actions :deep(.el-button){padding:4px 6px;color:#64748b;font-size:13px}.res-actions :deep(.el-button:hover){color:#2563eb;background:transparent}.detail-dialog-body{display:grid;gap:14px;color:#334155;line-height:1.8}.detail-dialog-body h3{margin:0;color:#0f172a;font-size:18px}.detail-dialog-body p{margin:0;padding:12px 14px;border-radius:14px;background:#f8fafc}.detail-kv{display:flex;justify-content:space-between;gap:16px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:12px;background:#fff}.detail-kv span{color:#64748b}.detail-kv b{color:#0f172a;text-align:right}.stage-workspace{display:grid;gap:14px}.stage-stepper-card{position:sticky;top:10px;z-index:5;border:1px solid rgba(219,234,254,.95);background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border-radius:22px;box-shadow:0 16px 36px rgba(15,23,42,.06)}.stage-stepper-card :deep(.el-card__body){padding:12px 14px}.stage-switcher{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.stage-switch-item{display:grid;grid-template-columns:34px minmax(0,1fr);grid-template-areas:"num title" "num state";align-items:center;gap:1px 10px;padding:12px 14px;border:1px solid #e2e8f0;border-radius:18px;background:linear-gradient(135deg,#ffffff,#f8fafc);color:#64748b;text-align:left;cursor:pointer;transition:.18s ease}.stage-switch-item span{grid-area:num;display:grid;width:32px;height:32px;place-items:center;border-radius:14px;background:#e2e8f0;color:#475569;font-weight:900}.stage-switch-item b{grid-area:title;color:#0f172a;font-size:14px}.stage-switch-item em{grid-area:state;font-style:normal;font-size:11px}.stage-switch-item.active{border-color:#60a5fa;background:linear-gradient(135deg,#eff6ff,#ffffff);box-shadow:0 12px 28px rgba(37,99,235,.12)}.stage-switch-item.active span{background:linear-gradient(135deg,#2563eb,#06b6d4);color:#fff}.stage-switch-item.completed{border-color:#bbf7d0;background:linear-gradient(135deg,#f0fdf4,#ffffff)}.stage-switch-item.completed span{background:#16a34a;color:#fff}.stage-switch-item.locked{opacity:.55}.stage-progress-inline{display:grid;grid-template-columns:minmax(0,1fr) 82px;gap:10px;align-items:center;margin-top:10px}.stage-progress-inline :deep(.el-progress-bar__outer){background:#eaf2ff}.stage-progress-inline span{color:#64748b;text-align:right;font-size:12px}.compact-timeline{margin-left:0}.compact-timeline:before{display:none}.compact-timeline .stage{grid-template-columns:minmax(0,1fr)}.resource-tabs{padding:6px 8px 12px;border:1px solid #dbeafe;border-radius:16px;background:#ffffff}.resource-tabs :deep(.el-tabs__header){margin-bottom:10px}.resource-tabs :deep(.el-tabs__content){overflow:visible}.resource-tab-label{display:inline-flex;align-items:center;gap:6px}.stage-nav-actions{display:flex;justify-content:space-between;gap:12px;padding:16px;border:1px solid #dbeafe;border-radius:18px;background:linear-gradient(135deg,#f8fbff,#ffffff)}.stage-nav-actions .el-button{min-width:120px}.feedback-card b{display:block;margin-top:10px;color:#0f172a;font-size:18px}.feedback p{max-width:760px}.feedback>div:last-child{display:flex;gap:10px;flex-wrap:wrap}@media(max-width:1200px){.overview-grid{grid-template-columns:1fr}.run-grid,.stage-brief,.json-summary,.concept-grid,.io-grid,.image-gallery,.prestudy-grid,.stage-switcher{grid-template-columns:1fr}}.prestudy-plan{position:relative;padding:26px;border:1px solid rgba(147,197,253,.55);border-radius:28px;background:radial-gradient(circle at 12% 0%,rgba(37,99,235,.10),transparent 32%),linear-gradient(135deg,#ffffff 0%,#f8fbff 58%,#eef6ff 100%);box-shadow:0 24px 60px rgba(15,23,42,.08);overflow:hidden}.prestudy-plan:before{position:absolute;inset:0 0 auto;height:4px;background:linear-gradient(90deg,#2563eb,#06b6d4,#22c55e);content:""}.prestudy-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:20px}.prestudy-head h3{margin:10px 0 7px;color:#0f172a;font-size:26px;letter-spacing:-.02em}.prestudy-head p{max-width:720px;margin:0;color:#64748b;line-height:1.75}.prestudy-head .el-button{border-radius:999px;padding:10px 18px}.prestudy-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.prestudy-card{position:relative;display:grid;grid-template-columns:1fr;min-height:210px;padding:22px 20px 18px 78px;border:1px solid rgba(191,219,254,.9);border-radius:24px;background:rgba(255,255,255,.78);box-shadow:0 14px 32px rgba(37,99,235,.07);cursor:pointer;transition:.2s ease;overflow:hidden}.prestudy-card:before{position:absolute;inset:0 auto 0 0;width:5px;background:linear-gradient(180deg,#3b82f6,#22c55e);content:"";opacity:.65}.prestudy-card:hover{transform:translateY(-4px);border-color:#60a5fa;box-shadow:0 20px 44px rgba(37,99,235,.14)}.prestudy-card.current{border-color:#60a5fa;background:linear-gradient(135deg,#eff6ff,#ffffff);box-shadow:0 22px 50px rgba(37,99,235,.16)}.prestudy-card.completed{border-color:#86efac;background:linear-gradient(135deg,#f0fdf4,#ffffff)}.prestudy-index{position:absolute;left:22px;top:50%;transform:translateY(-50%);display:grid;place-items:center;gap:7px}.prestudy-index span{display:grid;place-items:center;width:40px;height:40px;border-radius:16px;background:linear-gradient(135deg,#2563eb,#06b6d4);color:#fff;font-weight:900;box-shadow:0 12px 24px rgba(37,99,235,.22)}.prestudy-index em{font-style:normal;color:#64748b;font-size:12px}.prestudy-body{display:flex;min-width:0;flex-direction:column}.prestudy-body h4{margin:0 0 10px;color:#0f172a;font-size:18px;line-height:1.35}.prestudy-body p{flex:1;margin:0 0 14px;color:#475569;line-height:1.72}.prestudy-points{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}.prestudy-points :deep(.el-tag){border-radius:999px}.prestudy-meta{display:flex;flex-wrap:wrap;gap:8px;color:#64748b;font-size:12px}.prestudy-meta span{padding:5px 10px;border-radius:999px;background:#f1f5f9;border:1px solid #e2e8f0}
 @media(max-width:800px){.agents,.stats{grid-template-columns:1fr}.stage{grid-template-columns:42px 1fr}.stage-head,.feedback,.prestudy-head{flex-direction:column;align-items:flex-start}.prestudy-card{grid-template-columns:1fr}}</style>
 
 

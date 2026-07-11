@@ -241,14 +241,24 @@ def _extract_http_error(response) -> str:
     return f"HTTP {response.status_code}: {text or response.reason}"
 
 
+def _limit_model_prompt(prompt: str) -> str:
+    max_chars = int(__import__("os").getenv("BAILIAN_MAX_INPUT_CHARS", "2500"))
+    text = str(prompt or "")
+    if len(text) <= max_chars:
+        return text
+    head_len = int(max_chars * 0.68)
+    tail_len = max_chars - head_len
+    return text[:head_len].rstrip() + "\n\n...(因模型上下文限制，中间内容已截断)...\n\n" + text[-tail_len:].lstrip()
+
+
 def _call_bailian_compatible(prompt: str) -> str:
     import requests
 
     payload = {
         "model": config.BAILIAN_MODEL or "qwen-plus",
-        "messages": [{"role": "user", "content": prompt}],
+        "messages": [{"role": "user", "content": _limit_model_prompt(prompt)}],
         "temperature": 0.5,
-        "max_tokens": 4096,
+        "max_tokens": int(__import__("os").getenv("BAILIAN_MAX_TOKENS", "1024")),
         "stream": False,
     }
     response = requests.post(
@@ -343,15 +353,15 @@ def _call_anthropic_compatible(prompt: str) -> str:
     model = config.ANTHROPIC_MODEL or config.ANTHROPIC_SMALL_FAST_MODEL
     anthropic_payload = {
         "model": model,
-        "max_tokens": 4096,
+        "max_tokens": int(__import__("os").getenv("BAILIAN_MAX_TOKENS", "1024")),
         "temperature": 0.5,
-        "messages": [{"role": "user", "content": prompt}],
+        "messages": [{"role": "user", "content": _limit_model_prompt(prompt)}],
     }
     openai_payload = {
         "model": model,
         "temperature": 0.5,
-        "max_tokens": 4096,
-        "messages": [{"role": "user", "content": prompt}],
+        "max_tokens": int(__import__("os").getenv("BAILIAN_MAX_TOKENS", "1024")),
+        "messages": [{"role": "user", "content": _limit_model_prompt(prompt)}],
     }
     errors = []
     for url in _anthropic_candidate_urls():
