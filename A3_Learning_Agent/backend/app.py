@@ -32,8 +32,10 @@ def create_app() -> Flask:
     app = Flask(__name__)
     app.config.from_object(config)
     CORS(app, resources={r"/api/*": {"origins": "*"}})
-    ensure_extended_tables()
-    _bootstrap_knowledge_base()
+    if config.AUTO_MIGRATE:
+        ensure_extended_tables()
+    if config.AUTO_BOOTSTRAP_KNOWLEDGE:
+        _bootstrap_knowledge_base()
 
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
     app.register_blueprint(profile_bp, url_prefix="/api/profile")

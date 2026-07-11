@@ -63,7 +63,7 @@
 
 <script setup>
 import MarkdownIt from "markdown-it";
-import { computed, nextTick, onMounted, reactive, watch } from "vue";
+import { computed, nextTick, onBeforeUnmount, onMounted, reactive, watch } from "vue";
 import { ElMessage } from "element-plus";
 import { activeProfileSessionId, chatApi } from "../api";
 
@@ -85,6 +85,7 @@ const chatState = reactive({
   timer: null,
   loaded: false,
 });
+let chatLoadToken = 0;
 
 const question = computed({
   get: () => chatState.question,
@@ -140,12 +141,14 @@ function loadLocal(sessionId) {
 }
 
 async function loadHistory() {
+  const token = ++chatLoadToken;
   const sessionId = activeProfileSessionId();
   if (chatState.loading && chatState.sessionId === sessionId) return;
   chatState.sessionId = sessionId;
   const hasLocal = loadLocal(sessionId);
   try {
     const res = await chatApi.history();
+    if (token !== chatLoadToken || chatState.sessionId !== sessionId) return;
     if (res.code === 200 && Array.isArray(res.data?.messages) && res.data.messages.length && !chatState.loading) {
       const cleaned = cleanMessages(res.data.messages);
       chatState.messages = cleaned.length ? cleaned : [WELCOME_MESSAGE];
@@ -154,9 +157,9 @@ async function loadHistory() {
       chatState.messages = [WELCOME_MESSAGE];
     }
   } catch {
-    if (!hasLocal) chatState.messages = [WELCOME_MESSAGE];
+    if (token === chatLoadToken && !hasLocal) chatState.messages = [WELCOME_MESSAGE];
   } finally {
-    chatState.loaded = true;
+    if (token === chatLoadToken) chatState.loaded = true;
   }
 }
 
@@ -298,9 +301,24 @@ async function clearHistory() {
   if (res.code === 200) ElMessage.success("答疑历史已清空");
 }
 
+function handleProfileSessionChange() {
+  if (chatState.loading) {
+    saveLocal();
+    return;
+  }
+  loadHistory();
+}
+
 onMounted(async () => {
   await loadHistory();
+  window.addEventListener("a3-profile-session-change", handleProfileSessionChange);
+  window.addEventListener("a3-profile-session-created", handleProfileSessionChange);
   await nextTick();
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("a3-profile-session-change", handleProfileSessionChange);
+  window.removeEventListener("a3-profile-session-created", handleProfileSessionChange);
 });
 
 watch(

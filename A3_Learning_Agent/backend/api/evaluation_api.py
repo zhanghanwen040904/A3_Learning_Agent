@@ -58,6 +58,56 @@ def _get_mastery(user_id: int) -> list[dict]:
     )
 
 
+def _chapter_from_knowledge_path(knowledge_path: str, knowledge_point: str = "") -> str:
+    text = str(knowledge_path or knowledge_point or "").strip()
+    parts = [part.strip() for part in re.split(r"[/＞>\\|]", text) if part.strip()]
+    return parts[0] if parts else (str(knowledge_point or "未分类").strip() or "未分类")
+
+
+def _json_value(value, fallback):
+    if value is None:
+        return fallback
+    if isinstance(value, (dict, list)):
+        return value
+    try:
+        return json.loads(value)
+    except Exception:
+        return fallback
+
+
+
+def _safe_bigint(value):
+    try:
+        return int(value) if str(value or "").isdigit() else None
+    except Exception:
+        return None
+
+def _wrong_book_payload(user_id: int, payload: dict, result: dict | None = None, quiz_result_id=None) -> dict:
+    question = str(payload.get("question") or payload.get("prompt") or "")
+    knowledge_path = str(payload.get("knowledge_path") or payload.get("knowledge_point") or "")
+    knowledge_point = str(payload.get("knowledge_point") or knowledge_path or "未分类")
+    result = result or payload.get("result") or {}
+    return {
+        "user_id": user_id,
+        "quiz_result_id": _safe_bigint(quiz_result_id or payload.get("quiz_result_id") or payload.get("id")),
+        "question": question,
+        "question_type": str(payload.get("question_type") or ""),
+        "options_json": json.dumps(payload.get("options") or [], ensure_ascii=False),
+        "answer": str(payload.get("answer") or payload.get("userAnswer") or ""),
+        "reference_answer": str(payload.get("reference_answer") or result.get("reference_answer") or ""),
+        "explanation": str(payload.get("explanation") or result.get("explanation") or ""),
+        "common_mistake": str(payload.get("common_mistake") or result.get("common_mistake") or ""),
+        "scoring_points": json.dumps(payload.get("scoring_points") or result.get("scoring_points") or [], ensure_ascii=False),
+        "knowledge_point": knowledge_point,
+        "knowledge_path": knowledge_path,
+        "chapter": str(payload.get("chapter") or _chapter_from_knowledge_path(knowledge_path, knowledge_point)),
+        "difficulty": str(payload.get("difficulty") or ""),
+        "score": int(result.get("score") or payload.get("score") or 0),
+        "feedback": str(result.get("feedback") or payload.get("feedback") or ""),
+        "last_result": json.dumps(result or {}, ensure_ascii=False),
+    }
+
+
 @evaluation_bp.post("/rebuild-bank")
 @login_required
 def rebuild_bank():
@@ -173,6 +223,122 @@ def submit_quiz():
         return success({"id": record_id, **result, "profile_update": profile_update}, "练习提交成功")
     except Exception as exc:
         return fail("练习提交失败", 500, {"error": str(exc)})
+
+
+
+@evaluation_bp.post("/wrong-book")
+@login_required
+def add_wrong_book_item():
+    try:
+        payload = request.get_json(silent=True) or {}
+        ok, field = require_fields(payload, ["question"])
+        if not ok:
+            return fail(f"缺少必填参数：{field}", 400)
+        data = _wrong_book_payload(request.user_id, payload, payload.get("result") or {})
+        existing = mysql_db.query_one(
+            "SELECT id FROM quiz_wrong_book WHERE user_id=%s AND question=%s AND knowledge_point=%s ORDER BY id DESC LIMIT 1",
+            (request.user_id, data["question"], data["knowledge_point"]),
+        )
+        if existing:
+            mysql_db.update(
+                "quiz_wrong_book",
+                {key: value for key, value in data.items() if key != "user_id"},
+                "id=%s AND user_id=%s",
+                (existing["id"], request.user_id),
+            )
+            item_id = existing["id"]
+        else:
+            item_id = mysql_db.insert("quiz_wrong_book", data)
+        return success({"id": item_id}, "已加入错题本")
+    except Exception as exc:
+        return fail("加入错题本失败", 500, {"error": str(exc)})
+
+
+@evaluation_bp.get("/wrong-book")
+@login_required
+def list_wrong_book():
+    try:
+        rows = mysql_db.query_all(
+            "SELECT * FROM quiz_wrong_book WHERE user_id=%s ORDER BY chapter ASC, knowledge_point ASC, update_time DESC",
+            (request.user_id,),
+        )
+        groups = {}
+        items = []
+        for row in rows:
+            row["options"] = _json_value(row.pop("options_json", None), [])
+            row["scoring_points"] = _json_value(row.get("scoring_points"), [])
+            row["last_result"] = _json_value(row.get("last_result"), {})
+            row["create_time"] = str(row.get("create_time") or "")
+            row["update_time"] = str(row.get("update_time") or "")
+            chapter = row.get("chapter") or "未分类"
+            point = row.get("knowledge_point") or "未分类"
+            groups.setdefault(chapter, {}).setdefault(point, []).append(row)
+            items.append(row)
+        tree = [
+            {
+                "chapter": chapter,
+                "count": sum(len(v) for v in point_map.values()),
+                "points": [
+                    {"knowledge_point": point, "count": len(point_items), "items": point_items}
+                    for point, point_items in point_map.items()
+                ],
+            }
+            for chapter, point_map in groups.items()
+        ]
+        return success({"tree": tree, "items": items}, "错题本读取成功")
+    except Exception as exc:
+        return fail("错题本读取失败", 500, {"error": str(exc)})
+
+
+@evaluation_bp.post("/wrong-book/<int:item_id>/submit")
+@login_required
+def submit_wrong_book_item(item_id: int):
+    try:
+        payload = request.get_json(silent=True) or {}
+        answer = str(payload.get("answer") or "").strip()
+        if not answer:
+            return fail("请先填写答案", 400)
+        item = mysql_db.query_one("SELECT * FROM quiz_wrong_book WHERE id=%s AND user_id=%s", (item_id, request.user_id))
+        if not item:
+            return fail("错题不存在", 404)
+        result = evaluator_agent.grade(
+            str(item.get("question") or ""),
+            answer,
+            str(item.get("reference_answer") or ""),
+            str(item.get("knowledge_point") or ""),
+            str(item.get("explanation") or ""),
+            str(item.get("common_mistake") or ""),
+            _json_value(item.get("scoring_points"), []),
+            str(item.get("question_type") or ""),
+        )
+        mysql_db.update(
+            "quiz_wrong_book",
+            {
+                "answer": answer,
+                "score": int(result.get("score") or 0),
+                "feedback": str(result.get("feedback") or ""),
+                "explanation": str(result.get("explanation") or item.get("explanation") or ""),
+                "common_mistake": str(result.get("common_mistake") or item.get("common_mistake") or ""),
+                "last_result": json.dumps(result, ensure_ascii=False),
+                "review_count": int(item.get("review_count") or 0) + 1,
+            },
+            "id=%s AND user_id=%s",
+            (item_id, request.user_id),
+        )
+        _upsert_mastery(request.user_id, str(item.get("knowledge_point") or ""), int(result["score"]), result["weak_reason"])
+        return success(result, "错题复做判题完成")
+    except Exception as exc:
+        return fail("错题复做失败", 500, {"error": str(exc)})
+
+
+@evaluation_bp.delete("/wrong-book/<int:item_id>")
+@login_required
+def delete_wrong_book_item(item_id: int):
+    try:
+        mysql_db.delete("quiz_wrong_book", "id=%s AND user_id=%s", (item_id, request.user_id))
+        return success({}, "错题已移除")
+    except Exception as exc:
+        return fail("错题移除失败", 500, {"error": str(exc)})
 
 
 @evaluation_bp.get("/summary")

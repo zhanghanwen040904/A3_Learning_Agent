@@ -104,7 +104,7 @@ class AgentManager:
             context.get("study_goal"),
             context.get("course_progress"),
             context.get("current_need"),
-
+            base_query,
             "软件工程",
         ]
         seen = []
@@ -411,7 +411,7 @@ class AgentManager:
             resource["format"] = "markdown"
         elif resource_type == "reading":
             points = stage_context.get("stage_points") or stage_context.get("selected_knowledge_points") or []
-            primary = points[-1] if points else stage_context.get("selected_primary_knowledge_title") or "课程核心知识"
+            primary = stage_context.get("selected_primary_knowledge_title") or (points[0] if points else "课程核心知识")
             resource["title"] = f"{stage_context.get('stage_title')}拓展阅读"
             resource["content"] = "\n".join([
                 f"# {stage_context.get('stage_title')}拓展阅读",

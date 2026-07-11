@@ -1,4 +1,5 @@
 ﻿import json
+import logging
 import re
 from typing import Any, Dict, List, Tuple
 
@@ -12,6 +13,9 @@ except ModuleNotFoundError:
 from ai.llm_adapter import PlatformLLM
 from ai.langchain_parsers import parse_json_with_fallback
 from .base_agent import AgentSpec
+
+
+logger = logging.getLogger(__name__)
 
 
 FORBIDDEN_LABEL_RE = re.compile(
@@ -443,8 +447,22 @@ class StructuredResourceAgent:
         return False
 
     def _invoke_model(self, variables: Dict[str, Any]) -> str:
-        if self.chain is not None:
+        if self.chain is None:
+            logger.warning(
+                "[ResourceAgent] LLM chain unavailable, fallback will be used. resource_type=%s title=%s",
+                self.resource_type,
+                variables.get("task_plan", "")[:160],
+            )
+            return ""
+        try:
             raw = self.chain.invoke(variables)
+        except Exception as exc:
+            logger.exception(
+                "[ResourceAgent] LLM invocation failed, fallback will be used. resource_type=%s error=%s",
+                self.resource_type,
+                exc,
+            )
+            return "调用失败"
         if hasattr(raw, "content"):
             raw = raw.content
         return str(raw or "")
@@ -470,10 +488,20 @@ class StructuredResourceAgent:
         raw = self._invoke_model(variables)
 
         if self._is_model_error(raw):
+            logger.warning(
+                "[ResourceAgent] LLM returned unavailable response, fallback will be used. resource_type=%s raw_preview=%s",
+                self.resource_type,
+                raw[:300],
+            )
             return self._fallback_doc_resource(context, knowledge_text) if self.resource_type == "doc" else self._fallback_resource(context, knowledge_text)
 
         data = parse_json_with_fallback(raw)
         if not isinstance(data, dict):
+            logger.warning(
+                "[ResourceAgent] LLM response is not valid JSON object, fallback will be used. resource_type=%s raw_preview=%s",
+                self.resource_type,
+                raw[:300],
+            )
             return self._fallback_doc_resource(context, knowledge_text) if self.resource_type == "doc" else self._fallback_resource(context, knowledge_text)
 
         if self.resource_type == "doc" and data.get("resourcetype"):
@@ -487,6 +515,12 @@ class StructuredResourceAgent:
 
         if self.resource_type == "doc":
             if self._is_doc_content_weak(data.get("content")):
+                logger.warning(
+                    "[ResourceAgent] LLM doc content failed quality gate, fallback will be used. title=%s content_type=%s raw_preview=%s",
+                    data.get("title") or self.default_title,
+                    type(data.get("content")).__name__,
+                    raw[:300],
+                )
                 return self._fallback_doc_resource(context, knowledge_text)
 
         points = data.get("knowledge_points") or self._context_points(context)

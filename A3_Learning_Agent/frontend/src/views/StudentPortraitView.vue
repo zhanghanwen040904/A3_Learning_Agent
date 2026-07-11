@@ -55,6 +55,36 @@
       </div>
 
       <div class="visual-panel">
+        <div class="portrait-analysis-card" v-if="hasPortraitAnalysisReason">
+          <div class="card-header">
+            <div>
+              <span class="eyebrow">Analysis Reason</span>
+              <strong>学习画像分析依据</strong>
+            </div>
+            <el-tag round effect="plain">{{ confidenceLabel }}</el-tag>
+          </div>
+          <p v-if="portraitScoring.teacher_summary" class="analysis-summary">
+            {{ portraitScoring.teacher_summary }}
+          </p>
+          <p v-if="portraitScoring.evidence_summary" class="analysis-evidence">
+            {{ portraitScoring.evidence_summary }}
+          </p>
+          <div class="analysis-reason-list">
+            <div v-for="item in portraitReasonCards" :key="item.id" class="analysis-reason-item">
+              <div>
+                <b>{{ item.label }}</b>
+                <span>{{ item.score }} · {{ item.level }}</span>
+              </div>
+              <p v-if="item.teacher_judgement">{{ item.teacher_judgement }}</p>
+              <small>{{ item.reason }}</small>
+            </div>
+          </div>
+          <div v-if="portraitScoring.overall_comment" class="analysis-next-step">
+            <b>下一步建议</b>
+            <span>{{ portraitScoring.overall_comment }}</span>
+          </div>
+        </div>
+
         <div class="radar-card">
           <div class="card-header">
             <div>
@@ -159,6 +189,9 @@ const loading = ref(false);
 const aggregateProfile = reactive({});
 const sessions = ref([]);
 let radarChart = null;
+let refreshTimer = null;
+let refreshRequestId = 0;
+let refreshPending = false;
 
 const DEFAULT_VALUE = "待进一步观察";
 const corePrompts = [
@@ -212,6 +245,30 @@ const previewProfile = computed(() => ({
 
 const portraitScoring = computed(() => aggregateProfile.portrait_scoring || {});
 const portraitDimensions = computed(() => portraitScoring.value.dimensions || {});
+const portraitReasonCards = computed(() =>
+  corePrompts
+    .map((item) => {
+      const info = portraitDimensions.value[item.id] || {};
+      const reason = normalizeValue(info.reason);
+      const teacherJudgement = normalizeValue(info.teacher_judgement);
+      return {
+        ...item,
+        score: info.score !== undefined && info.score !== null && info.score !== "" ? `${info.score}分` : "评估中",
+        level: info.level || "待观察",
+        teacher_judgement: teacherJudgement !== DEFAULT_VALUE ? teacherJudgement : "",
+        reason: reason !== DEFAULT_VALUE ? reason : "该维度仍在等待更多对话、答题或学习行为证据支撑。",
+      };
+    })
+    .filter((item) => item.teacher_judgement || item.reason)
+);
+const hasPortraitAnalysisReason = computed(() =>
+  Boolean(
+    portraitScoring.value.teacher_summary
+    || portraitScoring.value.evidence_summary
+    || portraitScoring.value.overall_comment
+    || portraitReasonCards.value.length
+  )
+);
 const portraitHistory = computed(() =>
   Array.isArray(aggregateProfile.portrait_history) ? aggregateProfile.portrait_history : []
 );
@@ -422,12 +479,20 @@ function renderRadar() {
 }
 
 async function refreshData() {
+  if (loading.value) {
+    refreshPending = true;
+    return;
+  }
+  refreshPending = false;
+  const requestId = ++refreshRequestId;
   loading.value = true;
   try {
     const [aggregateRes, sessionRes] = await Promise.all([
       profileApi.getAggregate(),
       profileApi.sessions(),
     ]);
+
+    if (requestId !== refreshRequestId) return;
 
     Object.keys(aggregateProfile).forEach((key) => delete aggregateProfile[key]);
     if (aggregateRes.code === 200 && aggregateRes.data) {
@@ -440,12 +505,21 @@ async function refreshData() {
 
     renderRadar();
   } finally {
-    loading.value = false;
+    if (requestId === refreshRequestId) {
+      loading.value = false;
+      if (refreshPending) {
+        refreshData();
+      }
+    }
   }
 }
 
 function handleRefreshEvent() {
-  refreshData();
+  if (refreshTimer) clearTimeout(refreshTimer);
+  refreshTimer = setTimeout(() => {
+    refreshTimer = null;
+    refreshData();
+  }, 350);
 }
 
 onMounted(() => {
@@ -455,6 +529,10 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
+  if (refreshTimer) {
+    clearTimeout(refreshTimer);
+    refreshTimer = null;
+  }
   window.removeEventListener("resize", renderRadar);
   window.removeEventListener("a3-profile-session-refresh", handleRefreshEvent);
   if (radarChart) {
@@ -510,6 +588,7 @@ onBeforeUnmount(() => {
 .summary-strip,
 .metric-card,
 .radar-card,
+.portrait-analysis-card,
 .dimension-card,
 .support-card,
 .timeline-card {
@@ -575,7 +654,94 @@ onBeforeUnmount(() => {
   gap: 16px;
 }
 
+.portrait-analysis-card {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 16px;
+  background: linear-gradient(135deg, #ffffff, #f8fbff);
+}
+
+.analysis-summary,
+.analysis-evidence,
+.analysis-next-step,
+.analysis-reason-item p,
+.analysis-reason-item small {
+  margin: 0;
+  line-height: 1.75;
+}
+
+.analysis-summary {
+  color: #0f172a;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.analysis-evidence {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.analysis-reason-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.analysis-reason-item {
+  padding: 14px 16px;
+  border: 1px solid #e8edf7;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.82);
+  display: grid;
+  gap: 8px;
+}
+
+.analysis-reason-item div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.analysis-reason-item b {
+  color: #0f172a;
+  font-size: 14px;
+}
+
+.analysis-reason-item span {
+  color: #6d5dfc;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.analysis-reason-item p {
+  color: #1e293b;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.analysis-reason-item small {
+  color: #64748b;
+  font-size: 12px;
+}
+
+.analysis-next-step {
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: #eef2ff;
+  color: #4338ca;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.analysis-next-step b {
+  white-space: nowrap;
+}
+
 .radar-card,
+.portrait-analysis-card,
 .timeline-card,
 .secondary-panel {
   padding: 22px 24px;
@@ -738,6 +904,7 @@ onBeforeUnmount(() => {
 
   .support-grid,
   .dimension-card-grid,
+  .analysis-reason-list,
   .metric-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -755,6 +922,7 @@ onBeforeUnmount(() => {
 
   .support-grid,
   .dimension-card-grid,
+  .analysis-reason-list,
   .metric-row {
     grid-template-columns: 1fr;
   }

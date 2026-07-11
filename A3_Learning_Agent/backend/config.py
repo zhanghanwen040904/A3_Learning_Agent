@@ -78,6 +78,8 @@ class Config:
     )
 
     MOCK_AI: bool = os.getenv("MOCK_AI", "false").lower() == "true"
+    AUTO_MIGRATE: bool = os.getenv("AUTO_MIGRATE", "false").lower() == "true"
+    AUTO_BOOTSTRAP_KNOWLEDGE: bool = os.getenv("AUTO_BOOTSTRAP_KNOWLEDGE", "false").lower() == "true"
 
     JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY", "a3_learner_2026_softcup")
     JWT_EXPIRE_HOURS: int = int(os.getenv("JWT_EXPIRE_HOURS", "24"))

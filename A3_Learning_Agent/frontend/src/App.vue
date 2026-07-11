@@ -157,6 +157,7 @@ import { useRoute, useRouter } from "vue-router";
 import { ElMessage, ElMessageBox } from "element-plus";
 import {
   Connection,
+  Collection,
   Cpu,
   DataAnalysis,
   Delete,
@@ -177,6 +178,7 @@ const primaryNav = [
   { path: "/student-portrait", label: "学生画像", icon: User },
   { path: "/path", label: "学习路径", icon: Connection },
   { path: "/evaluation", label: "学习评估", icon: DataAnalysis },
+  { path: "/wrong-book", label: "错题本", icon: Collection },
 ];
 
 const secondaryNav = [
@@ -192,6 +194,7 @@ const isAuthPage = computed(() => route.path === "/auth");
 const recentSessions = ref([]);
 const creatingSession = ref(false);
 const activeSessionId = ref(activeProfileSessionId());
+let sessionSwitchToken = 0;
 const userInfoVisible = ref(false);
 const userInfoSaving = ref(false);
 const forceCompleteUserInfo = ref(false);
@@ -313,10 +316,12 @@ async function openSession(id) {
   if (Number(id) === Number(activeSessionId.value) && route.path === "/profile") {
     return;
   }
+  const token = ++sessionSwitchToken;
   const previousSessionId = activeSessionId.value;
   activeSessionId.value = String(id);
   setActiveProfileSessionId(id);
   const res = await profileApi.activateSession(id);
+  if (token !== sessionSwitchToken) return;
   if (res.code !== 200) {
     activeSessionId.value = previousSessionId;
     setActiveProfileSessionId(previousSessionId || "");
@@ -352,11 +357,13 @@ async function reviewSession(item) {
   const id = item?.id;
   if (!id) return;
 
+  const token = ++sessionSwitchToken;
   const previousSessionId = activeSessionId.value;
   activeSessionId.value = String(id);
   setActiveProfileSessionId(id);
 
   const res = await profileApi.activateSession(id);
+  if (token !== sessionSwitchToken) return;
   if (res.code !== 200) {
     activeSessionId.value = previousSessionId;
     setActiveProfileSessionId(previousSessionId || "");
@@ -364,9 +371,7 @@ async function reviewSession(item) {
     return;
   }
 
-  if (route.path !== "/path") {
-    await router.push({ path: "/path", query: { sessionId: String(id) } });
-  }
+  await router.push({ path: "/path", query: { sessionId: String(id), auto: "1" } });
 
   window.dispatchEvent(new CustomEvent("a3-profile-session-change", { detail: { id } }));
   ElMessage.success(`已进入“${sessionTitle(item)}”的学习路径`);

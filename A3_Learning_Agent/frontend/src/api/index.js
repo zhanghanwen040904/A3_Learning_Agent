@@ -25,6 +25,20 @@ function profileSessionParams(params = {}) {
   return sessionId ? { ...params, profile_session_id: sessionId } : params;
 }
 
+function withExplicitProfileSession(data = {}, explicitSessionId = "") {
+  if (explicitSessionId) {
+    return { ...data, profile_session_id: Number(explicitSessionId) };
+  }
+  return withProfileSession(data);
+}
+
+function explicitProfileSessionParams(params = {}, explicitSessionId = "") {
+  if (explicitSessionId) {
+    return { ...params, profile_session_id: String(explicitSessionId) };
+  }
+  return profileSessionParams(params);
+}
+
 const http = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api",
   timeout: 360000,
@@ -73,22 +87,22 @@ export const profileApi = {
   chatEnhance: (data) => http.post("/profile/chat/enhance", withProfileSession(data)),
   create: (data) => http.post("/profile/create", withProfileSession(data)),
   update: (data) => http.post("/profile/update", withProfileSession(data)),
-  get: () => http.get("/profile/", { params: profileSessionParams() }),
-  getAggregate: () => http.get("/profile/aggregate"),
+  get: (profileSessionId = "") => http.get("/profile/", { params: explicitProfileSessionParams({}, profileSessionId) }),
+  getAggregate: () => http.get("/profile/aggregate", { params: profileSessionParams() }),
   getConversation: () => http.get("/profile/conversation", { params: profileSessionParams() }),
   saveConversation: (data) => http.post("/profile/conversation", withProfileSession(data)),
   clearConversation: () => http.delete("/profile/conversation", { params: profileSessionParams() }),
 };
 
 export const resourceApi = {
-  generate: (data = {}) => http.post("/resource/generate", withProfileSession(data)),
-  list: () => http.get("/resource/", { params: profileSessionParams() }),
+  generate: (data = {}, profileSessionId = "") => http.post("/resource/generate", withExplicitProfileSession(data, profileSessionId)),
+  list: (profileSessionId = "") => http.get("/resource/", { params: explicitProfileSessionParams({}, profileSessionId) }),
 };
 
 export const pathApi = {
-  generate: (data = {}) => http.post("/path/generate", withProfileSession(data)),
-  list: () => http.get("/path/", { params: profileSessionParams() }),
-  integrated: () => http.get("/path/integrated", { params: profileSessionParams() }),
+  generate: (data = {}, profileSessionId = "") => http.post("/path/generate", withExplicitProfileSession(data, profileSessionId)),
+  list: (profileSessionId = "") => http.get("/path/", { params: explicitProfileSessionParams({}, profileSessionId) }),
+  integrated: (profileSessionId = "") => http.get("/path/integrated", { params: explicitProfileSessionParams({}, profileSessionId) }),
 };
 
 export const chatApi = {
@@ -126,6 +140,10 @@ export const evaluationApi = {
   questions: (data = {}) => http.post("/evaluation/questions", data),
   submit: (data) => http.post("/evaluation/submit", data),
   summary: () => http.get("/evaluation/summary"),
+  wrongBook: () => http.get("/evaluation/wrong-book"),
+  addWrongBook: (data) => http.post("/evaluation/wrong-book", data),
+  submitWrongBook: (id, data) => http.post(`/evaluation/wrong-book/${id}/submit`, data),
+  deleteWrongBook: (id) => http.delete(`/evaluation/wrong-book/${id}`),
   event: (data) => http.post("/evaluation/event", data),
 };
 

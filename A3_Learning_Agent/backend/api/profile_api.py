@@ -2,6 +2,7 @@ import json
 import re
 from typing import Any, Optional
 
+import pymysql
 from flask import Blueprint, request
 
 from ai.agents import ConversationAgent, ProfileAgent
@@ -66,6 +67,13 @@ DIMENSION_LABELS = {
     "support_preference": "适配支持方式",
     "engagement_level": "学习投入状态",
 }
+
+
+def _is_missing_schema_error(exc: Exception) -> bool:
+    if not isinstance(exc, pymysql.err.MySQLError):
+        return False
+    code = exc.args[0] if exc.args else None
+    return code in (1054, 1146)
 
 PORTRAIT_SCORE_PROMPT_TEMPLATE = """
 你是一名“严谨、细腻、懂教学”的高校课程导师。现在请你不要把自己当成填表系统，而是当成一位真正看过学生对话、练习记录和学习行为之后，给学生写阶段性评语的老师。
@@ -219,7 +227,12 @@ def _empty_profile(session_id=None):
 
 
 def _user_personal_info(user_id: int) -> dict:
-    row = mysql_db.query_one("SELECT major, target_course, education_level, school, personal_info FROM `user` WHERE id=%s", (user_id,)) or {}
+    try:
+        row = mysql_db.query_one("SELECT major, target_course, education_level, school, personal_info FROM `user` WHERE id=%s", (user_id,)) or {}
+    except pymysql.err.MySQLError as exc:
+        if not _is_missing_schema_error(exc):
+            raise
+        row = mysql_db.query_one("SELECT id FROM `user` WHERE id=%s", (user_id,)) or {}
     extra = _json_loads(row.get("personal_info"), {})
     if not isinstance(extra, dict):
         extra = {}
@@ -230,7 +243,6 @@ def _user_personal_info(user_id: int) -> dict:
         "school": row.get("school") or extra.get("school") or "",
         **{k: v for k, v in extra.items() if k not in {"major", "target_course", "education_level", "school"}},
     }
-
 
 def _merge_personal_info(profile: dict, personal: Optional[dict] = None) -> dict:
     personal = personal or {}
@@ -313,6 +325,7 @@ def _persist_profile_result(user_id: int, session_id: int, session: dict, profil
     aggregate_profile = _aggregate_profile_payload(
         user_id,
         _refresh_aggregate_profile(user_id, transient_profile=profile_result.get("profile")),
+        refresh_scoring=True,
     )
     _persist_portrait_snapshot(
         user_id=user_id,
@@ -408,6 +421,48 @@ def _cached_aggregate_profile(user_id: int) -> Optional[dict]:
     if not row:
         return None
     return {"user_id": user_id, "profile_session_id": AGGREGATE_PROFILE_SESSION_ID, **_profile_only(row)}
+
+
+def _has_meaningful_profile(profile: Optional[dict]) -> bool:
+    if not profile:
+        return False
+    meaningful_fields = [
+        "current_topic",
+        "mastery_level",
+        "current_difficulty",
+        "task_goal",
+        "support_preference",
+        "engagement_level",
+        "weak_knowledge_points",
+        "profile_summary",
+    ]
+    return any(_normalize_text((profile or {}).get(field)) for field in meaningful_fields)
+
+
+def _ensure_session_profile_from_conversation(user_id: int, session: Optional[dict] = None) -> Optional[dict]:
+    session = session or _active_session(user_id, create_if_missing=False)
+    if not session:
+        return None
+    session_id = session["id"]
+    existing = mysql_db.query_one(
+        "SELECT * FROM student_profile WHERE user_id=%s AND profile_session_id=%s",
+        (user_id, session_id),
+    )
+    if _has_meaningful_profile(existing):
+        return existing
+
+    conversation = mysql_db.query_one(
+        "SELECT messages FROM profile_conversation WHERE user_id=%s AND profile_session_id=%s",
+        (user_id, session_id),
+    ) or {}
+    messages = _json_loads(conversation.get("messages"), [])
+    if not isinstance(messages, list) or not any(item.get("role") == "user" and _normalize_text(item.get("content")) for item in messages):
+        return existing
+
+    current_profile = _profile_only(existing or {})
+    profile_result = profile_agent.chat_extract(messages, current_profile)
+    persisted = _persist_profile_result(user_id, session_id, session, profile_result)
+    return persisted.get("profile") or profile_result.get("profile")
 
 
 def _normalize_text(value) -> str:
@@ -748,9 +803,41 @@ def _portrait_dimension_scores(user_id: int, profile: dict) -> dict:
         return _portrait_score_fallback(profile, evidence)
 
 
-def _aggregate_profile_payload(user_id: int, profile: dict) -> dict:
+def _latest_portrait_snapshot(user_id: int) -> dict:
+    row = mysql_db.query_one(
+        """
+        SELECT id, profile_summary, portrait_scoring, profile_snapshot, create_time
+        FROM portrait_snapshot
+        WHERE user_id=%s
+        ORDER BY id DESC
+        LIMIT 1
+        """,
+        (user_id,),
+    )
+    return row or {}
+
+
+def _cached_portrait_scoring(user_id: int, profile: dict) -> Optional[dict]:
+    latest = _latest_portrait_snapshot(user_id)
+    scoring = _json_loads(latest.get("portrait_scoring"), {})
+    if not isinstance(scoring, dict) or not scoring.get("dimensions"):
+        return None
+
+    cached_snapshot = _json_loads(latest.get("profile_snapshot"), {})
+    current_snapshot = _snapshot_profile_view(profile or {})
+    if cached_snapshot == current_snapshot:
+        scoring["method"] = scoring.get("method") or "读取最近一次画像评分缓存"
+        return scoring
+    return None
+
+
+def _aggregate_profile_payload(user_id: int, profile: dict, refresh_scoring: bool = False) -> dict:
     payload = dict(profile or {})
-    payload["portrait_scoring"] = _portrait_dimension_scores(user_id, payload)
+    if refresh_scoring:
+        payload["portrait_scoring"] = _portrait_dimension_scores(user_id, payload)
+    else:
+        cached_scoring = _cached_portrait_scoring(user_id, payload)
+        payload["portrait_scoring"] = cached_scoring or _portrait_score_fallback(payload, {})
     payload["portrait_history"] = _portrait_history(user_id, limit=6)
     return payload
 
@@ -859,6 +946,8 @@ def get_user_info():
     try:
         return success(_user_personal_info(request.user_id), "个人信息读取成功")
     except Exception as exc:
+        if _is_missing_schema_error(exc):
+            return success({"major": "", "target_course": "", "education_level": "", "school": ""}, "个人信息表字段尚未初始化")
         return fail("个人信息读取失败", 500, {"error": str(exc)})
 
 
@@ -910,6 +999,8 @@ def list_sessions():
                 row["title"] = desired_title
         return success({"sessions": rows, "active_session_id": session["id"] if session else None}, "查询成功")
     except Exception as exc:
+        if _is_missing_schema_error(exc):
+            return success({"sessions": [], "active_session_id": None}, "画像会话表尚未初始化")
         return fail("画像会话查询失败", 500, {"error": str(exc)})
 
 
@@ -1135,6 +1226,7 @@ def create_profile():
         aggregate_profile = _aggregate_profile_payload(
             request.user_id,
             _refresh_aggregate_profile(request.user_id, transient_profile=profile),
+            refresh_scoring=True,
         )
         _persist_portrait_snapshot(
             user_id=request.user_id,
@@ -1180,6 +1272,7 @@ def update_profile():
         aggregate_profile = _aggregate_profile_payload(
             request.user_id,
             _refresh_aggregate_profile(request.user_id, transient_profile=data),
+            refresh_scoring=True,
         )
         _persist_portrait_snapshot(
             user_id=request.user_id,
@@ -1216,19 +1309,15 @@ def get_aggregate_profile():
         profile = _cached_aggregate_profile(request.user_id)
         if not profile:
             profile = _refresh_aggregate_profile(request.user_id)
-        profile = _merge_personal_info(profile, _user_personal_info(request.user_id))
-        payload = _aggregate_profile_payload(request.user_id, profile)
-        if not payload.get("portrait_history"):
-            _persist_portrait_snapshot(
-                user_id=request.user_id,
-                profile_session_id=AGGREGATE_PROFILE_SESSION_ID,
-                profile=payload,
-                portrait_scoring=payload.get("portrait_scoring") or {},
-                trigger_source="aggregate_read_init",
-            )
-            payload["portrait_history"] = _portrait_history(request.user_id, limit=6)
+        profile = _merge_personal_info(profile or _empty_profile(), _user_personal_info(request.user_id))
+        payload = _aggregate_profile_payload(request.user_id, profile, refresh_scoring=False)
         return success(payload, "综合画像读取成功")
     except Exception as exc:
+        if _is_missing_schema_error(exc):
+            data = _empty_profile()
+            data["portrait_scoring"] = _portrait_score_fallback(data, {})
+            data["portrait_history"] = []
+            return success(data, "综合画像表尚未初始化")
         return fail("综合画像读取失败", 500, {"error": str(exc)})
 
 
@@ -1260,6 +1349,8 @@ def get_conversation():
             "对话记录读取成功",
         )
     except Exception as exc:
+        if _is_missing_schema_error(exc):
+            return success({}, "对话记录表尚未初始化")
         return fail("对话记录读取失败", 500, {"error": str(exc)})
 
 

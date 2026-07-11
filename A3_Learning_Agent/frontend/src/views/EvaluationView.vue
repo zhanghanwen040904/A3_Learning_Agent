@@ -100,7 +100,10 @@
               <el-tag type="info">{{ currentQuestion.difficulty }}</el-tag>
             </div>
 
-            <h3>{{ currentQuestion.order }}. {{ currentQuestion.prompt }}</h3>
+            <div class="question-title-line">
+              <h3>{{ currentQuestion.order }}. {{ currentQuestion.prompt }}</h3>
+              <el-button size="small" type="warning" plain @click="addQuestionToWrongBook(currentQuestion)">加入错题本</el-button>
+            </div>
 
             <div v-if="currentQuestion.options?.length" class="option-list">
               <div v-for="option in currentQuestion.options" :key="option.label" class="option-item">
@@ -157,7 +160,10 @@
               </el-tag>
             </div>
 
-            <h3>{{ question.order }}. {{ question.prompt }}</h3>
+            <div class="question-title-line">
+              <h3>{{ question.order }}. {{ question.prompt }}</h3>
+              <el-button size="small" type="warning" plain @click="addQuestionToWrongBook(question)">加入错题本</el-button>
+            </div>
 
             <div v-if="question.options?.length" class="option-list">
               <div v-for="option in question.options" :key="option.label" class="option-item">
@@ -458,6 +464,34 @@ async function submitQuestion(question) {
   }
 }
 
+async function addQuestionToWrongBook(question) {
+  try {
+    const res = await evaluationApi.addWrongBook({
+      question: question.prompt,
+      question_type: question.question_type,
+      options: question.options || [],
+      answer: question.userAnswer || "",
+      reference_answer: question.result?.reference_answer || question.reference_answer,
+      explanation: question.result?.explanation || question.explanation,
+      common_mistake: question.result?.common_mistake || question.common_mistake,
+      scoring_points: question.result?.scoring_points || question.scoring_points || [],
+      knowledge_point: question.knowledge_path,
+      knowledge_path: question.knowledge_path,
+      difficulty: question.difficulty,
+      score: question.result?.score || 0,
+      feedback: question.result?.feedback || "",
+      result: question.result || {},
+    });
+    if (res.code === 200) {
+      ElMessage.success("已加入错题本，可在左侧导航栏的错题本中查看");
+    } else {
+      ElMessage.error(res.msg || "加入错题本失败");
+    }
+  } catch (error) {
+    ElMessage.error(error?.message || "加入错题本失败");
+  }
+}
+
 onMounted(async () => {
   if (stageContext.value.active) {
     generator.knowledgePoint = stageContext.value.points.join('、') || stageContext.value.title;
@@ -581,6 +615,36 @@ onMounted(async () => {
   margin-top: 14px;
   display: flex;
   gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.question-title-line {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.question-title-line h3 {
+  margin: 0 0 12px;
+  color: #0f172a;
+  line-height: 1.6;
+}
+
+.wrong-question-card {
+  margin: 12px 0;
+  padding: 16px;
+  border: 1px solid #ebeef5;
+  border-radius: 12px;
+  background: #fffaf2;
+}
+
+.wrong-question-card .result-box {
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid #f3e5c8;
 }
 
 .result-box {
