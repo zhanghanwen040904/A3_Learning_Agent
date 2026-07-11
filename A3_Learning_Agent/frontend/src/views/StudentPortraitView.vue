@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="portrait-view-page">
     <div class="page-header">
       <div>
@@ -195,20 +195,22 @@ let refreshPending = false;
 
 const DEFAULT_VALUE = "待进一步观察";
 const corePrompts = [
-  { id: "current_topic", label: "当前学习主题" },
-  { id: "mastery_level", label: "掌握程度" },
-  { id: "current_difficulty", label: "当前困难点" },
-  { id: "task_goal", label: "当前任务目标" },
-  { id: "support_preference", label: "适配支持方式" },
-  { id: "engagement_level", label: "学习投入状态" },
+  { id: "knowledge_foundation", label: "知识基础" },
+  { id: "knowledge_mastery", label: "知识点掌握" },
+  { id: "weak_point_distribution", label: "薄弱点分布" },
+  { id: "learning_progress", label: "学习进度" },
+  { id: "engagement_level", label: "学习投入" },
+  { id: "support_match", label: "支持方式匹配" },
+  { id: "error_pattern_stability", label: "易错类型稳定性" },
+  { id: "goal_attainment_risk", label: "目标达成把握" },
 ];
 
 const supportPrompts = [
-  { id: "learning_background", label: "学习背景" },
-  { id: "recent_progress", label: "最近进展" },
-  { id: "schedule_pattern", label: "学习节奏" },
-  { id: "preferred_resource", label: "资源偏好" },
-  { id: "weak_knowledge_points", label: "薄弱知识点" },
+  { id: "current_stage_label", label: "当前学习阶段" },
+  { id: "weak_knowledge_points", label: "当前薄弱知识点" },
+  { id: "strong_knowledge_points", label: "当前优势知识点" },
+  { id: "error_pattern", label: "易错类型" },
+  { id: "goal_risk", label: "目标状态" },
   { id: "recommended_next_step", label: "下一步建议" },
 ];
 
@@ -245,22 +247,27 @@ const previewProfile = computed(() => ({
 
 const portraitScoring = computed(() => aggregateProfile.portrait_scoring || {});
 const portraitDimensions = computed(() => portraitScoring.value.dimensions || {});
+const dynamicProfile = computed(() => aggregateProfile.dynamic_profile || portraitScoring.value.dynamic_profile || {});
+
+function dynamicValue(key) {
+  return normalizeValue(dynamicProfile.value[key]);
+}
+
 const portraitReasonCards = computed(() =>
-  corePrompts
-    .map((item) => {
-      const info = portraitDimensions.value[item.id] || {};
-      const reason = normalizeValue(info.reason);
-      const teacherJudgement = normalizeValue(info.teacher_judgement);
-      return {
-        ...item,
-        score: info.score !== undefined && info.score !== null && info.score !== "" ? `${info.score}分` : "评估中",
-        level: info.level || "待观察",
-        teacher_judgement: teacherJudgement !== DEFAULT_VALUE ? teacherJudgement : "",
-        reason: reason !== DEFAULT_VALUE ? reason : "该维度仍在等待更多对话、答题或学习行为证据支撑。",
-      };
-    })
-    .filter((item) => item.teacher_judgement || item.reason)
+  corePrompts.map((item) => {
+    const info = portraitDimensions.value[item.id] || {};
+    const reason = normalizeValue(info.reason);
+    const teacherJudgement = normalizeValue(info.teacher_judgement);
+    return {
+      ...item,
+      score: info.score !== undefined && info.score !== null && info.score !== "" ? `${info.score}分` : "评估中",
+      level: info.level || "待观察",
+      teacher_judgement: teacherJudgement !== DEFAULT_VALUE ? teacherJudgement : "",
+      reason: reason !== DEFAULT_VALUE ? reason : "该维度正在等待更多答题、错题或学习行为证据。",
+    };
+  }).filter((item) => item.teacher_judgement || item.reason)
 );
+
 const hasPortraitAnalysisReason = computed(() =>
   Boolean(
     portraitScoring.value.teacher_summary
@@ -283,6 +290,12 @@ const previousSnapshotDimensions = computed(() =>
 const hasHistoryComparison = computed(() =>
   Boolean(currentPortraitSnapshot.value && previousPortraitSnapshot.value)
 );
+const completedCount = computed(() =>
+  corePrompts.filter((item) => {
+    const score = Number(portraitDimensions.value[item.id]?.score);
+    return !Number.isNaN(score) && score > 0;
+  }).length
+);
 const completionRatio = computed(() => {
   const backendRatio = Number(portraitScoring.value.completion_ratio);
   if (!Number.isNaN(backendRatio) && backendRatio > 0) return backendRatio;
@@ -290,20 +303,19 @@ const completionRatio = computed(() => {
 });
 const confidenceLabel = computed(() => {
   if (portraitScoring.value.confidence_label) return portraitScoring.value.confidence_label;
-  if (completedCount.value >= 5) return "画像形成中";
-  if (completedCount.value >= 3) return "初步识别";
-  return "待进一步观察";
+  if (completedCount.value >= 6) return "较完整";
+  if (completedCount.value >= 4) return "初步形成";
+  return "待观察";
 });
 const scoringMethod = computed(() =>
-  portraitScoring.value.method || "当前画像摘要已形成，细粒度评分会在模型完成综合评估后更新"
-);
-
-const completedCount = computed(() =>
-  corePrompts.filter((item) => previewProfile.value[item.id] !== DEFAULT_VALUE).length
+  portraitScoring.value.method || "当前画像已开始根据学习证据动态更新。"
 );
 
 const hasAnyMeaningfulProfile = computed(() => {
-  const values = Object.values(previewProfile.value);
+  const values = [
+    ...Object.values(previewProfile.value),
+    ...corePrompts.map((item) => dynamicValue(item.id)),
+  ];
   return values.some((item) => item && item !== DEFAULT_VALUE);
 });
 
@@ -318,22 +330,19 @@ const displayMajor = computed(() =>
 );
 
 const summaryTags = computed(() =>
-  corePrompts
-    .filter((item) => previewProfile.value[item.id] !== DEFAULT_VALUE)
-    .slice(0, 4)
+  corePrompts.filter((item) => dynamicValue(item.id) !== DEFAULT_VALUE).slice(0, 4)
 );
 
 const previewSummary = computed(() => {
+  if (portraitScoring.value.teacher_summary) return portraitScoring.value.teacher_summary;
   const summary = previewProfile.value.profile_summary;
   if (summary !== DEFAULT_VALUE) return summary;
-
   const parts = [];
-  if (previewProfile.value.target_course !== DEFAULT_VALUE) parts.push(`聚焦${previewProfile.value.target_course}`);
-  if (previewProfile.value.current_topic !== DEFAULT_VALUE) parts.push(`正在处理“${previewProfile.value.current_topic}”`);
-  if (previewProfile.value.mastery_level !== DEFAULT_VALUE) parts.push(`掌握状态：${previewProfile.value.mastery_level}`);
-  if (previewProfile.value.current_difficulty !== DEFAULT_VALUE) parts.push(`主要卡点：${previewProfile.value.current_difficulty}`);
-  if (previewProfile.value.task_goal !== DEFAULT_VALUE) parts.push(`目标：${previewProfile.value.task_goal}`);
-  return parts.join("；") || "继续进行真实学习对话后，这里会自动沉淀出更稳定的学生画像。";
+  if (displayCourse.value !== DEFAULT_VALUE) parts.push(`当前课程：${displayCourse.value}`);
+  if (dynamicValue("learning_progress") !== DEFAULT_VALUE) parts.push(dynamicValue("learning_progress"));
+  if (dynamicValue("weak_point_distribution") !== DEFAULT_VALUE) parts.push(dynamicValue("weak_point_distribution"));
+  if (dynamicValue("goal_attainment_risk") !== DEFAULT_VALUE) parts.push(dynamicValue("goal_attainment_risk"));
+  return parts.join("；") || "继续进行真实学习、答题与反馈后，这里会形成更稳定的动态学生画像。";
 });
 
 const dimensionScores = computed(() =>
@@ -358,46 +367,55 @@ const radarCompareHint = computed(() => {
   if (hasHistoryComparison.value) {
     const previousTime = formatTime(previousPortraitSnapshot.value?.create_time);
     const currentTime = formatTime(currentPortraitSnapshot.value?.create_time);
-    return `浅紫色表示上一轮画像（${previousTime}），深紫色表示本轮更新后的画像（${currentTime}）。每次真实对话后，画像都会继续沉淀并逐步修正评分。`;
+    return `浅色表示上一轮画像（${previousTime}），深色表示当前画像（${currentTime}）。每次真实学习、答题和反馈后，画像都会继续更新。`;
   }
   if (currentPortraitSnapshot.value) {
-    return "当前已生成本轮画像；继续完成新的真实对话后，这里会叠加出“上一轮 vs 当前轮”的变化对比。";
+    return "当前已经形成一轮画像；继续学习后，这里会展示上一轮与当前轮的变化对比。";
   }
   return "";
 });
 
 const coreCards = computed(() =>
-  corePrompts.map((item, index) => {
-    const value = previewProfile.value[item.id];
+  corePrompts.map((item) => {
+    const value = dynamicValue(item.id);
     const backendInfo = portraitDimensions.value[item.id] || {};
     const filled = value !== DEFAULT_VALUE;
     return {
       ...item,
-      value: filled ? value : "当前还没有稳定识别到该维度，会随着真实对话继续补充。",
+      value: filled ? value : "当前证据还不足，系统会在后续对话、答题和资源反馈后继续补全。",
       filled,
       score: backendInfo.score !== undefined ? `${backendInfo.score}分` : (filled ? "评估中" : "待识别"),
-      reason: backendInfo.reason || (filled ? "该维度已经识别到有效内容，正在等待大模型给出更细致的教师式评估。" : "目前证据不足，暂时还无法稳定判断。"),
+      reason: backendInfo.reason || (filled ? "该维度已接入学习证据，后续会继续根据新记录自动修正。" : "当前尚缺少足够学习证据，暂时无法稳定判断。"),
     };
   })
 );
 
-const supportCards = computed(() =>
-  supportPrompts.map((item) => ({
+const supportCards = computed(() => {
+  const supportData = {
+    current_stage_label: dynamicValue("current_stage_label"),
+    weak_knowledge_points: dynamicValue("weak_knowledge_points"),
+    strong_knowledge_points: dynamicValue("strong_knowledge_points"),
+    error_pattern: dynamicValue("error_pattern"),
+    goal_risk: dynamicValue("goal_risk"),
+    recommended_next_step: previewProfile.value.recommended_next_step,
+  };
+  return supportPrompts.map((item) => ({
     ...item,
-    value: previewProfile.value[item.id] !== DEFAULT_VALUE ? previewProfile.value[item.id] : "待进一步观察",
-  }))
-);
+    value: supportData[item.id] !== DEFAULT_VALUE ? supportData[item.id] : "待进一步观察",
+  }));
+});
 
 const timelineItems = computed(() => {
-  const list = [...sessions.value]
-    .sort((a, b) => new Date(b.create_time || b.update_time || 0).getTime() - new Date(a.create_time || a.update_time || 0).getTime())
+  const list = portraitHistory.value
     .slice(0, 6)
     .map((item) => ({
       id: item.id,
-      title: item.title || `学习会话 ${item.id}`,
+      title: formatTime(item.create_time),
       desc: normalizeValue(item.profile_summary) !== DEFAULT_VALUE
         ? normalizeValue(item.profile_summary)
-        : `创建于 ${formatTime(item.create_time || item.update_time)}`,
+        : normalizeValue(item.portrait_scoring?.overall_comment) !== DEFAULT_VALUE
+          ? normalizeValue(item.portrait_scoring?.overall_comment)
+          : "画像已根据新学习证据完成一次更新。",
     }));
 
   return list.length
@@ -405,8 +423,8 @@ const timelineItems = computed(() => {
     : [
         {
           id: "empty",
-          title: "等待更多对话",
-          desc: "当你继续提问、学习、复习或答题后，这里会持续记录画像变化。",
+          title: "等待更多学习记录",
+          desc: "当你继续提问、学习、做题或复盘后，这里会持续记录画像变化。",
         },
       ];
 });

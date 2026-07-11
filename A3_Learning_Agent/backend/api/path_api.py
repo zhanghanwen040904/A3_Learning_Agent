@@ -332,6 +332,23 @@ def _profile_basis(profile: dict | None) -> dict:
     }
 
 
+def _normalize_stage_progress_rows(rows: list[dict]) -> list[dict]:
+    result = []
+    for row in rows or []:
+        detail = _safe_json(row.get("detail"), {})
+        result.append(
+            {
+                "id": row.get("id"),
+                "stage_index": int(detail.get("stage_index") or 0),
+                "stage_title": str(detail.get("stage_title") or ""),
+                "completed": bool(detail.get("completed", True)),
+                "knowledge_points": detail.get("knowledge_points") or [],
+                "time": str(row.get("create_time") or ""),
+            }
+        )
+    return result
+
+
 @path_bp.post("/generate")
 @login_required
 def generate_learning_path():
@@ -481,6 +498,100 @@ def integrated_learning_path():
     except Exception as exc:
         return fail("一体化学习路径查询失败", 500, {"error": str(exc)})
 
+
+
+@path_bp.get("/stage-progress")
+@login_required
+def get_stage_progress():
+    try:
+        session = resolve_profile_session(request.user_id, request.args.to_dict(), create_if_missing=False)
+        if not session:
+            return success({"profile_session_id": None, "items": []}, "暂无画像会话阶段进度")
+        rows = mysql_db.query_all(
+            """
+            SELECT id, detail, create_time
+            FROM learning_event
+            WHERE user_id=%s AND profile_session_id=%s AND event_type='complete_stage'
+            ORDER BY create_time DESC, id DESC
+            """,
+            (request.user_id, session["id"]),
+        )
+        latest_by_stage = {}
+        for item in _normalize_stage_progress_rows(rows):
+            stage_index = item.get("stage_index")
+            if stage_index and stage_index not in latest_by_stage:
+                latest_by_stage[stage_index] = item
+        return success(
+            {
+                "profile_session_id": session["id"],
+                "items": sorted(latest_by_stage.values(), key=lambda item: item["stage_index"]),
+            },
+            "阶段进度查询成功",
+        )
+    except Exception as exc:
+        return fail("阶段进度查询失败", 500, {"error": str(exc)})
+
+
+@path_bp.post("/stage-progress")
+@login_required
+def save_stage_progress():
+    try:
+        payload = request.get_json(silent=True) or {}
+        session = resolve_profile_session(request.user_id, payload, create_if_missing=False)
+        if not session:
+            return fail("未找到画像会话，无法记录阶段进度", 404)
+
+        stage_index = int(payload.get("stage_index") or 0)
+        if stage_index <= 0:
+            return fail("stage_index 无效", 400)
+
+        detail = {
+            "stage_index": stage_index,
+            "stage_title": str(payload.get("stage_title") or "")[:120],
+            "completed": bool(payload.get("completed", True)),
+            "knowledge_points": payload.get("knowledge_points") if isinstance(payload.get("knowledge_points"), list) else [],
+            "path_id": payload.get("path_id"),
+        }
+        knowledge_point = "、".join(str(item) for item in detail["knowledge_points"][:3] if str(item).strip()) or detail["stage_title"] or f"第{stage_index}阶段"
+
+        mysql_db.insert(
+            "learning_event",
+            {
+                "user_id": request.user_id,
+                "profile_session_id": session["id"],
+                "event_type": "complete_stage",
+                "knowledge_point": knowledge_point,
+                "detail": json.dumps(detail, ensure_ascii=False),
+            },
+        )
+
+        from api.profile_api import _aggregate_profile_payload, _persist_portrait_snapshot, _refresh_aggregate_profile
+
+        aggregate_profile = _aggregate_profile_payload(
+            request.user_id,
+            _refresh_aggregate_profile(request.user_id),
+            refresh_scoring=True,
+        )
+        _persist_portrait_snapshot(
+            user_id=request.user_id,
+            profile_session_id=session["id"],
+            profile=aggregate_profile,
+            portrait_scoring=aggregate_profile.get("portrait_scoring") or {},
+            trigger_source="path_stage_complete",
+            force=True,
+        )
+
+        return success(
+            {
+                "profile_session_id": session["id"],
+                "stage_index": stage_index,
+                "completed": detail["completed"],
+                "aggregate_profile": aggregate_profile,
+            },
+            "阶段进度已记录，画像已刷新",
+        )
+    except Exception as exc:
+        return fail("阶段进度记录失败", 500, {"error": str(exc)})
 
 @path_bp.get("/")
 @login_required
