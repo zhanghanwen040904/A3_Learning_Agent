@@ -60,7 +60,7 @@
       <div v-for="(s,i) in stages" v-show="i===activeStageIndex" :key="s.key" :class="['stage',state(i)]">
         <el-card class="stage-card" shadow="never">
           <template #header><div class="stage-head compact-stage-head"><div class="stage-title-block"><el-tag :type="tag(i)" effect="dark">{{ label(i) }}</el-tag><h3>第{{i+1}}阶段：{{s.title}}</h3><p>{{s.goal}}</p></div><div class="stage-head-actions"><el-tag v-for="p in (s.points||[]).slice(0,3)" :key="p" size="small" type="info" effect="plain">{{p}}</el-tag><el-button size="small" plain @click="toggle(i)">{{done(i)?'取消完成':'标记完成'}}</el-button></div></div></template>
-          <div class="body"><div class="section"><b>本阶段配套资源</b><span>保留个性化说明与质量审核报告</span></div><el-tabs v-if="s.resources.length" v-model="activeResourceTabs[i]" class="resource-tabs" stretch @tab-change="renderMarkmaps" @tab-click="renderMarkmaps">
+          <div class="body"><div class="section"><b>本阶段配套资源</b><span>保留个性化说明与质量审核报告</span></div><el-tabs v-if="s.resources.length" v-model="activeResourceTabs[i]" class="resource-tabs" stretch>
                 <el-tab-pane v-for="r in s.resources" :key="rid(r)" :name="rid(r)">
                   <template #label><span class="resource-tab-label"><span>{{resourceIcon(r.resource_type)}}</span>{{typeName(r.resource_type)}}</span></template>
                   <div :class="['res',resourceClass(r)]" @click="isFixedResource(r)?null:toggleResource(r)">
@@ -346,6 +346,7 @@ function displayResources(items,stage){
 }
 function mindmapStageKind(stage){
   const text=`${stage.title||''} ${stage.goal||''} ${(stage.points||[]).join(' ')}`;
+  if(/案例|迁移|应用|实操|项目|综合/.test(text))return 'application';
   if(/UML|用例图|类图|时序图|对象|建模/.test(text))return 'uml';
   if(/需求分析|需求规格|需求定义|用户需求|功能需求/.test(text))return 'requirement';
   if(/可行性|立项|经济|技术可行|操作可行/.test(text))return 'feasibility';
@@ -358,45 +359,58 @@ function stageMindmapBranches(stage){
   const points=stage.points?.length?stage.points:['课程核心知识'];
   const goal=clean(stage.goal||'理解本阶段核心知识并完成迁移应用');
   const kind=mindmapStageKind(stage);
+  const mainPoint=points[0]||stage.title||'课程核心知识';
   if(kind==='uml')return [
-    ['建模目标',[`从需求描述抽取对象、角色和交互`,goal]],
-    ['用例图',[`识别参与者与系统边界`,`描述用户目标和系统服务`]],
-    ['类图',[`抽取类、属性、操作和关系`,`检查泛化、关联、聚合等结构`]],
-    ['时序图',[`按时间顺序表达消息交互`,`验证对象协作是否支撑用例`]],
-    ['递进流程',[`需求说明 → 用例图 → 类图 → 时序图`,`用模型互相校验遗漏和矛盾`]],
+    ['建模目标',[`从需求描述抽取对象、角色和交互`,`把抽象文字转成可视结构`,goal]],
+    ['用例图',[`识别参与者与系统边界`,`描述用户目标和系统服务`,`确认谁在什么时候触发系统行为`]],
+    ['类图',[`抽取类、属性、操作和关系`,`检查泛化、关联、聚合等结构`,`为后续编码和数据库设计提供线索`]],
+    ['时序图',[`按时间顺序表达消息交互`,`验证对象协作是否支撑用例`,`发现职责分配是否合理`]],
+    ['模型联动',[`需求说明 → 用例图 → 类图 → 时序图`,`用模型互相校验遗漏和矛盾`,`从静态结构看到动态行为`]],
+    ['学习检查',[`能否解释每种图解决什么问题`,`能否把课程案例映射到对应模型`,`能否发现建模和编码之间的联系`]],
   ];
   if(kind==='requirement')return [
-    ['需求来源',[`用户访谈、业务流程、现有系统和课程案例`,`区分真实需求与实现设想`]],
-    ['需求分类',[`功能需求：系统必须完成什么`,`非功能需求：性能、安全、易用性等约束`]],
-    ['规格说明',[`边界、输入、输出、异常和验收标准`,`形成可沟通、可设计、可测试的文档`]],
-    ['验证确认',[`检查一致性、完整性和可验证性`,`避免过早进入设计实现`]],
+    ['需求来源',[`用户访谈、业务流程、现有系统和课程案例`,`区分真实需求与实现设想`,`识别需求背后的业务目标`]],
+    ['需求分类',[`功能需求：系统必须完成什么`,`非功能需求：性能、安全、易用性等约束`,`业务规则与数据约束也要显式写出`]],
+    ['规格说明',[`边界、输入、输出、异常和验收标准`,`形成可沟通、可设计、可测试的文档`,`让开发和测试都能据此展开工作`]],
+    ['验证确认',[`检查一致性、完整性和可验证性`,`避免过早进入设计实现`,`通过评审减少返工风险`]],
+    ['向后衔接',[`为总体设计提供稳定输入`,`把含糊描述转成明确约束`,`为测试用例预留验收依据`]],
   ];
   if(kind==='feasibility')return [
-    ['研究目标',[`判断项目是否值得做、能否做成`,`为后续立项和方案选择提供依据`]],
-    ['技术可行性',[`现有技术、团队能力和系统集成难度`,`识别关键技术风险`]],
-    ['经济可行性',[`成本、收益、投入周期和资源约束`,`比较不同方案的性价比`]],
-    ['操作与进度',[`用户环境、组织流程和实施阻力`,`检查时间计划是否现实`]],
-    ['结论输出',[`可行、不可行或有条件可行`,`给出继续推进的建议`]],
+    ['研究目标',[`判断项目是否值得做、能否做成`,`为后续立项和方案选择提供依据`,`避免盲目投入开发资源`]],
+    ['技术可行性',[`现有技术、团队能力和系统集成难度`,`识别关键技术风险`,`比较不同实现路径的复杂度`]],
+    ['经济可行性',[`成本、收益、投入周期和资源约束`,`比较不同方案的性价比`,`明确预算与回报之间的平衡`]],
+    ['操作与进度',[`用户环境、组织流程和实施阻力`,`检查时间计划是否现实`,`评估团队和业务部门是否能配合`]],
+    ['结论输出',[`可行、不可行或有条件可行`,`给出继续推进的建议`,`说明限制条件和后续注意事项`]],
   ];
   if(kind==='test')return [
-    ['测试依据',[`需求规格、设计说明和用户场景`,`把质量目标转化为可检查条件`]],
-    ['用例设计',[`输入数据、执行步骤和预期结果`,`覆盖正常、异常和边界情况`]],
-    ['执行记录',[`记录实际结果和缺陷现象`,`区分测试发现问题与调试修复问题`]],
-    ['缺陷回归',[`定位修复后重新验证`,`确认修改没有引入新问题`]],
+    ['测试依据',[`需求规格、设计说明和用户场景`,`把质量目标转化为可检查条件`,`明确通过和失败标准`]],
+    ['用例设计',[`输入数据、执行步骤和预期结果`,`覆盖正常、异常和边界情况`,`围绕高风险功能优先设计`]],
+    ['执行记录',[`记录实际结果和缺陷现象`,`区分测试发现问题与调试修复问题`,`沉淀可追踪的测试证据`]],
+    ['缺陷回归',[`定位修复后重新验证`,`确认修改没有引入新问题`,`把问题闭环到质量改进`]],
+    ['质量视角',[`测试不是最后补救，而是持续验证`,`越早发现问题，修复成本越低`,`结果要能反向促进需求和设计修正`]],
   ];
   if(kind==='lifecycle')return [
-    ['阶段序列',[`可行性研究 → 需求分析 → 设计 → 编码 → 测试 → 维护`,`理解每个阶段的输入和输出`]],
-    ['阶段产物',[`报告、规格说明、设计文档、代码、测试记录`,`产物为后续阶段提供依据`]],
-    ['角色协作',[`用户、分析员、设计人员、开发人员、测试人员`,`不同角色关注点不同但目标一致`]],
-    ['质量控制',[`评审、验证、变更管理和持续反馈`,`避免问题在后续阶段放大`]],
+    ['阶段序列',[`可行性研究 → 需求分析 → 设计 → 编码 → 测试 → 维护`,`理解每个阶段的输入和输出`,`明确阶段之间不是孤立存在`]],
+    ['阶段产物',[`报告、规格说明、设计文档、代码、测试记录`,`产物为后续阶段提供依据`,`每份文档都服务于下一步决策`]],
+    ['角色协作',[`用户、分析员、设计人员、开发人员、测试人员`,`不同角色关注点不同但目标一致`,`沟通质量会直接影响后续阶段效率`]],
+    ['质量控制',[`评审、验证、变更管理和持续反馈`,`避免问题在后续阶段放大`,`把错误前移发现`]],
+    ['整体认知',[`理解${mainPoint}在生命周期中的位置`,`能够说明它承接什么、输出什么`,`形成阶段递进意识`]],
+  ];
+  if(kind==='application')return [
+    ['案例起点',[`先回看前置阶段结论和输入条件`,`明确当前案例要解决的真实问题`,`识别需要迁移的知识点：${points.join('、')}`]],
+    ['操作步骤',[`把概念转成步骤、图示或判断规则`,`按“输入 → 处理 → 输出”拆解任务`,`让抽象知识变成可执行动作`]],
+    ['结果产物',[`形成案例分析结论、检查表或阶段输出`,`支撑后续测试、评审或复盘`,`验证知识点是否真正被用起来`]],
+    ['迁移应用',[`更换场景后还能复用同一套思路`,`比较不同项目中的共性与差异`,`训练举一反三能力`]],
+    ['复盘提升',[`检查哪一步最容易出错`,`总结可重复使用的方法模板`,`把经验沉淀回知识框架`]],
   ];
   if(kind==='process')return [
-    ['前置输入',[`先明确已有教材依据和阶段目标`,`识别需要承接的知识点：${points.join('、')}`]],
-    ['过程转换',[`把概念转成步骤、图示或判断规则`,`建立输入、处理、输出之间的关系`]],
-    ['后续输出',[`形成可用于案例分析或测评的结论`,`支撑下一阶段学习任务`]],
-    ['迁移应用',[`用课程案例验证流程是否成立`,`检查是否能解释相邻阶段关系`]],
+    ['前置输入',[`先明确已有教材依据和阶段目标`,`识别需要承接的知识点：${points.join('、')}`,`判断本阶段不该混入哪些其他阶段内容`]],
+    ['过程转换',[`把概念转成步骤、图示或判断规则`,`建立输入、处理、输出之间的关系`,`找到关键判断点和依赖条件`]],
+    ['后续输出',[`形成可用于案例分析或测评的结论`,`支撑下一阶段学习任务`,`让学习结果能够继续传递`]],
+    ['迁移应用',[`用课程案例验证流程是否成立`,`检查是否能解释相邻阶段关系`,`尝试在新情境下复用流程`]],
+    ['常见偏差',[`只记顺序却说不清每步作用`,`只会背术语不会落到产物`,`忽略阶段边界导致内容混杂`]],
   ];
-  return points.map(point=>[point,[`理解${point}解决的问题`,`掌握输入、输出、产物和判断标准`,`结合课程案例说明应用场景`]]);
+  return points.map(point=>[point,[`理解${point}解决的问题`,`掌握输入、输出、产物和判断标准`,`结合课程案例说明应用场景`,`说清它与前后知识点如何衔接`,`总结学习时最容易混淆的地方`]]);
 }
 function buildStageMindmapMarkdown(stage){
   const title=clean(stage.title||'阶段知识导图');
@@ -405,8 +419,16 @@ function buildStageMindmapMarkdown(stage){
   const lines=[`# ${title}`,'## 阶段目标',`### ${clean(stage.goal||'理解本阶段核心知识')}`];
   lines.push('## 覆盖知识点');
   points.slice(0,5).forEach(point=>lines.push(`### ${point}`));
+  lines.push('## 阶段定位');
+  lines.push(`### 学习重心`);
+  lines.push(`#### ${mindmapStageKind(stage)==='application'?'把知识点迁移到案例与任务中':'围绕本阶段知识点建立清晰、可应用的理解'}`);
+  lines.push('### 与前后阶段关系');
+  lines.push('#### 承接前一阶段的概念或产物');
+  lines.push('#### 为下一阶段输出判断依据、文档或操作线索');
   lines.push('## 阶段专属框架');
   branches.forEach(([name,items])=>{lines.push(`### ${name}`);items.slice(0,4).forEach(item=>lines.push(`#### ${clean(item)}`));});
+  lines.push('## 易错点提醒');
+  points.slice(0,3).forEach(point=>lines.push(`### ${point}`,`#### 不要把${point}和相邻阶段任务混在一起`,`#### 先说清作用，再记定义和步骤`));
   lines.push('## 学习检查');
   lines.push('### 能否说清本阶段输入和输出');
   lines.push('### 能否把知识点应用到课程案例');
@@ -450,34 +472,68 @@ function videoUrl(r){
   return match?.[0]||'';
 }
 function playableVideo(r){const url=videoUrl(r);return Boolean(url)&&!url.includes('example.com')}
-function readingText(r){const text=resourceText(r);if(text&&text.length>220)return text;const points=kps(r).join('、')||'软件工程核心知识';return `# ${r.title||`${points}拓展阅读`}
+function readingStageSections(stage,points){
+  const text=`${stage?.title||''} ${stage?.goal||''} ${points.join(' ')}`;
+  if(/需求分析|需求规格|需求定义/.test(text))return {
+    intro:`本阶段的拓展阅读围绕${points.join('、')}展开，重点不是记住术语，而是把“用户到底要什么、系统边界在哪里、怎样写成可验证文档”这三件事真正看明白。`,
+    connection:`阅读时请把${points.join('、')}和课程中的需求获取、需求分类、规格说明、验收标准联系起来，重点关注它如何为后续设计、开发和测试提供稳定输入。`,
+    explanation:`可以继续补充阅读真实项目中的需求访谈记录、用户故事、需求规格说明片段和验收标准示例。这样能帮助你理解，需求分析不是单纯列功能，而是把模糊问题转成清晰约束。`,
+    caseText:`例如在线学习系统如果没有提前定义“学习进度如何统计”“异常提交如何处理”“教师和学生权限边界”，后续设计和测试都会不断返工。需求写得越明确，后续阶段越顺畅。`,
+    guide:['先看需求来自谁、解决什么业务问题','再看需求如何分类，以及哪些属于约束条件','接着观察规格说明如何描述输入、输出、异常和验收','最后尝试把课程案例改写成一小段规范需求描述'],
+    questions:['如果只写功能名称，不写边界和验收标准，会导致什么问题？','需求分析和总体设计的分界线在哪里？','怎样判断一条需求已经足够清晰、可测试？'],
+    explore:'进一步可以阅读用户故事、用例描述、需求优先级划分、原型评审和需求变更管理等材料，观察教材概念如何在真实团队协作中落地。'
+  };
+  if(/生命周期|瀑布|开发阶段|维护/.test(text))return {
+    intro:`本阶段阅读的核心是把${points.join('、')}放回完整软件工程流程中理解，建立“阶段顺序、阶段产物、阶段依赖”的整体视角。`,
+    connection:`你会看到这些知识点如何连接可行性研究、需求分析、设计、编码、测试与维护。阅读时不要孤立看某一阶段，而要观察它承接什么、又为谁提供输出。`,
+    explanation:`可以补充阅读软件生命周期模型、阶段评审、文档交接、变更管理和维护反馈等内容。越能从整体上理解阶段协同，越不容易把课程知识记成零散术语。`,
+    caseText:`如果团队在需求阶段没有沉淀明确文档，设计人员只能边猜边做；如果测试结果没有回流到需求和设计复盘，问题就会在维护阶段反复出现。这正体现了生命周期的闭环价值。`,
+    guide:['先梳理阶段顺序，不急着记细节','再看每个阶段的典型输入、输出和角色','观察阶段产物如何传递到下一阶段','最后用一个项目案例串起完整流程'],
+    questions:['为什么说生命周期强调的是阶段之间的依赖而不是简单顺序？','如果某个阶段产物质量很差，会最先影响谁？','维护阶段为什么也是学习和改进的重要来源？'],
+    explore:'可以继续阅读瀑布模型、迭代模型、敏捷流程、持续交付和运维反馈机制，对比不同开发模式下阶段衔接方式的变化。'
+  };
+  if(/案例|迁移|应用|实操|项目/.test(text))return {
+    intro:`这部分阅读重点在于把${points.join('、')}真正迁移到案例任务中，训练“看到一个场景，能知道该用什么知识、按什么步骤做”的能力。`,
+    connection:`请把阅读内容和前面阶段学过的概念、流程、产物联系起来，看看它们在真实项目里如何组合成完整行动路径，而不是停留在定义层面。`,
+    explanation:`适合补充阅读案例分析、任务拆解、阶段产物模板、缺陷复盘和项目总结等内容。它们能帮助你把抽象知识转成“可执行、可检查、可复用”的实践框架。`,
+    caseText:`例如让你分析一个在线学习系统的功能上线流程时，不只是说“先需求再设计再测试”，而是要能指出每一步要看什么材料、输出什么结论、如何判断是否可以进入下一步。`,
+    guide:['先定位案例对应的软件工程阶段','再把知识点映射成步骤或判断规则','记录每一步产生的结果和证据','最后复盘哪些知识点可以迁移到其他案例'],
+    questions:['如果换一个项目场景，这套分析思路还能复用吗？','案例中最关键的输入和输出是什么？','哪一步最容易凭感觉跳过，从而导致后续风险？'],
+    explore:'可以继续阅读项目案例复盘、检查清单设计、阶段评审模板和质量改进记录，把课程知识转化成自己的做题或分析模板。'
+  };
+  return {
+    intro:`围绕“${points.join('、')||'课程核心知识'}”进行拓展阅读，可以把教材中的概念、流程和阶段产物放到真实软件项目中理解。很多软件工程知识并不是为了考试而存在，而是为了帮助团队降低沟通成本、控制质量风险，并让需求、设计、测试和维护之间形成闭环。`,
+    connection:`这些内容对应课程中的概念定义、流程活动、阶段产物和质量保障问题。学习时建议重点关注三个问题：它解决什么问题、需要什么输入、会产生什么输出。如果能把这三个问题讲清楚，说明你已经从记忆概念进入到理解应用阶段。`,
+    explanation:`在实际项目中，${points.join('、')||'这些知识点'}通常会和需求管理、缺陷跟踪、版本控制、持续集成、质量评审等活动结合。补充阅读的价值在于帮助你看到教材知识背后的协作逻辑和工程目的。`,
+    caseText:`假设团队正在开发一个在线学习系统。如果前期分析没有明确关键规则，后续设计和测试就会出现反复返工。相反，如果阶段输入、输出和验收标准已经说清，整个流程就会更顺畅。`,
+    guide:['第一遍先看概念之间的关系，不必纠结细节','第二遍关注输入、过程、输出和参与角色','第三遍结合课程案例，尝试画出流程图或检查清单','最后用阶段测评检验自己能否迁移应用'],
+    questions:['这些知识点在软件生命周期中处于什么位置？','它们会影响哪些后续阶段？','如果忽略这些活动，会造成哪些质量风险？','如何用一个课程案例说明它们的作用？'],
+    explore:'探索建议：可以继续了解敏捷开发、DevOps、自动化测试、需求管理平台、缺陷生命周期管理和软件质量度量。学习时不需要追求工具细节，而要观察这些工具如何把教材中的概念变成可执行流程。'
+  };
+}
+function readingText(r,stage={}){
+const text=resourceText(r);if(text&&text.length>220)return text;const points=[...new Set([...(stage.points||[]),...kps(r)])].filter(Boolean);const sections=readingStageSections(stage,points);return `# ${r.title||`${points.join('、')||'课程核心知识'}拓展阅读`}
 
 ## 为什么值得读
-围绕“${points}”进行拓展阅读，可以把教材中的概念、流程和阶段产物放到真实软件项目中理解。很多软件工程知识并不是为了考试而存在，而是为了帮助团队降低沟通成本、控制质量风险，并让需求、设计、测试和维护之间形成闭环。
+${sections.intro}
 
 ## 与课程知识点的连接
-这些内容对应课程中的概念定义、流程活动、阶段产物和质量保障问题。学习时建议重点关注三个问题：它解决什么问题、需要什么输入、会产生什么输出。如果能把这三个问题讲清楚，说明你已经从记忆概念进入到理解应用阶段。
+${sections.connection}
 
 ## 拓展知识讲解
-在实际项目中，${points}通常会和需求管理、缺陷跟踪、版本控制、持续集成、质量评审等活动结合。例如，需求分析不仅是写需求文档，还包括识别用户目标、澄清边界、确认优先级和建立验收标准；软件测试也不只是运行程序，而是通过测试计划、测试用例、缺陷记录和回归验证持续降低风险。
+${sections.explanation}
 
 ## 真实场景示例
-假设团队正在开发一个在线学习系统。如果前期需求分析没有明确“课程进度如何统计”“测评成绩如何影响推荐路径”，后续设计和测试阶段就会出现反复返工。相反，如果需求阶段已经定义好用户角色、业务流程、异常情况和验收标准，测试人员就能更早设计测试用例，开发人员也能更清楚地拆分模块。
+${sections.caseText}
 
 ## 阅读导读
-- 第一遍先看概念之间的关系，不必纠结细节。
-- 第二遍关注输入、过程、输出和参与角色。
-- 第三遍结合课程案例，尝试画出流程图或检查清单。
-- 最后用阶段测评检验自己能否迁移应用。
+${sections.guide.map(item=>`- ${item}`).join('\n')}
 
 ## 思考问题
-- 这些知识点在软件生命周期中处于什么位置？
-- 它们会影响哪些后续阶段？
-- 如果忽略这些活动，会造成哪些质量风险？
-- 如何用一个课程案例说明它们的作用？
+${sections.questions.map(item=>`- ${item}`).join('\n')}
 
 ## 进一步探索方向
-探索建议：可以继续了解敏捷开发、DevOps、自动化测试、需求管理平台、缺陷生命周期管理和软件质量度量。学习时不需要追求工具细节，而要观察这些工具如何把教材中的概念变成可执行流程。`;}
+${sections.explore}`;}
 function readingSectionRaw(markdown,title){
   const pattern=new RegExp(`##\s*${title}\s*\n([\s\S]*?)(?=\n##\s+|$)`);
   return markdown.match(pattern)?.[1]||'';
@@ -488,7 +544,7 @@ function readingBullets(markdown,title){
   return raw.split(/\n\s*[-•]\s+/).map(cleanDocDisplayText).filter(Boolean).slice(0,4);
 }
 function renderReading(r,stage={}){
-  const markdown=readingText(r);
+  const markdown=readingText(r,stage);
   const points=[...new Set([...(stage.points||[]),...kps(r)])].filter(Boolean).slice(0,4);
   const title=cleanDocDisplayText(r.title||`${stage.title||points[0]||'课程核心知识'}・拓展阅读`);
   const intro=readingSection(markdown,'为什么值得读')||resourceText(r)||stage.goal||'通过拓展阅读，把本阶段知识点放到更完整的软件工程场景中理解。';
@@ -587,7 +643,6 @@ function normalizeMindmapMarkdown(r){
 function setMarkmapRef(r,el){
   const id=rid(r);
   if(el)markmapEls.set(id,el);else markmapEls.delete(id);
-  renderMarkmaps();
 }
 function fitMarkmap(mm,el){
   if(!el?.clientWidth||!el?.clientHeight)return;
@@ -768,7 +823,7 @@ onMounted(async()=>{
   }
 });
 watch(()=>route.query.sessionId,async()=>{await loadAll(currentSessionId());renderMarkmaps()});
-watch(stages,()=>{if(activeStageIndex.value>=stages.value.length)activeStageIndex.value=Math.max(stages.value.length-1,0);ensureActiveResourceTabs();renderMarkmaps()},{deep:true,flush:'post'});
+watch(stages,()=>{if(activeStageIndex.value>=stages.value.length)activeStageIndex.value=Math.max(stages.value.length-1,0);ensureActiveResourceTabs();nextTick(()=>renderMarkmaps())},{deep:true,flush:'post'});
 watch(current,(value)=>{if(!done(activeStageIndex.value)&&activeStageIndex.value<value)activeStageIndex.value=value});
 </script>
 
