@@ -514,6 +514,21 @@ def _clamp_percent(value: float) -> int:
     return max(0, min(100, int(round(value))))
 
 
+def _saturating_count_score(count: int, max_count: int, max_score: int) -> int:
+    if max_count <= 0 or max_score <= 0:
+        return 0
+    safe_count = max(0, min(int(count), int(max_count)))
+    ratio = safe_count / max_count
+    return _clamp_percent(max_score * (1 - (1 - ratio) ** 2))
+
+
+def _cap_with_excellence_gate(score: int, soft_cap: int, hard_cap: int, conditions: list[bool]) -> int:
+    safe_score = _clamp_percent(score)
+    if all(conditions):
+        return min(safe_score, hard_cap)
+    return min(safe_score, soft_cap)
+
+
 def _score_band_text(score: int) -> str:
     if score >= 85:
         return "较强"
@@ -646,7 +661,7 @@ def _portrait_score_fallback(profile: dict, evidence: dict) -> dict:
             "score": score,
             "level": _score_level(score),
             "teacher_judgement": dynamic_value or f"{label}已根据近期学习证据完成判断",
-            "reason": f"{label}当前基于答题、掌握度、错题和学习行为自动生成；后续继续学习后会持续修正该维度。",
+            "reason": (dynamic.get("score_details") or {}).get(key) or f"{label}当前基于答题、掌握度、错题和学习行为自动生成；后续继续学习后会持续修正该维度。",
         }
     return {
         "dimensions": dimensions,
@@ -796,9 +811,17 @@ def _derive_learning_profile(profile: dict, evidence: dict) -> dict:
 
     avg_quiz = _safe_float(((evidence or {}).get("quiz_summary") or {}).get("avg_score"), 0.0)
     avg_mastery = _safe_float(((evidence or {}).get("mastery_summary") or {}).get("avg_mastery"), 0.0)
+    quiz_count = len(quiz_items)
+    event_count = len(learning_events)
+    resource_count = len(resource_usage)
+    wrong_book_count = len(wrong_book)
+    stage_complete_events = [item for item in learning_events if str(item.get("event_type") or "") == "complete_stage"]
+    stage_complete_count = len(stage_complete_events)
 
     weak_points = [item for item in mastery_items if _safe_int(item.get("mastery_score"), 0) < 70]
     strong_points = [item for item in mastery_items if _safe_int(item.get("mastery_score"), 0) >= 85]
+    weak_count = len(weak_points)
+    strong_count = len(strong_points)
 
     current_topic = _trim_text(profile.get("current_topic"), 160)
     weak_summary = "、".join(
@@ -809,38 +832,72 @@ def _derive_learning_profile(profile: dict, evidence: dict) -> dict:
     )
 
     foundation_score = _clamp_percent(
-        0.45 * avg_mastery
-        + 0.20 * avg_quiz
-        + 15 * (1 if _normalize_text(profile.get("learning_background")) else 0)
-        + 10 * (1 if _normalize_text(profile.get("major")) else 0)
+        0.55 * avg_mastery
+        + 0.15 * avg_quiz
+        + 10 * (1 if _normalize_text(profile.get("learning_background")) else 0)
+        + 8 * (1 if _normalize_text(profile.get("major")) else 0)
     )
     mastery_score = _clamp_percent(0.65 * avg_mastery + 0.35 * avg_quiz)
     weak_distribution_score = _clamp_percent(
         100
-        - min(len(weak_points), 6) * 9
-        - min(len(wrong_book), 8) * 4
+        - min(weak_count, 6) * 9
+        - min(wrong_book_count, 8) * 4
         - max(0, 70 - avg_mastery) * 0.35
     )
-    progress_score = _clamp_percent(
-        25 * min(len(strong_points), 3)
-        + 15 * min(len(quiz_items), 4)
-        + 10 * min(len(resource_usage), 4)
+    progress_raw_score = _clamp_percent(
+        0.35 * mastery_score
+        + _saturating_count_score(strong_count, 4, 24)
+        + _saturating_count_score(stage_complete_count, 4, 18)
+        + _saturating_count_score(quiz_count, 6, 16)
+        + _saturating_count_score(resource_count, 5, 10)
         + 10 * (1 if current_topic else 0)
+        - min(weak_count, 5) * 2
     )
-    engagement_score = _clamp_percent(
-        15 * min(len(learning_events), 4)
-        + 10 * min(len(quiz_items), 3)
-        + 8 * min(len(resource_usage), 4)
+    engagement_raw_score = _clamp_percent(
+        22
+        + _saturating_count_score(event_count, 6, 24)
+        + _saturating_count_score(quiz_count, 5, 18)
+        + _saturating_count_score(resource_count, 5, 12)
         + 8 * (1 if _normalize_text(profile.get("engagement_level")) else 0)
+        - min(wrong_book_count, 6) * 2
+    )
+    progress_score = _cap_with_excellence_gate(
+        progress_raw_score,
+        92,
+        100,
+        [
+            mastery_score >= 85,
+            weak_count <= 1,
+            strong_count >= 2,
+            stage_complete_count >= 1,
+            quiz_count >= 5,
+            resource_count >= 3,
+            bool(current_topic),
+        ],
+    )
+    engagement_score = _cap_with_excellence_gate(
+        engagement_raw_score,
+        90,
+        100,
+        [
+            mastery_score >= 80,
+            wrong_book_count <= 2,
+            event_count >= 4,
+            quiz_count >= 4,
+            resource_count >= 3,
+            _normalize_text(profile.get("engagement_level")) != "",
+        ],
     )
     avg_feedback = round(
         sum(_safe_int(item.get("rating"), 0) for item in resource_feedback) / len(resource_feedback),
         1,
     ) if resource_feedback else 0.0
     support_match_score = _clamp_percent(
-        40 * (1 if _normalize_text(profile.get("support_preference")) else 0)
-        + 30 * (1 if _normalize_text(profile.get("preferred_resource")) else 0)
+        26
+        + 24 * (1 if _normalize_text(profile.get("support_preference")) else 0)
+        + 18 * (1 if _normalize_text(profile.get("preferred_resource")) else 0)
         + 6 * avg_feedback
+        + _saturating_count_score(len(resource_feedback), 4, 8)
     )
 
     common_mistake_text = " ".join(
@@ -857,17 +914,17 @@ def _derive_learning_profile(profile: dict, evidence: dict) -> dict:
     error_pattern_score = 58
     if any(keyword in common_mistake_text for keyword in ["概念", "定义", "理解"]):
         error_pattern = "概念理解型错误偏多"
-        error_pattern_score = 60 if len(wrong_book) >= 3 else 68
+        error_pattern_score = 60 if wrong_book_count >= 3 else 68
     elif any(keyword in common_mistake_text for keyword in ["步骤", "流程", "顺序"]):
         error_pattern = "步骤遗漏型错误偏多"
-        error_pattern_score = 62 if len(wrong_book) >= 3 else 70
+        error_pattern_score = 62 if wrong_book_count >= 3 else 70
     elif any(keyword in common_mistake_text for keyword in ["计算", "公式", "推导"]):
         error_pattern = "公式推导或计算型错误偏多"
-        error_pattern_score = 61 if len(wrong_book) >= 3 else 69
+        error_pattern_score = 61 if wrong_book_count >= 3 else 69
     elif weak_summary and weak_summary != DEFAULT_VALUE:
         error_pattern = "错误主要集中在当前薄弱知识点"
-        error_pattern_score = 72 if len(weak_points) <= 2 else 64
-    error_pattern_score = _clamp_percent(error_pattern_score + max(0, 3 - min(len(wrong_book), 3)) * 6)
+        error_pattern_score = 72 if weak_count <= 2 else 64
+    error_pattern_score = _clamp_percent(error_pattern_score + max(0, 3 - min(wrong_book_count, 3)) * 6)
 
     knowledge_map = []
     for item in mastery_items[:20]:
@@ -903,6 +960,17 @@ def _derive_learning_profile(profile: dict, evidence: dict) -> dict:
         goal_risk = "已有目标方向，但尚未量化到可跟踪标准"
         goal_risk_score = 66
 
+    score_details = {
+        "knowledge_foundation": f"知识基础 = 55%掌握度({avg_mastery:.1f}) + 15%答题均分({avg_quiz:.1f}) + 背景识别加分 + 专业识别加分，当前为 {foundation_score} 分。",
+        "knowledge_mastery": f"知识点掌握 = 65%掌握度({avg_mastery:.1f}) + 35%答题均分({avg_quiz:.1f})，当前为 {mastery_score} 分。",
+        "weak_point_distribution": f"薄弱点分布从 100 分起，根据薄弱知识点数({weak_count})、错题数({wrong_book_count}) 和掌握度不足部分扣分，当前为 {weak_distribution_score} 分。",
+        "learning_progress": f"学习进度 = 35%掌握质量 + 强项知识点({strong_count}) + 阶段完成数({stage_complete_count}) + 答题记录({quiz_count}) + 资源学习({resource_count}) + 当前主题识别，并对薄弱点数做小幅扣分。未满足卓越门槛时最高 92 分；当前原始分 {progress_raw_score}，展示分 {progress_score}。",
+        "engagement_level": f"学习投入 = 基础分 + 学习事件({event_count}) + 答题记录({quiz_count}) + 资源学习({resource_count}) + 投入状态识别，并对错题积压做小幅扣分。未满足卓越门槛时最高 90 分；当前原始分 {engagement_raw_score}，展示分 {engagement_score}。",
+        "support_match": f"支持方式匹配 = 基础分 + 支持偏好识别 + 资源偏好识别 + 资源反馈均分({avg_feedback:.1f}) + 反馈次数修正，当前为 {support_match_score} 分。",
+        "error_pattern_stability": f"易错类型稳定性根据错题与反馈文本中的错误模式关键词判断，结合错题数量({wrong_book_count})修正，当前为 {error_pattern_score} 分。",
+        "goal_attainment_risk": f"目标达成把握根据任务目标文本是否量化以及目标与当前掌握度的差距判断，当前为 {goal_risk_score} 分。",
+    }
+
     return {
         "knowledge_foundation": f"{_score_band_text(foundation_score)}（{foundation_score}分）",
         "knowledge_mastery": f"{_score_band_text(mastery_score)}（{mastery_score}分）",
@@ -919,6 +987,7 @@ def _derive_learning_profile(profile: dict, evidence: dict) -> dict:
         "goal_risk": goal_risk,
         "overall_mastery_score": mastery_score,
         "knowledge_mastery_map": knowledge_map,
+        "score_details": score_details,
         "dynamic_scores": {
             "knowledge_foundation": foundation_score,
             "knowledge_mastery": mastery_score,
@@ -966,7 +1035,7 @@ def _portrait_dimension_scores(user_id: int, profile: dict) -> dict:
                 "score": score,
                 "level": level,
                 "teacher_judgement": teacher_judgement,
-                "reason": merged_reason,
+                "reason": f"{merged_reason} {(dynamic_profile.get('score_details') or {}).get(key, '')}".strip(),
             }
 
         if not dimensions:

@@ -8,24 +8,42 @@ from ai.assessment_pipeline import assessment_status, build_assessment_assets, g
 from db import mysql_db
 from utils import fail, require_fields, success
 from utils.auth_decorator import login_required
+from utils.profile_session import resolve_profile_session
 
 evaluation_bp = Blueprint("evaluation", __name__)
 evaluator_agent = EvaluatorAgent()
 
 
-def _upsert_mastery(user_id: int, knowledge_point: str, score: int, weak_reason: str) -> None:
+def _upsert_mastery(user_id: int, knowledge_point: str, score: int, weak_reason: str, profile_session_id=None) -> None:
     mysql_db.upsert_by_unique_key(
         "mastery_record",
-        {"user_id": user_id, "knowledge_point": knowledge_point, "mastery_score": score, "weak_reason": weak_reason},
-        update_fields=["mastery_score", "weak_reason"],
+        {
+            "user_id": user_id,
+            "profile_session_id": profile_session_id,
+            "knowledge_point": knowledge_point,
+            "mastery_score": score,
+            "weak_reason": weak_reason,
+        },
+        update_fields=["profile_session_id", "mastery_score", "weak_reason"],
     )
 
 
-def _refresh_profile_after_evaluation(user_id: int) -> dict:
-    mastery = mysql_db.query_all(
-        "SELECT knowledge_point, mastery_score FROM mastery_record WHERE user_id=%s ORDER BY mastery_score ASC",
-        (user_id,),
-    )
+def _refresh_profile_after_evaluation(user_id: int, profile_session_id=None) -> dict:
+    if profile_session_id:
+        mastery = mysql_db.query_all(
+            "SELECT knowledge_point, mastery_score FROM mastery_record WHERE user_id=%s AND profile_session_id=%s ORDER BY mastery_score ASC",
+            (user_id, profile_session_id),
+        )
+    else:
+        mastery = mysql_db.query_all(
+            "SELECT knowledge_point, mastery_score FROM mastery_record WHERE user_id=%s ORDER BY mastery_score ASC",
+            (user_id,),
+        )
+    if not mastery:
+        mastery = mysql_db.query_all(
+            "SELECT knowledge_point, mastery_score FROM mastery_record WHERE user_id=%s ORDER BY mastery_score ASC",
+            (user_id,),
+        )
     if not mastery:
         return {}
 
@@ -34,17 +52,57 @@ def _refresh_profile_after_evaluation(user_id: int) -> dict:
     update_data = {}
 
     if weak_items:
-        update_data["weak_points"] = "、".join(item["knowledge_point"] for item in weak_items[:5])
+        weak_text = "、".join(item["knowledge_point"] for item in weak_items[:5])
+        update_data["weak_points"] = weak_text
+        update_data["weak_knowledge_points"] = weak_text
+        update_data["error_prone_points"] = weak_text
     if strong_items:
         strong_text = "、".join(item["knowledge_point"] for item in strong_items[:5])
         weak_text = update_data.get("weak_points", "综合应用能力")
         update_data["course_progress"] = f"当前优势知识点：{strong_text}；仍需巩固：{weak_text}"
+        update_data["recent_progress"] = f"已形成优势知识点：{strong_text}"
     elif weak_items:
         update_data["course_progress"] = f"当前薄弱知识点：{update_data['weak_points']}，建议优先复习并完成对应检测题。"
+        update_data["recent_progress"] = "正在围绕薄弱知识点进行针对性纠错和巩固。"
+
+    avg_mastery = sum(int(item.get("mastery_score") or 0) for item in mastery) / max(len(mastery), 1)
+    if avg_mastery >= 85:
+        update_data["mastery_level"] = "掌握较好"
+    elif avg_mastery >= 70:
+        update_data["mastery_level"] = "有一定基础"
+    elif avg_mastery >= 55:
+        update_data["mastery_level"] = "基础未稳"
+    else:
+        update_data["mastery_level"] = "入门起步"
+    update_data["engagement_level"] = "持续练习中"
 
     if update_data:
-        mysql_db.update("student_profile", update_data, "user_id=%s", (user_id,))
+        if profile_session_id:
+            mysql_db.update("student_profile", update_data, "user_id=%s AND profile_session_id=%s", (user_id, profile_session_id))
+        else:
+            mysql_db.update("student_profile", update_data, "user_id=%s", (user_id,))
     return update_data
+
+
+def _refresh_portrait_after_evaluation(user_id: int, profile_session_id, trigger_source: str) -> dict:
+    if not profile_session_id:
+        return {}
+    from api.profile_api import _aggregate_profile_payload, _persist_portrait_snapshot, _refresh_aggregate_profile
+
+    aggregate_profile = _aggregate_profile_payload(
+        user_id,
+        _refresh_aggregate_profile(user_id),
+        refresh_scoring=True,
+    )
+    _persist_portrait_snapshot(
+        user_id=user_id,
+        profile_session_id=profile_session_id,
+        profile=aggregate_profile,
+        portrait_scoring=aggregate_profile.get("portrait_scoring") or {},
+        trigger_source=trigger_source,
+        force=True,
+    )
+    return aggregate_profile
 
 
 def _get_profile(user_id: int) -> dict:
@@ -173,6 +231,8 @@ def submit_quiz():
         ok, field = require_fields(payload, ["question", "answer"])
         if not ok:
             return fail(f"缺少必填参数：{field}", 400)
+        session = resolve_profile_session(request.user_id, payload, create_if_missing=False)
+        session_id = session["id"] if session else None
 
         knowledge_point = str(payload.get("knowledge_point") or "机器学习基础")
         reference_answer = str(payload.get("reference_answer") or "")
@@ -192,6 +252,7 @@ def submit_quiz():
             "quiz_result",
             {
                 "user_id": request.user_id,
+                "profile_session_id": session_id,
                 "question": str(payload["question"]),
                 "answer": str(payload["answer"]),
                 "reference_answer": result["reference_answer"],
@@ -201,12 +262,13 @@ def submit_quiz():
             },
         )
 
-        _upsert_mastery(request.user_id, knowledge_point, int(result["score"]), result["weak_reason"])
-        profile_update = _refresh_profile_after_evaluation(request.user_id)
+        _upsert_mastery(request.user_id, knowledge_point, int(result["score"]), result["weak_reason"], profile_session_id=session_id)
+        profile_update = _refresh_profile_after_evaluation(request.user_id, profile_session_id=session_id)
         mysql_db.insert(
             "learning_event",
             {
                 "user_id": request.user_id,
+                "profile_session_id": session_id,
                 "event_type": "finish_quiz",
                 "knowledge_point": knowledge_point,
                 "detail": json.dumps(
@@ -220,7 +282,8 @@ def submit_quiz():
                 ),
             },
         )
-        return success({"id": record_id, **result, "profile_update": profile_update}, "练习提交成功")
+        aggregate_profile = _refresh_portrait_after_evaluation(request.user_id, session_id, "evaluation_submit")
+        return success({"id": record_id, **result, "profile_update": profile_update, "aggregate_profile": aggregate_profile, "profile_session_id": session_id}, "练习提交成功")
     except Exception as exc:
         return fail("练习提交失败", 500, {"error": str(exc)})
 
@@ -235,6 +298,9 @@ def add_wrong_book_item():
         if not ok:
             return fail(f"缺少必填参数：{field}", 400)
         data = _wrong_book_payload(request.user_id, payload, payload.get("result") or {})
+        session = resolve_profile_session(request.user_id, payload, create_if_missing=False)
+        if session:
+            data["profile_session_id"] = session["id"]
         existing = mysql_db.query_one(
             "SELECT id FROM quiz_wrong_book WHERE user_id=%s AND question=%s AND knowledge_point=%s ORDER BY id DESC LIMIT 1",
             (request.user_id, data["question"], data["knowledge_point"]),
@@ -325,8 +391,28 @@ def submit_wrong_book_item(item_id: int):
             "id=%s AND user_id=%s",
             (item_id, request.user_id),
         )
-        _upsert_mastery(request.user_id, str(item.get("knowledge_point") or ""), int(result["score"]), result["weak_reason"])
-        return success(result, "错题复做判题完成")
+        session_id = item.get("profile_session_id")
+        _upsert_mastery(request.user_id, str(item.get("knowledge_point") or ""), int(result["score"]), result["weak_reason"], profile_session_id=session_id)
+        profile_update = _refresh_profile_after_evaluation(request.user_id, profile_session_id=session_id)
+        mysql_db.insert(
+            "learning_event",
+            {
+                "user_id": request.user_id,
+                "profile_session_id": session_id,
+                "event_type": "retry_wrong_book",
+                "knowledge_point": str(item.get("knowledge_point") or ""),
+                "detail": json.dumps(
+                    {
+                        "wrong_book_id": item_id,
+                        "score": result.get("score"),
+                        "is_correct": result.get("is_correct"),
+                    },
+                    ensure_ascii=False,
+                ),
+            },
+        )
+        aggregate_profile = _refresh_portrait_after_evaluation(request.user_id, session_id, "wrong_book_retry")
+        return success({**result, "profile_update": profile_update, "aggregate_profile": aggregate_profile, "profile_session_id": session_id}, "错题复做判题完成")
     except Exception as exc:
         return fail("错题复做失败", 500, {"error": str(exc)})
 
@@ -390,10 +476,12 @@ def record_event():
         ok, field = require_fields(payload, ["event_type"])
         if not ok:
             return fail(f"缺少必填参数：{field}", 400)
+        session = resolve_profile_session(request.user_id, payload, create_if_missing=False)
         event_id = mysql_db.insert(
             "learning_event",
             {
                 "user_id": request.user_id,
+                "profile_session_id": session["id"] if session else None,
                 "event_type": str(payload["event_type"]),
                 "knowledge_point": str(payload.get("knowledge_point") or ""),
                 "detail": json.dumps(payload.get("detail") or {}, ensure_ascii=False),

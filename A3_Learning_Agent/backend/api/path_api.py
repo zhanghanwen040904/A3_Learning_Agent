@@ -1,10 +1,11 @@
 import json
+import logging
 import re
 
 from flask import Blueprint, request
 
 from ai.agents import SafetyAgent
-from ai.rag import retrieve_knowledge, retrieve_knowledge_items
+from ai.rag import format_knowledge_items, retrieve_knowledge, retrieve_knowledge_items, select_profile_knowledge_items
 from ai.llm_api import audit_content, llm_chat
 # 兼容下面原来使用的函数名
 content_audit = audit_content
@@ -15,6 +16,7 @@ from utils.auth_decorator import login_required
 from utils.profile_session import resolve_profile_session
 
 path_bp = Blueprint("path", __name__)
+logger = logging.getLogger(__name__)
 safety_agent = SafetyAgent()
 
 
@@ -40,9 +42,10 @@ RESOURCE_TYPE_LABELS = {
     "video": "教学短视频",
 }
 KNOWN_POINTS = [
-    "需求分析", "总体设计", "详细设计", "软件测试", "软件生命周期", "用例图", "类图", "时序图",
+    "问题定义", "需求分析", "总体设计", "详细设计", "软件测试", "软件生命周期", "用例图", "类图", "时序图",
     "数据流图", "模块划分", "编码实现", "软件维护", "可行性研究", "软件设计", "调试", "瀑布模型",
 ]
+LIFECYCLE_STAGE_POINTS = ["问题定义", "可行性研究", "需求分析", "软件设计", "编码实现", "软件测试", "软件维护"]
 
 
 def _profile_points(profile: dict, payload: dict | None = None) -> list[str]:
@@ -74,6 +77,75 @@ def _build_fast_path_content(profile: dict, payload: dict | None = None) -> str:
     second = points[1] if len(points) > 1 else "可行性研究"
     third = points[2] if len(points) > 2 else "需求分析"
     goal = str((payload or {}).get("learning_need") or profile.get("study_goal") or "掌握软件工程核心知识").strip()
+    all_text = " ".join(
+        str(item or "")
+        for item in [
+            goal,
+            profile.get("error_prone_points"),
+            profile.get("weak_points"),
+            profile.get("current_topic"),
+            (payload or {}).get("adjustment"),
+        ]
+    )
+    lifecycle_hits = [item for item in LIFECYCLE_STAGE_POINTS if item in all_text]
+    is_lifecycle_plan = "软件生命周期" in all_text or len(lifecycle_hits) >= 3 or "先后顺序" in all_text or "阶段产物" in all_text
+    if is_lifecycle_plan:
+        lifecycle_points = ["软件生命周期", *[item for item in LIFECYCLE_STAGE_POINTS if item in all_text]]
+        if len(lifecycle_points) < 5:
+            lifecycle_points = ["软件生命周期", *LIFECYCLE_STAGE_POINTS]
+        lifecycle_points = list(dict.fromkeys(lifecycle_points))
+        lifecycle_sequence = " → ".join(LIFECYCLE_STAGE_POINTS)
+        return normalize_markdown(f"""
+# 个性化学习路径
+
+## 阶段一：软件生命周期基础概念理解
+### 学习安排
+**目标：** 理解软件生命周期的整体含义、学习价值和基本阶段划分，明确它不是单个步骤，而是软件从问题提出到运行维护的完整过程，并联系当前学习目标：{goal}。
+**学习任务：**
+- 阅读课程知识库中与软件生命周期、问题定义、可行性研究和需求分析相关的教材片段。
+- 先建立“为什么要划分阶段”的整体认识，理解每个阶段都承担不同任务。
+- 用自己的话说明问题定义、可行性研究、需求分析在生命周期前期分别解决什么问题。
+**推荐资源：**
+- 讲解文档、阶段知识导图、教学短视频和拓展阅读。
+**练习方式：**
+- 完成基础概念判断题、阶段名称识别题和输入输出初步匹配题。
+**评估指标：**
+- 能说清软件生命周期的定义、作用、主要阶段名称，以及阶段划分对控制软件质量和降低返工的意义。
+
+## 阶段二：生命周期阶段顺序与任务产物梳理
+### 学习安排
+**目标：** 系统梳理{lifecycle_sequence}之间的先后顺序、主要任务、输入输出和阶段产物，重点解决“分不清阶段边界和衔接关系”的问题。
+**学习任务：**
+- 按顺序梳理每个阶段的核心任务、典型参与者、主要产物和对后续阶段的影响。
+- 对比问题定义、可行性研究、需求分析、设计、编码、测试、维护的边界，避免把任务和产物混淆。
+- 画出阶段流转图或检查清单，把“输入 → 活动 → 输出 → 后续影响”串联起来。
+**推荐资源：**
+- 讲解文档、阶段知识导图、教学短视频和拓展阅读。
+**练习方式：**
+- 完成流程排序题、阶段产物匹配题、输入输出连线题和易混边界辨析题。
+**评估指标：**
+- 能按正确顺序说明各阶段，并能列举每个阶段的主要任务、代表性产物和与相邻阶段的衔接关系。
+
+## 阶段三：软件生命周期案例练习与迁移应用
+### 学习安排
+**目标：** 将软件生命周期知识迁移到实际软件项目案例中，能够判断案例处于哪个阶段，说明该阶段应该完成什么任务、形成什么产物，以及遗漏该阶段会带来什么风险。
+**学习任务：**
+- 阅读课程案例或小型软件项目材料，判断项目当前处于生命周期中的哪个阶段。
+- 针对案例补充阶段任务、阶段产物和质量检查要点。
+- 总结常见错误，例如把需求分析当成设计、把测试当成调试、把维护理解成简单修改代码。
+**推荐资源：**
+- 讲解文档、阶段知识导图、教学短视频、拓展阅读和阶段测评。
+**练习方式：**
+- 完成案例判断题、阶段任务说明题、产物辨析题和综合测评。
+**评估指标：**
+- 能在案例中准确定位生命周期阶段，解释阶段任务、输入输出、产物和质量风险，并能根据错题回到对应阶段复习。
+
+## 动态调整建议
+如果基础概念题错误较多，回到阶段一补充软件生命周期定义和阶段名称；如果排序和产物匹配题错误较多，强化阶段二的流程图和输入输出梳理；如果案例判断题错误较多，强化阶段三的项目情境分析。
+
+## 参考依据
+本路径依据当前学生画像、学习目标、薄弱知识点和本地软件工程课程知识库生成。覆盖知识点包括：{'、'.join(lifecycle_points[:8])}。
+""")
     return normalize_markdown(f"""
 # 个性化学习路径
 
@@ -349,6 +421,138 @@ def _normalize_stage_progress_rows(rows: list[dict]) -> list[dict]:
     return result
 
 
+def _path_query(profile: dict, payload: dict | None = None) -> str:
+    payload = payload or {}
+    values = [
+        payload.get("learning_need"),
+        payload.get("adjustment"),
+        profile.get("weak_points"),
+        profile.get("error_prone_points"),
+        profile.get("current_topic"),
+        profile.get("study_goal"),
+        profile.get("selected_primary_knowledge_title"),
+        profile.get("course_progress"),
+        "软件工程",
+    ]
+    parts = []
+    for value in values:
+        text = str(value or "").strip()
+        if text and text not in parts:
+            parts.append(text)
+    return " ".join(parts)
+
+
+def _retrieve_path_sources(query: str, profile: dict, top_k: int = 3) -> list[dict]:
+    sources = retrieve_knowledge_items(query, top_k=top_k)
+    if sources:
+        return sources
+    return select_profile_knowledge_items(query, profile=profile, top_k=top_k)
+
+
+def _build_planner_prompt(profile_text: str, knowledge: str, learning_need: str) -> str:
+    return f"""
+你是软件工程课程学习规划师。请基于学生画像、学生本次学习需求和教材原文生成个性化学习路径。
+
+输出要求：
+1. 只输出普通 Markdown 正文，不要代码围栏，不要 JSON，不要 ASCII 图，不要复杂表格，不要 emoji。
+2. 标题层级必须统一：一级标题用“# 个性化学习路径”，二级标题用“## 阶段一：...”“## 阶段二：...”“## 阶段三：...”，三级标题用“### 学习安排”。
+3. 必须生成 3 个学习阶段，不能只生成 1 个阶段；三个阶段应体现“基础理解 → 关系建构 → 练习应用”的递进关系。
+4. 阶段标题必须围绕学生的真实薄弱点和章节主题规划，不要简单把抽取到的前三个知识点机械填入标题。
+5. 如果学生学习的是软件生命周期、开发流程、阶段顺序或阶段产物，应优先按“基础概念理解 → 阶段顺序与任务产物梳理 → 案例练习与迁移应用”组织。
+6. 每个阶段固定包含五项，且五项名称必须一致：目标、学习任务、推荐资源、练习方式、评估指标。
+7. 每个阶段写成短段落和项目符号，不要把所有内容挤在一行。
+8. 内容要清楚说明学习顺序、为什么这样学、需要用到哪些文档/题库/视频/案例。
+9. 最后添加“## 动态调整建议”和“## 参考依据”两个小节。
+10. 只能依据教材原文和学生画像，不要编造不存在的页码、图片和结论。
+
+请严格按这个模板组织，三个阶段都必须保留：
+
+# 个性化学习路径
+
+## 阶段一：基础理解与概念澄清
+### 学习安排
+**目标：** ...
+**学习任务：**
+- ...
+**推荐资源：**
+- ...
+**练习方式：**
+- ...
+**评估指标：**
+- ...
+
+## 阶段二：方法关系与流程建构
+### 学习安排
+**目标：** ...
+**学习任务：**
+- ...
+**推荐资源：**
+- ...
+**练习方式：**
+- ...
+**评估指标：**
+- ...
+
+## 阶段三：案例练习与迁移应用
+### 学习安排
+**目标：** ...
+**学习任务：**
+- ...
+**推荐资源：**
+- ...
+**练习方式：**
+- ...
+**评估指标：**
+- ...
+
+学生本次学习需求：
+{learning_need or '未单独提供，请结合学生画像判断'}
+
+学生画像：
+{profile_text}
+
+教材原文：
+{knowledge or '当前未检索到充分教材原文，请严格根据学生画像和课程常识生成保守学习路径，不要编造页码。'}
+""".strip()
+
+
+def _valid_llm_path(path_content: str) -> tuple[bool, str]:
+    content = normalize_markdown(path_content)
+    if not content or _is_model_error_text(content):
+        return False, "模型返回为空或调用失败"
+    stages = _parse_path_stages(content)
+    if len(stages) != 3:
+        return False, f"阶段数量不是3个：{len(stages)}"
+    required_labels = ["目标", "学习任务", "推荐资源", "练习方式", "评估指标"]
+    missing = [label for label in required_labels if f"**{label}" not in content]
+    if missing:
+        return False, f"缺少固定栏目：{'、'.join(missing)}"
+    titles = [stage.get("title", "") for stage in stages]
+    if len(set(titles)) != 3:
+        return False, "阶段标题重复"
+    return True, "ok"
+
+
+def _hybrid_path_content(profile: dict, payload: dict, query: str) -> tuple[str, list[dict], dict]:
+    sources = _retrieve_path_sources(query, profile, top_k=3)
+    knowledge = format_knowledge_items(sources)
+    profile_text = json.dumps(profile, ensure_ascii=False, default=str)
+    learning_need = str(payload.get("learning_need") or payload.get("adjustment") or profile.get("study_goal") or "")
+    prompt = _build_planner_prompt(profile_text, knowledge, learning_need)
+    fallback_content = _build_fast_path_content(profile, payload)
+    meta = {"strategy": "hybrid_llm_first", "fallback_used": False, "validation": ""}
+    try:
+        llm_content = normalize_markdown(spark_chat(prompt))
+        valid, reason = _valid_llm_path(llm_content)
+        meta["validation"] = reason
+        if valid:
+            return llm_content, sources, meta
+    except Exception as exc:
+        meta["validation"] = f"模型规划异常：{exc}"
+    meta["fallback_used"] = True
+    return fallback_content, sources, meta
+
+
 @path_bp.post("/generate")
 @login_required
 def generate_learning_path():
@@ -367,10 +571,10 @@ def generate_learning_path():
         if not content_audit(profile_text):
             return fail("画像内容未通过讯飞内容审核", 403)
 
-        query = str(profile.get("weak_points") or profile.get("study_goal") or "软件工程")
+        query = _path_query(profile, payload)
+        path_meta = {"strategy": "legacy_full_generation" if payload.get("full_generation") else "hybrid_llm_first", "fallback_used": False, "validation": ""}
         if not payload.get("full_generation"):
-            sources = []
-            path_content = _build_fast_path_content(profile, payload)
+            path_content, sources, path_meta = _hybrid_path_content(profile, payload, query)
         else:
             sources = retrieve_knowledge_items(query, top_k=3)
             knowledge = retrieve_knowledge(query, top_k=3)
@@ -437,9 +641,18 @@ def generate_learning_path():
         if not content_audit(path_content):
             return fail("生成的学习路径未通过讯飞内容审核", 403)
 
-        safety = safety_agent.review(path_content, sources) if payload.get("full_generation") else {"passed": True, "risk": "快速路径本地模板生成", "sources": []}
+        safety = safety_agent.review(path_content, sources) if payload.get("full_generation") else {"passed": True, "risk": "混合路径生成：大模型优先规划，格式校验失败时模板兜底", "sources": sources, "path_meta": path_meta}
+        logger.warning(
+            "[PathPlanner] session=%s strategy=%s fallback_used=%s validation=%s source_count=%s stage_count=%s",
+            session_id,
+            path_meta.get("strategy"),
+            path_meta.get("fallback_used"),
+            path_meta.get("validation"),
+            len(sources or []),
+            len(_parse_path_stages(path_content)),
+        )
         path_id = mysql_db.insert("study_path", {"user_id": user_id, "profile_session_id": session_id, "path_content": path_content, "status": "active"})
-        return success({"id": path_id, "user_id": user_id, "profile_session_id": session_id, "path_content": path_content, "status": "active", "sources": sources, "safety": safety}, "学习路径生成成功")
+        return success({"id": path_id, "user_id": user_id, "profile_session_id": session_id, "path_content": path_content, "status": "active", "sources": sources, "safety": safety, "path_meta": path_meta}, "学习路径生成成功")
     except Exception as exc:
         return fail("学习路径生成失败", 500, {"error": str(exc)})
 

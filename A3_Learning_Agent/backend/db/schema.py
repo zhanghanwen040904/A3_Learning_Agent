@@ -285,7 +285,7 @@ def ensure_extended_tables() -> None:
     for statement in statements:
         mysql_db.execute(statement)
 
-    for table in ("student_profile", "study_resource", "study_path", "generation_batch", "profile_conversation", "learning_event"):
+    for table in ("student_profile", "study_resource", "study_path", "generation_batch", "profile_conversation", "learning_event", "quiz_result", "mastery_record", "quiz_wrong_book", "resource_feedback"):
         _add_column(table, "profile_session_id", "BIGINT UNSIGNED NULL")
         _add_index(table, f"idx_{table}_session_id", "`profile_session_id`")
 

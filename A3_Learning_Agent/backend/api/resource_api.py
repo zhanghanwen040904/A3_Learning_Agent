@@ -48,6 +48,27 @@ FORBIDDEN_DOC_FIELDS = {
 }
 
 
+def _refresh_portrait_after_resource_event(user_id: int, profile_session_id, trigger_source: str) -> dict:
+    if not profile_session_id:
+        return {}
+    from api.profile_api import _aggregate_profile_payload, _persist_portrait_snapshot, _refresh_aggregate_profile
+
+    aggregate_profile = _aggregate_profile_payload(
+        user_id,
+        _refresh_aggregate_profile(user_id),
+        refresh_scoring=True,
+    )
+    _persist_portrait_snapshot(
+        user_id=user_id,
+        profile_session_id=profile_session_id,
+        profile=aggregate_profile,
+        portrait_scoring=aggregate_profile.get("portrait_scoring") or {},
+        trigger_source=trigger_source,
+        force=True,
+    )
+    return aggregate_profile
+
+
 def _safe_json_loads(value, default):
     if value is None:
         return default
@@ -866,9 +887,28 @@ def generate_resources():
         except Exception as finish_exc:
             logger.exception("Failed to update generation batch finish time")
             result.setdefault("errors", []).append(f"资源批次完成时间更新失败：{finish_exc}")
+        mysql_db.insert(
+            "learning_event",
+            {
+                "user_id": user_id,
+                "profile_session_id": session_id,
+                "event_type": "generate_resource",
+                "knowledge_point": str((saved_resources[0].get("title") if saved_resources else "") or "学习资源"),
+                "detail": json.dumps(
+                    {
+                        "resource_count": len(saved_resources),
+                        "resource_types": [item.get("resource_type") for item in saved_resources[:8]],
+                        "titles": [item.get("title") for item in saved_resources[:5]],
+                        "batch_id": batch_id,
+                    },
+                    ensure_ascii=False,
+                ),
+            },
+        )
         result["resource_list"] = saved_resources or result.get("resource_list", [])
         result["batch_id"] = batch_id
         result["profile_session_id"] = session_id
+        result["aggregate_profile"] = _refresh_portrait_after_resource_event(user_id, session_id, "resource_generate")
         return success(result, "资源生成成功")
     except Exception as exc:
         logger.exception("Resource generation failed")
@@ -893,13 +933,17 @@ def list_my_resources():
             SELECT sr.*
             FROM study_resource sr
             INNER JOIN (
-                SELECT resource_type, MAX(id) AS max_id
+                SELECT resource_type,
+                       COALESCE(JSON_UNQUOTE(JSON_EXTRACT(metadata, '$.stage_index')), '0') AS stage_idx,
+                       MAX(id) AS max_id
                 FROM study_resource
                 WHERE user_id=%s AND profile_session_id=%s
-                GROUP BY resource_type
-            ) latest ON sr.resource_type = latest.resource_type AND sr.id = latest.max_id
+                GROUP BY resource_type, stage_idx
+            ) latest ON sr.id = latest.max_id
             WHERE sr.user_id=%s AND sr.profile_session_id=%s
-            ORDER BY FIELD(sr.resource_type, 'doc', 'quiz', 'reading', 'mindmap', 'code', 'video'), sr.id DESC
+            ORDER BY FIELD(sr.resource_type, 'doc', 'quiz', 'reading', 'mindmap', 'code', 'video'),
+                     CAST(COALESCE(JSON_UNQUOTE(JSON_EXTRACT(sr.metadata, '$.stage_index')), '0') AS UNSIGNED),
+                     sr.id DESC
             """,
             (request.user_id, session["id"], request.user_id, session["id"]),
         )
@@ -1013,9 +1057,28 @@ def _persist_stream_result(result: dict, user_id: int, session_id: int) -> dict:
     except Exception as finish_exc:
         logger.exception("Failed to update generation batch finish time")
         result.setdefault("errors", []).append(f"资源批次完成时间更新失败：{finish_exc}")
+    mysql_db.insert(
+        "learning_event",
+        {
+            "user_id": user_id,
+            "profile_session_id": session_id,
+            "event_type": "generate_resource",
+            "knowledge_point": str((saved_resources[0].get("title") if saved_resources else "") or "学习资源"),
+            "detail": json.dumps(
+                {
+                    "resource_count": len(saved_resources),
+                    "resource_types": [item.get("resource_type") for item in saved_resources[:8]],
+                    "titles": [item.get("title") for item in saved_resources[:5]],
+                    "batch_id": batch_id,
+                },
+                ensure_ascii=False,
+            ),
+        },
+    )
     result["resource_list"] = saved_resources or result.get("resource_list", [])
     result["batch_id"] = batch_id
     result["profile_session_id"] = session_id
+    result["aggregate_profile"] = _refresh_portrait_after_resource_event(user_id, session_id, "resource_generate")
     return result
 
 
