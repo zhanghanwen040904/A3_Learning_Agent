@@ -2902,9 +2902,21 @@ def _search_knowledge(query: str, top_k: int) -> list[dict]:
     return _vector_search(query, top_k)
 
 
+def _canonical_image_path(raw_path: str) -> str:
+    """Map stale test-output image paths back to the active rag_data image root."""
+    normalized = (raw_path or "").strip().strip('"').strip("'").replace("\\", "/")
+    marker = "/MY/final/images/"
+    marker_index = normalized.lower().find(marker.lower())
+    if marker_index < 0:
+        return raw_path
+    suffix = normalized[marker_index + len(marker) :]
+    return str((generated_kb_dir() / "images" / suffix).resolve())
+
+
 def candidate_image_paths(raw_path: str) -> list[Path]:
     kb_root = generated_kb_dir().resolve()
     image_root = (kb_root / "images").resolve()
+    raw_path = _canonical_image_path(raw_path)
     normalized = raw_path.strip().strip('"').strip("'").replace("\\", "/")
     candidates: list[Path] = []
 
