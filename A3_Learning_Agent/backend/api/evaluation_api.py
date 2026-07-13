@@ -1,10 +1,17 @@
 import json
 import re
+from pathlib import Path
 
 from flask import Blueprint, request
 
 from ai.agents import EvaluatorAgent
-from ai.assessment_pipeline import assessment_status, build_assessment_assets, generate_personalized_questions
+from ai.assessment_pipeline import (
+    assessment_status,
+    build_assessment_assets,
+    generate_personalized_questions,
+    load_question_bank,
+)
+from config import config
 from db import mysql_db
 from utils import fail, require_fields, success
 from utils.auth_decorator import login_required
@@ -140,6 +147,272 @@ def _safe_bigint(value):
     except Exception:
         return None
 
+
+def _list_assessment_knowledge_points() -> list[dict]:
+    question_bank = load_question_bank()
+
+    def _is_valid_knowledge_option(text: str) -> bool:
+        value = str(text or "").strip()
+        if not value:
+            return False
+        if len(value) <= 1:
+            return False
+        if "/" in value or "\\" in value:
+            return False
+        if "习 题" in value or "试 卷" in value or "附 录" in value or "第" in value and "章" in value:
+            return False
+        if value.startswith("(") or value.startswith("（") or value.startswith("."):
+            return False
+        if re.fullmatch(r"[A-Z][A-Z0-9_\- ]*", value):
+            return False
+        if any(token in value for token in ["？", "?", "。", "，", ",", "：", ":", "例如", "请", "说明", "设计", "为什么"]):
+            return False
+        if any(value.startswith(prefix) for prefix in ["的", "和", "在", "将", "把", "按", "从", "对", "使", "用", "若", "当", "按"]):
+            return False
+        if any(value.endswith(suffix) for suffix in ["的", "了", "吗", "呢", "（", "(", "）", ")"]):
+            return False
+        normalized = re.sub(r"\s+", "", value)
+        if len(normalized) <= 2 and normalized not in {"测试", "继承", "对象", "模型"}:
+            return False
+        if normalized.startswith(("的", "和", "在")) or normalized.endswith(("的", "了")):
+            return False
+        noisy_exact = {
+            "事实上",
+            "出现这种",
+            "所谓自然执行",
+            "但是",
+            "复杂",
+            "科学",
+            "开发",
+            "模型",
+            "程序",
+            "软件",
+            "描述",
+            "在",
+            "当",
+            "非",
+            "不同",
+            "关系",
+            "开始",
+            "有效",
+            "每个",
+            "这些",
+            "对象",
+            "和过程",
+            "和数据",
+            "化的",
+            "的过程",
+            "的任务",
+            "性需求",
+            "的信息",
+            "的信息域",
+            "用面向对象",
+            "类中定义",
+            "调试（也",
+            "选择数据（",
+            "有两种",
+            "减少风险",
+            "互相补充",
+            "各有所长",
+            "发送分支",
+            "实例(instance)",
+            "references",
+            "REFERENCES",
+        }
+        if value in noisy_exact:
+            return False
+        return True
+
+    def _normalize_for_match(text: str) -> str:
+        cleaned = re.sub(r"^\d+(?:\.\d+)*\s*", "", str(text or "").strip())
+        cleaned = cleaned.replace("（", "(").replace("）", ")")
+        cleaned = re.sub(r"\s+", "", cleaned)
+        cleaned = re.sub(r"[^\w\u4e00-\u9fff]+", "", cleaned)
+        return cleaned.lower()
+
+    def _clean_section_title(text: str) -> str:
+        cleaned = re.sub(r"^\d+(?:\.\d+)*\s*", "", str(text or "").strip())
+        cleaned = re.sub(r"\s+", " ", cleaned).strip()
+        return cleaned
+
+    def _is_valid_tree_path(parts: list[str]) -> bool:
+        if not parts:
+            return False
+        path_text = "/".join(parts)
+        blocked_tokens = ["习题", "习 题", "试卷", "试 卷", "附录", "附 录", "注意", "REFERENCES"]
+        return not any(token in path_text for token in blocked_tokens)
+
+    def _display_label(text: str) -> str:
+        value = str(text or "").strip()
+        replacements = [
+            (r"^识别(.+)$", r"\1"),
+            (r"^调整(.+)$", r"\1"),
+            (r"^建立(.+)$", r"\1"),
+            (r"^确定(.+)$", r"\1"),
+            (r"^设计(.+)$", r"\1"),
+            (r"^画出?(.+)$", r"\1"),
+            (r"^描述(.+)$", r"\1"),
+            (r"^选择(.+)$", r"\1"),
+            (r"^提高(.+)$", r"\1"),
+            (r"^实现(.+)$", r"\1"),
+        ]
+        for pattern, repl in replacements:
+            candidate = re.sub(pattern, repl, value)
+            if candidate != value and _is_valid_knowledge_option(candidate):
+                return candidate
+        return value
+
+    def _sort_key_from_section_path(parts: list[str]) -> tuple:
+        def _part_key(part: str) -> tuple:
+            text = str(part or "").strip()
+            match = re.match(r"^(\d+(?:\.\d+)*)", text)
+            if not match:
+                return (1, text)
+            numbers = tuple(int(item) for item in match.group(1).split("."))
+            return (0, numbers, text)
+
+        return tuple(_part_key(part) for part in parts)
+
+    canonical_nodes = []
+    textbook_points_dir = Path(config.RAG_SOURCE_DIR).parent / "knowledge_points_json"
+    for path in sorted(textbook_points_dir.glob("*.json")):
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        for item in payload.get("knowledge_points") or []:
+            if not item.get("student_visible", True):
+                continue
+            section_path = [str(part or "").strip() for part in (item.get("section_path") or []) if str(part or "").strip()]
+            if not _is_valid_tree_path(section_path):
+                continue
+            title = str(item.get("title") or item.get("normalized_title") or "").strip()
+            if not _is_valid_knowledge_option(title):
+                continue
+            if len(section_path) < 2:
+                continue
+            aliases = {title, str(item.get("normalized_title") or "").strip()}
+            aliases.update(_clean_section_title(part) for part in section_path)
+            aliases = {alias for alias in aliases if _is_valid_knowledge_option(alias)}
+            canonical_nodes.append(
+                {
+                    "value": title,
+                    "label": _display_label(title),
+                    "chapter": _clean_section_title(section_path[1]),
+                    "path": " / ".join(_clean_section_title(part) for part in section_path),
+                    "aliases": aliases,
+                    "chapter_order": _sort_key_from_section_path(section_path[:2]),
+                    "option_order": _sort_key_from_section_path(section_path),
+                }
+            )
+
+    canonical_map: dict[str, dict] = {}
+    for node in canonical_nodes:
+        if node["value"] not in canonical_map:
+            canonical_map[node["value"]] = node
+
+    raw_counter: dict[str, int] = {}
+
+    def _register_raw(value: str) -> None:
+        key = str(value or "").strip()
+        if not _is_valid_knowledge_option(key):
+            return
+        raw_counter[key] = raw_counter.get(key, 0) + 1
+
+    for item in question_bank:
+        primary_titles = item.get("primary_knowledge_titles") or []
+        related_titles = item.get("related_knowledge_titles") or []
+        for candidate in primary_titles:
+            _register_raw(candidate)
+        for candidate in related_titles:
+            _register_raw(candidate)
+        _register_raw(item.get("knowledge_point"))
+
+    alias_to_canonical: dict[str, str] = {}
+    for node in canonical_map.values():
+        for alias in node["aliases"]:
+            alias_to_canonical[_normalize_for_match(alias)] = node["value"]
+
+    manual_aliases = {
+        "继承": "识别继承关系",
+        "类继承": "识别继承关系",
+        "继承重用": "识别继承关系",
+        "多态重用": "多态性",
+        "测试": "软件测试基础",
+        "面向对象方法学概述": "面向对象方法学引论",
+    }
+
+    counts_by_canonical: dict[str, int] = {value: 0 for value in canonical_map}
+
+    def _resolve_canonical(raw_label: str) -> str | None:
+        normalized_raw = _normalize_for_match(raw_label)
+        if not normalized_raw:
+            return None
+        manual_target = manual_aliases.get(str(raw_label or "").strip())
+        if manual_target and manual_target in canonical_map:
+            return manual_target
+        direct = alias_to_canonical.get(normalized_raw)
+        if direct:
+            return direct
+        best_value = None
+        best_score = 0
+        for node in canonical_map.values():
+            for alias in node["aliases"]:
+                normalized_alias = _normalize_for_match(alias)
+                if not normalized_alias:
+                    continue
+                score = 0
+                if normalized_raw == normalized_alias:
+                    score = 100
+                elif normalized_raw in normalized_alias or normalized_alias in normalized_raw:
+                    min_length = min(len(normalized_raw), len(normalized_alias))
+                    if min_length >= 2:
+                        score = 70 + min_length
+                if score > best_score:
+                    best_score = score
+                    best_value = node["value"]
+        return best_value if best_score >= 73 else None
+
+    for raw_label, count in raw_counter.items():
+        canonical_value = _resolve_canonical(raw_label)
+        if canonical_value:
+            counts_by_canonical[canonical_value] += count
+
+    items = []
+    groups_map: dict[str, list[dict]] = {}
+    for value, node in canonical_map.items():
+        count = int(counts_by_canonical.get(value) or 0)
+        if count <= 0:
+            continue
+        item = {
+            "value": value,
+            "label": node["label"],
+            "chapter": node["chapter"],
+            "path": node["path"],
+            "type": "knowledge_point",
+            "question_count": count,
+            "chapter_order": node["chapter_order"],
+            "option_order": node["option_order"],
+        }
+        items.append(item)
+        groups_map.setdefault(node["chapter"], []).append(item)
+
+    items.sort(key=lambda item: (item["chapter_order"], item["option_order"], item["label"]))
+    groups = []
+    for chapter, options in groups_map.items():
+        options.sort(key=lambda item: (item["option_order"], item["label"]))
+        groups.append(
+            {
+                "label": chapter,
+                "options": options,
+                "all_values": [item["value"] for item in options],
+                "knowledge_count": len(options),
+                "chapter_order": options[0]["chapter_order"] if options else ((9, chapter),),
+            }
+        )
+    groups.sort(key=lambda group: group["chapter_order"])
+    return {"items": items, "groups": groups}
+
 def _wrong_book_payload(user_id: int, payload: dict, result: dict | None = None, quiz_result_id=None) -> dict:
     question = str(payload.get("question") or payload.get("prompt") or "")
     knowledge_path = str(payload.get("knowledge_path") or payload.get("knowledge_point") or "")
@@ -184,6 +457,18 @@ def bank_status():
         return success(assessment_status(), "题库状态查询成功")
     except Exception as exc:
         return fail("题库状态查询失败", 500, {"error": str(exc)})
+
+
+@evaluation_bp.get("/knowledge-points")
+@login_required
+def knowledge_points():
+    try:
+        return success(
+            _list_assessment_knowledge_points(),
+            "评估知识点列表查询成功",
+        )
+    except Exception as exc:
+        return fail("评估知识点列表查询失败", 500, {"error": str(exc)})
 
 
 @evaluation_bp.post("/questions")
