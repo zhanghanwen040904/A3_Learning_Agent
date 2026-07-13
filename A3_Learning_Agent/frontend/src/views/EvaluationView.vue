@@ -489,6 +489,7 @@ async function submitQuestion(question) {
       recentScores.value = [res.data.score, ...recentScores.value].slice(0, 6);
       ElMessage.success(`判题完成，得到 ${res.data.score} 分`);
       await loadSummary();
+      window.dispatchEvent(new CustomEvent("a3-profile-session-refresh"));
       saveStageRecordIfFinished();
 
       if (generator.mode === "single" && activeQuestionIndex.value < questions.value.length - 1) {
@@ -525,6 +526,7 @@ async function addQuestionToWrongBook(question) {
     });
     if (res.code === 200) {
       ElMessage.success("已加入错题本，可在左侧导航栏的错题本中查看");
+      window.dispatchEvent(new CustomEvent("a3-profile-session-refresh"));
     } else {
       ElMessage.error(res.msg || "加入错题本失败");
     }

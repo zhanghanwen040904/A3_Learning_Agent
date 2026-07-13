@@ -2,14 +2,10 @@
   <div class="portrait-page">
     <div class="chat-home" v-if="showHome">
       <div class="home-center">
-        <h1>Ready when you are.</h1>
+        <h1>What would you like to learn?</h1>
 
         <div class="home-composer composer-shell">
           <div class="composer-main">
-            <button class="composer-icon-button ghost" type="button" aria-label="更多能力">
-              <el-icon><Plus /></el-icon>
-            </button>
-
             <el-input
               ref="inputRef"
               v-model="draft"
@@ -17,16 +13,12 @@
               :autosize="{ minRows: 1, maxRows: 6 }"
               resize="none"
               :disabled="sending"
-              placeholder="Ask anything"
+              placeholder="What would you like to learn?"
               @keydown.enter.exact.prevent="sendMessage"
               @keydown.ctrl.enter.prevent="sendMessage"
             />
 
             <div class="composer-tools">
-              <button class="composer-text-button" type="button">High</button>
-              <button class="composer-icon-button ghost" type="button" aria-label="语音输入">
-                <el-icon><Microphone /></el-icon>
-              </button>
               <button
                 class="composer-send-button"
                 type="button"
@@ -105,10 +97,6 @@
 
       <div class="composer-card composer-shell">
         <div class="composer-main">
-          <button class="composer-icon-button ghost" type="button" aria-label="更多能力">
-            <el-icon><Plus /></el-icon>
-          </button>
-
           <el-input
             ref="inputRef"
             v-model="draft"
@@ -116,7 +104,7 @@
             :autosize="{ minRows: 1, maxRows: 6 }"
             resize="none"
             :disabled="sending"
-            placeholder="Ask anything"
+            placeholder="What would you like to learn?"
             @keydown.enter.exact.prevent="sendMessage"
             @keydown.ctrl.enter.prevent="sendMessage"
           />
@@ -124,11 +112,8 @@
           <div class="composer-tools">
             <div class="composer-status">
               <el-icon v-if="sending" class="is-loading"><Loading /></el-icon>
-              <span>{{ sending ? "Thinking" : "High" }}</span>
+              <span>{{ sending ? "Thinking" : "Ready" }}</span>
             </div>
-            <button class="composer-icon-button ghost" type="button" aria-label="语音输入">
-              <el-icon><Microphone /></el-icon>
-            </button>
             <button
               class="composer-send-button"
               type="button"
@@ -147,7 +132,7 @@
 
 <script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from "vue";
-import { Loading, Microphone, Plus, Top } from "@element-plus/icons-vue";
+import { Loading, Top } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import MarkdownIt from "markdown-it";
 import { ACTIVE_PROFILE_SESSION_KEY, profileApi, setActiveProfileSessionId } from "../api";

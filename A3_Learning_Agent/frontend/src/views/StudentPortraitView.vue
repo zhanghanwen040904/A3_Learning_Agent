@@ -14,47 +14,115 @@
     </div>
 
     <template v-if="hasAnyMeaningfulProfile">
-      <div class="summary-strip">
-        <div class="summary-main">
-          <span class="summary-label">综合摘要</span>
-          <strong>{{ previewSummary }}</strong>
+      <section class="hero-panel">
+        <div class="hero-main">
+          <span class="eyebrow">综合概览</span>
+          <h2>学生学习状态总览</h2>
+          <p>{{ previewSummary }}</p>
+          <div class="hero-tags">
+            <el-tag
+              v-for="item in summaryTags"
+              :key="item.id"
+              round
+              size="small"
+              effect="plain"
+            >
+              {{ item.label }}
+            </el-tag>
+          </div>
         </div>
-
-        <div class="summary-tags">
-          <el-tag
-            v-for="item in summaryTags"
-            :key="item.id"
-            round
-            size="small"
-            type="warning"
-            effect="plain"
-          >
-            {{ item.label }}
-          </el-tag>
+        <div class="hero-side">
+          <div class="hero-side-card">
+            <span>当前聚焦课程</span>
+            <strong>{{ displayCourse }}</strong>
+            <small>{{ displayMajor }}</small>
+          </div>
+          <div class="hero-side-card">
+            <span>画像置信度</span>
+            <strong>{{ confidenceLabel }}</strong>
+            <small>{{ scoringMethod }}</small>
+          </div>
         </div>
-      </div>
+      </section>
 
       <div class="metric-row">
-        <div class="metric-card">
+        <div class="metric-card metric-card-primary">
           <span>画像完整度</span>
           <strong>{{ Math.round(completionRatio * 100) }}%</strong>
           <small>{{ completedCount }}/{{ corePrompts.length }} 个核心维度已识别</small>
         </div>
 
         <div class="metric-card">
-          <span>画像置信度</span>
-          <strong>{{ confidenceLabel }}</strong>
-          <small>{{ scoringMethod }}</small>
+          <span>当前综合掌握</span>
+          <strong>{{ dynamicProfile.overall_mastery_score || 0 }}分</strong>
+          <small>综合自掌握度、答题、错题与资源行为证据</small>
         </div>
 
         <div class="metric-card">
-          <span>当前聚焦课程</span>
-          <strong>{{ displayCourse }}</strong>
-          <small>{{ displayMajor }}</small>
+          <span>更新轨迹</span>
+          <strong>{{ portraitHistory.length }}</strong>
+          <small>已记录 {{ portraitHistory.length }} 次画像快照</small>
         </div>
       </div>
 
       <div class="visual-panel">
+        <section class="radar-stage">
+          <div class="radar-card radar-card-main">
+            <div class="card-header">
+              <div>
+                <span class="eyebrow">核心状态雷达</span>
+                <strong>对学生当前学习状态的综合判断</strong>
+                <p v-if="radarCompareHint" class="radar-compare-hint">{{ radarCompareHint }}</p>
+              </div>
+              <div class="radar-meta">
+                <div class="radar-legend" v-if="hasHistoryComparison">
+                  <span class="legend-item">
+                    <i class="legend-dot previous"></i>
+                    上一轮画像
+                  </span>
+                  <span class="legend-item">
+                    <i class="legend-dot current"></i>
+                    当前画像
+                  </span>
+                </div>
+                <el-tag round :type="completionRatio >= 0.8 ? 'success' : 'warning'" effect="plain">
+                  {{ completionRatio >= 0.8 ? "画像已较完整" : "画像仍在持续生长" }}
+                </el-tag>
+              </div>
+            </div>
+
+            <div class="radar-layout">
+              <div class="radar-chart-wrap">
+                <div ref="radarRef" class="profile-radar"></div>
+              </div>
+              <div class="radar-highlight-list">
+                <div
+                  v-for="item in coreCards.slice(0, 4)"
+                  :key="`highlight-${item.id}`"
+                  class="radar-highlight-item"
+                >
+                  <span>{{ item.label }}</span>
+                  <strong>{{ item.score }}</strong>
+                  <small>{{ item.value }}</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="radar-side-panel">
+            <div class="mini-focus-card">
+              <span class="eyebrow">当前关注</span>
+              <strong>{{ dynamicValue("current_stage_label") }}</strong>
+              <p>{{ dynamicValue("weak_knowledge_points") }}</p>
+            </div>
+            <div class="mini-focus-card">
+              <span class="eyebrow">下一步建议</span>
+              <strong>{{ previewProfile.recommended_next_step }}</strong>
+              <p>{{ dynamicValue("goal_risk") }}</p>
+            </div>
+          </div>
+        </section>
+
         <div class="portrait-analysis-card" v-if="hasPortraitAnalysisReason">
           <div class="card-header">
             <div>
@@ -85,33 +153,6 @@
           </div>
         </div>
 
-        <div class="radar-card">
-          <div class="card-header">
-            <div>
-              <span class="eyebrow">核心状态雷达</span>
-              <strong>对学生当前学习状态的综合判断</strong>
-              <p v-if="radarCompareHint" class="radar-compare-hint">{{ radarCompareHint }}</p>
-            </div>
-            <div class="radar-meta">
-              <div class="radar-legend" v-if="hasHistoryComparison">
-                <span class="legend-item">
-                  <i class="legend-dot previous"></i>
-                  上一轮画像
-                </span>
-                <span class="legend-item">
-                  <i class="legend-dot current"></i>
-                  当前画像
-                </span>
-              </div>
-              <el-tag round :type="completionRatio >= 0.8 ? 'success' : 'warning'" effect="plain">
-                {{ completionRatio >= 0.8 ? "画像已较完整" : "画像仍在持续生长" }}
-              </el-tag>
-            </div>
-          </div>
-
-          <div ref="radarRef" class="profile-radar"></div>
-        </div>
-
         <div class="dimension-card-grid">
           <div
             v-for="item in coreCards"
@@ -120,17 +161,22 @@
           >
             <div class="dimension-card-top">
               <span>{{ item.label }}</span>
-              <strong>{{ item.score }}</strong>
+              <div class="dimension-score-wrap">
+                <strong>{{ item.score }}</strong>
+                <span v-if="item.deltaText" :class="['dimension-delta', item.deltaClass]">{{ item.deltaText }}</span>
+              </div>
             </div>
             <p class="dimension-value">{{ item.value }}</p>
             <p class="dimension-reason">{{ item.reason }}</p>
+            <p v-if="item.formula" class="dimension-formula">{{ item.formula }}</p>
+            <p v-if="item.changeReason" class="dimension-change">{{ item.changeReason }}</p>
           </div>
         </div>
       </div>
 
       <div class="secondary-panel">
         <div class="section-header">
-          <span class="eyebrow">Support Context</span>
+          <span class="eyebrow">辅助信息</span>
           <strong>辅助判断信息</strong>
         </div>
 
@@ -149,7 +195,7 @@
       <div class="timeline-card">
         <div class="card-header">
           <div>
-            <span class="eyebrow">Recent Updates</span>
+            <span class="eyebrow">更新轨迹</span>
             <strong>画像更新轨迹</strong>
           </div>
         </div>
@@ -379,13 +425,41 @@ const coreCards = computed(() =>
   corePrompts.map((item) => {
     const value = dynamicValue(item.id);
     const backendInfo = portraitDimensions.value[item.id] || {};
+    const previousInfo = previousSnapshotDimensions.value[item.id] || {};
+    const formula = normalizeValue(dynamicProfile.value.score_details?.[item.id]);
     const filled = value !== DEFAULT_VALUE;
+    const currentScore = backendInfo.score !== undefined ? Number(backendInfo.score) : null;
+    const previousScore = previousInfo.score !== undefined ? Number(previousInfo.score) : null;
+    const hasDelta = currentScore !== null && previousScore !== null && !Number.isNaN(currentScore) && !Number.isNaN(previousScore);
+    const delta = hasDelta ? currentScore - previousScore : 0;
+    let deltaText = "";
+    let deltaClass = "";
+    let changeReason = "";
+    if (hasDelta) {
+      if (delta > 0) {
+        deltaText = `+${delta}`;
+        deltaClass = "up";
+        changeReason = `较上一轮上升 ${delta} 分。通常表示近期在这个维度上新增了更有利的学习证据。`;
+      } else if (delta < 0) {
+        deltaText = `${delta}`;
+        deltaClass = "down";
+        changeReason = `较上一轮下降 ${Math.abs(delta)} 分。通常表示近期错题、薄弱点或目标压力在这个维度上占比更高。`;
+      } else {
+        deltaText = "0";
+        deltaClass = "flat";
+        changeReason = "与上一轮持平，说明当前新增证据暂未显著改变该维度判断。";
+      }
+    }
     return {
       ...item,
       value: filled ? value : "当前证据还不足，系统会在后续对话、答题和资源反馈后继续补全。",
       filled,
       score: backendInfo.score !== undefined ? `${backendInfo.score}分` : (filled ? "评估中" : "待识别"),
       reason: backendInfo.reason || (filled ? "该维度已接入学习证据，后续会继续根据新记录自动修正。" : "当前尚缺少足够学习证据，暂时无法稳定判断。"),
+      formula: formula !== DEFAULT_VALUE ? formula : "",
+      deltaText,
+      deltaClass,
+      changeReason,
     };
   })
 );
@@ -563,14 +637,13 @@ onBeforeUnmount(() => {
 <style scoped>
 .portrait-view-page {
   min-height: 100vh;
-  padding: 32px 40px;
-  background: #fff;
+  padding: 24px 28px 32px;
+  background: #f5f7fb;
   display: grid;
   gap: 18px;
 }
 
 .page-header,
-.summary-strip,
 .card-header,
 .dimension-card-top {
   display: flex;
@@ -593,9 +666,8 @@ onBeforeUnmount(() => {
 .eyebrow {
   font-size: 12px;
   font-weight: 700;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: #94a3b8;
+  letter-spacing: .04em;
+  color: #8a94a6;
 }
 
 .header-actions {
@@ -603,57 +675,93 @@ onBeforeUnmount(() => {
   gap: 12px;
 }
 
-.summary-strip,
+.hero-panel,
 .metric-card,
 .radar-card,
 .portrait-analysis-card,
 .dimension-card,
 .support-card,
 .timeline-card {
-  border: 1px solid #edf0f6;
-  background: #fff;
-  border-radius: 24px;
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.04);
+  border: 1px solid #e6ebf2;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
 }
 
-.summary-strip {
-  padding: 22px 24px;
+.hero-panel {
+  padding: 24px 26px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(260px, 0.75fr);
+  gap: 16px;
+  color: #0f172a;
 }
 
-.summary-main {
+.hero-main {
+  display: grid;
+  gap: 14px;
+}
+
+.hero-main h2 {
+  margin: 0;
+  font-size: 26px;
+  line-height: 1.2;
+  color: #0f172a;
+}
+
+.hero-main p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.85;
+  color: #475569;
+}
+
+.hero-tags {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.hero-tags :deep(.el-tag) {
+  border-color: #d9e2ef;
+  background: #f8fafc;
+  color: #516072;
+}
+
+.hero-side {
+  display: grid;
+  gap: 12px;
+}
+
+.hero-side-card {
+  border-radius: 16px;
+  padding: 18px 20px;
+  background: #f8fafc;
+  border: 1px solid #e6ebf2;
   display: grid;
   gap: 8px;
 }
 
-.summary-label {
+.hero-side-card span,
+.hero-side-card small {
   color: #64748b;
-  font-size: 13px;
-  font-weight: 600;
 }
 
-.summary-main strong {
-  font-size: 18px;
-  line-height: 1.6;
-  color: #111827;
-}
-
-.summary-tags {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  justify-content: flex-end;
+.hero-side-card strong {
+  color: #0f172a;
+  font-size: 24px;
+  line-height: 1.2;
 }
 
 .metric-row {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  gap: 12px;
 }
 
 .metric-card {
-  padding: 22px 24px;
+  padding: 18px 20px;
   display: grid;
-  gap: 10px;
+  gap: 8px;
 }
 
 .metric-card span,
@@ -666,17 +774,99 @@ onBeforeUnmount(() => {
   color: #0f172a;
 }
 
+.metric-card-primary {
+  border-color: #d9e2ef;
+}
+
 .visual-panel {
   display: grid;
-  grid-template-columns: 380px minmax(0, 1fr);
-  gap: 16px;
+  gap: 14px;
+}
+
+.radar-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.9fr) minmax(240px, 0.6fr);
+  gap: 14px;
+}
+
+.radar-card-main {
+  background: #ffffff;
+}
+
+.radar-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(210px, 0.55fr);
+  align-items: center;
+  gap: 12px;
+}
+
+.radar-chart-wrap {
+  min-width: 0;
+  padding: 0 6px 0 0;
+}
+
+.radar-highlight-list {
+  display: grid;
+  gap: 10px;
+}
+
+.radar-highlight-item {
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #f8fafc;
+  border: 1px solid #e6ebf2;
+  display: grid;
+  gap: 6px;
+}
+
+.radar-highlight-item span {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.radar-highlight-item strong {
+  color: #1e293b;
+  font-size: 18px;
+}
+
+.radar-highlight-item small {
+  color: #475569;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.radar-side-panel {
+  display: grid;
+  gap: 12px;
+}
+
+.mini-focus-card {
+  border: 1px solid #e6ebf2;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+  padding: 18px 20px;
+  display: grid;
+  gap: 8px;
+}
+
+.mini-focus-card strong {
+  color: #0f172a;
+  font-size: 22px;
+  line-height: 1.4;
+}
+
+.mini-focus-card p {
+  margin: 0;
+  color: #64748b;
+  line-height: 1.7;
 }
 
 .portrait-analysis-card {
-  grid-column: 1 / -1;
   display: grid;
   gap: 16px;
-  background: linear-gradient(135deg, #ffffff, #f8fbff);
+  background: #ffffff;
 }
 
 .analysis-summary,
@@ -707,9 +897,9 @@ onBeforeUnmount(() => {
 
 .analysis-reason-item {
   padding: 14px 16px;
-  border: 1px solid #e8edf7;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid #e6ebf2;
+  border-radius: 14px;
+  background: #f8fafc;
   display: grid;
   gap: 8px;
 }
@@ -727,7 +917,7 @@ onBeforeUnmount(() => {
 }
 
 .analysis-reason-item span {
-  color: #6d5dfc;
+  color: #5b6b82;
   font-size: 12px;
   font-weight: 700;
   white-space: nowrap;
@@ -746,9 +936,9 @@ onBeforeUnmount(() => {
 
 .analysis-next-step {
   padding: 14px 16px;
-  border-radius: 18px;
-  background: #eef2ff;
-  color: #4338ca;
+  border-radius: 14px;
+  background: #f8fafc;
+  color: #334155;
   display: flex;
   gap: 10px;
   align-items: flex-start;
@@ -762,11 +952,12 @@ onBeforeUnmount(() => {
 .portrait-analysis-card,
 .timeline-card,
 .secondary-panel {
-  padding: 22px 24px;
+  padding: 18px 20px;
 }
 
 .profile-radar {
-  height: 360px;
+  height: 460px;
+  width: 100%;
 }
 
 .radar-meta {
@@ -801,13 +992,13 @@ onBeforeUnmount(() => {
 }
 
 .legend-dot.previous {
-  background: #c4b5fd;
-  box-shadow: 0 0 0 4px rgba(196, 181, 253, 0.16);
+  background: #cbd5e1;
+  box-shadow: 0 0 0 4px rgba(203, 213, 225, 0.18);
 }
 
 .legend-dot.current {
-  background: #6d5dfc;
-  box-shadow: 0 0 0 4px rgba(109, 93, 252, 0.14);
+  background: #64748b;
+  box-shadow: 0 0 0 4px rgba(100, 116, 139, 0.12);
 }
 
 .radar-compare-hint {
@@ -815,13 +1006,13 @@ onBeforeUnmount(() => {
   color: #64748b;
   font-size: 13px;
   line-height: 1.7;
-  max-width: 290px;
+  max-width: 360px;
 }
 
 .dimension-card-grid,
 .support-grid {
   display: grid;
-  gap: 16px;
+  gap: 12px;
 }
 
 .dimension-card-grid {
@@ -834,12 +1025,12 @@ onBeforeUnmount(() => {
 
 .dimension-card,
 .support-card {
-  padding: 20px 20px 18px;
+  padding: 18px 18px 16px;
 }
 
 .dimension-card.filled {
-  border-color: rgba(109, 93, 252, 0.22);
-  box-shadow: 0 16px 36px rgba(109, 93, 252, 0.08);
+  border-color: #dbe3ee;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
 }
 
 .dimension-card-top span,
@@ -850,8 +1041,31 @@ onBeforeUnmount(() => {
 }
 
 .dimension-card-top strong {
-  color: #6d5dfc;
+  color: #0f172a;
   font-size: 14px;
+}
+
+.dimension-score-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dimension-delta {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.dimension-delta.up {
+  color: #16a34a;
+}
+
+.dimension-delta.down {
+  color: #dc2626;
+}
+
+.dimension-delta.flat {
+  color: #94a3b8;
 }
 
 .dimension-value,
@@ -873,6 +1087,20 @@ onBeforeUnmount(() => {
   font-size: 13px;
 }
 
+.dimension-formula {
+  margin: 8px 0 0;
+  color: #94a3b8;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.dimension-change {
+  margin: 8px 0 0;
+  color: #475569;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
 .section-header {
   display: grid;
   gap: 6px;
@@ -886,7 +1114,7 @@ onBeforeUnmount(() => {
 
 .timeline-list {
   display: grid;
-  gap: 14px;
+  gap: 12px;
 }
 
 .timeline-item {
@@ -901,8 +1129,8 @@ onBeforeUnmount(() => {
   height: 10px;
   margin-top: 7px;
   border-radius: 999px;
-  background: linear-gradient(135deg, #6d5dfc, #9d8cff);
-  box-shadow: 0 0 0 4px rgba(109, 93, 252, 0.1);
+  background: #94a3b8;
+  box-shadow: 0 0 0 4px rgba(148, 163, 184, 0.12);
 }
 
 .timeline-item strong {
@@ -916,8 +1144,14 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 1280px) {
-  .visual-panel {
+  .hero-panel,
+  .radar-stage,
+  .radar-layout {
     grid-template-columns: 1fr;
+  }
+
+  .profile-radar {
+    height: 420px;
   }
 
   .support-grid,
@@ -930,11 +1164,11 @@ onBeforeUnmount(() => {
 
 @media (max-width: 860px) {
   .portrait-view-page {
-    padding: 20px;
+    padding: 16px;
   }
 
   .page-header,
-  .summary-strip {
+  .hero-panel {
     flex-direction: column;
   }
 
@@ -943,6 +1177,10 @@ onBeforeUnmount(() => {
   .analysis-reason-list,
   .metric-row {
     grid-template-columns: 1fr;
+  }
+
+  .profile-radar {
+    height: 360px;
   }
 }
 </style>

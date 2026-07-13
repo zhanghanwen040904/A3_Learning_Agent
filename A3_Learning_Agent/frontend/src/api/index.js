@@ -139,12 +139,12 @@ export const knowledgeApi = {
 export const evaluationApi = {
   bankStatus: () => http.get("/evaluation/bank-status"),
   rebuildBank: (data = { force: true }) => http.post("/evaluation/rebuild-bank", data),
-  questions: (data = {}) => http.post("/evaluation/questions", data),
-  submit: (data) => http.post("/evaluation/submit", data),
+  questions: (data = {}) => http.post("/evaluation/questions", withProfileSession(data)),
+  submit: (data) => http.post("/evaluation/submit", withProfileSession(data)),
   summary: () => http.get("/evaluation/summary"),
   wrongBook: () => http.get("/evaluation/wrong-book"),
-  addWrongBook: (data) => http.post("/evaluation/wrong-book", data),
-  submitWrongBook: (id, data) => http.post(`/evaluation/wrong-book/${id}/submit`, data),
+  addWrongBook: (data) => http.post("/evaluation/wrong-book", withProfileSession(data)),
+  submitWrongBook: (id, data) => http.post(`/evaluation/wrong-book/${id}/submit`, withProfileSession(data)),
   deleteWrongBook: (id) => http.delete(`/evaluation/wrong-book/${id}`),
   event: (data) => http.post("/evaluation/event", data),
 };

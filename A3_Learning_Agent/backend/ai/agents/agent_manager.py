@@ -100,11 +100,7 @@ class AgentManager:
             stage.get("analysis_focus"),
             " ".join(stage.get("stage_points") or []),
             " ".join(stage.get("retrieval_terms") or []),
-            context.get("weak_points"),
-            context.get("study_goal"),
-            context.get("course_progress"),
-            context.get("current_need"),
-            base_query,
+            context.get("course"),
             "软件工程",
         ]
         seen = []
@@ -116,63 +112,19 @@ class AgentManager:
 
     @staticmethod
     def _stage_learning_profile(stage_index: int, raw_points: Optional[List[str]] = None) -> Dict[str, Any]:
-        points_text = " ".join(str(item) for item in (raw_points or []))
-        demand_topic = any(token in points_text for token in ["需求", "可行性", "软件生命周期", "数据流图"])
-        if demand_topic:
-            profiles = {
-                1: {
-                    "difficulty_label": "基础理解",
-                    "stage_points": ["软件生命周期", "软件定义阶段", "问题定义", "可行性研究", "需求分析"],
-                    "retrieval_terms": ["软件生命周期", "软件定义", "可行性研究", "需求分析定义", "系统必须做什么"],
-                    "retrieval_focus": "优先检索概念定义、阶段位置、基本任务、输入输出和阶段顺序。",
-                    "analysis_focus": "从零基础解释概念边界：先讲软件生命周期和软件定义阶段，再讲需求分析为什么出现。",
-                },
-                2: {
-                    "difficulty_label": "方法建构",
-                    "stage_points": ["需求获取", "需求建模", "数据流图", "数据字典", "需求规格说明"],
-                    "retrieval_terms": ["需求获取", "需求建模", "数据流图", "数据字典", "规格说明书", "功能需求"],
-                    "retrieval_focus": "优先检索方法步骤、建模工具、需求规格说明、功能性能约束和阶段产物。",
-                    "analysis_focus": "假设已懂基本定义，重点讲方法流程、模型工具、需求文档如何形成。",
-                },
-                3: {
-                    "difficulty_label": "迁移应用",
-                    "stage_points": ["需求验证", "需求复审", "可维护性复审", "需求变更", "案例练习"],
-                    "retrieval_terms": ["需求验证", "需求复审", "可维护性复审", "需求变更", "系统界面", "可移植性", "案例"],
-                    "retrieval_focus": "优先检索复审、验证、可维护性、常见错误、案例迁移和质量风险。",
-                    "analysis_focus": "面向提升应用，重点讲案例判断、错误纠正、复审检查和迁移应用。",
-                },
-            }
-            return profiles.get(stage_index, profiles[3])
-        generic_profiles = {
-            1: {
-                "difficulty_label": "基础理解",
-                "stage_points": ["软件生命周期", "核心概念", "阶段任务", "输入输出"],
-                "retrieval_terms": ["软件生命周期", "软件工程定义", "阶段任务", "输入 输出"],
-                "retrieval_focus": "优先检索定义、位置、基本任务和输入输出。",
-                "analysis_focus": "从基础概念和阶段位置讲起。",
-            },
-            2: {
-                "difficulty_label": "方法建构",
-                "stage_points": ["方法流程", "模型工具", "阶段产物", "前后衔接"],
-                "retrieval_terms": ["方法", "流程", "模型", "阶段产物", "设计"],
-                "retrieval_focus": "优先检索方法流程、工具、产物和阶段关系。",
-                "analysis_focus": "讲清方法之间的关系和流程衔接。",
-            },
-            3: {
-                "difficulty_label": "迁移应用",
-                "stage_points": ["案例应用", "质量风险", "常见误区", "复审评估"],
-                "retrieval_terms": ["案例", "风险", "复审", "测试", "维护"],
-                "retrieval_focus": "优先检索案例、风险、误区、复审和实践应用。",
-                "analysis_focus": "通过案例和练习完成应用提升。",
-            },
-        }
-        return generic_profiles.get(stage_index, generic_profiles[3])
+        labels = {1: "基础理解", 2: "方法建构", 3: "迁移应用"}
+        return {"difficulty_label": labels.get(stage_index, labels[3])}
 
     @classmethod
     def _apply_stage_progression(cls, stage: Dict[str, Any], context: Dict[str, Any]) -> Dict[str, Any]:
         stage_index = int(stage.get("stage_index") or 1)
         raw_points = stage.get("stage_points") or cls._extract_stage_points(" ".join(str(context.get(key) or "") for key in ["weak_points", "study_goal", "current_need"]))
         raw_points = [str(point).strip() for point in raw_points if str(point).strip()]
+        title_points = cls._extract_stage_points(str(stage.get("stage_title") or "") + " " + str(stage.get("stage_goal") or ""))
+        for point in title_points:
+            if point not in raw_points:
+                raw_points.insert(0, point)
+        raw_points = raw_points[:6]
         profile = cls._stage_learning_profile(stage_index, raw_points)
         retrieval_terms = []
         for point in raw_points + [stage.get("stage_title"), stage.get("stage_goal")]:
@@ -182,16 +134,25 @@ class AgentManager:
             **stage,
             "difficulty_label": profile.get("difficulty_label"),
             "retrieval_terms": retrieval_terms[:8],
-            "retrieval_focus": f"只检索与当前阶段知识点“{'、'.join(raw_points)}”直接相关的定义、任务、输入输出、产物和案例，不混入其他阶段知识点。",
-            "analysis_focus": f"当前阶段讲解必须只围绕“{'、'.join(raw_points)}”展开，标题、目标、思维导图、讲解文档、阅读材料和视频都要与这些知识点一一对应。",
+            "retrieval_focus": "只检索与当前阶段知识点“" + "、".join(raw_points) + "”直接相关的定义、任务、输入输出、产物和案例，不混入其他阶段知识点。",
+            "analysis_focus": "当前阶段讲解必须只围绕“" + "、".join(raw_points) + "”展开，标题、目标、思维导图、讲解文档、阅读材料和视频都要与这些知识点一一对应。",
             "stage_points": raw_points[:6] or [stage.get("stage_title") or "课程核心知识"],
         }
 
     @staticmethod
     def _extract_stage_points(text: str) -> List[str]:
-        known = ["需求分析", "总体设计", "详细设计", "软件测试", "软件生命周期", "软件过程", "可行性研究", "软件维护", "编码实现", "数据流图", "用例图", "模块划分", "调试"]
-        points = [item for item in known if item in str(text or "")]
-        return points[:5] or [str(text or "课程核心知识")[:24] or "课程核心知识"]
+        known = [
+            "软件工程定义", "软件工程", "软件危机", "软件生命周期", "软件过程", "软件工程方法学",
+            "需求分析", "需求定义", "需求获取", "需求建模", "需求规格说明", "数据流图", "数据字典", "ER图", "用例图",
+            "总体设计", "详细设计", "模块划分", "编码实现", "调试", "软件测试", "软件维护", "可行性研究",
+            "纠错性维护", "适应性维护", "完善性维护", "预防性维护",
+            "结构化分析", "面向对象分析", "白盒测试", "黑盒测试",
+        ]
+        title_line = str(text or "").split("\n")[0]
+        points = [item for item in known if item in title_line]
+        if not points:
+            points = [item for item in known if item in str(text or "")]
+        return points[:5] or [title_line.strip()[:24] or "课程核心知识"]
 
     @staticmethod
     def _extract_stage_goal(block: str) -> str:
@@ -554,9 +515,20 @@ class AgentManager:
         def prepare_stage_materials(stage: Dict[str, Any]) -> Dict[str, Any]:
             stage_context = self._stage_context(context, stage)
             stage_query = self._build_stage_query(stage, stage_context, query)
-            stage_sources = select_profile_knowledge_items(stage_query or query, profile=stage_context, stage=stage, top_k=2)
+            stage_sources = select_profile_knowledge_items(stage_query or query, profile=stage_context, stage=stage, top_k=4)
             if not stage_sources:
-                stage_sources = retrieve_knowledge_items(stage_query or query, top_k=2)
+                stage_sources = retrieve_knowledge_items(stage_query or query, top_k=4)
+            stage_points = [str(point) for point in (stage.get("stage_points") or []) if str(point).strip()]
+            def stage_source_score(item: dict) -> int:
+                metadata = item.get("metadata") or {}
+                section_path = metadata.get("section_path") or []
+                if not isinstance(section_path, list):
+                    section_path = [str(section_path)] if section_path else []
+                corpus = " ".join(str(part or "") for part in [metadata.get("title"), metadata.get("knowledge_point"), " ".join(section_path), item.get("content")])
+                return sum(10 for point in stage_points if point and point in corpus)
+            ranked_sources = sorted(stage_sources or [], key=stage_source_score, reverse=True)
+            matched_sources = [item for item in ranked_sources if stage_source_score(item) > 0]
+            stage_sources = (matched_sources or ranked_sources)[:2]
             stage_knowledge_context = build_resource_context(stage_query or query, top_k=2, profile=stage_context, stage=stage)
             evidence = self._safe_evidence(stage_sources)
             primary_knowledge = stage_knowledge_context.get("primary_knowledge") or (evidence[0] if evidence else {})
@@ -604,6 +576,26 @@ class AgentManager:
             task_plan["selected_primary_knowledge_title"] = primary_title
             task_plan["selected_knowledge_points"] = stage_context["selected_knowledge_points"]
             if not stage_sources:
+                if resource_type == "video":
+                    resource = self._fast_generate_resource(resource_type, stage_context, materials.get("knowledge_text") or "", task_plan)
+                    quality = self._fast_quality(resource, stage_sources)
+                    resource["quality"] = quality
+                    resource["quality_score"] = quality.get("total", 0)
+                    resource["retry_count"] = 0
+                    resource["stage_id"] = stage.get("stage_id")
+                    resource["stage_index"] = stage.get("stage_index")
+                    resource["stage_title"] = stage.get("stage_title")
+                    resource["stage_points"] = stage.get("stage_points") or []
+                    metadata = resource.get("metadata") if isinstance(resource.get("metadata"), dict) else {}
+                    resource["metadata"] = {
+                        **metadata,
+                        "stage": stage,
+                        "evidence": evidence,
+                        "debug": {"retrieved_chunks_count": 0, "local_video_fallback": bool(resource.get("video_url"))},
+                    }
+                    resource["sources"] = []
+                    resource["duration_ms"] = int((time.perf_counter() - started) * 1000)
+                    return resource
                 logger.warning(
                     "[ResourceAgent] No knowledge sources retrieved, empty resource will be used. resource_type=%s stage_title=%s stage_points=%s query=%s",
                     resource_type,
