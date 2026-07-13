@@ -93,6 +93,18 @@
                 </div>
 
                 <p class="exercise-stem">{{ question.stem }}</p>
+                <div v-if="questionKnowledgeTitles(question).length" class="exercise-kp-list">
+                  <span class="exercise-kp-label">所属知识点</span>
+                  <el-tag
+                    v-for="title in questionKnowledgeTitles(question)"
+                    :key="`${question.id}-${title}`"
+                    size="small"
+                    effect="plain"
+                    class="exercise-kp-tag"
+                  >
+                    {{ title }}
+                  </el-tag>
+                </div>
 
                 <div v-if="question.question_images?.length" class="exercise-image-list">
                   <figure v-for="image in question.question_images" :key="image.image_id || image.path" class="exercise-image-card">
@@ -103,6 +115,12 @@
 
                 <div v-if="question.showAnswer" class="exercise-answer">
                   <p><strong>对应答案：</strong>{{ question.reference_answer || question.answer || "知识库中暂未匹配到本题答案" }}</p>
+                  <div v-if="question.answer_images?.length" class="exercise-image-list answer-image-list">
+                    <figure v-for="image in question.answer_images" :key="`answer-${image.image_id || image.path}`" class="exercise-image-card">
+                      <img :src="knowledgeImageUrl(image)" :alt="image.caption || image.figure_label || '答案图片'" loading="lazy" />
+                      <figcaption>{{ image.caption || image.figure_label || `第 ${image.page || ""} 页答案图` }}</figcaption>
+                    </figure>
+                  </div>
                   <p v-if="showExerciseAnalysis(question)"><strong>解析：</strong>{{ question.analysis || question.explanation }}</p>
                   <p v-if="exerciseAnswerSource(question)" class="exercise-source"><strong>来源：</strong>{{ exerciseAnswerSource(question) }}</p>
                 </div>
@@ -115,7 +133,12 @@
             <article v-for="section in sectionDetail.sections" :key="section.node_id" class="section-block">
               <div v-if="section.paragraphs?.length" class="paragraph-list">
                 <div v-for="(paragraph, index) in section.paragraphs" :key="`${section.node_id}-${index}`" class="paragraph-item">
-                  <p>{{ paragraph.text }}</p>
+                  <div
+                    v-if="paragraphHasHtml(paragraph.text)"
+                    class="paragraph-rich"
+                    v-html="renderParagraphHtml(paragraph.text)"
+                  />
+                  <p v-else>{{ paragraph.text }}</p>
                   <div v-if="paragraph.images?.length" class="knowledge-image-list inline">
                     <figure v-for="image in paragraph.images" :key="image.image_id" class="knowledge-image-card">
                       <img :src="knowledgeImageUrl(image)" :alt="image.caption || image.figure_label || '知识图片'" loading="lazy" />
@@ -213,6 +236,39 @@ function showExerciseAnalysis(question) {
   return Boolean(analysis && analysis !== answer);
 }
 
+function questionKnowledgeTitles(question) {
+  const values = [
+    ...(Array.isArray(question?.related_knowledge_titles) ? question.related_knowledge_titles : []),
+    ...(Array.isArray(question?.knowledge_points) ? question.knowledge_points : []),
+    question?.knowledge_point,
+  ];
+  const seen = new Set();
+  return values
+    .map((value) => String(value || "").trim())
+    .filter((value) => {
+      if (!value) return false;
+      const key = value.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+}
+
+function paragraphHasHtml(text) {
+  const value = String(text || "").trim();
+  return /<(table|tr|td|th|p|div|span|img|figure|figcaption|ul|ol|li|br)\b/i.test(value);
+}
+
+function renderParagraphHtml(text) {
+  const value = String(text || "").trim();
+  if (!value) return "";
+  return value
+    .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, "")
+    .replace(/<style[\s\S]*?>[\s\S]*?<\/style>/gi, "")
+    .replace(/\sstyle="[^"]*"/gi, "")
+    .replace(/\son\w+="[^"]*"/gi, "");
+}
+
 function knowledgeImageUrl(image) {
   const baseUrl = (import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api").replace(/\/$/, "");
   return `${baseUrl}/knowledge/image?path=${encodeURIComponent(image?.path || "")}`;
@@ -220,9 +276,17 @@ function knowledgeImageUrl(image) {
 
 function findDefaultNode(nodes) {
   for (const node of nodes || []) {
-    if (node?.node_id !== "exercise_root") return node;
-    const child = findDefaultNode(node.children || []);
-    if (child) return child;
+    if (node?.node_id === "exercise_root") {
+      const child = findDefaultNode(node.children || []);
+      if (child) return child;
+      continue;
+    }
+    const children = node?.children || [];
+    if (children.length) {
+      const child = findDefaultNode(children);
+      if (child) return child;
+    }
+    if (node?.node_id && node.node_id !== "textbook_root") return node;
   }
   return (nodes || [])[0] || null;
 }
@@ -464,6 +528,43 @@ onMounted(async () => {
   font-size: 15px;
 }
 
+.paragraph-rich {
+  color: #0f172a;
+  line-height: 1.9;
+  font-size: 15px;
+  word-break: break-word;
+}
+
+.paragraph-rich :deep(p) {
+  margin: 0 0 12px;
+  line-height: 1.9;
+}
+
+.paragraph-rich :deep(table) {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 1px solid #dbe2ea;
+}
+
+.paragraph-rich :deep(td),
+.paragraph-rich :deep(th) {
+  border: 1px solid #dbe2ea;
+  padding: 10px 12px;
+  vertical-align: top;
+  text-align: left;
+}
+
+.paragraph-rich :deep(img) {
+  display: block;
+  max-width: 100%;
+  max-height: 520px;
+  margin: 12px auto;
+  object-fit: contain;
+}
+
 .knowledge-image-list {
   display: grid;
   gap: 16px;
@@ -530,11 +631,32 @@ onMounted(async () => {
   word-break: break-word;
 }
 
+.exercise-kp-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.exercise-kp-label {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.exercise-kp-tag {
+  border-radius: 999px;
+}
+
 .exercise-image-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 12px;
   margin-top: 12px;
+}
+
+.answer-image-list {
+  margin-top: 4px;
 }
 
 .exercise-image-card {

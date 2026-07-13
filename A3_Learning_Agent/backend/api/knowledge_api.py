@@ -53,11 +53,23 @@ def _preferred_json_path(folder_name: str) -> Path | None:
             "rebuilt_answers.json",
             "rebuilt",
         ],
+        "knowledge_points_json": [
+            "软件工程导论 (第6版)",
+            "软件工程导论",
+        ],
+        "knowledge_tree_json": [
+            "软件工程导论 (第6版)",
+            "软件工程导论",
+        ],
     }
     patterns = preferred_names.get(folder_name) or []
     for pattern in patterns:
         for file_path in files:
-            if pattern == file_path.name or pattern in file_path.name:
+            if (pattern == file_path.name or pattern in file_path.name) and "学习辅导" not in file_path.name:
+                return file_path
+    if folder_name in {"knowledge_points_json", "knowledge_tree_json"}:
+        for file_path in files:
+            if "学习辅导" not in file_path.name:
                 return file_path
     return files[0]
 
@@ -95,8 +107,69 @@ def get_detailed_knowledge_tree():
 def get_reading_content():
     return _load_first_json("reading_content_json", {})
 
+
 def get_images_data():
-    return _load_first_json("images_json", {})
+    folder = _json_dir("images_json")
+    files = _iter_json_files(folder)
+    if not files:
+        return {}
+
+    merged_images = []
+    merged_rejected = []
+    seen_image_ids = set()
+    seen_rejected_ids = set()
+    payloads = []
+
+    for file_path in files:
+        try:
+            payload = _read_json_file(file_path)
+        except Exception:
+            continue
+        if not isinstance(payload, dict):
+            continue
+        payloads.append(payload)
+        for item in payload.get("images") or []:
+            if not isinstance(item, dict):
+                continue
+            image_id = str(item.get("image_id") or item.get("path") or item.get("image_path") or "").strip()
+            if not image_id or image_id in seen_image_ids:
+                continue
+            seen_image_ids.add(image_id)
+            merged_images.append(item)
+        for item in payload.get("rejected_images") or []:
+            if not isinstance(item, dict):
+                continue
+            image_id = str(item.get("image_id") or item.get("path") or item.get("image_path") or "").strip()
+            if not image_id or image_id in seen_rejected_ids:
+                continue
+            seen_rejected_ids.add(image_id)
+            merged_rejected.append(item)
+
+    if not payloads:
+        return {}
+
+    primary = payloads[0].copy()
+    primary["images"] = merged_images
+    primary["rejected_images"] = merged_rejected
+    stats = dict(primary.get("stats") or {})
+    stats["image_count"] = len([item for item in merged_images if isinstance(item, dict) and item.get("keep") is not False])
+    stats["rejected_image_count"] = len(merged_rejected)
+    primary["stats"] = stats
+    return primary
+
+
+def _load_textbook_knowledge_points() -> list[dict]:
+    payload = _load_first_json("knowledge_points_json", {})
+    rows = payload.get("knowledge_points") if isinstance(payload, dict) else payload if isinstance(payload, list) else []
+    result = []
+    for item in rows or []:
+        if not isinstance(item, dict):
+            continue
+        path = _normalize_path(item.get("section_path") or [])
+        if not path:
+            continue
+        result.append(item)
+    return result
 
 
 def _image_url(raw_path: str) -> str:
@@ -121,6 +194,144 @@ def _format_knowledge_image(item: dict) -> dict:
     }
 
 
+def _clean_section_title(value: str) -> str:
+    text = _clean_text(value)
+    if not text:
+        return ""
+    text = re.sub(r"^\d+(?:\.\d+)*\s*", "", text)
+    text = re.sub(r"^[A-Z](?:\.\d+)*\s*", "", text)
+    text = re.sub(r"\s+", "", text)
+    return text.strip("：:.- ")
+
+
+QUESTION_TAG_STOP_PHRASES = {
+    "出现这种",
+    "这种",
+    "这样",
+    "那个",
+    "事实上",
+    "所谓",
+    "所谓自然执行",
+    "的过程",
+    "语言",
+    "什么是模块测试和集成测试",
+    "这两种测试可分别",
+    "和技术与传统测试有所不同",
+    "刚开始测试时程序中总共有多少个潜藏的错误",
+    "为使mttf达到10h,必须测试和调试这个程序多长时间",
+    "在进行了一些具体化",
+    "按照要求正确地实现了",
+}
+
+
+QUESTION_TAG_STARTS = ("什么是", "为什么", "如果", "假设", "对于", "按照", "所谓", "事实上", "这两种", "刚开始", "在进行")
+
+
+MODEL_TERMS = ("瀑布模型", "喷泉模型", "螺旋模型", "增量模型", "快速原型模型", "统一过程", "敏捷过程", "V模型")
+
+
+def _is_meaningful_question_tag(value: str, stem: str = "") -> bool:
+    text = _clean_section_title(value)
+    if not text:
+        return False
+    lowered = text.lower()
+    if lowered in {item.lower() for item in QUESTION_TAG_STOP_PHRASES}:
+        return False
+    if text.startswith(QUESTION_TAG_STARTS):
+        return False
+    if any(mark in text for mark in "，。；！？?：:（）()“”‘’`"):
+        return False
+    if len(text) > 16 and text not in stem:
+        return False
+    if len(text) <= 2 and text not in {"测试", "维护", "继承"}:
+        return False
+    return True
+
+
+def _image_has_precise_crop(image: dict) -> bool:
+    bbox = image.get("bbox")
+    if isinstance(bbox, list) and len(bbox) >= 4:
+        try:
+            if any(float(value or 0) != 0 for value in bbox[:4]):
+                return True
+        except Exception:
+            pass
+    filter_reason = str(image.get("filter_reason") or "").strip()
+    if filter_reason and filter_reason != "v21_page_image_fallback":
+        return True
+    if image.get("image_type") or image.get("caption") or image.get("figure_label") or image.get("image_summary"):
+        return True
+    return False
+
+
+def _question_knowledge_titles(item: dict) -> list[str]:
+    stem = _clean_text(item.get("stem") or item.get("content") or "")
+    metadata = item.get("metadata") or {}
+    related_nodes = [node for node in (item.get("related_knowledge") or []) if isinstance(node, dict)]
+    chapter_titles = []
+    section_titles = []
+    subsection_titles = []
+    for node in related_nodes:
+        section_path = _normalize_path(node.get("section_path") or [])
+        if len(section_path) >= 2:
+            chapter = _clean_section_title(section_path[1])
+            if _is_meaningful_question_tag(chapter, stem):
+                chapter_titles.append(chapter)
+        if len(section_path) >= 3:
+            parent = _clean_section_title(section_path[2])
+            if _is_meaningful_question_tag(parent, stem):
+                section_titles.append(parent)
+        if len(section_path) >= 4:
+            child = _clean_section_title(section_path[3])
+            if _is_meaningful_question_tag(child, stem):
+                subsection_titles.append(child)
+    chapter_titles = list(dict.fromkeys(chapter_titles))
+    section_titles = list(dict.fromkeys(section_titles))
+    subsection_titles = list(dict.fromkeys(subsection_titles))
+
+    matched_terms = []
+    for term in metadata.get("knowledge_attach_terms") or []:
+        text = _clean_section_title(term)
+        if text and text in stem and _is_meaningful_question_tag(text, stem):
+            matched_terms.append(text)
+    matched_terms = list(dict.fromkeys(matched_terms))
+
+    model_terms_in_stem = [term for term in MODEL_TERMS if term in stem]
+    conceptual_stem = any(token in stem for token in ("什么是", "有何关系", "关系", "区别", "联系", "概念"))
+    values = []
+    values.extend(model_terms_in_stem)
+    values.extend(matched_terms)
+
+    if conceptual_stem:
+        values.extend(section_titles[:2])
+        values.extend(chapter_titles[:1])
+    else:
+        values.extend(section_titles[:2])
+        preferred_subsections = [
+            title
+            for title in subsection_titles
+            if title not in MODEL_TERMS or title in stem
+        ]
+        values.extend(preferred_subsections[:2])
+        chapter_hits = [title for title in chapter_titles if title and title in stem]
+        values.extend(chapter_hits[:1])
+        if not values:
+            values.extend(chapter_titles[:1])
+
+    cleaned = []
+    seen = set()
+    for value in values:
+        text = _clean_section_title(value)
+        if not _is_meaningful_question_tag(text, stem):
+            continue
+        key = _normalize_text(text)
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        cleaned.append(text)
+    return cleaned[:4]
+
+
 def _section_page_numbers(pages) -> set[int]:
     result: set[int] = set()
     if not isinstance(pages, list):
@@ -137,6 +348,89 @@ def _section_page_numbers(pages) -> set[int]:
     return result
 
 
+def _exercise_images_for_item(item: dict, target: str = "question") -> list[dict]:
+    payload = get_images_data()
+    images = payload.get("images") if isinstance(payload, dict) else []
+    if not isinstance(images, list):
+        return []
+
+    question_id = str(item.get("question_id") or item.get("id") or "").strip()
+    question_pages = {
+        int(page)
+        for page in (item.get("pages") or [])
+        if str(page).strip().isdigit()
+    }
+    answer_pages = {
+        int(page)
+        for page in (
+            item.get("answer_pages")
+            or (item.get("answer_links") or [{}])[0].get("answer_pages")
+            or []
+        )
+        if str(page).strip().isdigit()
+    }
+    knowledge_titles = [_normalize_text(title) for title in _question_knowledge_titles(item)]
+    question_path = [_normalize_text(part) for part in _normalize_path(item.get("section_path") or [])]
+
+    matched = []
+    seen = set()
+    for image in images:
+        if not isinstance(image, dict) or image.get("keep") is False:
+            continue
+        if not _image_has_precise_crop(image):
+            continue
+        raw_path = str(image.get("path") or image.get("abs_image_path") or image.get("image_path") or "").strip()
+        if not raw_path:
+            continue
+        try:
+            image_page = int(image.get("page")) if image.get("page") not in (None, "") else None
+        except Exception:
+            image_page = None
+
+        related_question_ids = {str(value).strip() for value in image.get("related_question_ids") or [] if str(value).strip()}
+        has_explicit_question_links = bool(related_question_ids)
+        related_titles = [_normalize_text(value) for value in image.get("related_knowledge_titles") or [] if _normalize_text(value)]
+        path_hit = any(part and any(part == related or part in related for related in related_titles) for part in question_path)
+        knowledge_hit = any(title and any(title == related or title in related or related in title for related in related_titles) for title in knowledge_titles)
+        question_id_hit = bool(question_id and question_id in related_question_ids)
+        question_page_hit = image_page is not None and image_page in question_pages
+        answer_page_hit = image_page is not None and image_page in answer_pages
+
+        if target == "answer":
+            matched_target = (
+                question_id_hit
+                if has_explicit_question_links
+                else answer_page_hit or (question_id_hit and bool(answer_pages) and image_page in (answer_pages | question_pages))
+            )
+        else:
+            matched_target = question_id_hit if has_explicit_question_links else question_id_hit or question_page_hit
+
+        fallback_match = (
+            not has_explicit_question_links
+            and knowledge_hit
+            and (answer_page_hit or question_page_hit or path_hit)
+        )
+
+        if not matched_target and not fallback_match:
+            continue
+
+        formatted = _format_knowledge_image(image)
+        image_key = formatted.get("image_id") or formatted.get("path")
+        if not image_key or image_key in seen:
+            continue
+        seen.add(image_key)
+        formatted["match_reason"] = (
+            "answer_page" if target == "answer" and answer_page_hit else
+            "question_id" if question_id_hit else
+            "question_page" if question_page_hit else
+            "knowledge_title"
+        )
+        matched.append(formatted)
+
+    matched.sort(key=lambda image: (image.get("page") is None, image.get("page") or 10**9, image.get("image_id") or ""))
+    return matched
+
+
 def _images_for_reading_section(title: str, path: list[str], pages) -> list[dict]:
     payload = get_images_data()
     images = payload.get("images") if isinstance(payload, dict) else []
@@ -150,6 +444,8 @@ def _images_for_reading_section(title: str, path: list[str], pages) -> list[dict
     seen = set()
     for image in images:
         if not isinstance(image, dict) or image.get("keep") is False or image.get("is_knowledge_image") is False:
+            continue
+        if not _image_has_precise_crop(image):
             continue
         related_titles = [_normalize_text(item) for item in image.get("related_knowledge_titles") or []]
         title_hit = any(
@@ -411,6 +707,10 @@ def _clean_formula_text(text: str) -> str:
     value = str(text or "").strip()
     if not value:
         return ""
+    value = re.sub(r"\\?begin\s*\{[^{}]+\}", " ", value, flags=re.IGNORECASE)
+    value = re.sub(r"\\?end\s*\{[^{}]+\}", " ", value, flags=re.IGNORECASE)
+    value = value.replace("&", " ")
+    value = value.replace("\\\\", " ")
     value = value.replace("$$", "").replace("\\(", "").replace("\\)", "").replace("\\[", "").replace("\\]", "")
     value = value.replace("\\%", "%").replace("\\{", "{").replace("\\}", "}").replace("\\$", "$")
     value = re.sub(r"\\frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}", r"\1/\2", value)
@@ -418,7 +718,13 @@ def _clean_formula_text(text: str) -> str:
     value = re.sub(r"\\(?:quad|qquad|space|,|;|!)+", " ", value)
     value = value.replace("\\times", "×").replace("\\cdot", "·").replace("\\leq", "≤").replace("\\geq", "≥")
     value = value.replace("\\neq", "≠").replace("\\approx", "≈").replace("\\infty", "∞")
+    value = re.sub(r"([A-Za-z])_\{([^{}]+)\}", r"\1\2", value)
+    value = re.sub(r"([A-Za-z])\^\{([^{}]+)\}", r"\1^\2", value)
+    value = re.sub(r"(?<![A-Za-z])([A-Za-z])\s*&\s*=", r"\1 = ", value)
+    value = value.replace("^ {", "^{").replace("_ {", "_{")
     value = re.sub(r"\\([A-Za-z]+)", r"\1", value)
+    value = value.replace("{", "").replace("}", "")
+    value = value.replace("\\", " ")
     value = re.sub(r"(?<=\d)\s+(?=\d)", "", value)
     value = re.sub(r"\s*([/%=+×·<>≤≥≈])\s*", r" \1 ", value)
     value = re.sub(r"\s+", " ", value)
@@ -444,12 +750,56 @@ def _sort_sub_question_no(value: str) -> tuple[int, str]:
     return (10**9, text)
 
 
+def _strip_leading_question_numbers(text: str, question_no: str = "", sub_no: str = "") -> str:
+    value = _clean_text(text or "").strip()
+    labels = [str(sub_no or "").strip(), str(question_no or "").strip()]
+    changed = True
+    while value and changed:
+        changed = False
+        for label in labels:
+            if not label:
+                continue
+            updated = re.sub(rf"^\s*[（(]\s*{re.escape(label)}\s*[)）]\s*", "", value, count=1)
+            updated = re.sub(rf"^\s*{re.escape(label)}\s*[.．、]\s*", "", updated, count=1)
+            if updated != value:
+                value = updated.strip()
+                changed = True
+    return value
+
+
+def _split_parent_and_sub_stem(text: str, question_no: str, sub_no: str) -> tuple[str, str]:
+    value = _strip_leading_question_numbers(text, question_no=question_no, sub_no=sub_no)
+    if not sub_no:
+        return value, ""
+    marker = re.search(rf"[（(]\s*{re.escape(sub_no)}\s*[)）]", value)
+    if not marker:
+        return "", value
+    parent = value[: marker.start()].strip()
+    child = value[marker.end() :].strip()
+    return parent, child
+
+
+def _clean_sub_answer(text: str, question_no: str, sub_no: str) -> str:
+    value = _clean_formula_text(text or "")
+    return _strip_leading_question_numbers(value, question_no=question_no, sub_no=sub_no)
+
+
 def _combine_question_group(item: dict) -> dict:
     sub_questions = item.get("sub_questions") or []
     if not sub_questions:
-        item["stem"] = _clean_text(item.get("stem") or item.get("content") or "")
+        question_no = str(item.get("question_no") or item.get("question_no_int") or "").strip()
+        sub_no = str(item.get("sub_question_no") or "").strip()
+        item["stem"] = _strip_leading_question_numbers(
+            item.get("stem") or item.get("content") or "",
+            question_no=question_no,
+            sub_no=sub_no,
+        )
         item["content"] = item["stem"]
-        item["reference_answer"] = _clean_formula_text(item.get("reference_answer") or item.get("answer") or "")
+        item["reference_answer"] = _clean_sub_answer(
+            item.get("reference_answer") or item.get("answer") or "",
+            question_no=question_no,
+            sub_no=sub_no,
+        )
         item["answer"] = item["reference_answer"]
         item["analysis"] = _clean_formula_text(item.get("analysis") or item.get("explanation") or item["reference_answer"])
         item["explanation"] = item["analysis"]
@@ -457,21 +807,41 @@ def _combine_question_group(item: dict) -> dict:
 
     question_parts = []
     answer_parts = []
-    base_stem = _clean_text(item.get("stem") or item.get("content") or "")
+    question_no = str(item.get("question_no") or item.get("question_no_int") or "").strip()
+    base_stem = _strip_leading_question_numbers(
+        item.get("stem") or item.get("content") or "",
+        question_no=question_no,
+        sub_no=str(item.get("sub_question_no") or ""),
+    )
     if base_stem:
         question_parts.append(base_stem)
 
-    base_answer = _clean_formula_text(item.get("reference_answer") or item.get("answer") or "")
+    base_answer = _clean_sub_answer(
+        item.get("reference_answer") or item.get("answer") or "",
+        question_no=question_no,
+        sub_no=str(item.get("sub_question_no") or ""),
+    )
     if base_answer:
         answer_parts.append(base_answer)
 
+    parent_candidates = []
+    prepared_sub_questions = []
     for sub in sub_questions:
         sub_no = str(sub.get("sub_question_no") or "").strip()
         prefix = f"({sub_no})" if sub_no else ""
-        sub_stem = _clean_text(sub.get("stem") or "")
-        sub_answer = _clean_formula_text(sub.get("reference_answer") or sub.get("answer") or "")
+        parent_stem, sub_stem = _split_parent_and_sub_stem(sub.get("stem") or "", question_no, sub_no)
+        if parent_stem:
+            parent_candidates.append(parent_stem)
+        sub_answer = _clean_sub_answer(sub.get("reference_answer") or sub.get("answer") or "", question_no, sub_no)
+        prepared_sub_questions.append((prefix, sub_stem, sub_answer))
+
+    if not base_stem and parent_candidates:
+        base_stem = max(parent_candidates, key=len)
+        question_parts.append(base_stem)
+
+    for prefix, sub_stem, sub_answer in prepared_sub_questions:
         if sub_stem:
-            question_parts.append(f"{prefix}{sub_stem}" if prefix and not sub_stem.startswith(prefix) else sub_stem)
+            question_parts.append(f"{prefix} {sub_stem}".strip() if prefix else sub_stem)
         if sub_answer:
             answer_parts.append(f"{prefix} {sub_answer}".strip() if prefix else sub_answer)
 
@@ -534,16 +904,47 @@ def _group_exercise_questions(items: list[dict]) -> list[dict]:
                     "answer_pages": item.get("answer_pages") or [],
                     "answer_link_method": item.get("answer_link_method") or "",
                     "question_images": item.get("question_images") or [],
+                    "answer_images": item.get("answer_images") or [],
                     "images": item.get("images") or [],
+                    "related_knowledge_titles": item.get("related_knowledge_titles") or [],
                 }
             )
 
         merged = dict(main_item)
         merged["sub_questions"] = sub_questions
         merged["has_sub_questions"] = bool(sub_questions)
+        if not merged.get("related_knowledge_titles"):
+            titles = []
+            seen_titles = set()
+            for sub in sub_questions:
+                for value in sub.get("related_knowledge_titles") or []:
+                    text = _clean_text(value)
+                    if not text:
+                        continue
+                    key = _normalize_text(text)
+                    if key in seen_titles:
+                        continue
+                    seen_titles.add(key)
+                    titles.append(text)
+            merged["related_knowledge_titles"] = titles
+        if not merged.get("answer_images"):
+            merged["answer_images"] = []
+            seen_ids = set()
+            for sub in sub_questions:
+                for image in sub.get("answer_images") or []:
+                    image_id = image.get("image_id") or image.get("path")
+                    if not image_id or image_id in seen_ids:
+                        continue
+                    seen_ids.add(image_id)
+                    merged["answer_images"].append(image)
+        merged["has_answer_images"] = bool(merged.get("answer_images"))
         if main_item is group[0] and str(main_item.get("sub_question_no") or "").strip():
             merged["stem"] = ""
             merged["content"] = ""
+            merged["answer"] = ""
+            merged["reference_answer"] = ""
+            merged["analysis"] = ""
+            merged["explanation"] = ""
         result.append(merged)
 
     return sorted(
@@ -570,6 +971,22 @@ def _chapter_title_defaults() -> dict[int, str]:
         9: "第 9 章 面向对象实现",
         10: "第 10 章 软件项目管理",
     }
+
+
+def _is_specific_chapter_title(title: str, chapter_no: int) -> bool:
+    text = _clean_text(title)
+    if not text:
+        return False
+    normalized = re.sub(r"\s+", "", text)
+    generic_patterns = {
+        f"第{chapter_no}章",
+        f"第{chapter_no}章习题",
+        f"第{chapter_no}章练习",
+        f"第{chapter_no}章习题解答",
+    }
+    if normalized in generic_patterns:
+        return False
+    return f"第{chapter_no}章" in normalized and len(normalized) > len(f"第{chapter_no}章")
 
 
 def _normalize_numbered_prefix(title: str) -> tuple[int, ...]:
@@ -903,6 +1320,7 @@ def _format_bank_question(item: dict, fallback_stem: str = "", chapter_no: int |
     answer = _clean_formula_text(item.get("reference_answer") or item.get("answer") or first_link.get("answer_part_preview") or "")
     analysis = _clean_formula_text(item.get("analysis") or item.get("explanation") or answer)
     stem = _clean_text(item.get("stem") or item.get("content") or fallback_stem)
+    knowledge_titles = _question_knowledge_titles(item)
     formatted = {
         "id": item.get("question_id") or item.get("id") or f"question_{_question_no_int(item.get('question_no')) or len(stem)}",
         "question_id": item.get("question_id") or item.get("id") or "",
@@ -926,12 +1344,14 @@ def _format_bank_question(item: dict, fallback_stem: str = "", chapter_no: int |
         "answer_link_method": item.get("answer_link_method") or first_link.get("match_method") or "",
         "pages": item.get("pages") or [],
         "question_images": item.get("question_images") or item.get("images") or [],
+        "answer_images": item.get("answer_images") or [],
         "images": item.get("question_images") or item.get("images") or [],
         "image_count": len(item.get("question_images") or item.get("images") or []),
         "has_question_images": bool(item.get("question_images") or item.get("images")),
+        "has_answer_images": bool(item.get("answer_images")),
         "answer_pages": first_link.get("answer_pages") or [],
         "source": item.get("source_file") or "",
-        "related_knowledge_titles": item.get("related_knowledge_titles") or item.get("knowledge_points") or [],
+        "related_knowledge_titles": knowledge_titles,
         "sub_questions": [],
         "has_sub_questions": False,
     }
@@ -942,6 +1362,14 @@ def _format_bank_question(item: dict, fallback_stem: str = "", chapter_no: int |
         formatted["reference_answer"] = _clean_formula_text(formatted.get("reference_answer") or "")
         formatted["analysis"] = _clean_formula_text(formatted.get("analysis") or "")
         formatted["explanation"] = _clean_formula_text(formatted.get("explanation") or "")
+    if not formatted["question_images"]:
+        formatted["question_images"] = _exercise_images_for_item({**item, **formatted}, "question")
+    if not formatted["answer_images"]:
+        formatted["answer_images"] = _exercise_images_for_item({**item, **formatted}, "answer")
+    formatted["images"] = formatted["question_images"]
+    formatted["image_count"] = len(formatted["question_images"])
+    formatted["has_question_images"] = bool(formatted["question_images"])
+    formatted["has_answer_images"] = bool(formatted["answer_images"])
     return formatted
 
 
@@ -1088,15 +1516,42 @@ def _find_section_title_line(lines: list[str], section_title: str) -> int:
     return 0
 
 
+def _normalize_inline_math_markup(text: str) -> str:
+    value = str(text or "")
+    if not value:
+        return ""
+    value = re.sub(r"\\?begin\s*\{[^{}]+\}", " ", value, flags=re.IGNORECASE)
+    value = re.sub(r"\\?end\s*\{[^{}]+\}", " ", value, flags=re.IGNORECASE)
+    value = value.replace("&", " ")
+    value = value.replace("\\\\", " ")
+    value = value.replace("$$", "").replace("\\(", "").replace("\\)", "").replace("\\[", "").replace("\\]", "")
+    value = value.replace("\\%", "%").replace("\\{", "{").replace("\\}", "}").replace("\\$", "$")
+    value = re.sub(r"\\frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}", r"\1/\2", value)
+    value = re.sub(r"\\(?:mathrm|text|operatorname)\s*\{([^{}]+)\}", r"\1", value)
+    value = re.sub(r"\\(?:quad|qquad|space|,|;|!)+", " ", value)
+    value = value.replace("\\times", "×").replace("\\cdot", "·").replace("\\leq", "≤").replace("\\geq", "≥")
+    value = value.replace("\\neq", "≠").replace("\\approx", "≈").replace("\\infty", "∞")
+    value = re.sub(r"([A-Za-z])_\{([^{}]+)\}", r"\1\2", value)
+    value = re.sub(r"([A-Za-z])\^\{([^{}]+)\}", r"\1^\2", value)
+    value = re.sub(r"\*([A-Za-z0-9])\*", r"\1", value)
+    value = re.sub(r"(?<![A-Za-z])([A-Za-z])\s*&\s*=", r"\1 = ", value)
+    value = value.replace("^ {", "^{").replace("_ {", "_{")
+    value = re.sub(r"\\([A-Za-z]+)", r"\1", value)
+    value = value.replace("{", "").replace("}", "")
+    value = value.replace("\\", " ")
+    value = value.replace("$", "")
+    return value
+
+
 def _tidy_reading_text(text: str) -> str:
-    value = text.strip()
-    value = value.replace("$$", "")
+    value = _normalize_inline_math_markup(text).strip()
     value = re.sub(r"\\textcircled\{([^}]+)\}", r"\1", value)
     value = re.sub(r"\\cdots", "……", value)
     value = re.sub(r"\s+", " ", value)
     value = re.sub(r"(?<=[\u4e00-\u9fa5])\s+(?=[\u4e00-\u9fa5])", "", value)
     value = re.sub(r"([（(])\s+", r"\1", value)
     value = re.sub(r"\s+([）)，。；：、！？,.!?;:])", r"\1", value)
+    value = re.sub(r"(?<=\d)\s+(?=\d)", "", value)
     value = re.sub(r"\s{2,}", " ", value)
     return value.strip()
 
@@ -1188,14 +1643,15 @@ def _build_exercise_tree_for_reading(reading_tree: list[dict]) -> list[dict]:
             continue
         chapter_groups.setdefault(chapter_no, []).append(item)
     if not chapter_groups:
+        chapter_groups = {
+            chapter_no: group
+            for chapter_no, group in enumerate(_group_question_bank_by_resets(question_bank), start=1)
+            if chapter_no <= 10 and group
+        }
+    if not chapter_groups:
         return []
 
     chapter_title_map = _chapter_title_defaults()
-    for node in _iter_reading_nodes(reading_tree):
-        title = _tidy_reading_text(node.get("title") or "")
-        chapter_no = _infer_reading_chapter_no(node)
-        if chapter_no is not None and chapter_no in chapter_title_map and _is_chapter_marker_node(node, chapter_no):
-            chapter_title_map[chapter_no] = title
 
     children = []
     for index in sorted(chapter_groups):
@@ -1240,6 +1696,273 @@ def _append_exercise_tree(reading_tree: list[dict]) -> list[dict]:
     children = list(root.get("children") or [])
     children.extend(_build_exercise_tree_for_reading(formatted))
     root["children"] = children
+    return [root]
+
+
+def _kp_node_id(path: list[str]) -> str:
+    return "kp::" + " / ".join(_normalize_path(path))
+
+
+def _kp_tree_title(path: list[str]) -> str:
+    cleaned = _normalize_path(path)
+    return cleaned[-1] if cleaned else "知识点"
+
+
+def _textbook_chapter_titles() -> dict[int, str]:
+    return {
+        1: "第 1 章 软件工程学概述",
+        2: "第 2 章 可行性研究",
+        3: "第 3 章 需求分析",
+        4: "第 4 章 形式化说明技术",
+        5: "第 5 章 总体设计",
+        6: "第 6 章 详细设计",
+        7: "第 7 章 实现",
+        8: "第 8 章 维护",
+        9: "第 9 章 面向对象方法学引论",
+        10: "第 10 章 面向对象分析",
+        11: "第 11 章 面向对象设计",
+        12: "第 12 章 面向对象实现",
+        13: "第 13 章 软件项目管理",
+    }
+
+
+def _textbook_required_section_titles() -> dict[tuple[int, ...], str]:
+    # These two sections exist in the printed table of contents but were lost by OCR.
+    return {
+        (4, 3): "4.3 Petri 网",
+        (11, 2): "11.2 启发规则",
+    }
+
+
+def _textbook_numbered_parts(path: list[str]) -> list[tuple[tuple[int, ...], str]]:
+    result = []
+    for part in _normalize_path(path or []):
+        numbered = _normalize_numbered_prefix(part)
+        if numbered and 1 <= numbered[0] <= 13:
+            result.append((numbered, part))
+    return result
+
+
+def _textbook_numbered_part(path: list[str]) -> tuple[tuple[int, ...], str] | None:
+    parts = _textbook_numbered_parts(path)
+    return parts[0] if parts else None
+
+
+def _textbook_chapter_for_item(item: dict) -> int | None:
+    numbered = _textbook_numbered_part(item.get("section_path") or [])
+    if numbered:
+        return numbered[0][0]
+
+    path_text = " ".join(_normalize_path(item.get("section_path") or []))
+    direct = _chapter_no_from_text(path_text)
+    if direct and 1 <= direct <= 13:
+        return direct
+
+    compact = path_text.replace(" ", "")
+    title_map = {
+        "软件工程学概述": 1,
+        "可行性研究": 2,
+        "需求分析": 3,
+        "形式化说明技术": 4,
+        "总体设计": 5,
+        "详细设计": 6,
+        "实现": 7,
+        "维护": 8,
+        "面向对象方法学引论": 9,
+        "面向对象分析": 10,
+        "面向对象设计": 11,
+        "面向对象实现": 12,
+        "软件项目管理": 13,
+    }
+    for keyword, chapter_no in title_map.items():
+        if keyword in compact:
+            return chapter_no
+    return None
+
+
+def _is_textbook_appendix_item(item: dict) -> bool:
+    path_text = " ".join(_normalize_path(item.get("section_path") or []))
+    return bool(re.search(r"(?:^|\s)A\.\d", path_text)) or "C++类库管理系统的分析与设计" in path_text
+
+
+def _is_textbook_exercise_item(item: dict) -> bool:
+    path = _normalize_path(item.get("section_path") or [])
+    return any("习题" in part.replace(" ", "") for part in path)
+
+
+def _kp_infer_chapter_no(path: list[str], title: str) -> int:
+    combined = " ".join(_normalize_path(path or []))
+    direct = _chapter_no_from_text(title) or _chapter_no_from_text(combined)
+    if direct is not None:
+        return direct
+
+    compact = _clean_text(title).replace(" ", "")
+    combined_compact = _clean_text(combined).replace(" ", "")
+    keyword_map = [
+        (1, ["软件工程学概述", "软件工程概论", "软件危机", "软件生命周期", "软件过程", "软件工程"]),
+        (2, ["可行性研究", "结构化分析"]),
+        (3, ["总体设计", "详细设计", "结构化设计"]),
+        (4, ["实现", "结构化实现"]),
+        (5, ["维护"]),
+        (6, ["面向对象方法学引论"]),
+        (7, ["面向对象分析"]),
+        (8, ["面向对象设计"]),
+        (9, ["面向对象实现"]),
+        (10, ["软件项目管理"]),
+    ]
+    for chapter_no, keywords in keyword_map:
+        if any(keyword in compact or keyword in combined_compact for keyword in keywords):
+            return chapter_no
+    return 999
+
+
+def _kp_subtree_chapter_no(node: dict) -> int:
+    direct = _kp_infer_chapter_no(node.get("path") or [], node.get("title") or "")
+    if direct != 999:
+        return direct
+
+    numbered = _normalize_numbered_prefix(node.get("title") or "")
+    if numbered:
+        return numbered[0]
+
+    candidates: list[int] = []
+    for child in node.get("children") or []:
+        if not isinstance(child, dict):
+            continue
+        child_no = _kp_subtree_chapter_no(child)
+        if child_no != 999:
+            candidates.append(child_no)
+        child_numbered = _normalize_numbered_prefix(child.get("title") or "")
+        if child_numbered:
+            candidates.append(child_numbered[0])
+    return min(candidates) if candidates else 999
+
+
+def _build_textbook_tree_from_knowledge_points() -> list[dict]:
+    points = _load_textbook_knowledge_points()
+    course_name = get_course_name() or "软件工程"
+    root = {
+        "node_id": "textbook_root",
+        "parent_id": None,
+        "title": course_name,
+        "level": 0,
+        "path": [course_name],
+        "children": [],
+    }
+    if not points:
+        return [root]
+
+    textbook_root = {
+        "node_id": "textbook_catalog",
+        "parent_id": root["node_id"],
+        "title": "教材",
+        "level": 1,
+        "path": [course_name, "教材"],
+        "children": [],
+        "is_kp_node": True,
+    }
+    root["children"].append(textbook_root)
+
+    chapter_nodes: dict[int, dict] = {}
+    numbered_nodes: dict[tuple[int, ...], dict] = {}
+    numbered_titles: dict[tuple[int, ...], str] = {}
+    appendix_items = []
+    for item in points:
+        if _is_textbook_exercise_item(item):
+            continue
+        if _is_textbook_appendix_item(item):
+            appendix_items.append(item)
+            continue
+        for number, title in _textbook_numbered_parts(item.get("section_path") or []):
+            numbered_titles.setdefault(number, title)
+    for number, title in _textbook_required_section_titles().items():
+        numbered_titles.setdefault(number, title)
+
+    for chapter_no, chapter_title in _textbook_chapter_titles().items():
+        chapter = {
+            "node_id": f"textbook_chapter::{chapter_no}",
+            "parent_id": textbook_root["node_id"],
+            "title": chapter_title,
+            "level": 2,
+            "path": [course_name, "教材", chapter_title],
+            "children": [],
+            "is_kp_node": True,
+            "is_synthetic_textbook_chapter": True,
+            "chapter_no": chapter_no,
+        }
+        textbook_root["children"].append(chapter)
+        chapter_nodes[chapter_no] = chapter
+
+    for number in sorted(numbered_titles):
+        chapter_no = number[0]
+        if chapter_no not in chapter_nodes:
+            continue
+        parent = chapter_nodes[chapter_no]
+        if len(number) > 2:
+            for prefix_len in range(len(number) - 1, 1, -1):
+                candidate = numbered_nodes.get(number[:prefix_len])
+                if candidate:
+                    parent = candidate
+                    break
+        title = numbered_titles[number]
+        node = {
+            "node_id": "textbook_number::" + ".".join(str(part) for part in number),
+            "parent_id": parent["node_id"],
+            "title": title,
+            "level": parent["level"] + 1,
+            "path": [*parent["path"], title],
+            "children": [],
+            "is_kp_node": True,
+            "textbook_number": ".".join(str(part) for part in number),
+        }
+        parent["children"].append(node)
+        numbered_nodes[number] = node
+
+    if appendix_items:
+        appendix_title = "附录 A C++类库管理系统的分析与设计"
+        appendix = {
+            "node_id": "textbook_appendix::A",
+            "parent_id": textbook_root["node_id"],
+            "title": appendix_title,
+            "level": 2,
+            "path": [course_name, "教材", appendix_title],
+            "children": [],
+            "is_kp_node": True,
+            "is_textbook_appendix": True,
+        }
+        appendix_numbers: dict[str, dict] = {}
+        for item in appendix_items:
+            for part in _normalize_path(item.get("section_path") or []):
+                match = re.match(r"\s*(A\.\d+(?:\.\d+)*)", part)
+                if not match:
+                    continue
+                key = match.group(1)
+                if key in appendix_numbers:
+                    continue
+                parent_key = key.rsplit(".", 1)[0]
+                parent = appendix_numbers.get(parent_key, appendix)
+                node = {
+                    "node_id": f"textbook_appendix::{key}",
+                    "parent_id": parent["node_id"],
+                    "title": part,
+                    "level": parent["level"] + 1,
+                    "path": [*parent["path"], part],
+                    "children": [],
+                    "is_kp_node": True,
+                }
+                parent["children"].append(node)
+                appendix_numbers[key] = node
+        textbook_root["children"].append(appendix)
+
+    exercise_nodes = _build_exercise_tree_for_reading(_get_reading_tree())
+    if exercise_nodes:
+        exercise_root = exercise_nodes[0]
+        exercise_root["parent_id"] = root["node_id"]
+        exercise_root["path"] = [course_name, "习题"]
+        exercise_root["level"] = 1
+        for child in exercise_root.get("children") or []:
+            child["path"] = [course_name, "习题", child.get("title") or ""]
+        root["children"].append(exercise_root)
     return [root]
 
 
@@ -1338,7 +2061,228 @@ def _synthetic_chapter_payload(node: dict, include_children: bool = True) -> dic
     }
 
 
+def _reading_sections_for_kp_path(target_path: list[str]) -> list[dict]:
+    sections_map = _get_reading_sections_map()
+    if not sections_map:
+        return []
+    target_norm = [_normalize_text(item) for item in _normalize_path(target_path)]
+    if not target_norm:
+        return []
+    matches = []
+    for section in sections_map.values():
+        if not isinstance(section, dict):
+            continue
+        sec_path = _normalize_path(section.get("path") or [])
+        sec_norm = [_normalize_text(item) for item in sec_path]
+        if not sec_norm:
+            continue
+        if len(sec_norm) >= len(target_norm) and sec_norm[: len(target_norm)] == target_norm:
+            matches.append(section)
+            continue
+        title_norm = _normalize_text(section.get("title") or "")
+        if title_norm and title_norm == target_norm[-1] and (len(target_norm) < 2 or any(target_norm[-2] == value for value in sec_norm)):
+            matches.append(section)
+    matches.sort(key=lambda item: (item.get("start_page") or 10**9, item.get("title") or ""))
+    return matches
+
+
+def _textbook_items_for_node(node_id: str) -> tuple[str, list[str], list[dict]] | None:
+    course_name = get_course_name() or "软件工程"
+    points = [item for item in _load_textbook_knowledge_points() if not _is_textbook_exercise_item(item)]
+    if node_id == "textbook_catalog":
+        return "教材", [course_name, "教材"], points
+
+    chapter_match = re.fullmatch(r"textbook_chapter::(\d+)", node_id)
+    if chapter_match:
+        chapter_no = int(chapter_match.group(1))
+        title = _textbook_chapter_titles().get(chapter_no, f"第 {chapter_no} 章")
+        rows = [item for item in points if _textbook_chapter_for_item(item) == chapter_no and not _is_textbook_appendix_item(item)]
+        return title, [course_name, "教材", title], rows
+
+    number_match = re.fullmatch(r"textbook_number::(\d+(?:\.\d+)*)", node_id)
+    if number_match:
+        target = tuple(int(part) for part in number_match.group(1).split("."))
+        rows = []
+        for item in points:
+            numbered_parts = _textbook_numbered_parts(item.get("section_path") or [])
+            if any(number[: len(target)] == target for number, _ in numbered_parts):
+                rows.append(item)
+        title = next(
+            (part_title for item in rows for number, part_title in _textbook_numbered_parts(item.get("section_path") or []) if number == target),
+            _textbook_required_section_titles().get(target, number_match.group(1)),
+        )
+        chapter_title = _textbook_chapter_titles().get(target[0], f"第 {target[0]} 章")
+        return title, [course_name, "教材", chapter_title, title], rows
+
+    appendix_match = re.fullmatch(r"textbook_appendix::(A(?:\.\d+)*)", node_id)
+    if appendix_match:
+        target = appendix_match.group(1)
+        rows = []
+        for item in points:
+            path_text = " ".join(_normalize_path(item.get("section_path") or []))
+            if target == "A" and _is_textbook_appendix_item(item):
+                rows.append(item)
+            elif re.search(rf"(?:^|\s){re.escape(target)}(?:\.|\s)", path_text):
+                rows.append(item)
+        title = "附录 A C++类库管理系统的分析与设计" if target == "A" else target
+        return title, [course_name, "教材", title], rows
+    return None
+
+
+def _textbook_catalog_payload(node_id: str, include_children: bool = True) -> dict | None:
+    resolved = _textbook_items_for_node(node_id)
+    if resolved is None:
+        return None
+    title, display_path, items = resolved
+
+    sections = []
+    seen_section_ids = set()
+    for item in items:
+        item_path = _normalize_path(item.get("section_path") or [])
+        for section in _reading_sections_for_kp_path(item_path):
+            section_id = section.get("node_id") or tuple(_normalize_path(section.get("path") or []))
+            if section_id in seen_section_ids:
+                continue
+            seen_section_ids.add(section_id)
+            sections.append(section)
+    if not sections and node_id.startswith("textbook_number::"):
+        target = tuple(int(part) for part in node_id.split("::", 1)[1].split("."))
+        for section in _get_reading_sections_map().values():
+            if not isinstance(section, dict):
+                continue
+            numbered = _normalize_numbered_prefix(section.get("title") or "")
+            if numbered[: len(target)] != target:
+                continue
+            section_id = section.get("node_id") or tuple(_normalize_path(section.get("path") or []))
+            if section_id in seen_section_ids:
+                continue
+            seen_section_ids.add(section_id)
+            sections.append(section)
+    sections.sort(key=lambda item: (item.get("start_page") or 10**9, item.get("title") or ""))
+
+    pages = []
+    seen_pages = set()
+    for section in sections:
+        source_pages = section.get("combined_pages") if include_children else section.get("pages")
+        for page in source_pages or section.get("combined_pages") or section.get("pages") or []:
+            if not isinstance(page, dict):
+                continue
+            page_key = (page.get("page"), page.get("text"))
+            if page_key in seen_pages:
+                continue
+            seen_pages.add(page_key)
+            pages.append(page)
+
+    paragraphs = _format_reading_pages(pages, title)
+    if not paragraphs:
+        paragraphs = [
+            {"page": (item.get("pages") or [None])[0], "text": _clean_text(item.get("content_preview") or "")}
+            for item in items
+            if _clean_text(item.get("content_preview") or "")
+        ]
+    images = _images_for_reading_section(title, display_path, pages or paragraphs)
+    paragraphs = _attach_images_to_paragraphs(paragraphs, images)
+    start_page = min(
+        [page.get("page") for page in pages if isinstance(page, dict) and isinstance(page.get("page"), int)]
+        or [page for item in items for page in (item.get("pages") or []) if isinstance(page, int)]
+        or [None]
+    )
+    return {
+        "node_id": node_id,
+        "title": title,
+        "path": display_path,
+        "start_page": start_page,
+        "images": images,
+        "sections": [{
+            "node_id": node_id,
+            "title": title,
+            "level": max(0, len(display_path) - 1),
+            "path": display_path,
+            "start_page": start_page,
+            "images": images,
+            "paragraphs": paragraphs,
+            "content_mode": "knowledge_point_textbook",
+        }],
+        "exercise_questions": [],
+        "content_mode": "knowledge_point_textbook",
+    }
+
+
+def _kp_section_payload(node_id: str, include_children: bool = True) -> dict | None:
+    catalog_payload = _textbook_catalog_payload(str(node_id or ""), include_children)
+    if catalog_payload is not None:
+        return catalog_payload
+    raw = str(node_id or "")
+    if raw == "textbook_root":
+        target_path = [get_course_name() or "软件工程"]
+    elif raw.startswith("kp::"):
+        target_path = _normalize_path(raw.split("::", 1)[1])
+    else:
+        return None
+    if not target_path:
+        return None
+
+    sections = _reading_sections_for_kp_path(target_path)
+    title = target_path[-1]
+    pages = []
+    seen_page_keys = set()
+    for section in sections:
+        section_pages = section.get("combined_pages") if include_children else section.get("pages")
+        if not section_pages:
+            section_pages = section.get("combined_pages") or section.get("pages") or []
+        for page in section_pages:
+            if not isinstance(page, dict):
+                continue
+            page_key = (page.get("page"), page.get("text"))
+            if page_key in seen_page_keys:
+                continue
+            seen_page_keys.add(page_key)
+            pages.append(page)
+
+    section_images = _images_for_reading_section(title, target_path, pages)
+    paragraphs = _attach_images_to_paragraphs(_format_reading_pages(pages, title), section_images)
+    if not paragraphs and not section_images:
+        kp_items = []
+        for item in _load_textbook_knowledge_points():
+            item_path = _normalize_path(item.get("section_path") or [])
+            if item_path[: len(target_path)] == target_path:
+                kp_items.append(item)
+        kp_items.sort(key=lambda item: ((item.get("pages") or [10**9])[0] if isinstance(item.get("pages"), list) and item.get("pages") else 10**9, item.get("title") or ""))
+        paragraphs = [{"page": (item.get("pages") or [None])[0], "text": _clean_text(item.get("content_preview") or "")} for item in kp_items if _clean_text(item.get("content_preview") or "")]
+        if not section_images:
+            page_payload = [{"page": p.get("page"), "text": p.get("text")} for p in paragraphs if isinstance(p, dict)]
+            section_images = _images_for_reading_section(title, target_path, page_payload)
+            paragraphs = _attach_images_to_paragraphs(paragraphs, section_images)
+
+    start_page = min([p.get("page") for p in pages if isinstance(p, dict) and isinstance(p.get("page"), int)] or [None], default=None)
+    return {
+        "node_id": node_id,
+        "title": title,
+        "path": target_path,
+        "start_page": start_page,
+        "images": section_images,
+        "sections": [
+            {
+                "node_id": node_id,
+                "title": title,
+                "level": max(0, len(target_path) - 1),
+                "path": target_path,
+                "start_page": start_page,
+                "images": section_images,
+                "paragraphs": paragraphs,
+                "content_mode": "knowledge_point_textbook",
+            }
+        ],
+        "exercise_questions": [],
+        "content_mode": "knowledge_point_textbook",
+    }
+
+
 def _section_payload_from_reading(node_id: str, include_children: bool = True) -> dict | None:
+    kp_payload = _kp_section_payload(node_id, include_children)
+    if kp_payload is not None:
+        return kp_payload
+
     exercise_payload = _exercise_payload_for_node(node_id)
     if exercise_payload is not None:
         return exercise_payload
@@ -2129,6 +3073,9 @@ def chapter_index():
 @login_required
 def chapter_browser():
     try:
+        textbook_tree = _build_textbook_tree_from_knowledge_points()
+        if textbook_tree:
+            return success({"course_name": get_course_name(), "tree": textbook_tree}, "Chapter browser loaded")
         reading_tree = _get_reading_tree()
         if reading_tree:
             return success({"course_name": get_course_name(), "tree": _append_exercise_tree(reading_tree)}, "Chapter browser loaded")
@@ -2144,6 +3091,9 @@ def chapter_browser():
 @login_required
 def tree():
     try:
+        textbook_tree = _build_textbook_tree_from_knowledge_points()
+        if textbook_tree:
+            return success(textbook_tree, "Tree loaded")
         reading_tree = _get_reading_tree()
         if reading_tree:
             return success(_append_exercise_tree(reading_tree), "Tree loaded")
@@ -2153,7 +3103,7 @@ def tree():
         return fail(f"Tree load failed: {exc}", 500)
 
 
-@knowledge_bp.get("/section/<node_id>")
+@knowledge_bp.get("/section/<path:node_id>")
 @login_required
 def section_detail(node_id: str):
     try:
