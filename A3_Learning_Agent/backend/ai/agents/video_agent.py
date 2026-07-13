@@ -108,11 +108,63 @@ class VideoAgent:
     def _local_video_url(video_path: Path) -> str:
         return f"/api/knowledge/video?path={quote(video_path.name)}"
 
-    def _local_video_resource(self, video_path: Path, context: Dict[str, Any]) -> Dict[str, Any]:
+    @staticmethod
+    def _stage_label(context: Dict[str, Any], task_plan: Dict[str, Any]) -> str:
+        candidates = [
+            context.get("stage_title"),
+            task_plan.get("stage_title"),
+            task_plan.get("selected_primary_knowledge_title"),
+            context.get("weak_points"),
+        ]
+        return next((str(item).strip() for item in candidates if str(item or "").strip()), "当前学习阶段")
+
+    @staticmethod
+    def _stage_points(context: Dict[str, Any], task_plan: Dict[str, Any]) -> list[str]:
+        raw_points = context.get("stage_points") or task_plan.get("selected_knowledge_points") or []
+        if isinstance(raw_points, str):
+            raw_points = [raw_points]
+        points = [str(item).strip() for item in raw_points if str(item or "").strip()]
+        weak_points = str(context.get("weak_points") or "").strip()
+        if weak_points and weak_points not in points:
+            points.insert(0, weak_points)
+        return points[:5]
+
+    def _video_adaptation_text(
+        self,
+        title: str,
+        context: Dict[str, Any],
+        task_plan: Dict[str, Any],
+        knowledge_text: str,
+        is_local: bool = True,
+    ) -> str:
+        stage_label = self._stage_label(context, task_plan)
+        points = self._stage_points(context, task_plan)
+        point_text = "、".join(points) if points else stage_label
+        task_goal = str(task_plan.get("goal") or context.get("study_goal") or context.get("current_need") or "理解当前阶段的核心概念、流程和典型应用").strip()
+        source_label = "本地课程视频" if is_local else "AI 生成教学视频"
+        knowledge_hint = ""
+        compact_knowledge = " ".join(str(knowledge_text or "").split())[:160]
+        if compact_knowledge:
+            knowledge_hint = f"\n- **教材关联**：视频讲解应对照教材中“{compact_knowledge}……”相关片段理解，避免只看画面不回到课程概念。"
+        return "\n".join(
+            [
+                "## 视频阶段适配说明",
+                f"- **适配阶段**：{stage_label}",
+                f"- **视频来源**：{source_label}《{title}》",
+                f"- **对应知识点**：{point_text}",
+                f"- **学习目标**：{task_goal}",
+                f"- **观看重点**：先抓住视频中对“{point_text}”的定义、流程或实例，再和讲解文档、练习题中的同一知识点对应起来。",
+                f"- **使用建议**：如果视频内容比当前阶段更宽泛，只优先观看与“{stage_label}”直接相关的片段；若视频偏基础，可把它作为进入后续阅读和练习前的概念预热。{knowledge_hint}",
+                "",
+            ]
+        )
+
+    def _local_video_resource(self, video_path: Path, context: Dict[str, Any], task_plan: Dict[str, Any], knowledge_text: str) -> Dict[str, Any]:
         title = video_path.stem
         weak_points = context.get("weak_points") or context.get("stage_title") or "课程核心知识"
         content = "\n".join(
             [
+                self._video_adaptation_text(title, context, task_plan, knowledge_text, is_local=True).rstrip(),
                 f"## 已匹配本地课程视频：{title}",
                 "",
                 f"视频文件：`{video_path.name}`",
@@ -144,7 +196,7 @@ class VideoAgent:
     ) -> Dict[str, Any]:
         local_video = self._match_local_video(context, task_plan, knowledge_text)
         if local_video:
-            return self._local_video_resource(local_video, context)
+            return self._local_video_resource(local_video, context, task_plan, knowledge_text)
 
         prompt = f"""
 [RESOURCE:VIDEO]
@@ -160,7 +212,14 @@ class VideoAgent:
         data = extract_json_object(llm_chat(prompt))
         script = str(data.get("script") or "视频脚本生成失败")
         storyboard = data.get("storyboard") if isinstance(data.get("storyboard"), list) else []
-        lines = ["## 教学视频脚本", script, "", "## 分镜表"]
+        title = str(data.get("title") or "个性化 AI 教学短视频")
+        lines = [
+            self._video_adaptation_text(title, context, task_plan, knowledge_text, is_local=False).rstrip(),
+            "## 教学视频脚本",
+            script,
+            "",
+            "## 分镜表",
+        ]
         for item in storyboard:
             lines.append(
                 f"- **{item.get('time', '片段')}**｜画面：{item.get('visual', '')}｜旁白：{item.get('narration', '')}｜字幕：{item.get('subtitle', '')}"
@@ -172,7 +231,7 @@ class VideoAgent:
             lines.extend(["", "## 视频生成结果", video_url])
         return {
             "resource_type": "video",
-            "title": str(data.get("title") or "个性化 AI 教学短视频"),
+            "title": title,
             "content": "\n".join(lines),
             "video_url": video_url,
             "storyboard": storyboard,

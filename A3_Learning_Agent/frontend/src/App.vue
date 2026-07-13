@@ -3,7 +3,7 @@
     <el-container class="app-shell">
       <el-aside v-if="!isAuthPage" width="292px" class="sidebar">
         <div class="sidebar-topbar">
-          <div class="brand-title">学习助手</div>
+          <div class="brand-title">MultiTutor</div>
         </div>
 
         <el-button class="new-chat-button" :loading="creatingSession" @click="createNewChat">

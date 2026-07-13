@@ -97,6 +97,7 @@ class ConversationAgent:
             assistant_reply = self._fallback_answer(question, evidence)
         if need_diagram:
             assistant_reply = self._normalize_diagram_reply(question, assistant_reply, evidence)
+        need_quiz = need_quiz or self._should_offer_quiz(question, assistant_reply)
 
         return {
             "assistant_reply": assistant_reply,
@@ -294,3 +295,32 @@ class ConversationAgent:
 
     def _question_wants_quiz(self, question: str) -> bool:
         return any(token in question for token in ["出题", "练习", "自测", "测试题", "刷题", "巩固题"])
+
+    def _should_offer_quiz(self, question: str, answer: str) -> bool:
+        question_text = str(question or "").strip()
+        answer_text = str(answer or "").strip()
+        if not answer_text or len(answer_text) < 80:
+            return False
+
+        # 用户若只是寒暄、泛指令或简单确认，一般不追加巩固题。
+        low_signal_patterns = [
+            "你好", "在吗", "谢谢", "好的", "收到", "继续", "展开讲讲", "再说一遍"
+        ]
+        if any(token == question_text for token in low_signal_patterns):
+            return False
+
+        teaching_question_tokens = [
+            "是什么", "为什么", "怎么理解", "区别", "联系", "阶段", "流程",
+            "步骤", "原理", "作用", "特点", "生命周期", "如何"
+        ]
+        teaching_answer_tokens = [
+            "可以分为", "主要包括", "核心是", "关键在于", "本质上", "通常分为",
+            "第一", "第二", "第三", "例如", "区别在于", "可以理解为", "常见做法"
+        ]
+
+        is_teaching_question = any(token in question_text for token in teaching_question_tokens)
+        has_teaching_structure = any(token in answer_text for token in teaching_answer_tokens)
+        has_ordered_structure = bool(re.search(r"(\n|^)\s*(\d+[\.、]|[-•○])\s*", answer_text))
+
+        # 只在明显是讲解型回答时自动补巩固，避免每次都打断对话。
+        return is_teaching_question and (has_teaching_structure or has_ordered_structure)

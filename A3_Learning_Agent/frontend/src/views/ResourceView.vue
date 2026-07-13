@@ -178,10 +178,32 @@
 
         <div v-if="item.resource_type === 'mindmap'" class="mindmap-shell">
           <div class="mindmap-toolbar">
-            <span>白蓝详细知识导图</span>
-            <el-tag type="info" size="small">Mermaid</el-tag>
+            <div>
+              <span>标准 Mermaid 思维导图</span>
+              <el-tag type="info" size="small">mindmap</el-tag>
+            </div>
+            <div class="mindmap-actions">
+              <el-tag size="small" effect="plain">{{ mindmapScaleLabel(item) }}</el-tag>
+              <el-button size="small" @click="zoomMindmap(item, 0.15)">放大</el-button>
+              <el-button size="small" @click="zoomMindmap(item, -0.15)">缩小</el-button>
+              <el-button size="small" @click="resetMindmapView(item)">重置</el-button>
+            </div>
           </div>
-          <div class="mindmap" v-html="mindmapSvgs[item.id || item.resource_type]"></div>
+          <div
+            class="mindmap-viewport"
+            :data-mindmap-key="mindmapKey(item)"
+            :class="{ dragging: mindmapDrag.key === mindmapKey(item) }"
+            @pointerdown="startMindmapDrag($event, item)"
+            @pointermove="moveMindmapDrag"
+            @pointerup="stopMindmapDrag"
+            @pointercancel="stopMindmapDrag"
+            @pointerleave="stopMindmapDrag"
+            @wheel.prevent="wheelMindmap($event, item)"
+          >
+            <div class="mindmap-canvas" :style="mindmapCanvasStyle(item)">
+              <div class="mindmap" v-html="mindmapSvgs[mindmapKey(item)]"></div>
+            </div>
+          </div>
         </div>
 
         <template v-else-if="item.resource_type === 'doc'">
@@ -323,6 +345,8 @@ const eventSource = ref(null);
 const streamCompleted = ref(false);
 const plan = reactive({});
 const mindmapSvgs = reactive({});
+const mindmapViews = reactive({});
+const mindmapDrag = reactive({ key: "", pointerId: null, startX: 0, startY: 0, originX: 0, originY: 0 });
 const requestForm = reactive({ major: "软件工程", course: "软件工程", learning_need: "希望围绕软件工程中的需求分析、总体设计、详细设计、编码测试和维护等知识短板，通过图解、分层练习和案例形成完整学习资料。" });
 
 const progressStages = [
@@ -413,36 +437,146 @@ function stripFences(text) {
     .replace(/```\s*$/i, "")
     .trim();
 }
+function mindmapKey(item) {
+  return String(item?.id || item?.resource_type || item?.title || "mindmap").replace(/[^\w-]/g, "-");
+}
+function ensureMindmapView(key) {
+  if (!mindmapViews[key]) {
+    mindmapViews[key] = { x: 0, y: 0, scale: 1, fitted: false };
+  }
+  return mindmapViews[key];
+}
+function mindmapCanvasStyle(item) {
+  const view = ensureMindmapView(mindmapKey(item));
+  return { transform: `translate(${view.x}px, ${view.y}px) scale(${view.scale})` };
+}
+function clampMindmapScale(value) {
+  return Math.min(2.8, Math.max(0.35, Number(value) || 1));
+}
+function mindmapScaleLabel(item) {
+  const view = ensureMindmapView(mindmapKey(item));
+  return `${Math.round(view.scale * 100)}%`;
+}
+function zoomMindmap(item, delta) {
+  const view = ensureMindmapView(mindmapKey(item));
+  view.scale = clampMindmapScale(view.scale + delta);
+  view.fitted = true;
+}
+function wheelMindmap(event, item) {
+  const view = ensureMindmapView(mindmapKey(item));
+  const previousScale = view.scale;
+  const nextScale = clampMindmapScale(previousScale + (event.deltaY > 0 ? -0.1 : 0.1));
+  const rect = event.currentTarget.getBoundingClientRect();
+  const offsetX = event.clientX - rect.left - view.x;
+  const offsetY = event.clientY - rect.top - view.y;
+  const ratio = nextScale / previousScale;
+  view.x -= offsetX * (ratio - 1);
+  view.y -= offsetY * (ratio - 1);
+  view.scale = nextScale;
+  view.fitted = true;
+}
+function resetMindmapView(item) {
+  fitMindmapView(item, true);
+}
+function startMindmapDrag(event, item) {
+  if (event.button !== 0) return;
+  event.currentTarget.setPointerCapture?.(event.pointerId);
+  const key = mindmapKey(item);
+  const view = ensureMindmapView(key);
+  mindmapDrag.key = key;
+  mindmapDrag.pointerId = event.pointerId;
+  mindmapDrag.startX = event.clientX;
+  mindmapDrag.startY = event.clientY;
+  mindmapDrag.originX = view.x;
+  mindmapDrag.originY = view.y;
+  view.fitted = true;
+}
+function moveMindmapDrag(event) {
+  if (!mindmapDrag.key || event.pointerId !== mindmapDrag.pointerId) return;
+  const view = ensureMindmapView(mindmapDrag.key);
+  view.x = mindmapDrag.originX + event.clientX - mindmapDrag.startX;
+  view.y = mindmapDrag.originY + event.clientY - mindmapDrag.startY;
+}
+function stopMindmapDrag(event) {
+  if (event?.pointerId && mindmapDrag.pointerId && event.pointerId !== mindmapDrag.pointerId) return;
+  event?.currentTarget?.releasePointerCapture?.(mindmapDrag.pointerId);
+  mindmapDrag.key = "";
+  mindmapDrag.pointerId = null;
+}
 function cleanMindmapLabel(value) {
   const cleaned = String(value || "")
+    .replace(/<[^>]+>/g, " ")
     .replace(/[`"'{}[\]|<>()[\]]/g, "")
     .replace(/[:：;]/g, " ")
     .replace(/-->|---|==>|-/g, " ")
     .replace(/[#*_~\\/]/g, " ")
     .replace(/\s+/g, " ")
     .trim()
-    .slice(0, 34);
+    .slice(0, 42);
   return cleaned || "知识点";
 }
-function normalizeMindmapSource(text) {
-  const lines = stripFences(text)
-    .replace(/::icon\([^)]+\)/g, "")
-    .split("\n")
-    .map((line) => line.replace(/\t/g, "  ").trimEnd())
-    .filter((line) => line.trim() && !line.trim().startsWith("%%"));
-  const startIndex = lines.findIndex((line) => /^mindmap\b/i.test(line.trim()));
-  if (startIndex < 0) return "";
-  const normalized = ["mindmap"];
-  for (const line of lines.slice(startIndex + 1)) {
-    const raw = line.trim();
-    if (!raw || /^```/.test(raw)) continue;
-    const leading = line.match(/^\s*/)?.[0].length || 0;
-    const depth = Math.max(1, Math.min(5, Math.floor(leading / 2) + 1));
-    const label = cleanMindmapLabel(raw.replace(/^[-*+]\s*/, "").replace(/^root\s*/i, ""));
-    normalized.push(`${"  ".repeat(depth)}${label}`);
+function markdownLineToMindmapNode(line) {
+  const raw = String(line || "").replace(/\t/g, "  ").trimEnd();
+  if (!raw.trim() || raw.trim().startsWith("%%")) return null;
+  const heading = raw.match(/^\s*(#{1,6})\s+(.+)$/);
+  if (heading) return { depth: heading[1].length, label: cleanMindmapLabel(heading[2]) };
+  const list = raw.match(/^(\s*)([-*+] |\d+[.)]\s+)(.+)$/);
+  if (list) return { depth: Math.min(6, Math.floor(list[1].length / 2) + 2), label: cleanMindmapLabel(list[3]) };
+  const node = raw.match(/^(\s*)(.+)$/);
+  if (!node) return null;
+  return {
+    depth: Math.min(6, Math.floor(node[1].length / 2) + 1),
+    label: cleanMindmapLabel(node[2].replace(/^root\s*/i, "")),
+  };
+}
+function escapeMindmapText(value) {
+  return String(value || "")
+    .replace(/"/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+function buildMindmapTree(nodes, fallbackTitle) {
+  if (!nodes.length) return null;
+  const minDepth = Math.min(...nodes.map((node) => node.depth));
+  const rootNode = nodes.find((node) => node.depth === minDepth) || { label: cleanMindmapLabel(fallbackTitle), depth: minDepth };
+  const root = { label: rootNode.label || cleanMindmapLabel(fallbackTitle), children: [] };
+  const stack = [{ depth: minDepth, node: root }];
+
+  for (const current of nodes) {
+    if (current === rootNode) continue;
+    const normalizedDepth = Math.max(minDepth + 1, current.depth);
+    while (stack.length > 1 && normalizedDepth <= stack[stack.length - 1].depth) {
+      stack.pop();
+    }
+    const parent = stack[stack.length - 1]?.node || root;
+    const next = { label: current.label, children: [] };
+    parent.children.push(next);
+    stack.push({ depth: normalizedDepth, node: next });
   }
-  if (normalized.length < 3) return "";
-  return normalized.join("\n");
+
+  return root;
+}
+function treeToMermaidMindmap(tree) {
+  if (!tree?.label) return "";
+  const lines = ["mindmap", `  root((${escapeMindmapText(tree.label)}))`];
+  function walk(node, depth) {
+    for (const child of node.children || []) {
+      lines.push(`${"  ".repeat(depth)}${escapeMindmapText(child.label)}`);
+      walk(child, depth + 1);
+    }
+  }
+  walk(tree, 2);
+  return lines.join("\n");
+}
+function normalizeMindmapSource(text, fallbackTitle = "软件工程知识导图") {
+  const source = stripFences(text).replace(/::icon\([^)]+\)/g, "");
+  const lines = source.split("\n").map((line) => line.replace(/\r/g, ""));
+  const startIndex = lines.findIndex((line) => /^\s*mindmap\b/i.test(line));
+  const contentLines = startIndex >= 0 ? lines.slice(startIndex + 1) : lines;
+  const nodes = contentLines.map(markdownLineToMindmapNode).filter(Boolean);
+  if (!nodes.length) return "";
+  const tree = buildMindmapTree(nodes.slice(0, 80), fallbackTitle);
+  return treeToMermaidMindmap(tree);
 }
 function parseJsonLike(text) {
   const source = stripFences(text);
@@ -563,43 +697,41 @@ function docEvidence(item) {
 function docEvidenceKey(entry) {
   return `${entry.title}-${(entry.section_path || []).join("-")}-${(entry.pages || []).join("-")}`;
 }
-function extractMindmapSource(text) {
-  const source = stripFences(text);
+function extractMindmapSource(text, fallbackTitle = "软件工程知识导图") {
   const mermaidFence = String(text || "").match(/```mermaid\s*([\s\S]*?)```/i);
-  if (mermaidFence) return normalizeMindmapSource(mermaidFence[1]);
-  const mindmapIndex = source.search(/^mindmap\b/im);
-  if (mindmapIndex >= 0) return normalizeMindmapSource(source.slice(mindmapIndex));
-  return "";
+  if (mermaidFence) return normalizeMindmapSource(mermaidFence[1], fallbackTitle);
+  return normalizeMindmapSource(text, fallbackTitle);
 }
 function buildFallbackMindmap(item) {
   const title = cleanMindmapLabel(item.title || "软件工程知识导图") || "软件工程知识导图";
   const points = knowledgePoints(item).map(cleanMindmapLabel).filter(Boolean);
   const headings = String(item.content || "")
     .split("\n")
-    .map((line) => line.replace(/^#+\s*/, "").replace(/^[-*]\s*/, ""))
+    .map((line) => line.replace(/^#+\s*/, "").replace(/^[-*+]\s*/, ""))
     .map(cleanMindmapLabel)
     .filter((line) => line && !line.startsWith("配图") && !line.startsWith("images"))
     .slice(0, 18);
   const branches = [...new Set([...points, ...headings])].slice(0, 24);
-  const primary = branches.length ? branches : ["核心概念", "学习步骤", "方法工具", "易错点", "实践应用"];
-  const lines = ["mindmap", `  ${title}`];
+  const primary = branches.length ? branches : ["核心概念", "关键流程", "输入输出", "典型场景", "易错提醒", "学习建议"];
+  const lines = ["mindmap", `  root((${escapeMindmapText(title)}))`];
   primary.slice(0, 6).forEach((branch, index) => {
-    lines.push(`    ${branch}`);
+    lines.push(`    ${escapeMindmapText(branch)}`);
     const details = primary.slice(index * 3 + 6, index * 3 + 9);
     const fallbackDetails = ["定义与作用", "关键输入输出", "常见误区"];
     (details.length ? details : fallbackDetails).slice(0, 3).forEach((detail) => {
-      lines.push(`      ${cleanMindmapLabel(detail)}`);
+      lines.push(`      ${escapeMindmapText(cleanMindmapLabel(detail))}`);
     });
   });
   return lines.join("\n");
 }
 function buildMindmapSource(item) {
-  const direct = extractMindmapSource(item.content);
+  const title = item.title || "软件工程知识导图";
+  const direct = extractMindmapSource(item.content, title);
   if (direct) return direct;
   const parsed = parseJsonLike(item.content);
   if (parsed) {
     const content = parsed.content || parsed.mindmap || parsed.markdown || "";
-    const fromJson = extractMindmapSource(content);
+    const fromJson = extractMindmapSource(content, parsed.title || title);
     if (fromJson) return fromJson;
     const merged = {
       ...item,
@@ -699,21 +831,59 @@ async function safeRenderMindmap(key, source) {
   }
 }
 
+function fitMindmapView(item, force = false) {
+  const key = mindmapKey(item);
+  const view = ensureMindmapView(key);
+  if (view.fitted && !force) return;
+
+  nextTick(() => {
+    const viewport = document.querySelector(`[data-mindmap-key="${key}"]`);
+    const svg = viewport?.querySelector("svg");
+    if (!viewport || !svg) return;
+
+    const viewBox = (svg.getAttribute("viewBox") || "").split(/\s+/).map(Number);
+    const svgWidth = Number(svg.getAttribute("width")) || viewBox[2] || svg.getBoundingClientRect().width || 1200;
+    const svgHeight = Number(svg.getAttribute("height")) || viewBox[3] || svg.getBoundingClientRect().height || 800;
+    const viewportWidth = viewport.clientWidth;
+    const viewportHeight = viewport.clientHeight;
+    if (!viewportWidth || !viewportHeight || !svgWidth || !svgHeight) return;
+
+    const padding = 72;
+    const scale = clampMindmapScale(Math.min((viewportWidth - padding) / svgWidth, (viewportHeight - padding) / svgHeight, 1));
+    view.scale = scale;
+    view.x = Math.max((viewportWidth - svgWidth * scale) / 2, 24);
+    view.y = Math.max((viewportHeight - svgHeight * scale) / 2, 20);
+    view.fitted = true;
+  });
+}
+
 async function renderMindmaps() {
   await nextTick();
   for (const item of resources.value.filter((entry) => entry.resource_type === "mindmap")) {
-    const key = item.id || item.resource_type;
+    const key = mindmapKey(item);
     const source = buildMindmapSource(item);
-    if (source && await safeRenderMindmap(key, source)) continue;
+    const view = ensureMindmapView(key);
+    view.fitted = false;
+    if (source && await safeRenderMindmap(key, source)) {
+      fitMindmapView(item);
+      continue;
+    }
 
     const safeSource = buildFallbackMindmap({ ...item, content: "", knowledge_points: knowledgePoints(item) });
     if (await safeRenderMindmap(`fallback-${key}`, safeSource)) {
       mindmapSvgs[key] = mindmapSvgs[`fallback-${key}`];
       delete mindmapSvgs[`fallback-${key}`];
+      fitMindmapView(item);
     } else {
       mindmapSvgs[key] = `<div class="mindmap-error">思维导图渲染失败，已隐藏 Mermaid 原始错误，请重新生成资源。</div>`;
     }
   }
+}
+
+function refitAllMindmaps() {
+  resources.value
+    .filter((entry) => entry.resource_type === "mindmap")
+    .forEach((item) => fitMindmapView(item, true));
 }
 
 function resetRunArtifacts() {
@@ -808,7 +978,11 @@ async function generate() {
 }
 
 onMounted(loadResources);
-onBeforeUnmount(() => closeEventSource());
+onMounted(() => window.addEventListener("resize", refitAllMindmaps));
+onBeforeUnmount(() => {
+  closeEventSource();
+  window.removeEventListener("resize", refitAllMindmaps);
+});
 </script>
 
 <style scoped>
@@ -866,7 +1040,7 @@ onBeforeUnmount(() => closeEventSource());
 .guard-tags { display: flex; flex-wrap: wrap; gap: 8px; }
 .markdown-body { max-height: 650px; overflow: auto; line-height: 1.75; }
 .markdown-body :deep(pre) { overflow: auto; padding: 16px; border-radius: 12px; background: #0f172a; color: #e2e8f0; }
-.mindmap-shell { min-height: 620px; overflow: auto; border: 1px solid #bfdbfe; border-radius: 8px; background: #ffffff; box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.06), 0 14px 36px rgba(30, 64, 175, 0.08); }
+.mindmap-shell { min-height: 620px; overflow: hidden; border: 1px solid #bfdbfe; border-radius: 8px; background: #ffffff; box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.06), 0 14px 36px rgba(30, 64, 175, 0.08); }
 .doc-view { display: grid; gap: 18px; }
 .doc-section { padding: 16px; border: 1px solid #dbeafe; border-radius: 12px; background: #ffffff; }
 .doc-section h4 { margin: 0 0 12px; color: #1d4ed8; font-size: 16px; }
@@ -880,9 +1054,15 @@ onBeforeUnmount(() => closeEventSource());
 .doc-location { display: flex; flex-wrap: wrap; gap: 8px; }
 .doc-location span { padding: 6px 10px; border-radius: 999px; background: #eff6ff; color: #1d4ed8; }
 .doc-empty { color: #64748b; }
-.mindmap-toolbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-bottom: 1px solid #dbeafe; color: #1d4ed8; font-weight: 700; background: linear-gradient(90deg, #eff6ff 0%, #ffffff 100%); }
-.mindmap { min-width: 1280px; min-height: 560px; overflow: auto; padding: 42px; display: grid; place-items: center; background-color: #fbfdff; background-image: linear-gradient(#e6f0ff 1px, transparent 1px), linear-gradient(90deg, #e6f0ff 1px, transparent 1px); background-size: 28px 28px; }
-.mindmap :deep(svg) { max-width: none; min-width: 980px; height: auto; filter: drop-shadow(0 10px 22px rgba(37, 99, 235, 0.14)); }
+.mindmap-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 14px; border-bottom: 1px solid #dbeafe; color: #1d4ed8; font-weight: 700; background: linear-gradient(90deg, #eff6ff 0%, #ffffff 100%); }
+.mindmap-toolbar > div { display: flex; align-items: center; gap: 8px; }
+.mindmap-actions { flex-wrap: wrap; justify-content: flex-end; }
+.mindmap-viewport { position: relative; height: 560px; overflow: hidden; cursor: grab; touch-action: none; user-select: none; background-color: #fbfdff; background-image: linear-gradient(#e6f0ff 1px, transparent 1px), linear-gradient(90deg, #e6f0ff 1px, transparent 1px); background-size: 28px 28px; }
+.mindmap-viewport.dragging { cursor: grabbing; }
+.mindmap-canvas { min-width: 1280px; min-height: 560px; padding: 42px; display: grid; place-items: center; transform-origin: 0 0; transition: transform 0.08s ease-out; }
+.mindmap-viewport.dragging .mindmap-canvas { transition: none; }
+.mindmap { min-width: 980px; min-height: 460px; display: grid; place-items: center; }
+.mindmap :deep(svg) { max-width: none; min-width: 980px; height: auto; pointer-events: none; filter: drop-shadow(0 10px 22px rgba(37, 99, 235, 0.14)); }
 .mindmap :deep(.mindmap-node rect),
 .mindmap :deep(.node rect),
 .mindmap :deep(.node circle),
