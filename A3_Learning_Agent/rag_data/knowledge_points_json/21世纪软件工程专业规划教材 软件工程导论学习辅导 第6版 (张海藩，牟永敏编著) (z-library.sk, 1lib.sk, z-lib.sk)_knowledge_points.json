@@ -6,17 +6,17 @@
   "mode": "question_only_external_knowledge_base",
   "message": "This exercise-book run does not build new knowledge points or a new chapter tree. Questions are linked to the external textbook knowledge base only.",
   "external_knowledge_base": {
-    "base_dir": "E:\\知识问答\\software_A3\\A3_Learning_Agent\\MY\\software_engineering_textbook_kb",
-    "knowledge_point_count": 1208,
-    "knowledge_node_count": 3300,
+    "base_dir": "E:\\知识问答\\A3_Learning_Agent\\MY\\final",
+    "knowledge_point_count": 245,
+    "knowledge_node_count": 2582,
     "knowledge_sources": [
-      "E:\\知识问答\\software_A3\\A3_Learning_Agent\\MY\\software_engineering_textbook_kb\\knowledge_points_json\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk)_knowledge_points.json",
-      "E:\\知识问答\\software_A3\\A3_Learning_Agent\\MY\\software_engineering_textbook_kb\\student_knowledge_base_json\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk)_student_knowledge_base.json",
-      "E:\\知识问答\\software_A3\\A3_Learning_Agent\\MY\\software_engineering_textbook_kb\\textbook_knowledge_json\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk)_textbook_knowledge.json"
+      "E:\\知识问答\\A3_Learning_Agent\\MY\\final\\knowledge_points_json\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk)_knowledge_points.json",
+      "E:\\知识问答\\A3_Learning_Agent\\MY\\final\\student_knowledge_base_json\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk)_student_knowledge_base.json",
+      "E:\\知识问答\\A3_Learning_Agent\\MY\\final\\textbook_knowledge_json\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk)_textbook_knowledge.json"
     ],
     "node_sources": [
-      "E:\\知识问答\\software_A3\\A3_Learning_Agent\\MY\\software_engineering_textbook_kb\\detailed_knowledge_tree_json\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk)_detailed_knowledge_tree.json",
-      "E:\\知识问答\\software_A3\\A3_Learning_Agent\\MY\\software_engineering_textbook_kb\\knowledge_tree_json\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk)_knowledge_tree.json"
+      "E:\\知识问答\\A3_Learning_Agent\\MY\\final\\detailed_knowledge_tree_json\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk)_detailed_knowledge_tree.json",
+      "E:\\知识问答\\A3_Learning_Agent\\MY\\final\\knowledge_tree_json\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk)_knowledge_tree.json"
     ]
   },
   "knowledge_points": [],
