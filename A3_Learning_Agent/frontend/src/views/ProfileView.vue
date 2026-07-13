@@ -13,7 +13,7 @@
               :autosize="{ minRows: 1, maxRows: 6 }"
               resize="none"
               :disabled="sending"
-              placeholder="What would you like to learn?"
+              placeholder="可以先说说你在学什么、卡在哪里，或者现在想完成什么任务"
               @keydown.enter.exact.prevent="sendMessage"
               @keydown.ctrl.enter.prevent="sendMessage"
             />
@@ -41,11 +41,9 @@
           :key="index"
           :class="['message-row', item.role]"
         >
-          <div v-if="item.role === 'assistant'" class="assistant-avatar">AI</div>
-
           <div :class="['message-bubble', item.role]">
             <div class="message-meta">
-              <span>{{ item.role === "assistant" ? "学习助手" : "我" }}</span>
+              <span>{{ item.role === "assistant" ? "MultiTutor" : "我" }}</span>
               <small v-if="item.time">{{ item.time }}</small>
             </div>
             <div
@@ -78,7 +76,6 @@
         </div>
 
         <div v-if="sending" class="message-row assistant">
-          <div class="assistant-avatar thinking">AI</div>
           <div class="message-bubble assistant thinking-bubble">
             <div class="thinking-title">Thinking</div>
             <div class="typing-dots">
@@ -104,7 +101,7 @@
             :autosize="{ minRows: 1, maxRows: 6 }"
             resize="none"
             :disabled="sending"
-            placeholder="What would you like to learn?"
+            placeholder="继续输入你的问题、学习进展或当前任务"
             @keydown.enter.exact.prevent="sendMessage"
             @keydown.ctrl.enter.prevent="sendMessage"
           />
@@ -233,7 +230,12 @@ const previewProfile = computed(() => {
 });
 
 function timeLabel() {
-  return new Date().toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" });
+  const now = new Date();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  const hour = String(now.getHours()).padStart(2, "0");
+  const minute = String(now.getMinutes()).padStart(2, "0");
+  return `${month}-${day} ${hour}:${minute}`;
 }
 
 function assistantMessage(content) {
@@ -1164,33 +1166,14 @@ onBeforeUnmount(() => {
 .message-row {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
   width: 100%;
   max-width: 1040px;
-  margin: 0 auto 30px;
-  padding: 0 28px;
+  margin: 0 auto 24px;
+  padding: 0 24px;
 }
 
 .message-row.user {
   justify-content: flex-end;
-}
-
-.assistant-avatar {
-  display: grid;
-  width: 28px;
-  height: 28px;
-  place-items: center;
-  border-radius: 8px;
-  background: #1f2937;
-  color: #ffffff;
-  font-size: 11px;
-  font-weight: 700;
-  flex: 0 0 auto;
-  margin-top: 2px;
-}
-
-.assistant-avatar.thinking {
-  animation: pulse 1.4s ease-in-out infinite;
 }
 
 .message-bubble {
@@ -1218,14 +1201,20 @@ onBeforeUnmount(() => {
 .message-meta {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 8px;
+  margin-bottom: 8px;
   color: #6b7280;
   font-size: 12px;
 }
 
 .message-bubble.user .message-meta {
   margin-bottom: 6px;
+}
+
+.message-meta small {
+  color: #94a3b8;
+  font-size: 11px;
+  line-height: 1;
 }
 
 .message-content {
@@ -1270,6 +1259,7 @@ onBeforeUnmount(() => {
 .message-bubble.assistant .message-content:not(.diagram-text-card) {
   margin-top: 2px;
 }
+
 
 .diagram-text-card {
   position: relative;

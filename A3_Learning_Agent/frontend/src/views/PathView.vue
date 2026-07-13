@@ -60,10 +60,10 @@
       <div v-for="(s,i) in stages" v-show="i===activeStageIndex" :key="s.key" :class="['stage',state(i)]">
         <el-card class="stage-card" shadow="never">
           <template #header><div class="stage-head compact-stage-head"><div class="stage-title-block"><el-tag :type="tag(i)" effect="dark">{{ label(i) }}</el-tag><h3>第{{i+1}}阶段：{{s.title}}</h3><p>{{s.goal}}</p></div><div class="stage-head-actions"><el-tag v-for="p in (s.points||[]).slice(0,3)" :key="p" size="small" type="info" effect="plain">{{p}}</el-tag><el-button size="small" plain @click="toggle(i)">{{done(i)?'取消完成':'标记完成'}}</el-button></div></div></template>
-          <div class="body"><div class="section"><b>本阶段配套资源</b><span>保留个性化说明与质量审核报告</span></div><el-tabs v-if="s.resources.length" v-model="activeResourceTabs[i]" class="resource-tabs" stretch>
+          <div class="body"><div class="section"><b>本阶段配套资源</b><span>保留个性化说明与质量审核报告</span></div><el-tabs v-if="s.resources.length" v-model="activeResourceTabs[i]" class="resource-tabs" stretch @tab-change="onResourceTabChange">
                 <el-tab-pane v-for="r in s.resources" :key="rid(r)" :name="rid(r)">
                   <template #label><span class="resource-tab-label"><span>{{resourceIcon(r.resource_type)}}</span>{{typeName(r.resource_type)}}</span></template>
-                  <div :class="['res',resourceClass(r)]" @click="isFixedResource(r)?null:toggleResource(r)">
+                  <div :class="['res',resourceClass(r),{'res-static-toggle':usesButtonToggleOnly(r)}]" @click="resourceCardClick(r)">
                   <div class="res-head">
                     <div class="res-title">
                       <span class="res-icon">{{resourceIcon(r.resource_type)}}</span>
@@ -81,6 +81,7 @@
                         :class="{dragging:isMindmapDragging(r)}"
                         @wheel.prevent="handleMindmapWheel($event,r)"
                         @mousedown="startMindmapDrag($event,r)"
+                        @dblclick.stop.prevent="fitMindmapToViewport(r)"
                       >
                         <div class="markmap-zoom-layer" :style="mindmapZoomStyle(r)">
                           <svg :ref="el=>setMarkmapRef(r,el)" class="markmap-container"></svg>
@@ -184,9 +185,9 @@ const markmapTransformer=new Transformer();
 const markdownRenderer=new MarkdownIt({html:false,linkify:true,breaks:true});
 const markmapEls=new Map();
 const markmapInstances=new Map();
-const markmapScales=ref({});
+const markmapViews=ref({});
 const markmapViewports=new Map();
-const mindmapDragState=ref({id:'',active:false,startX:0,startY:0,scrollLeft:0,scrollTop:0});
+const mindmapDragState=ref({id:'',active:false,startX:0,startY:0,originX:0,originY:0});
 function resetAgentSteps(){agentSteps.value=agents.map(item=>({...item,status:'waiting',statusText:'等待'}))}
 function setAgentStep(name,status,statusText){agentSteps.value=agentSteps.value.map(item=>item.name===name?{...item,status,statusText}:item)}
 function markProfileTipShown(){localStorage.setItem('a3_path_profile_tip_seen','1');profileTipDisabled.value=true}
@@ -209,13 +210,48 @@ const percent=computed(()=>Math.round(completed.value.length/Math.max(stages.val
 const activeStage=computed(()=>stages.value[activeStageIndex.value]||stages.value[current.value]||stages.value[0]||null);
 const totalDays=computed(()=>integrated.value.total_duration||`${stages.value.reduce((n,s)=>n+Number(String(s.duration).match(/\d+/)?.[0]||0),0)||stages.value.length}天`);
 function clean(t){return String(t||'').replace(/[#*_`>\-]/g,'').trim()}
+const stagePointKeywords=['问题定义','可行性研究','需求分析','需求规格','总体设计','详细设计','软件设计','编码实现','调试','软件测试','软件维护','软件生命周期','瀑布模型','用例图','类图','时序图','数据流图','模块划分','阶段衔接','阶段边界','阶段产物','输入输出','流程建构','产物驱动','质量闭环','案例应用','迁移应用'];
 function parseStages(md){return String(md||'').split(/\n(?=##\s*阶段[一二三四五六七八九十\d]+)/).filter(b=>/^##\s*阶段/.test(b.trim())).map((b,i)=>({title:clean((b.split('\n')[0]||'').replace(/^##\s*阶段[一二三四五六七八九十\d]+[：:、.．\s]*/,''))||`学习阶段${i+1}`,goal:section(b,'目标')||section(b,'学习任务')||'围绕画像短板完成本阶段学习任务。',points:points(b),duration:(b.match(/(\d+)\s*天/)?.[1]?`预计${b.match(/(\d+)\s*天/)[1]}天`:`预计${i+2}天`),raw:b}))}
 function section(b,l){const m=b.match(new RegExp(`\\*\\*${l}[：:]?\\*\\*\\s*([^\\n]+)`));return m?clean(m[1]):''}
-function points(b){const ks=['需求分析','总体设计','详细设计','软件测试','软件生命周期','用例图','类图','时序图','数据流图','模块划分','编码实现','软件维护'];const hit=ks.filter(k=>b.includes(k));return [...new Set(hit.length?hit:['课程核心知识'])].slice(0,5)}
+function points(b){
+  const block=String(b||'');
+  const firstLine=clean((block.split('\n')[0]||'').replace(/^##\s*阶段[一二三四五六七八九十\d]+[：:、.．\s]*/,''));
+  const goalText=section(block,'目标')||section(block,'学习任务')||'';
+  const primaryText=`${firstLine} ${goalText}`;
+  const secondaryText=block;
+  const primaryHits=stagePointKeywords.filter(k=>primaryText.includes(k));
+  const secondaryHits=stagePointKeywords.filter(k=>secondaryText.includes(k)&&!primaryHits.includes(k));
+  const merged=[...primaryHits,...secondaryHits];
+  if(merged.length)return [...new Set(merged)].slice(0,5);
+  const titleChunks=firstLine.split(/[、，,：:·\s]+/).map(item=>clean(item)).filter(item=>item&&item.length>=2);
+  return [...new Set(titleChunks.length?titleChunks:['课程核心知识'])].slice(0,4);
+}
 function fallback(){return resources.value.length?[{title:'基础概念澄清',goal:'理解核心概念、阶段产物和输入输出关系。',points:['软件生命周期','需求分析'],duration:'预计2天',raw:''},{title:'方法关系建构',goal:'建立需求分析、总体设计、详细设计之间的顺序关系。',points:['需求分析','总体设计','详细设计'],duration:'预计3天',raw:''},{title:'练习与实操巩固',goal:'通过练习、案例和代码实操完成迁移应用。',points:['软件测试','代码实操'],duration:'预计2天',raw:''}]:[]}
 function kps(r){if(Array.isArray(r.knowledge_points))return r.knowledge_points;try{return JSON.parse(r.knowledge_points||'[]')}catch{return[]}}
 function score(r,text){return kps(r).reduce((n,p)=>n+(p&&text.includes(p)?5:0),0)+['需求分析','总体设计','详细设计','测试','生命周期','代码','练习'].reduce((n,k)=>n+(text.includes(k)&&`${r.title} ${r.content}`.includes(k)?2:0),0)}
 function resourceStageIndex(r){const meta=r.metadata||{};const idx=r.stage_index||meta.stage_index||meta.stage?.stage_index;const n=Number(idx);return Number.isFinite(n)?n:null}
+function expectedStageResourceTypes(){return ['doc','mindmap','video','reading']}
+function hasCompleteStageResources(items,stageCount){
+  const count=Number(stageCount)||0;
+  if(!count||!Array.isArray(items)||!items.length)return false;
+  const expected=expectedStageResourceTypes();
+  const coverage=new Map();
+  items.forEach(item=>{
+    const stageIndex=resourceStageIndex(item);
+    const type=String(item?.resource_type||'').trim();
+    if(!stageIndex||!type)return;
+    if(!coverage.has(stageIndex))coverage.set(stageIndex,new Set());
+    coverage.get(stageIndex).add(type);
+  });
+  for(let i=1;i<=count;i++){
+    const types=coverage.get(i);
+    if(!types)return false;
+    for(const type of expected){
+      if(!types.has(type))return false;
+    }
+  }
+  return true;
+}
 function matchRes(s,i,total){const exact=resources.value.filter(r=>resourceStageIndex(r)===i+1);const text=`${s.title} ${s.goal} ${s.points.join(' ')} ${s.raw}`;const m=resources.value.filter(r=>!resourceStageIndex(r)&&score(r,text)>0);const list=exact.length?exact:(m.length?m:resources.value.filter((r,idx)=>!resourceStageIndex(r)&&(total?idx%total===i:true)));const order=['doc','mindmap','quiz','code','video','reading'];return [...list].sort((a,b)=>order.indexOf(a.resource_type)-order.indexOf(b.resource_type))}
 function pickPrimaryDoc(docs, stage){
   const stageText = [stage.title, stage.goal, ...(stage.points||[])].join(' ');
@@ -661,24 +697,34 @@ function setMarkmapViewportRef(r,el){
   const id=rid(r);
   if(el)markmapViewports.set(id,el);else markmapViewports.delete(id);
 }
-function ensureMindmapScale(r){
+function ensureMindmapView(r){
   const id=rid(r);
-  if(markmapScales.value[id]==null){
-    markmapScales.value={...markmapScales.value,[id]:1};
-    return 1;
+  if(!markmapViews.value[id]){
+    markmapViews.value={...markmapViews.value,[id]:{scale:1,x:0,y:0,fitted:false}};
   }
-  return markmapScales.value[id];
+  return markmapViews.value[id];
 }
 function handleMindmapWheel(event,r){
   const id=rid(r);
-  const currentScale=ensureMindmapScale(r);
+  const view=ensureMindmapView(r);
+  const currentScale=view.scale;
   const delta=event.deltaY<0?0.1:-0.1;
   const next=Math.max(0.7,Math.min(2.2,Number((currentScale+delta).toFixed(2))));
   if(next===currentScale)return;
-  markmapScales.value={...markmapScales.value,[id]:next};
+  const viewport=markmapViewports.get(id)||event.currentTarget;
+  const rect=viewport.getBoundingClientRect();
+  const offsetX=event.clientX-rect.left-view.x;
+  const offsetY=event.clientY-rect.top-view.y;
+  const ratio=next/currentScale;
+  view.x-=offsetX*(ratio-1);
+  view.y-=offsetY*(ratio-1);
+  view.scale=next;
+  view.fitted=true;
+  markmapViews.value={...markmapViews.value,[id]:{...view}};
 }
 function mindmapZoomStyle(r){
-  return {transform:`scale(${ensureMindmapScale(r)})`,transformOrigin:'top left'};
+  const view=ensureMindmapView(r);
+  return {transform:`translate(${view.x}px, ${view.y}px) scale(${view.scale})`,transformOrigin:'top left'};
 }
 function isMindmapDragging(r){
   return mindmapDragState.value.active&&mindmapDragState.value.id===rid(r);
@@ -688,13 +734,14 @@ function startMindmapDrag(event,r){
   const id=rid(r);
   const viewport=markmapViewports.get(id)||event.currentTarget;
   if(!viewport)return;
+  const view=ensureMindmapView(r);
   mindmapDragState.value={
     id,
     active:true,
     startX:event.clientX,
     startY:event.clientY,
-    scrollLeft:viewport.scrollLeft,
-    scrollTop:viewport.scrollTop
+    originX:view.x,
+    originY:view.y
   };
   window.addEventListener('mousemove',handleMindmapDragMove);
   window.addEventListener('mouseup',stopMindmapDrag);
@@ -702,49 +749,90 @@ function startMindmapDrag(event,r){
 function handleMindmapDragMove(event){
   const state=mindmapDragState.value;
   if(!state.active||!state.id)return;
-  const viewport=markmapViewports.get(state.id);
-  if(!viewport)return;
+  const view=markmapViews.value[state.id];
+  if(!view)return;
   const dx=event.clientX-state.startX;
   const dy=event.clientY-state.startY;
-  viewport.scrollLeft=state.scrollLeft-dx;
-  viewport.scrollTop=state.scrollTop-dy;
+  view.x=state.originX+dx;
+  view.y=state.originY+dy;
+  view.fitted=true;
+  markmapViews.value={...markmapViews.value,[state.id]:{...view}};
 }
 function stopMindmapDrag(){
   if(!mindmapDragState.value.active)return;
-  mindmapDragState.value={id:'',active:false,startX:0,startY:0,scrollLeft:0,scrollTop:0};
+  mindmapDragState.value={id:'',active:false,startX:0,startY:0,originX:0,originY:0};
   window.removeEventListener('mousemove',handleMindmapDragMove);
   window.removeEventListener('mouseup',stopMindmapDrag);
 }
-function fitMarkmap(mm,el){
-  if(!el?.clientWidth||!el?.clientHeight)return;
-  requestAnimationFrame(()=>mm.fit());
-  setTimeout(()=>mm.fit(),120);
-  setTimeout(()=>mm.fit(),360);
+async function fitMindmapToViewport(r){
+  const mm=markmapInstances.get(rid(r));
+  const el=markmapEls.get(rid(r));
+  if(!mm||!el)return;
+  const view=ensureMindmapView(r);
+  view.fitted=false;
+  await fitMarkmap(mm,el,r,true);
+}
+async function fitMarkmap(mm,el,r,force=false){
+  const viewport=markmapViewports.get(rid(r));
+  if(!viewport||!el)return;
+  const current=ensureMindmapView(r);
+  if(current.fitted&&!force)return;
+  if(viewport.clientWidth<10||viewport.clientHeight<10)return;
+  markmapViews.value={
+    ...markmapViews.value,
+    [rid(r)]:{scale:1,x:0,y:0,fitted:false}
+  };
+  await nextTick();
+  await mm.fit(1.72);
+  markmapViews.value={
+    ...markmapViews.value,
+    [rid(r)]:{scale:1,x:0,y:0,fitted:true}
+  };
 }
 async function renderMarkmaps(){
   await nextTick();
+  const stage=stages.value[activeStageIndex.value];
+  if(!stage)return;
+  for(const r of stage.resources||[]){
+      if(!isMindmap(r)||activeResourceTabs.value[activeStageIndex.value]!==rid(r))continue;
+      const id=rid(r);
+      const el=markmapEls.get(id);
+      const viewport=markmapViewports.get(id);
+      if(!el||!viewport||viewport.clientWidth<10||viewport.clientHeight<10)continue;
+      const {root}=markmapTransformer.transform(normalizeMindmapMarkdown(r));
+      const options={autoFit:false,pan:false,zoom:false,duration:260,maxWidth:300,spacingVertical:8,spacingHorizontal:62,color:(node)=>['#2563eb','#7c3aed','#16a34a','#f97316'][node.state.depth%4]||'#64748b'};
+      if(markmapInstances.has(id)){
+        const mm=markmapInstances.get(id);
+        await mm.setData(root);
+        const view=ensureMindmapView(r);
+        view.fitted=false;
+        await fitMarkmap(mm,el,r);
+      }else{
+        const mm=Markmap.create(el,options);
+        markmapInstances.set(id,mm);
+        await mm.setData(root);
+        await fitMarkmap(mm,el,r);
+      }
+  }
+}
+function refitAllMarkmaps(){
   for(const s of stages.value){
     for(const r of s.resources||[]){
       if(!isMindmap(r))continue;
-      const id=rid(r);
-      const el=markmapEls.get(id);
-      if(!el)continue;
-      const {root}=markmapTransformer.transform(normalizeMindmapMarkdown(r));
-      const options={duration:260,maxWidth:300,spacingVertical:8,spacingHorizontal:62,color:(node)=>['#2563eb','#7c3aed','#16a34a','#f97316'][node.state.depth%4]||'#64748b'};
-      if(markmapInstances.has(id)){
-        const mm=markmapInstances.get(id);
-        mm.setData(root);
-        fitMarkmap(mm,el);
-      }else{
-        const mm=Markmap.create(el,options,root);
-        markmapInstances.set(id,mm);
-        fitMarkmap(mm,el);
-      }
+      const mm=markmapInstances.get(rid(r));
+      const el=markmapEls.get(rid(r));
+      if(!mm||!el)continue;
+      const view=ensureMindmapView(r);
+      view.fitted=false;
+      fitMarkmap(mm,el,r,true);
     }
   }
-}function pagesText(value){return Array.isArray(value)?value.join('、'):String(value||'')}
+}
+function pagesText(value){return Array.isArray(value)?value.join('、'):String(value||'')}
 function resourceText(r){const raw=String(r.content||r.personalization||'点击学习资源页面查看完整内容。');if(hasModelError(raw))return `${typeName(r.resource_type)}已挂载到当前阶段，建议结合本阶段目标学习对应内容。`;const parsed=resourceJson(r);if(parsed)return clean(parsed.content||parsed.studygoal||parsed.resourcetitle||r.title);return clean(extractJsonText(raw))}
 function resourceOpen(r){const id=rid(r);return openResources.value[id]??true}
+function usesButtonToggleOnly(r){return isDoc(r)||isReading(r)}
+function resourceCardClick(r){if(isFixedResource(r)||usesButtonToggleOnly(r))return;toggleResource(r)}
 function openResourceDetail(resource,type){detailDialog.value={visible:true,type,resource}}
 function toggleResource(r){const id=rid(r);openResources.value={...openResources.value,[id]:!openResources.value[id]}}
 function toggleStage(i){if(i>current.value&&!done(i)){ElMessage.warning('请先完成前置阶段，再解锁后续学习内容');return}openStages.value={...openStages.value,[i]:!(openStages.value[i]??i===current.value)}}
@@ -777,6 +865,9 @@ function ensureActiveResourceTabs(){
     if(first&&!next[index])next[index]=rid(first);
   });
   activeResourceTabs.value=next;
+}
+function onResourceTabChange(){
+  nextTick(()=>renderMarkmaps());
 }
 function selectStage(i){if(i>current.value&&!done(i)){ElMessage.warning('请先完成前置阶段，再解锁后续学习内容');return}activeStageIndex.value=i;ensureActiveResourceTabs();renderMarkmaps()}
 function prevStage(){if(activeStageIndex.value>0)selectStage(activeStageIndex.value-1)}
@@ -836,11 +927,14 @@ async function generateAll(extra=''){
     setAgentStep('RetrieverAgent','done','已关联');
     setAgentStep('ResourceAgents','running','生成中');progress.value=52;
     const existingResources=resourceList(resources.value).length?resourceList(resources.value):resourceList(integrated.value?.resources);
-    if(existingResources.length){
+    const plannedStages=parseStages(pr.data?.path_content||'');
+    const plannedStageCount=plannedStages.length||baseStages.value.length||0;
+    const canReuseExistingResources=hasCompleteStageResources(existingResources,plannedStageCount);
+    if(canReuseExistingResources){
       resources.value=existingResources;
-      console.info('PathView resource generation skipped because existing resources are available', {count: existingResources.length});
+      console.info('PathView resource generation skipped because existing resources already cover all stages', {count: existingResources.length, plannedStageCount});
     }else{
-      console.info('PathView resource generation request start', {sessionId, needLength: need.length});
+      console.info('PathView resource generation request start', {sessionId, needLength: need.length, plannedStageCount, existingResourceCount: existingResources.length});
       const rr=await resourceApi.generate({learning_need:need,path_content:pr.data?.path_content||''},sessionId);
       console.info('PathView resource generation response', rr);
       const generatedResources=resourceList(rr?.data);
@@ -892,15 +986,19 @@ onMounted(async()=>{
   if(!hasExistingLearningPath()){
     await triggerAutoGenerate();
   }
+  window.addEventListener('resize',refitAllMarkmaps);
 });
-onBeforeUnmount(()=>stopMindmapDrag());
+onBeforeUnmount(()=>{stopMindmapDrag();window.removeEventListener('resize',refitAllMarkmaps);});
 watch(()=>route.query.sessionId,async()=>{await loadAll(currentSessionId());renderMarkmaps()});
 watch(stages,()=>{if(activeStageIndex.value>=stages.value.length)activeStageIndex.value=Math.max(stages.value.length-1,0);ensureActiveResourceTabs();nextTick(()=>renderMarkmaps())},{deep:true,flush:'post'});
+watch(activeResourceTabs,()=>{nextTick(()=>renderMarkmaps())},{deep:true});
 watch(current,(value)=>{if(!done(activeStageIndex.value)&&activeStageIndex.value<value)activeStageIndex.value=value});
 </script>
 
 <style scoped>
+.res-static-toggle{cursor:default}.res-static-toggle:hover{transform:none;box-shadow:0 10px 24px rgba(15,23,42,.045)}
 .path-page{display:grid;gap:22px;background:#f7f9fc}.overview-card{overflow:hidden;border:1px solid #dbeafe;background:linear-gradient(135deg,#ffffff 0%,#f8fbff 62%,#eef6ff 100%);box-shadow:0 18px 48px rgba(15,23,42,.06)}.overview-grid{display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:24px;align-items:start}.overview-main h2{margin:14px 0 8px;font-size:30px;color:#0f172a;letter-spacing:-.02em}.overview-main p{max-width:760px;color:#475569;line-height:1.85}.profile-tags{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;align-items:flex-start}.profile-tags :deep(.el-tag){max-width:100%;height:auto;min-height:32px;padding:7px 11px;white-space:normal;word-break:break-word;line-height:1.55}.overview-side{display:grid;gap:14px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.stats div{min-height:102px;padding:18px;border:1px solid #dbeafe;border-radius:22px;background:rgba(255,255,255,.88);box-shadow:0 12px 28px rgba(37,99,235,.06)}.stats b{display:block;font-size:25px;color:#0f172a}.stats span{display:block;margin-top:6px;color:#64748b}.overview-actions{display:flex;justify-content:flex-end;gap:12px}.overview-progress{display:grid;grid-template-columns:minmax(0,1fr) 90px;gap:14px;align-items:center;margin-top:20px}.overview-progress span{color:#64748b;text-align:right;font-size:13px}.line,.stage-head,.res-head,.feedback{display:flex;align-items:center;justify-content:space-between;gap:14px}.run-grid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px;margin-top:18px}.agent-flow{display:grid;gap:10px}.run-step{display:grid;grid-template-columns:42px minmax(0,1fr) 64px;align-items:center;gap:12px;padding:12px;border:1px solid #e2e8f0;border-radius:16px;background:#fff;color:#64748b;transition:.2s ease}.run-step b{display:grid;width:34px;height:34px;place-items:center;border-radius:12px;background:#e2e8f0;color:#475569}.run-step strong,.run-step span{display:block}.run-step span{font-size:12px}.run-step em{font-style:normal;font-size:12px;text-align:right}.run-step.running{border-color:#60a5fa;background:#eff6ff;color:#1d4ed8;box-shadow:0 10px 28px rgba(37,99,235,.12)}.run-step.running b{background:linear-gradient(135deg,#2563eb,#06b6d4);color:#fff}.run-step.done{border-color:#86efac;background:#f0fdf4;color:#15803d}.run-step.done b{background:#22c55e;color:#fff}.run-step.error{border-color:#fecaca;background:#fef2f2;color:#dc2626}.run-step.error b{background:#ef4444;color:#fff}.live-preview{padding:16px;border:1px solid #dbeafe;border-radius:18px;background:linear-gradient(135deg,#f8fbff,#fff)}.live-preview b{display:block;color:#0f172a}.live-preview p{color:#1d4ed8;line-height:1.7}.live-preview small{color:#64748b;line-height:1.6}.timeline{position:relative;display:grid;gap:20px;margin-left:26px}.timeline:before{position:absolute;top:12px;bottom:12px;left:17px;width:3px;border-radius:999px;background:#dbeafe;content:""}.stage{position:relative;display:grid;grid-template-columns:56px 1fr;gap:16px}.dot{z-index:1;display:flex;justify-content:center;padding-top:18px}.dot span{display:grid;width:38px;height:38px;place-items:center;border-radius:999px;background:#cbd5e1;color:#fff;font-weight:800}.stage.current .dot span{background:#2563eb;box-shadow:0 0 0 8px #dbeafe}.stage.completed .dot span{background:#16a34a}.stage-card{border-radius:22px}.stage.current .stage-card{border-color:#93c5fd;box-shadow:0 16px 36px rgba(37,99,235,.12)}.stage-title-block{min-width:0;flex:1}.stage-head-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}.stage-head h3{margin:10px 0 6px;color:#0f172a}.stage-head p{margin:0;color:#64748b}.stage-brief{display:grid;grid-template-columns:minmax(260px,1.1fr) minmax(240px,.9fr);gap:12px;margin-top:14px}.stage-brief-goal,.stage-brief-points{padding:14px 16px;border:1px solid #dbeafe;border-radius:16px;background:linear-gradient(135deg,#f8fbff,#ffffff)}.stage-brief b{display:block;margin-bottom:7px;color:#1d4ed8;font-size:13px}.stage-brief span{color:#334155;line-height:1.75}.stage-brief-points div{display:flex;flex-wrap:wrap;gap:7px}.body{display:grid;gap:16px}.goal{padding:16px;border:1px solid #dbeafe;border-radius:16px;background:#f8fbff}.stage-eval{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border:1px solid #bbf7d0;border-radius:16px;background:linear-gradient(135deg,#f0fdf4,#fff)}.stage-eval.stage-eval-standalone{margin-top:4px;border-color:#bfdbfe;background:linear-gradient(135deg,#eff6ff,#ffffff)}.stage-eval.stage-eval-standalone b{color:#1d4ed8}.stage-eval b{color:#15803d}.stage-eval p{margin:6px 0;color:#334155}.stage-eval span{color:#64748b;font-size:12px}.goal b,.section b,.feedback b{color:#1d4ed8}.goal p,.feedback p{margin:8px 0 0;color:#334155;line-height:1.8}.tags{display:flex;flex-wrap:wrap;gap:8px;align-items:center;color:#64748b}.section{display:flex;justify-content:space-between;color:#64748b}.res-list{display:grid;gap:16px}.res{position:relative;display:grid;gap:10px;padding:14px 14px 14px 16px;border:1px solid #dbeafe;border-left:5px solid #3b82f6;border-radius:18px;background:linear-gradient(135deg,#fff,#f8fbff);box-shadow:0 10px 24px rgba(15,23,42,.045);cursor:pointer;transition:.18s ease}.res:hover{transform:translateY(-2px);box-shadow:0 18px 36px rgba(15,23,42,.08)}.res-doc{border-left-color:#3b82f6}.res-mindmap{border-left-color:#8b5cf6}.res-quiz{border-left-color:#22c55e;background:linear-gradient(135deg,#f0fdf4,#ffffff)}.res-code{border-left-color:#f97316}.res-video{border-left-color:#ef4444}.res-reading{border-left-color:#64748b}.res-icon{display:grid;width:30px;height:30px;place-items:center;border-radius:10px;background:#f1f5f9;font-size:16px}.res-head{justify-content:space-between;flex-wrap:wrap;margin-bottom:2px}.res-title{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0}.res-title strong{min-width:0;overflow:visible;white-space:normal;color:#0f172a;font-size:16px;line-height:1.5}.res-content,.json-doc{padding:16px;border:1px solid #e2e8f0;border-radius:18px;background:#fff;color:#334155;line-height:1.9;font-size:14px;white-space:normal;word-break:break-word}.res-content{white-space:pre-wrap}.res-content.collapsed,.json-doc.collapsed{display:-webkit-box;height:380px;max-height:380px;overflow:hidden;-webkit-line-clamp:13;-webkit-box-orient:vertical;color:#475569}.doc-reading-content,.reading-content{min-height:220px;padding:18px 20px;border:1px solid #e2e8f0;border-radius:16px;background:linear-gradient(135deg,#ffffff,#f8fafc);color:#334155;line-height:1.85;font-size:14px;overflow:hidden}.doc-reading-content.collapsed{display:-webkit-box;height:380px;max-height:380px;-webkit-line-clamp:13;-webkit-box-orient:vertical}.reading-content.collapsed{display:-webkit-box;max-height:300px;-webkit-line-clamp:10;-webkit-box-orient:vertical}.doc-reading-content :deep(h1),.reading-content :deep(h1){margin:0 0 16px;color:#0f172a;font-size:22px;line-height:1.4}.doc-reading-content :deep(h2),.reading-content :deep(h2){margin:22px 0 10px;padding-left:10px;border-left:4px solid #3b82f6;color:#1d4ed8;font-size:17px}.doc-reading-content :deep(h3),.reading-content :deep(h3){margin:16px 0 8px;color:#0f172a;font-size:15px}.doc-reading-content :deep(p),.reading-content :deep(p){margin:8px 0;color:#334155}.doc-reading-content :deep(ul),.doc-reading-content :deep(ol),.reading-content :deep(ul){margin:8px 0 8px 18px;padding:0}.doc-reading-content :deep(li),.reading-content :deep(li){margin:5px 0}.doc-reading-content :deep(strong),.reading-content :deep(strong){color:#0f172a}.doc-reading-content :deep(blockquote){margin:0 0 16px;padding:10px 14px;border-left:4px solid #93c5fd;border-radius:10px;background:#eff6ff;color:#475569}.json-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;white-space:normal}.json-summary div{padding:14px;border-radius:16px;background:linear-gradient(135deg,#f8fbff,#fff);border:1px solid #dbeafe}.json-summary span{display:block;color:#64748b;font-size:12px}.json-summary b{display:block;margin-top:4px;color:#0f172a;line-height:1.5}.doc-hero{padding:18px;border:1px solid #bfdbfe;border-radius:18px;background:linear-gradient(135deg,#eff6ff,#ffffff)}.doc-hero h3{margin:0 0 8px;color:#1d4ed8}.doc-hero p{margin:0;line-height:1.9}.json-block{margin-top:16px;padding-top:16px;border-top:1px dashed #dbeafe;white-space:normal}.json-block h4{margin:0 0 12px;color:#1d4ed8;font-size:16px}.json-block p{margin:7px 0;line-height:1.9}.concept-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.concept-card,.explain-card,.mistake-list>div,.check-list>div{padding:14px;border:1px solid #e2e8f0;border-radius:16px;background:#f8fafc}.concept-card b,.mistake-list b,.check-list b{display:block;color:#0f172a}.concept-card small,.concept-card em,.mistake-list small{display:block;margin-top:6px;color:#64748b;font-style:normal;line-height:1.7}.explain-card{margin-top:10px;background:#fff}.explain-card h5{margin:0 0 8px;color:#0f172a;font-size:15px}.step-list{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.step-list span{padding:7px 10px;border-radius:999px;background:#eef6ff;color:#1d4ed8;font-size:12px}.io-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:10px 0}.io-grid div{padding:10px 12px;border-radius:14px;background:#f8fafc;border:1px solid #e2e8f0}.io-grid span{display:block;color:#64748b;font-size:12px}.io-grid b{display:block;margin-top:4px;color:#0f172a;line-height:1.6}.lifecycle-box,.case-box,.summary-box{padding:14px 16px;border:1px solid #bfdbfe;border-radius:16px;background:linear-gradient(135deg,#f8fbff,#fff)}.mistake-list,.check-list{display:grid;gap:10px}.summary-box ul{margin:8px 0 0 18px;padding:0}.kb-item{padding:10px 12px;margin-top:8px;border-radius:14px;background:#f8fbff}.kb-item b,.kb-item em{display:block}.kb-item em{margin-top:4px;color:#64748b;font-style:normal;font-size:12px}.markmap-panel{height:430px;padding:8px;border:1px solid #e9d5ff;border-radius:16px;background:linear-gradient(135deg,#fbf7ff,#ffffff);overflow:hidden}.markmap-viewport{width:100%;height:100%;overflow:auto;cursor:grab;border-radius:12px;background:#fafbfc}.markmap-viewport.dragging{cursor:grabbing}.markmap-viewport *{user-select:none}.markmap-zoom-layer{display:inline-block;min-width:max-content;min-height:max-content;transform-origin:top left;transition:transform .12s ease-out}.markmap-container{display:block;width:max-content;min-width:100%;height:max-content;min-height:100%;border-radius:12px;background:#fafbfc;font-family:Inter,Microsoft YaHei,sans-serif;pointer-events:none}.markmap-container :deep(.markmap-node){cursor:default}.markmap-container :deep(.markmap-node text){font-size:13px;fill:#0f172a}.markmap-container :deep(.markmap-link){stroke-width:1.8px}.video-resource-panel{height:460px;padding:14px;border:1px solid #fecaca;border-radius:18px;background:linear-gradient(135deg,#fff7f7,#ffffff);overflow:hidden}.video-player{display:block;width:100%;height:100%;object-fit:contain;border-radius:14px;background:#0f172a;box-shadow:0 14px 34px rgba(15,23,42,.12)}.video-placeholder{display:grid;place-items:center;height:100%;padding:24px;border:1px dashed #fecaca;border-radius:14px;background:#fff;color:#64748b;text-align:center}.video-placeholder b{color:#0f172a;font-size:16px}.video-placeholder p{max-width:520px;margin:8px 0 0;line-height:1.7}.image-gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;padding:12px;border:1px dashed #bfdbfe;border-radius:18px;background:#f8fbff}.kb-image{padding:10px;border:1px solid #dbeafe;border-radius:16px;background:#fff;box-shadow:0 8px 18px rgba(15,23,42,.04)}.kb-image img{display:block;width:100%;height:190px;object-fit:contain;border-radius:12px;background:#fff}.kb-image p{margin:8px 0 0;color:#64748b;font-size:12px;line-height:1.5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.res-meta{display:flex;flex-wrap:wrap;gap:8px;color:#64748b;font-size:12px}.res-meta span{padding:5px 9px;border-radius:999px;background:#f1f5f9}.res-actions{display:flex;justify-content:flex-end;align-items:center;gap:4px;padding-top:2px}.res-actions :deep(.el-button){padding:4px 6px;color:#64748b;font-size:13px}.res-actions :deep(.el-button:hover){color:#2563eb;background:transparent}.detail-dialog-body{display:grid;gap:14px;color:#334155;line-height:1.8}.detail-dialog-body h3{margin:0;color:#0f172a;font-size:18px}.detail-dialog-body p{margin:0;padding:12px 14px;border-radius:14px;background:#f8fafc}.detail-kv{display:flex;justify-content:space-between;gap:16px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:12px;background:#fff}.detail-kv span{color:#64748b}.detail-kv b{color:#0f172a;text-align:right}.stage-workspace{display:grid;gap:14px}.route-panel{position:relative;padding:24px;border:1px solid rgba(191,219,254,.9);border-radius:28px;background:linear-gradient(135deg,#ffffff 0%,#f8fbff 62%,#eef6ff 100%);box-shadow:0 18px 48px rgba(15,23,42,.07);overflow:hidden}.route-panel:before{position:absolute;inset:0 0 auto;height:4px;background:linear-gradient(90deg,#2563eb,#06b6d4,#22c55e);content:""}.route-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:18px}.route-head h3{margin:10px 0 6px;color:#0f172a;font-size:24px;letter-spacing:-.02em}.route-head p{margin:0;color:#64748b;line-height:1.75}.route-progress{display:grid;place-items:center;min-width:92px;height:76px;border:1px solid #dbeafe;border-radius:22px;background:rgba(255,255,255,.86);box-shadow:0 12px 26px rgba(37,99,235,.08)}.route-progress b{color:#1d4ed8;font-size:24px}.route-progress span{color:#64748b;font-size:12px}.route-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.route-card{position:relative;display:grid;grid-template-columns:42px minmax(0,1fr);gap:14px;min-height:220px;padding:20px;border:1px solid #dbeafe;border-radius:22px;background:rgba(255,255,255,.82);text-align:left;cursor:pointer;transition:.2s ease;box-shadow:0 10px 26px rgba(15,23,42,.045)}.route-card:hover{transform:translateY(-3px);border-color:#60a5fa;box-shadow:0 18px 38px rgba(37,99,235,.12)}.route-card.active{border-color:#3b82f6;background:linear-gradient(135deg,#eff6ff,#ffffff);box-shadow:0 20px 42px rgba(37,99,235,.15)}.route-card.completed{border-color:#86efac;background:linear-gradient(135deg,#f0fdf4,#ffffff)}.route-card.locked{opacity:.58}.route-index{display:grid;width:38px;height:38px;place-items:center;border-radius:16px;background:linear-gradient(135deg,#2563eb,#06b6d4);color:#fff;font-weight:900;box-shadow:0 10px 20px rgba(37,99,235,.2)}.route-card.completed .route-index{background:#16a34a}.route-content{display:flex;min-width:0;flex-direction:column}.route-title{display:flex;justify-content:space-between;gap:10px;align-items:center}.route-title b{color:#1d4ed8;font-size:13px}.route-title em{font-style:normal;color:#64748b;font-size:12px}.route-content h4{margin:8px 0 8px;color:#0f172a;font-size:17px;line-height:1.4}.route-content p{margin:0 0 12px;color:#475569;line-height:1.75;white-space:normal;word-break:break-word}.route-tags{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-top:auto}.route-tags span{padding:4px 9px;border:1px solid #e2e8f0;border-radius:999px;background:#f8fafc;color:#64748b;font-size:12px}.route-progress-bar{margin-top:16px}.compact-timeline{margin-left:0}.compact-timeline:before{display:none}.compact-timeline .stage{grid-template-columns:minmax(0,1fr)}.resource-tabs{padding:6px 8px 12px;border:1px solid #dbeafe;border-radius:16px;background:#ffffff}.resource-tabs :deep(.el-tabs__header){margin-bottom:10px}.resource-tabs :deep(.el-tabs__content){overflow:visible}.resource-tab-label{display:inline-flex;align-items:center;gap:6px}.stage-nav-actions{display:flex;justify-content:space-between;gap:12px;padding:16px;border:1px solid #dbeafe;border-radius:18px;background:linear-gradient(135deg,#f8fbff,#ffffff)}.stage-nav-actions .el-button{min-width:120px}.feedback-card b{display:block;margin-top:10px;color:#0f172a;font-size:18px}.feedback p{max-width:760px}.feedback>div:last-child{display:flex;gap:10px;flex-wrap:wrap}@media(max-width:1200px){.overview-grid{grid-template-columns:1fr}.run-grid,.stage-brief,.json-summary,.concept-grid,.io-grid,.image-gallery,.prestudy-grid,.stage-switcher{grid-template-columns:1fr}}.prestudy-plan{position:relative;padding:26px;border:1px solid rgba(147,197,253,.55);border-radius:28px;background:radial-gradient(circle at 12% 0%,rgba(37,99,235,.10),transparent 32%),linear-gradient(135deg,#ffffff 0%,#f8fbff 58%,#eef6ff 100%);box-shadow:0 24px 60px rgba(15,23,42,.08);overflow:hidden}.prestudy-plan:before{position:absolute;inset:0 0 auto;height:4px;background:linear-gradient(90deg,#2563eb,#06b6d4,#22c55e);content:""}.prestudy-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:20px}.prestudy-head h3{margin:10px 0 7px;color:#0f172a;font-size:26px;letter-spacing:-.02em}.prestudy-head p{max-width:720px;margin:0;color:#64748b;line-height:1.75}.prestudy-head .el-button{border-radius:999px;padding:10px 18px}.prestudy-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.prestudy-card{position:relative;display:grid;grid-template-columns:1fr;min-height:210px;padding:22px 20px 18px 78px;border:1px solid rgba(191,219,254,.9);border-radius:24px;background:rgba(255,255,255,.78);box-shadow:0 14px 32px rgba(37,99,235,.07);cursor:pointer;transition:.2s ease;overflow:hidden}.prestudy-card:before{position:absolute;inset:0 auto 0 0;width:5px;background:linear-gradient(180deg,#3b82f6,#22c55e);content:"";opacity:.65}.prestudy-card:hover{transform:translateY(-4px);border-color:#60a5fa;box-shadow:0 20px 44px rgba(37,99,235,.14)}.prestudy-card.current{border-color:#60a5fa;background:linear-gradient(135deg,#eff6ff,#ffffff);box-shadow:0 22px 50px rgba(37,99,235,.16)}.prestudy-card.completed{border-color:#86efac;background:linear-gradient(135deg,#f0fdf4,#ffffff)}.prestudy-index{position:absolute;left:22px;top:50%;transform:translateY(-50%);display:grid;place-items:center;gap:7px}.prestudy-index span{display:grid;place-items:center;width:40px;height:40px;border-radius:16px;background:linear-gradient(135deg,#2563eb,#06b6d4);color:#fff;font-weight:900;box-shadow:0 12px 24px rgba(37,99,235,.22)}.prestudy-index em{font-style:normal;color:#64748b;font-size:12px}.prestudy-body{display:flex;min-width:0;flex-direction:column}.prestudy-body h4{margin:0 0 10px;color:#0f172a;font-size:18px;line-height:1.35}.prestudy-body p{flex:1;margin:0 0 14px;color:#475569;line-height:1.72}.prestudy-points{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}.prestudy-points :deep(.el-tag){border-radius:999px}.prestudy-meta{display:flex;flex-wrap:wrap;gap:8px;color:#64748b;font-size:12px}.prestudy-meta span{padding:5px 10px;border-radius:999px;background:#f1f5f9;border:1px solid #e2e8f0}
+.markmap-viewport{position:relative;overflow:hidden;touch-action:none}.markmap-zoom-layer{display:block!important;width:100%;height:100%;will-change:transform}.markmap-container{width:100%!important;height:100%!important}.markmap-viewport .markmap{width:100%;height:100%}
 @media(max-width:800px){.agents,.stats{grid-template-columns:1fr}.stage{grid-template-columns:42px 1fr}.stage-head,.feedback,.prestudy-head{flex-direction:column;align-items:flex-start}.prestudy-card{grid-template-columns:1fr}}</style>
 
 
