@@ -397,11 +397,7 @@ def _exercise_images_for_item(item: dict, target: str = "question") -> list[dict
         answer_page_hit = image_page is not None and image_page in answer_pages
 
         if target == "answer":
-            matched_target = (
-                question_id_hit
-                if has_explicit_question_links
-                else answer_page_hit or (question_id_hit and bool(answer_pages) and image_page in (answer_pages | question_pages))
-            )
+            matched_target = question_id_hit if has_explicit_question_links else answer_page_hit
         else:
             matched_target = question_id_hit if has_explicit_question_links else question_id_hit or question_page_hit
 
@@ -437,6 +433,48 @@ def _images_for_reading_section(title: str, path: list[str], pages) -> list[dict
     if not isinstance(images, list):
         return []
 
+    def section_number_from_text(value: str) -> str:
+        match = re.search(r"(?<![A-Za-z0-9.])([A-Z](?:\.\d+)+|\d+(?:\.\d+)+)(?![A-Za-z0-9.])", str(value or ""))
+        return match.group(1) if match else ""
+
+    def current_section_number() -> str:
+        for candidate in [title, *(path or [])]:
+            number = section_number_from_text(candidate)
+            if number:
+                return number
+        return ""
+
+    def image_section_number(image_path: str) -> str:
+        normalized = str(image_path or "").replace("\\", "/")
+        marker = "images/textbook/"
+        if marker not in normalized:
+            return ""
+        parts = normalized.split("/")
+        chapter_folder = parts[-2] if len(parts) >= 2 else ""
+        filename = parts[-1].replace(",", ".")
+        match = re.match(r"([A-Z](?:\.\d+)+|\d+(?:\.\d+)+)(?:\(\d+\))?\.[^.]+$", filename)
+        if not match:
+            return ""
+        number = match.group(1)
+        if chapter_folder.isdigit() and number.split(".", 1)[0] != chapter_folder and "." in number:
+            number = f"{chapter_folder}.{number.split('.', 1)[1]}"
+        return number
+
+    def image_filename_order(image_path: str) -> tuple[tuple[int, ...], int, str]:
+        normalized = str(image_path or "").replace("\\", "/")
+        parts = normalized.split("/")
+        chapter_folder = parts[-2] if len(parts) >= 2 else ""
+        filename = parts[-1].replace(",", ".")
+        match = re.match(r"([A-Z](?:\.\d+)+|\d+(?:\.\d+)+)(?:\((\d+)\))?\.[^.]+$", filename)
+        if not match:
+            return ((10**9,), 10**9, filename)
+        number = match.group(1)
+        if chapter_folder.isdigit() and number.split(".", 1)[0] != chapter_folder and "." in number:
+            number = f"{chapter_folder}.{number.split('.', 1)[1]}"
+        parts = tuple(int(part) if part.isdigit() else ord(part.upper()) for part in number.split("."))
+        return (parts, int(match.group(2) or 1), filename)
+
+    section_number = current_section_number()
     title_candidates = [_normalize_text(title), *[_normalize_text(item) for item in path or []]]
     title_candidates = [item for item in title_candidates if item]
     page_numbers = _section_page_numbers(pages)
@@ -446,6 +484,19 @@ def _images_for_reading_section(title: str, path: list[str], pages) -> list[dict
         if not isinstance(image, dict) or image.get("keep") is False or image.get("is_knowledge_image") is False:
             continue
         if not _image_has_precise_crop(image):
+            continue
+        image_path = str(image.get("path") or image.get("source") or "")
+        is_textbook_path = "images/textbook/" in image_path.replace("\\", "/")
+        if section_number and not is_textbook_path:
+            continue
+        image_number = image_section_number(image_path)
+        if image_number and section_number:
+            if section_number.count(".") == image_number.count("."):
+                if image_number != section_number:
+                    continue
+            elif not image_number.startswith(f"{section_number}."):
+                continue
+        elif image_number:
             continue
         related_titles = [_normalize_text(item) for item in image.get("related_knowledge_titles") or []]
         title_hit = any(
@@ -459,16 +510,31 @@ def _images_for_reading_section(title: str, path: list[str], pages) -> list[dict
             page_hit = image_page in page_numbers
         except Exception:
             page_hit = False
-        if not title_hit and not page_hit:
-            continue
+        if not image_number:
+            if related_titles and not title_hit:
+                continue
+            if not related_titles and not page_hit:
+                continue
         formatted = _format_knowledge_image(image)
         if not formatted["path"] or formatted["image_id"] in seen:
             continue
         seen.add(formatted["image_id"])
-        formatted["match_reason"] = "knowledge_title" if title_hit else "page"
+        formatted["match_reason"] = "textbook_filename" if image_number else "knowledge_title" if title_hit else "page"
+        if image_number:
+            formatted["_filename_order"] = image_filename_order(formatted.get("path") or image_path)
         matched.append(formatted)
 
-    return sorted(matched, key=lambda item: (int(item.get("page") or 10**9), item.get("figure_label") or ""))
+    sorted_items = sorted(
+        matched,
+        key=lambda item: (
+            item.get("_filename_order") or ((10**9,), 10**9, ""),
+            int(item.get("page") or 10**9),
+            item.get("figure_label") or "",
+        ),
+    )
+    for item in sorted_items:
+        item.pop("_filename_order", None)
+    return sorted_items
 
 
 def _get_reading_tree() -> list[dict]:
@@ -581,6 +647,19 @@ def _extract_sub_answer(answer_text: str, sub_question_no: str = "") -> str:
     return text
 
 
+def _extract_numbered_answer(answer_text: str, question_no: int) -> str:
+    text = _clean_text(answer_text)
+    if not text or question_no is None:
+        return ""
+    pattern = re.compile(rf"(?:^|\s){re.escape(str(question_no))}\s*[.．、]\s*答[:：]?\s*")
+    match = pattern.search(text)
+    if not match:
+        return ""
+    next_match = re.search(r"\s\d+\s*[.．、]\s*答[:：]?\s*", text[match.end():])
+    end = match.end() + next_match.start() if next_match else len(text)
+    return text[match.start():end].strip()
+
+
 def _resolve_answer_from_answers_json(item: dict, chapter_no: int | None = None) -> dict:
     question_no = _question_no_int(item.get("question_no"))
     sub_question_no = str(item.get("sub_question_no") or "").strip()
@@ -589,13 +668,22 @@ def _resolve_answer_from_answers_json(item: dict, chapter_no: int | None = None)
     chapter_answers = _answers_for_chapter(chapter_no)
     answer_item = next((row for row in chapter_answers if _answer_no_int(row.get("answer_no")) == question_no), None)
     if not answer_item:
-        return {}
-    raw_answer = str(
-        answer_item.get("reference_answer")
-        or answer_item.get("content")
-        or answer_item.get("analysis")
-        or ""
-    ).strip()
+        for row in chapter_answers:
+            raw_text = str(row.get("reference_answer") or row.get("content") or row.get("analysis") or "")
+            numbered_answer = _extract_numbered_answer(raw_text, question_no)
+            if numbered_answer:
+                answer_item = row
+                raw_answer = numbered_answer
+                break
+        else:
+            return {}
+    else:
+        raw_answer = str(
+            answer_item.get("reference_answer")
+            or answer_item.get("content")
+            or answer_item.get("analysis")
+            or ""
+        ).strip()
     resolved_answer = _extract_sub_answer(raw_answer, sub_question_no)
     if not resolved_answer:
         return {}
@@ -1556,12 +1644,37 @@ def _tidy_reading_text(text: str) -> str:
     return value.strip()
 
 
+def _section_number_tuple(text: str) -> tuple[int, ...]:
+    match = re.search(r"(?<!\d)(\d+(?:\.\d+)+)(?!\d)", str(text or ""))
+    if not match:
+        return ()
+    try:
+        return tuple(int(part) for part in match.group(1).split("."))
+    except ValueError:
+        return ()
+
+
+def _line_starts_next_sibling_section(line: str, current: tuple[int, ...]) -> bool:
+    if len(current) < 2:
+        return False
+    candidate = _section_number_tuple(_strip_markdown_heading(line))
+    return (
+        len(candidate) == len(current)
+        and candidate[:-1] == current[:-1]
+        and candidate[-1] > current[-1]
+    )
+
+
 def _format_reading_pages(pages, section_title: str = "") -> list[dict]:
     if not isinstance(pages, list):
         return []
     paragraphs = []
     first_content_page = True
+    current_section = _section_number_tuple(section_title)
+    reached_next_section = False
     for item in pages:
+        if reached_next_section:
+            break
         if not isinstance(item, dict):
             continue
         raw_text = str(item.get("text") or "").strip()
@@ -1575,6 +1688,9 @@ def _format_reading_pages(pages, section_title: str = "") -> list[dict]:
         cleaned_lines = []
         for line in lines:
             text = _strip_markdown_heading(line)
+            if _line_starts_next_sibling_section(text, current_section):
+                reached_next_section = True
+                break
             if _is_reading_noise_line(text):
                 continue
             cleaned_lines.append(text)
@@ -1584,29 +1700,6 @@ def _format_reading_pages(pages, section_title: str = "") -> list[dict]:
             text = _tidy_reading_text(paragraph)
             if text and not _is_reading_noise_line(text):
                 paragraphs.append({"page": item.get("page"), "text": text})
-    return paragraphs
-
-
-def _attach_images_to_paragraphs(paragraphs: list[dict], images: list[dict]) -> list[dict]:
-    if not paragraphs or not images:
-        return paragraphs
-    page_to_indexes: dict[int, list[int]] = {}
-    for index, paragraph in enumerate(paragraphs):
-        try:
-            page = int(paragraph.get("page"))
-        except Exception:
-            continue
-        page_to_indexes.setdefault(page, []).append(index)
-    for image in images:
-        try:
-            page = int(image.get("page"))
-        except Exception:
-            continue
-        indexes = page_to_indexes.get(page) or []
-        if not indexes:
-            continue
-        target_index = indexes[-1]
-        paragraphs[target_index].setdefault("images", []).append(image)
     return paragraphs
 
 
@@ -2037,7 +2130,7 @@ def _synthetic_chapter_payload(node: dict, include_children: bool = True) -> dic
     title = _tidy_reading_text(node.get("title") or "")
     path = [_tidy_reading_text(item) for item in _normalize_path(node.get("path") or [])]
     section_images = _images_for_reading_section(title, path, pages)
-    paragraphs = _attach_images_to_paragraphs(_format_reading_pages(pages, title), section_images)
+    paragraphs = _format_reading_pages(pages, title)
     return {
         "node_id": node.get("node_id"),
         "title": title,
@@ -2102,11 +2195,15 @@ def _textbook_items_for_node(node_id: str) -> tuple[str, list[str], list[dict]] 
     number_match = re.fullmatch(r"textbook_number::(\d+(?:\.\d+)*)", node_id)
     if number_match:
         target = tuple(int(part) for part in number_match.group(1).split("."))
-        rows = []
+        exact_rows = []
+        prefix_rows = []
         for item in points:
             numbered_parts = _textbook_numbered_parts(item.get("section_path") or [])
-            if any(number[: len(target)] == target for number, _ in numbered_parts):
-                rows.append(item)
+            if any(number == target for number, _ in numbered_parts):
+                exact_rows.append(item)
+            elif any(number[: len(target)] == target for number, _ in numbered_parts):
+                prefix_rows.append(item)
+        rows = exact_rows or prefix_rows
         title = next(
             (part_title for item in rows for number, part_title in _textbook_numbered_parts(item.get("section_path") or []) if number == target),
             _textbook_required_section_titles().get(target, number_match.group(1)),
@@ -2137,6 +2234,7 @@ def _textbook_catalog_payload(node_id: str, include_children: bool = True) -> di
 
     sections = []
     seen_section_ids = set()
+    exact_reading_section_used = False
     for item in items:
         item_path = _normalize_path(item.get("section_path") or [])
         for section in _reading_sections_for_kp_path(item_path):
@@ -2145,14 +2243,35 @@ def _textbook_catalog_payload(node_id: str, include_children: bool = True) -> di
                 continue
             seen_section_ids.add(section_id)
             sections.append(section)
+    if node_id.startswith("textbook_number::"):
+        target = tuple(int(part) for part in node_id.split("::", 1)[1].split("."))
+        exact_sections = [
+            section for section in _get_reading_sections_map().values()
+            if isinstance(section, dict) and _normalize_numbered_prefix(section.get("title") or "") == target
+        ]
+        if exact_sections:
+            sections = exact_sections
+            exact_reading_section_used = True
+            seen_section_ids = {
+                section.get("node_id") or tuple(_normalize_path(section.get("path") or []))
+                for section in sections
+            }
     if not sections and node_id.startswith("textbook_number::"):
         target = tuple(int(part) for part in node_id.split("::", 1)[1].split("."))
+        exact_sections = []
+        prefix_sections = []
         for section in _get_reading_sections_map().values():
             if not isinstance(section, dict):
                 continue
             numbered = _normalize_numbered_prefix(section.get("title") or "")
-            if numbered[: len(target)] != target:
+            section_id = section.get("node_id") or tuple(_normalize_path(section.get("path") or []))
+            if section_id in seen_section_ids:
                 continue
+            if numbered == target:
+                exact_sections.append(section)
+            elif numbered[: len(target)] == target:
+                prefix_sections.append(section)
+        for section in exact_sections or prefix_sections:
             section_id = section.get("node_id") or tuple(_normalize_path(section.get("path") or []))
             if section_id in seen_section_ids:
                 continue
@@ -2163,8 +2282,12 @@ def _textbook_catalog_payload(node_id: str, include_children: bool = True) -> di
     pages = []
     seen_pages = set()
     for section in sections:
-        source_pages = section.get("combined_pages") if include_children else section.get("pages")
-        for page in source_pages or section.get("combined_pages") or section.get("pages") or []:
+        if node_id.startswith("textbook_number::"):
+            page_candidates = section.get("pages") or []
+        else:
+            source_pages = section.get("combined_pages") if include_children else section.get("pages")
+            page_candidates = source_pages or section.get("combined_pages") or section.get("pages") or []
+        for page in page_candidates:
             if not isinstance(page, dict):
                 continue
             page_key = (page.get("page"), page.get("text"))
@@ -2174,14 +2297,13 @@ def _textbook_catalog_payload(node_id: str, include_children: bool = True) -> di
             pages.append(page)
 
     paragraphs = _format_reading_pages(pages, title)
-    if not paragraphs:
+    if not paragraphs and not exact_reading_section_used:
         paragraphs = [
             {"page": (item.get("pages") or [None])[0], "text": _clean_text(item.get("content_preview") or "")}
             for item in items
             if _clean_text(item.get("content_preview") or "")
         ]
     images = _images_for_reading_section(title, display_path, pages or paragraphs)
-    paragraphs = _attach_images_to_paragraphs(paragraphs, images)
     start_page = min(
         [page.get("page") for page in pages if isinstance(page, dict) and isinstance(page.get("page"), int)]
         or [page for item in items for page in (item.get("pages") or []) if isinstance(page, int)]
@@ -2240,7 +2362,7 @@ def _kp_section_payload(node_id: str, include_children: bool = True) -> dict | N
             pages.append(page)
 
     section_images = _images_for_reading_section(title, target_path, pages)
-    paragraphs = _attach_images_to_paragraphs(_format_reading_pages(pages, title), section_images)
+    paragraphs = _format_reading_pages(pages, title)
     if not paragraphs and not section_images:
         kp_items = []
         for item in _load_textbook_knowledge_points():
@@ -2252,7 +2374,6 @@ def _kp_section_payload(node_id: str, include_children: bool = True) -> dict | N
         if not section_images:
             page_payload = [{"page": p.get("page"), "text": p.get("text")} for p in paragraphs if isinstance(p, dict)]
             section_images = _images_for_reading_section(title, target_path, page_payload)
-            paragraphs = _attach_images_to_paragraphs(paragraphs, section_images)
 
     start_page = min([p.get("page") for p in pages if isinstance(p, dict) and isinstance(p.get("page"), int)] or [None], default=None)
     return {
@@ -2312,7 +2433,7 @@ def _section_payload_from_reading(node_id: str, include_children: bool = True) -
         start_page = base.get("start_page") or node_start_page
 
     section_images = _images_for_reading_section(title, path, pages)
-    paragraphs = _attach_images_to_paragraphs(_format_reading_pages(pages, title), section_images)
+    paragraphs = _format_reading_pages(pages, title)
 
     return {
         "node_id": node_id,
