@@ -107,6 +107,16 @@
                 </div>
               </div>
             </div>
+            <div v-if="hasHistoryComparison" class="portrait-compare-strip">
+              <div class="compare-chip">
+                <span>上一轮画像</span>
+                <strong>{{ formatTime(previousPortraitSnapshot?.create_time) }}</strong>
+              </div>
+              <div class="compare-chip compare-chip-current">
+                <span>当前画像</span>
+                <strong>{{ formatTime(currentPortraitSnapshot?.create_time) }}</strong>
+              </div>
+            </div>
           </div>
 
           <div class="radar-side-panel">
@@ -208,6 +218,59 @@
               <p>{{ item.desc }}</p>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div class="feedback-evidence-grid">
+        <div class="feedback-evidence-card">
+          <div class="card-header">
+            <div>
+              <span class="eyebrow">Resource Feedback</span>
+              <strong>资源反馈证据</strong>
+            </div>
+          </div>
+          <div v-if="resourceFeedbackItems.length" class="feedback-evidence-list">
+            <div v-for="(item, index) in resourceFeedbackItems" :key="`feedback-${index}`" class="feedback-evidence-item">
+              <strong>{{ item.ratingText }}</strong>
+              <p>{{ item.comment }}</p>
+              <small>{{ item.time }}</small>
+            </div>
+          </div>
+          <el-empty v-else description="当前还没有资源反馈记录" />
+        </div>
+
+        <div class="feedback-evidence-card">
+          <div class="card-header">
+            <div>
+              <span class="eyebrow">Resource Usage</span>
+              <strong>资源使用行为</strong>
+            </div>
+          </div>
+          <div v-if="resourceUsageItems.length" class="feedback-evidence-list">
+            <div v-for="(item, index) in resourceUsageItems" :key="`usage-${index}`" class="feedback-evidence-item">
+              <strong>{{ item.resource_type }}</strong>
+              <p>{{ item.title }}</p>
+              <small>{{ item.time }}</small>
+            </div>
+          </div>
+          <el-empty v-else description="当前还没有资源使用记录" />
+        </div>
+
+        <div class="feedback-evidence-card feedback-evidence-card-wide">
+          <div class="card-header">
+            <div>
+              <span class="eyebrow">Adaptive Trace</span>
+              <strong>反馈驱动的持续优化依据</strong>
+            </div>
+          </div>
+          <div v-if="learningEventItems.length" class="feedback-evidence-list">
+            <div v-for="(item, index) in learningEventItems" :key="`event-${index}`" class="feedback-evidence-item">
+              <strong>{{ item.event_type }}</strong>
+              <p>{{ item.detail }}</p>
+              <small>{{ item.time }}</small>
+            </div>
+          </div>
+          <el-empty v-else description="当前还没有学习行为事件记录" />
         </div>
       </div>
     </template>
@@ -478,6 +541,30 @@ const supportCards = computed(() => {
     value: supportData[item.id] !== DEFAULT_VALUE ? supportData[item.id] : "待进一步观察",
   }));
 });
+
+const resourceFeedbackItems = computed(() =>
+  (aggregateProfile.resource_feedback || []).slice(0, 6).map((item) => ({
+    ratingText: item.rating ? `${item.rating} / 5 分反馈` : "资源反馈",
+    comment: normalizeValue(item.comment) !== DEFAULT_VALUE ? normalizeValue(item.comment) : "学生未填写具体文字反馈，系统已记录评分。",
+    time: formatTime(item.time),
+  }))
+);
+
+const resourceUsageItems = computed(() =>
+  (aggregateProfile.resource_usage || []).slice(0, 6).map((item) => ({
+    resource_type: normalizeValue(item.resource_type) !== DEFAULT_VALUE ? normalizeValue(item.resource_type) : "学习资源",
+    title: normalizeValue(item.title) !== DEFAULT_VALUE ? normalizeValue(item.title) : "资源标题待记录",
+    time: formatTime(item.time),
+  }))
+);
+
+const learningEventItems = computed(() =>
+  (aggregateProfile.learning_events || []).slice(0, 8).map((item) => ({
+    event_type: normalizeValue(item.event_type) !== DEFAULT_VALUE ? normalizeValue(item.event_type) : "学习事件",
+    detail: normalizeValue(item.detail) !== DEFAULT_VALUE ? normalizeValue(item.detail) : "系统已记录一次新的学习行为。",
+    time: formatTime(item.time),
+  }))
+);
 
 const timelineItems = computed(() => {
   const list = portraitHistory.value
@@ -836,6 +923,38 @@ onBeforeUnmount(() => {
   line-height: 1.6;
 }
 
+.portrait-compare-strip {
+  margin-top: 14px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.compare-chip {
+  min-width: 160px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid #ddd6fe;
+  background: #f8f5ff;
+  display: grid;
+  gap: 4px;
+}
+
+.compare-chip span {
+  font-size: 12px;
+  color: #7c6bb3;
+}
+
+.compare-chip strong {
+  color: #4338ca;
+  font-size: 14px;
+}
+
+.compare-chip-current {
+  border-color: #c7d2fe;
+  background: #eef2ff;
+}
+
 .radar-side-panel {
   display: grid;
   gap: 12px;
@@ -1183,4 +1302,52 @@ onBeforeUnmount(() => {
     height: 360px;
   }
 }
+
+.feedback-evidence-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+.feedback-evidence-card {
+  padding: 22px;
+  border-radius: 24px;
+  border: 1px solid #e7ecf5;
+  background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+}
+.feedback-evidence-card-wide {
+  grid-column: 1 / -1;
+}
+.feedback-evidence-list {
+  display: grid;
+  gap: 12px;
+}
+.feedback-evidence-item {
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid #ecf1f7;
+}
+.feedback-evidence-item strong {
+  display: block;
+  color: #0f172a;
+  font-size: 14px;
+}
+.feedback-evidence-item p {
+  margin: 6px 0 4px;
+  color: #475569;
+  line-height: 1.7;
+}
+.feedback-evidence-item small {
+  color: #94a3b8;
+}
+@media (max-width: 960px) {
+  .feedback-evidence-grid {
+    grid-template-columns: 1fr;
+  }
+  .feedback-evidence-card-wide {
+    grid-column: auto;
+  }
+}
+
 </style>

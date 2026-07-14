@@ -399,6 +399,169 @@ def _duration_days(duration: str) -> int:
     return int(match.group(1)) if match else 0
 
 
+def _safe_json_text(value, default):
+    if value is None:
+        return default
+    if isinstance(value, (dict, list)):
+        return value
+    try:
+        return json.loads(value)
+    except Exception:
+        return default
+
+
+def _adaptive_stage_summary(user_id: int, session_id: int, stages: list[dict], profile: dict | None = None) -> dict:
+    profile = profile or {}
+    mastery_rows = mysql_db.query_all(
+        "SELECT knowledge_point, mastery_score, weak_reason FROM mastery_record WHERE user_id=%s AND profile_session_id=%s ORDER BY update_time DESC",
+        (user_id, session_id),
+    )
+    if not mastery_rows:
+        mastery_rows = mysql_db.query_all(
+            "SELECT knowledge_point, mastery_score, weak_reason FROM mastery_record WHERE user_id=%s ORDER BY update_time DESC",
+            (user_id,),
+        )
+    event_rows = mysql_db.query_all(
+        "SELECT event_type, knowledge_point, detail, create_time FROM learning_event WHERE user_id=%s AND profile_session_id=%s ORDER BY id DESC LIMIT 200",
+        (user_id, session_id),
+    )
+    try:
+        feedback_rows = mysql_db.query_all(
+            """
+            SELECT rf.rating, rf.comment, rf.create_time, sr.resource_type, sr.title, sr.metadata
+            FROM resource_feedback rf
+            LEFT JOIN study_resource sr ON sr.id = rf.resource_id
+            WHERE rf.user_id=%s AND (rf.profile_session_id=%s OR rf.profile_session_id IS NULL)
+            ORDER BY rf.id DESC
+            LIMIT 120
+            """,
+            (user_id, session_id),
+        )
+    except Exception:
+        # Older deployments do not yet have resource_feedback.profile_session_id.
+        feedback_rows = mysql_db.query_all(
+            """
+            SELECT rf.rating, rf.comment, rf.create_time, sr.resource_type, sr.title, sr.metadata
+            FROM resource_feedback rf
+            LEFT JOIN study_resource sr ON sr.id = rf.resource_id
+            WHERE rf.user_id=%s
+            ORDER BY rf.id DESC
+            LIMIT 120
+            """,
+            (user_id,),
+        )
+    weak_text = " ".join(
+        str(item or "")
+        for item in [
+            profile.get("weak_points"),
+            profile.get("weak_knowledge_points"),
+            " ".join(str(row.get("knowledge_point") or "") for row in mastery_rows if int(row.get("mastery_score") or 0) < 70),
+        ]
+    )
+    completed_stage_indexes = set()
+    stage_items = []
+    for stage in stages:
+        points = [str(item or "").strip() for item in (stage.get("points") or []) if str(item or "").strip()]
+        stage_text = " ".join([stage.get("title") or "", stage.get("goal") or "", " ".join(points)])
+        weak_hits = sum(1 for point in points if point and point in weak_text)
+        quiz_hits = 0
+        resource_usage_hits = 0
+        completion_hits = 0
+        low_rating_hits = 0
+        high_rating_hits = 0
+        notes = []
+        for event in event_rows:
+            detail = _safe_json_text(event.get("detail"), {})
+            event_text = " ".join(
+                str(item or "")
+                for item in [
+                    event.get("knowledge_point"),
+                    detail.get("title") if isinstance(detail, dict) else "",
+                    detail.get("resource_type") if isinstance(detail, dict) else "",
+                ]
+            )
+            if isinstance(detail, dict) and detail.get("stage_index") == stage.get("index"):
+                if event.get("event_type") == "complete_stage":
+                    completed_stage_indexes.add(stage.get("index"))
+                    completion_hits += 1
+                elif event.get("event_type") in {"finish_quiz", "retry_wrong_book"}:
+                    quiz_hits += 1
+                elif event.get("event_type") in {"resource_usage", "resource_feedback"}:
+                    resource_usage_hits += 1
+            elif any(point and point in event_text for point in points):
+                if event.get("event_type") in {"finish_quiz", "retry_wrong_book"}:
+                    quiz_hits += 1
+                elif event.get("event_type") in {"resource_usage", "resource_feedback"}:
+                    resource_usage_hits += 1
+        for row in feedback_rows:
+            metadata = _safe_json_text(row.get("metadata"), {})
+            title_text = " ".join(str(item or "") for item in [row.get("title"), row.get("resource_type"), row.get("comment")])
+            if (isinstance(metadata, dict) and metadata.get("stage_index") == stage.get("index")) or any(point and point in title_text for point in points):
+                rating = int(row.get("rating") or 0)
+                if rating >= 4:
+                    high_rating_hits += 1
+                elif rating and rating <= 2:
+                    low_rating_hits += 1
+        priority = weak_hits * 3 + quiz_hits * 2 + low_rating_hits * 2 + resource_usage_hits - high_rating_hits - completion_hits * 2
+        if weak_hits:
+            notes.append("存在当前薄弱知识点，需要优先补强。")
+        if low_rating_hits:
+            notes.append("已有资源反馈偏弱，建议调整讲解方式或难度。")
+        if quiz_hits:
+            notes.append("近期练习记录较多，可结合错题结果继续巩固。")
+        if high_rating_hits:
+            notes.append("已有资源反馈较好，可继续保持当前资源风格。")
+        if completion_hits:
+            notes.append("该阶段已有完成记录，可降低优先级。")
+        stage_items.append(
+            {
+                "index": stage.get("index"),
+                "title": stage.get("title"),
+                "priority_score": max(priority, 0),
+                "completed": stage.get("index") in completed_stage_indexes,
+                "weak_hits": weak_hits,
+                "quiz_hits": quiz_hits,
+                "resource_usage_hits": resource_usage_hits,
+                "low_rating_hits": low_rating_hits,
+                "high_rating_hits": high_rating_hits,
+                "notes": notes[:3],
+            }
+        )
+    ranked = sorted(stage_items, key=lambda item: (-item["priority_score"], item["completed"], item["index"] or 99))
+    focus = [item for item in ranked if item["priority_score"] > 0][:3]
+    next_tasks = [
+        f"优先回到第{item['index']}阶段“{item['title']}”，{item['notes'][0] if item['notes'] else '继续结合反馈完成补强。'}"
+        for item in focus
+    ]
+    if not next_tasks and ranked:
+        next_tasks = [f"按既定顺序继续推进第{ranked[0]['index']}阶段“{ranked[0]['title']}”，并结合练习结果滚动调整。"]
+    summary = "；".join(next_tasks[:2])
+    preferred_resource = str(profile.get("preferred_resource") or "").strip()
+    weak_points = str(profile.get("weak_knowledge_points") or profile.get("weak_points") or "").strip()
+    explanation_parts = []
+    if preferred_resource and preferred_resource not in {"", "待进一步观察"}:
+        explanation_parts.append(f"你最近对{preferred_resource}类资源反馈更稳定")
+    if weak_points and weak_points not in {"", "待进一步观察"}:
+        explanation_parts.append(f"当前薄弱点仍集中在“{weak_points[:40]}”")
+    if focus:
+        top = focus[0]
+        explanation_parts.append(f"因此系统优先强化第{top['index']}阶段“{top['title']}”")
+        if top.get("quiz_hits"):
+            explanation_parts.append("并结合近期练习结果继续补强")
+        elif top.get("low_rating_hits"):
+            explanation_parts.append("并调整后续资源的讲解方式与难度")
+        else:
+            explanation_parts.append("并继续推送更匹配当前状态的阶段资源")
+    adaptive_explanation = "，".join(explanation_parts) + "。" if explanation_parts else "系统正在根据练习结果、资源反馈和阶段完成情况，持续优化后续学习顺序与资源推送。"
+    return {
+        "focus_stage_indexes": [item["index"] for item in focus],
+        "focus_summary": summary or "当前学习反馈较稳定，可按既定顺序继续推进。",
+        "adaptive_explanation": adaptive_explanation,
+        "stage_rankings": ranked,
+        "next_tasks": next_tasks[:4],
+    }
+
+
 def _profile_basis(profile: dict | None) -> dict:
     profile = profile or {}
     return {
@@ -715,6 +878,27 @@ def integrated_learning_path():
         resources = [_normalize_resource(item) for item in resource_rows]
         stages = _parse_path_stages(path.get("path_content") if path else "") or _fallback_stages(resources)
         stages = _attach_resources_to_stages(stages, resources)
+        try:
+            adaptive = _adaptive_stage_summary(request.user_id, session_id, stages, profile)
+        except Exception:
+            logger.exception("Adaptive stage summary failed; returning the learning path without adaptive ranking")
+            adaptive = {
+                "focus_stage_indexes": [],
+                "focus_summary": "",
+                "adaptive_explanation": "学习路径与资源已正常加载，动态反馈分析将在数据兼容后继续更新。",
+                "next_tasks": [],
+                "stage_rankings": [],
+            }
+        adaptive_focus_indexes = set(adaptive.get("focus_stage_indexes") or [])
+        stages = [
+            {
+                **stage,
+                "adaptive_focus": stage.get("index") in adaptive_focus_indexes,
+                "adaptive_priority": next((item.get("priority_score") for item in adaptive.get("stage_rankings", []) if item.get("index") == stage.get("index")), 0),
+                "adaptive_notes": next((item.get("notes") for item in adaptive.get("stage_rankings", []) if item.get("index") == stage.get("index")), []),
+            }
+            for stage in stages
+        ]
         total_days = sum(_duration_days(stage.get("duration")) for stage in stages)
         topic = (profile or {}).get("target_course") or (profile or {}).get("study_goal") or (stages[0].get("title") if stages else "个性化学习路径")
         data = {
@@ -732,12 +916,17 @@ def integrated_learning_path():
                 {"agent": "PackagerAgent", "role": "将资源按知识点和阶段目标匹配挂载到学习节点"},
                 {"agent": "EvaluatorAgent", "role": "根据学习反馈和练习结果动态调整后续路径与资源"},
             ],
+            "adaptive_focus": adaptive.get("focus_summary"),
+            "adaptive_explanation": adaptive.get("adaptive_explanation"),
+            "next_tasks": adaptive.get("next_tasks", []),
+            "stage_rankings": adaptive.get("stage_rankings", []),
             "stages": stages,
             "resources": resources,
             "path_content": path.get("path_content") if path else "",
         }
         return success(data, "一体化学习路径查询成功")
     except Exception as exc:
+        logger.exception("Integrated learning path query failed")
         return fail("一体化学习路径查询失败", 500, {"error": str(exc)})
 
 
@@ -834,6 +1023,69 @@ def save_stage_progress():
         )
     except Exception as exc:
         return fail("阶段进度记录失败", 500, {"error": str(exc)})
+
+
+@path_bp.post("/feedback")
+@login_required
+def submit_path_feedback():
+    try:
+        payload = request.get_json(silent=True) or {}
+        session = resolve_profile_session(request.user_id, payload, create_if_missing=False)
+        if not session:
+            return fail("未找到画像会话，无法记录学习反馈", 404)
+
+        stage_index = int(payload.get("stage_index") or 0)
+        stage_title = str(payload.get("stage_title") or "")[:120]
+        feedback_type = str(payload.get("feedback_type") or "general_feedback")[:40]
+        feedback_text = str(payload.get("feedback_text") or "").strip()[:300]
+        knowledge_points = payload.get("knowledge_points") if isinstance(payload.get("knowledge_points"), list) else []
+
+        detail = {
+            "stage_index": stage_index,
+            "stage_title": stage_title,
+            "feedback_type": feedback_type,
+            "feedback_text": feedback_text,
+            "knowledge_points": knowledge_points,
+        }
+        knowledge_point = "、".join(str(item) for item in knowledge_points[:3] if str(item).strip()) or stage_title or f"第{stage_index or 0}阶段"
+
+        mysql_db.insert(
+            "learning_event",
+            {
+                "user_id": request.user_id,
+                "profile_session_id": session["id"],
+                "event_type": feedback_type,
+                "knowledge_point": knowledge_point,
+                "detail": json.dumps(detail, ensure_ascii=False),
+            },
+        )
+
+        from api.profile_api import _aggregate_profile_payload, _persist_portrait_snapshot, _refresh_aggregate_profile
+
+        aggregate_profile = _aggregate_profile_payload(
+            request.user_id,
+            _refresh_aggregate_profile(request.user_id),
+            refresh_scoring=True,
+        )
+        _persist_portrait_snapshot(
+            user_id=request.user_id,
+            profile_session_id=session["id"],
+            profile=aggregate_profile,
+            portrait_scoring=aggregate_profile.get("portrait_scoring") or {},
+            trigger_source="path_feedback",
+            force=True,
+        )
+
+        return success(
+            {
+                "profile_session_id": session["id"],
+                "feedback_type": feedback_type,
+                "aggregate_profile": aggregate_profile,
+            },
+            "学习反馈已记录，画像已刷新",
+        )
+    except Exception as exc:
+        return fail("学习反馈记录失败", 500, {"error": str(exc)})
 
 @path_bp.get("/")
 @login_required

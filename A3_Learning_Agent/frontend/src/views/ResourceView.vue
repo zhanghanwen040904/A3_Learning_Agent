@@ -302,6 +302,18 @@
             <el-tag v-if="!uniqueSources(item.sources).length" size="small" type="danger">缺少来源依据</el-tag>
           </div>
         </div>
+        <div class="resource-feedback-box">
+          <div class="resource-feedback-head">
+            <strong>学习反馈</strong>
+            <span>{{ feedbackStatus(item) }}</span>
+          </div>
+          <div class="resource-feedback-actions">
+            <el-button size="small" @click="markResourceHelpful(item, 5)">很有帮助</el-button>
+            <el-button size="small" @click="markResourceHelpful(item, 3)">一般</el-button>
+            <el-button size="small" @click="markResourceHelpful(item, 1)">需加强</el-button>
+            <el-button size="small" type="success" plain @click="markResourceCompleted(item)">标记已学习</el-button>
+          </div>
+        </div>
       </el-card>
     </div>
   </div>
@@ -343,6 +355,8 @@ const generationProgress = ref(0);
 const currentStageIndex = ref(0);
 const eventSource = ref(null);
 const streamCompleted = ref(false);
+const resourceStartTimes = reactive({});
+const resourceFeedbackState = reactive({});
 const plan = reactive({});
 const mindmapSvgs = reactive({});
 const mindmapViews = reactive({});
@@ -772,6 +786,53 @@ function knowledgePoints(item) {
   try { return JSON.parse(item.knowledge_points || "[]"); } catch { return []; }
 }
 function uniqueSources(sources = []) { return [...new Set((sources || []).map((item) => item.source || item.source_name).filter(Boolean))]; }
+function resourceKey(item) { return String(item?.id || `${item?.resource_type || "resource"}-${item?.title || ""}`); }
+function ensureResourceStart(item) {
+  const key = resourceKey(item);
+  if (!resourceStartTimes[key]) resourceStartTimes[key] = Date.now();
+  return resourceStartTimes[key];
+}
+function resourceDurationSec(item) {
+  const started = ensureResourceStart(item);
+  return Math.max(0, Math.round((Date.now() - started) / 1000));
+}
+function feedbackStatus(item) {
+  return resourceFeedbackState[resourceKey(item)]?.label || "可提交学习反馈，系统会据此调整后续资源与学习计划。";
+}
+async function markResourceHelpful(item, rating) {
+  if (!item?.id) return;
+  ensureResourceStart(item);
+  const res = await resourceApi.feedback(item.id, {
+    rating,
+    duration_sec: resourceDurationSec(item),
+    comment: rating >= 4 ? "该资源对当前理解很有帮助" : rating <= 2 ? "当前资源还需要补充基础讲解或换一种表达" : "当前资源可继续优化",
+  });
+  if (res.code === 200) {
+    resourceFeedbackState[resourceKey(item)] = {
+      label: rating >= 4 ? "已记录为高价值资源，将优先推荐同类资源。" : rating <= 2 ? "已记录为需加强，后续会调整资源难度与讲解方式。" : "已记录为一般反馈，系统会继续优化推荐。",
+    };
+    ElMessage.success(res.msg || "反馈已记录");
+    window.dispatchEvent(new CustomEvent("a3-profile-session-refresh"));
+  } else {
+    ElMessage.warning(res.msg || "反馈记录失败");
+  }
+}
+async function markResourceCompleted(item) {
+  if (!item?.id) return;
+  ensureResourceStart(item);
+  const res = await resourceApi.usage(item.id, {
+    duration_sec: resourceDurationSec(item),
+    progress: 100,
+    completed: true,
+  });
+  if (res.code === 200) {
+    resourceFeedbackState[resourceKey(item)] = { label: "已记录为完成学习，系统会结合掌握情况调整下一阶段重点。" };
+    ElMessage.success(res.msg || "学习行为已记录");
+    window.dispatchEvent(new CustomEvent("a3-profile-session-refresh"));
+  } else {
+    ElMessage.warning(res.msg || "学习行为记录失败");
+  }
+}
 function videoUrl(item) {
   const url = item.video_url || item.metadata?.video_url || "";
   if (!url) return "";
@@ -899,6 +960,7 @@ async function loadResources() {
   const [resourceRes, profileRes] = await Promise.all([resourceApi.list(), profileApi.get()]);
   if (resourceRes.code === 200) {
     resources.value = resourceRes.data || [];
+    resources.value.forEach((item) => ensureResourceStart(item));
     displayMode.value = resources.value.length ? "history" : "empty";
   } else {
     resources.value = [];
@@ -924,6 +986,7 @@ function streamUrl() {
 function handleStreamResult(payload) {
   const result = payload.result || {};
   resources.value = result.resource_list || [];
+  resources.value.forEach((item) => { resourceStartTimes[resourceKey(item)] = Date.now(); });
   trace.value = result.trace || trace.value;
   traceId.value = result.trace_id || traceId.value;
   Object.keys(plan).forEach((key) => delete plan[key]);
@@ -1028,6 +1091,9 @@ onBeforeUnmount(() => {
 .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
 .resource-card { min-width: 0; }
 .resource-header > div:first-child { display: flex; align-items: center; gap: 10px; }
+.resource-feedback-box { margin-top: 14px; padding: 14px 16px; border: 1px solid #e8eef8; border-radius: 16px; background: linear-gradient(180deg, #fcfdff 0%, #f7fbff 100%); }
+.resource-feedback-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; color: #64748b; font-size: 12px; }
+.resource-feedback-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .personalization { margin-bottom: 14px; }
 .audit-collapse { margin-bottom: 18px; border-radius: 12px; }
 .audit-grid { display: grid; grid-template-columns: 180px 1fr 1fr; gap: 18px; align-items: center; }
