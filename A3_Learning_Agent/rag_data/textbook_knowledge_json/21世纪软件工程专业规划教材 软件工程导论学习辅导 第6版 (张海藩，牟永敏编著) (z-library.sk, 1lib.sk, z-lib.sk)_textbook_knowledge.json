@@ -6,17 +6,22 @@
   "mode": "question_only_external_knowledge_base",
   "message": "This exercise-book run does not build new knowledge points or a new chapter tree. Questions are linked to the external textbook knowledge base only.",
   "external_knowledge_base": {
-    "base_dir": "E:\\知识问答\\A3_Learning_Agent\\MY\\final",
+    "base_dir": "E:\\知识问答\\A3_Learning_Agent\\rag_data",
     "knowledge_point_count": 245,
     "knowledge_node_count": 2582,
     "knowledge_sources": [
-      "E:\\知识问答\\A3_Learning_Agent\\MY\\final\\knowledge_points_json\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk)_knowledge_points.json",
-      "E:\\知识问答\\A3_Learning_Agent\\MY\\final\\student_knowledge_base_json\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk)_student_knowledge_base.json",
-      "E:\\知识问答\\A3_Learning_Agent\\MY\\final\\textbook_knowledge_json\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk)_textbook_knowledge.json"
+      "E:\\知识问答\\A3_Learning_Agent\\rag_data\\knowledge_points_json\\21世纪软件工程专业规划教材 软件工程导论学习辅导 第6版 (张海藩，牟永敏编著) (z-library.sk, 1lib.sk, z-lib.sk)_knowledge_points.json",
+      "E:\\知识问答\\A3_Learning_Agent\\rag_data\\knowledge_points_json\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk)_knowledge_points.json",
+      "E:\\知识问答\\A3_Learning_Agent\\rag_data\\student_knowledge_base_json\\21世纪软件工程专业规划教材 软件工程导论学习辅导 第6版 (张海藩，牟永敏编著) (z-library.sk, 1lib.sk, z-lib.sk)_student_knowledge_base.json",
+      "E:\\知识问答\\A3_Learning_Agent\\rag_data\\student_knowledge_base_json\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk)_student_knowledge_base.json",
+      "E:\\知识问答\\A3_Learning_Agent\\rag_data\\textbook_knowledge_json\\21世纪软件工程专业规划教材 软件工程导论学习辅导 第6版 (张海藩，牟永敏编著) (z-library.sk, 1lib.sk, z-lib.sk)_textbook_knowledge.json",
+      "E:\\知识问答\\A3_Learning_Agent\\rag_data\\textbook_knowledge_json\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk)_textbook_knowledge.json"
     ],
     "node_sources": [
-      "E:\\知识问答\\A3_Learning_Agent\\MY\\final\\detailed_knowledge_tree_json\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk)_detailed_knowledge_tree.json",
-      "E:\\知识问答\\A3_Learning_Agent\\MY\\final\\knowledge_tree_json\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk)_knowledge_tree.json"
+      "E:\\知识问答\\A3_Learning_Agent\\rag_data\\detailed_knowledge_tree_json\\21世纪软件工程专业规划教材 软件工程导论学习辅导 第6版 (张海藩，牟永敏编著) (z-library.sk, 1lib.sk, z-lib.sk)_detailed_knowledge_tree.json",
+      "E:\\知识问答\\A3_Learning_Agent\\rag_data\\detailed_knowledge_tree_json\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk)_detailed_knowledge_tree.json",
+      "E:\\知识问答\\A3_Learning_Agent\\rag_data\\knowledge_tree_json\\21世纪软件工程专业规划教材 软件工程导论学习辅导 第6版 (张海藩，牟永敏编著) (z-library.sk, 1lib.sk, z-lib.sk)_knowledge_tree.json",
+      "E:\\知识问答\\A3_Learning_Agent\\rag_data\\knowledge_tree_json\\软件工程导论 (第6版) (张海藩) (z-library.sk, 1lib.sk, z-lib.sk)_knowledge_tree.json"
     ]
   },
   "knowledge_points": [],

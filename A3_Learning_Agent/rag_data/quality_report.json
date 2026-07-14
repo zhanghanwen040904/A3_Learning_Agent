@@ -20,10 +20,10 @@
     "????????????????"
   ],
   "files": {
-    "questions_json": "E:\\知识问答\\A3_Learning_Agent\\MY\\final\\questions_json\\21世纪软件工程专业规划教材 软件工程导论学习辅导 第6版 (张海藩，牟永敏编著) (z-library.sk, 1lib.sk, z-lib.sk)_questions.json",
-    "question_bank_json": "E:\\知识问答\\A3_Learning_Agent\\MY\\final\\question_bank_json\\21世纪软件工程专业规划教材 软件工程导论学习辅导 第6版 (张海藩，牟永敏编著) (z-library.sk, 1lib.sk, z-lib.sk)_question_bank.json",
-    "answers_json": "E:\\知识问答\\A3_Learning_Agent\\MY\\final\\answers_json\\21世纪软件工程专业规划教材 软件工程导论学习辅导 第6版 (张海藩，牟永敏编著) (z-library.sk, 1lib.sk, z-lib.sk)_answers.json",
-    "question_answer_links_json": "E:\\知识问答\\A3_Learning_Agent\\MY\\final\\question_answer_links_json\\21世纪软件工程专业规划教材 软件工程导论学习辅导 第6版 (张海藩，牟永敏编著) (z-library.sk, 1lib.sk, z-lib.sk)_question_answer_links.json",
-    "images_json": "E:\\知识问答\\A3_Learning_Agent\\MY\\final\\images_json\\21世纪软件工程专业规划教材 软件工程导论学习辅导 第6版 (张海藩，牟永敏编著) (z-library.sk, 1lib.sk, z-lib.sk)_images.json"
+    "questions_json": "E:\\知识问答\\A3_Learning_Agent\\rag_data\\questions_json\\21世纪软件工程专业规划教材 软件工程导论学习辅导 第6版 (张海藩，牟永敏编著) (z-library.sk, 1lib.sk, z-lib.sk)_questions.json",
+    "question_bank_json": "E:\\知识问答\\A3_Learning_Agent\\rag_data\\question_bank_json\\21世纪软件工程专业规划教材 软件工程导论学习辅导 第6版 (张海藩，牟永敏编著) (z-library.sk, 1lib.sk, z-lib.sk)_question_bank.json",
+    "answers_json": "E:\\知识问答\\A3_Learning_Agent\\rag_data\\answers_json\\21世纪软件工程专业规划教材 软件工程导论学习辅导 第6版 (张海藩，牟永敏编著) (z-library.sk, 1lib.sk, z-lib.sk)_answers.json",
+    "question_answer_links_json": "E:\\知识问答\\A3_Learning_Agent\\rag_data\\question_answer_links_json\\21世纪软件工程专业规划教材 软件工程导论学习辅导 第6版 (张海藩，牟永敏编著) (z-library.sk, 1lib.sk, z-lib.sk)_question_answer_links.json",
+    "images_json": "E:\\知识问答\\A3_Learning_Agent\\rag_data\\images_json\\21世纪软件工程专业规划教材 软件工程导论学习辅导 第6版 (张海藩，牟永敏编著) (z-library.sk, 1lib.sk, z-lib.sk)_images.json"
   }
 }

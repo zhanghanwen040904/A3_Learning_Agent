@@ -139,21 +139,11 @@
                     v-html="renderParagraphHtml(paragraph.text)"
                   />
                   <p v-else>{{ paragraph.text }}</p>
-                  <div v-if="paragraph.images?.length" class="knowledge-image-list inline">
-                    <figure v-for="image in paragraph.images" :key="image.image_id" class="knowledge-image-card">
-                      <img :src="knowledgeImageUrl(image)" :alt="image.caption || image.figure_label || '知识图片'" loading="lazy" />
-                      <figcaption>
-                        <strong>{{ [image.figure_label, image.caption].filter(Boolean).join(" ") }}</strong>
-                        <span v-if="image.image_summary">{{ image.image_summary }}</span>
-                        <em v-if="image.page">第 {{ image.page }} 页</em>
-                      </figcaption>
-                    </figure>
-                  </div>
                 </div>
               </div>
 
-              <div v-if="!section.paragraphs?.length && section.images?.length" class="knowledge-image-list">
-                <figure v-for="image in section.images" :key="image.image_id" class="knowledge-image-card">
+              <div v-if="section.images?.length" class="knowledge-image-list">
+                <figure v-for="image in section.images" :key="image.image_id || image.path" class="knowledge-image-card">
                   <img :src="knowledgeImageUrl(image)" :alt="image.caption || image.figure_label || '知识图片'" loading="lazy" />
                   <figcaption>
                     <strong>{{ [image.figure_label, image.caption].filter(Boolean).join(" ") }}</strong>
