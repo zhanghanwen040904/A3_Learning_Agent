@@ -251,6 +251,40 @@ class AgentManager:
         return evidence
 
     @staticmethod
+    def _knowledge_images_for_evidence(evidence: List[dict], limit: int = 6) -> List[dict]:
+        """Resolve textbook images linked to the retrieved knowledge evidence."""
+        try:
+            # Import lazily so the agent pipeline does not depend on Flask blueprint setup.
+            from api.knowledge_api import _images_for_reading_section
+        except Exception:
+            logger.exception("Unable to load knowledge image matcher")
+            return []
+
+        images = []
+        seen = set()
+        for item in evidence or []:
+            title = str(item.get("title") or "").strip()
+            section_path = item.get("section_path") or []
+            if not isinstance(section_path, list):
+                section_path = [str(section_path)] if section_path else []
+            try:
+                matched = _images_for_reading_section(title, section_path, item.get("pages") or [])
+            except Exception:
+                logger.exception("Knowledge image matching failed for title=%s", title)
+                continue
+            for image in matched or []:
+                if not isinstance(image, dict):
+                    continue
+                image_key = image.get("image_id") or image.get("path")
+                if not image_key or image_key in seen:
+                    continue
+                seen.add(image_key)
+                images.append(image)
+                if len(images) >= limit:
+                    return images
+        return images
+
+    @staticmethod
     def _knowledge_text_for_model(items: List[dict], primary_title: str = "") -> str:
         if not items:
             return "未检索到对应知识库片段。"
@@ -531,6 +565,7 @@ class AgentManager:
             stage_sources = (matched_sources or ranked_sources)[:2]
             stage_knowledge_context = build_resource_context(stage_query or query, top_k=2, profile=stage_context, stage=stage)
             evidence = self._safe_evidence(stage_sources)
+            knowledge_images = self._knowledge_images_for_evidence(evidence)
             primary_knowledge = stage_knowledge_context.get("primary_knowledge") or (evidence[0] if evidence else {})
             primary_title = primary_knowledge.get("title") or ""
             stage_context["selected_primary_knowledge_title"] = primary_title
@@ -542,6 +577,7 @@ class AgentManager:
                 "stage_sources": stage_sources,
                 "stage_knowledge_context": stage_knowledge_context,
                 "evidence": evidence,
+                "knowledge_images": knowledge_images,
                 "primary_knowledge": primary_knowledge,
                 "primary_title": primary_title,
                 "knowledge_text": self._knowledge_text_for_model(stage_sources, primary_title),
@@ -568,6 +604,7 @@ class AgentManager:
             stage_sources = materials["stage_sources"]
             stage_knowledge_context = materials["stage_knowledge_context"]
             evidence = materials["evidence"]
+            knowledge_images = materials.get("knowledge_images") or []
             primary_knowledge = materials["primary_knowledge"]
             primary_title = materials["primary_title"]
             stage_context["selected_primary_knowledge_title"] = primary_title
@@ -651,6 +688,7 @@ class AgentManager:
                 "stage": stage,
                 "primary_knowledge": primary_knowledge,
                 "evidence": evidence,
+                "images": knowledge_images if resource_type == "doc" else metadata.get("images", []),
                 "learning_location": evidence[0].get("learning_location") if evidence else {},
                 "debug": stage_knowledge_context.get("debug", {}),
             }

@@ -46,6 +46,30 @@ FORBIDDEN_DOC_FIELDS = {
     "system_prompt",
     "user_prompt",
 }
+_TABLE_COLUMN_CACHE = {}
+
+
+def _table_columns(table_name: str):
+    cache_key = str(table_name or "").strip()
+    if not cache_key:
+        return set()
+    if cache_key in _TABLE_COLUMN_CACHE:
+        return _TABLE_COLUMN_CACHE[cache_key]
+    try:
+        rows = mysql_db.query_all(f"SHOW COLUMNS FROM `{cache_key}`")
+        columns = {str(row.get("Field") or "").strip() for row in rows if row.get("Field")}
+    except Exception:
+        logger.exception("Load table columns failed: %s", cache_key)
+        columns = set()
+    _TABLE_COLUMN_CACHE[cache_key] = columns
+    return columns
+
+
+def _filter_insert_data(table_name: str, data: dict):
+    columns = _table_columns(table_name)
+    if not columns:
+        return dict(data or {})
+    return {key: value for key, value in (data or {}).items() if key in columns}
 
 
 def _refresh_portrait_after_resource_event(user_id: int, profile_session_id, trigger_source: str) -> dict:
@@ -67,6 +91,39 @@ def _refresh_portrait_after_resource_event(user_id: int, profile_session_id, tri
         force=True,
     )
     return aggregate_profile
+
+
+def _resource_type_label(resource_type: str) -> str:
+    return {
+        "doc": "讲解文档",
+        "quiz": "分层练习",
+        "reading": "拓展阅读",
+        "mindmap": "思维导图",
+        "code": "代码案例",
+        "video": "教学视频",
+    }.get(str(resource_type or ""), str(resource_type or "学习资源"))
+
+
+def _update_profile_by_resource_feedback(user_id: int, profile_session_id, resource: dict, rating: int = 0, completed: bool = False, duration_sec: int = 0) -> dict:
+    if not profile_session_id:
+        return {}
+    update_data = {}
+    resource_label = _resource_type_label(resource.get("resource_type"))
+    title = str(resource.get("title") or resource_label)
+    if rating >= 4:
+        update_data["preferred_resource"] = resource_label
+        update_data["recent_progress"] = f"最近对《{title}》反馈积极，更适合继续推送{resource_label}类资源。"
+    elif rating and rating <= 2:
+        update_data["support_preference"] = "增加基础讲解 / 分步骤说明 / 更多例题带练"
+        update_data["recent_progress"] = f"最近对《{title}》反馈偏弱，后续资源将加强基础解释与分步引导。"
+    if completed:
+        update_data["engagement_level"] = "持续学习中"
+        update_data["course_progress"] = f"已完成《{title}》学习，可继续进入下一阶段或补强薄弱知识点。"
+    elif duration_sec >= 180:
+        update_data["engagement_level"] = "主动投入中"
+    if update_data:
+        mysql_db.update("student_profile", update_data, "user_id=%s AND profile_session_id=%s", (user_id, profile_session_id))
+    return update_data
 
 
 def _safe_json_loads(value, default):
@@ -613,10 +670,25 @@ def _normalize_learning_image(raw_image, fallback_caption: str = "image") -> dic
     if isinstance(raw_image, dict):
         path = str(raw_image.get("path") or "").strip()
         if path:
-            return {
+            normalized = {
                 "path": path,
                 "caption": str(raw_image.get("caption") or fallback_caption or "image").strip(),
             }
+            for field in (
+                "image_id",
+                "figure_label",
+                "image_summary",
+                "image_type",
+                "page",
+                "width",
+                "height",
+                "related_knowledge_titles",
+                "match_confidence",
+                "match_reason",
+            ):
+                if raw_image.get(field) not in (None, "", []):
+                    normalized[field] = raw_image.get(field)
+            return normalized
     return None
 
 
@@ -745,8 +817,29 @@ def _pick_resource_images(resource: dict, limit: int = 4) -> list[dict]:
 
 
 def _append_images_to_resource(resource: dict) -> dict:
-    images = _pick_resource_images(resource)
     metadata = _safe_json_loads(resource.get("metadata"), {})
+    existing_images = []
+    for raw_image in metadata.get("images") or []:
+        normalized = _normalize_learning_image(raw_image, "知识库配图")
+        if normalized:
+            existing_images.append(normalized)
+    if resource.get("resource_type") == "doc" and not existing_images:
+        evidence = metadata.get("evidence") or []
+        try:
+            existing_images = agent_manager._knowledge_images_for_evidence(evidence, limit=6)
+        except Exception:
+            logger.exception("Unable to backfill knowledge images for resource id=%s", resource.get("id"))
+    generated_images = _pick_resource_images(resource)
+    images = []
+    seen = set()
+    for image in [*existing_images, *generated_images]:
+        path = str(image.get("path") or "").strip()
+        if not path or path in seen:
+            continue
+        seen.add(path)
+        images.append(image)
+        if len(images) >= 6:
+            break
     metadata["images"] = images
     resource["metadata"] = metadata
     if resource.get("resource_type") == "doc":
@@ -961,6 +1054,128 @@ def list_my_resources():
         return success(resources, "查询成功")
     except Exception as exc:
         return fail("资源查询失败", 500, {"error": str(exc)})
+
+
+@resource_bp.post("/<int:resource_id>/feedback")
+@login_required
+def submit_resource_feedback(resource_id: int):
+    try:
+        payload = request.get_json(silent=True) or {}
+        resource = mysql_db.query_one(
+            "SELECT * FROM study_resource WHERE id=%s AND user_id=%s",
+            (resource_id, request.user_id),
+        )
+        if not resource:
+            return fail("资源不存在", 404)
+        rating = max(1, min(5, int(payload.get("rating") or 0)))
+        comment = str(payload.get("comment") or "").strip()[:500]
+        duration_sec = max(0, int(payload.get("duration_sec") or 0))
+        completed = bool(payload.get("completed", False))
+        session_id = resource.get("profile_session_id")
+        feedback_data = _filter_insert_data(
+            "resource_feedback",
+            {
+                "user_id": request.user_id,
+                "profile_session_id": session_id,
+                "resource_id": resource_id,
+                "rating": rating,
+                "comment": comment,
+            },
+        )
+        mysql_db.insert("resource_feedback", feedback_data)
+        learning_event_data = _filter_insert_data(
+            "learning_event",
+            {
+                "user_id": request.user_id,
+                "profile_session_id": session_id,
+                "event_type": "resource_feedback",
+                "knowledge_point": str(resource.get("title") or resource.get("resource_type") or "学习资源"),
+                "detail": json.dumps(
+                    {
+                        "resource_id": resource_id,
+                        "resource_type": resource.get("resource_type"),
+                        "title": resource.get("title"),
+                        "rating": rating,
+                        "comment": comment,
+                        "duration_sec": duration_sec,
+                        "completed": completed,
+                        "stage_index": _safe_json_loads(resource.get("metadata"), {}).get("stage_index"),
+                    },
+                    ensure_ascii=False,
+                ),
+            },
+        )
+        mysql_db.insert("learning_event", learning_event_data)
+        profile_update = _update_profile_by_resource_feedback(request.user_id, session_id, resource, rating=rating, completed=completed, duration_sec=duration_sec)
+        aggregate_profile = _refresh_portrait_after_resource_event(request.user_id, session_id, "resource_feedback")
+        return success(
+            {
+                "resource_id": resource_id,
+                "rating": rating,
+                "profile_update": profile_update,
+                "aggregate_profile": aggregate_profile,
+                "profile_session_id": session_id,
+            },
+            "资源反馈已记录",
+        )
+    except Exception as exc:
+        logger.exception("Submit resource feedback failed")
+        return fail("资源反馈提交失败", 500, {"error": str(exc)})
+
+
+@resource_bp.post("/<int:resource_id>/usage")
+@login_required
+def record_resource_usage(resource_id: int):
+    try:
+        payload = request.get_json(silent=True) or {}
+        resource = mysql_db.query_one(
+            "SELECT * FROM study_resource WHERE id=%s AND user_id=%s",
+            (resource_id, request.user_id),
+        )
+        if not resource:
+            return fail("资源不存在", 404)
+        duration_sec = max(0, int(payload.get("duration_sec") or 0))
+        progress = max(0, min(100, int(payload.get("progress") or 0)))
+        completed = bool(payload.get("completed", False)) or progress >= 100
+        session_id = resource.get("profile_session_id")
+        learning_event_data = _filter_insert_data(
+            "learning_event",
+            {
+                "user_id": request.user_id,
+                "profile_session_id": session_id,
+                "event_type": "resource_usage",
+                "knowledge_point": str(resource.get("title") or resource.get("resource_type") or "学习资源"),
+                "detail": json.dumps(
+                    {
+                        "resource_id": resource_id,
+                        "resource_type": resource.get("resource_type"),
+                        "title": resource.get("title"),
+                        "duration_sec": duration_sec,
+                        "progress": progress,
+                        "completed": completed,
+                        "stage_index": _safe_json_loads(resource.get("metadata"), {}).get("stage_index"),
+                    },
+                    ensure_ascii=False,
+                ),
+            },
+        )
+        mysql_db.insert("learning_event", learning_event_data)
+        profile_update = _update_profile_by_resource_feedback(request.user_id, session_id, resource, completed=completed, duration_sec=duration_sec)
+        aggregate_profile = _refresh_portrait_after_resource_event(request.user_id, session_id, "resource_usage")
+        return success(
+            {
+                "resource_id": resource_id,
+                "completed": completed,
+                "progress": progress,
+                "profile_update": profile_update,
+                "aggregate_profile": aggregate_profile,
+                "profile_session_id": session_id,
+            },
+            "资源学习行为已记录",
+        )
+    except Exception as exc:
+        logger.exception("Record resource usage failed")
+        return fail("资源学习行为记录失败", 500, {"error": str(exc)})
 
 
 @resource_bp.get("/<int:user_id>")
