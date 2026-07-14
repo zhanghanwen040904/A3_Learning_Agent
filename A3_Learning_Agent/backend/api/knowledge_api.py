@@ -1657,7 +1657,14 @@ def _section_number_tuple(text: str) -> tuple[int, ...]:
 def _line_starts_next_sibling_section(line: str, current: tuple[int, ...]) -> bool:
     if len(current) < 2:
         return False
-    candidate = _section_number_tuple(_strip_markdown_heading(line))
+    text = _strip_markdown_heading(line).strip()
+    match = re.match(r"^(\d+(?:\.\d+)+)(?:\s|$)", text)
+    if not match:
+        return False
+    try:
+        candidate = tuple(int(part) for part in match.group(1).split("."))
+    except ValueError:
+        return False
     return (
         len(candidate) == len(current)
         and candidate[:-1] == current[:-1]
@@ -1820,10 +1827,24 @@ def _textbook_chapter_titles() -> dict[int, str]:
 
 
 def _textbook_required_section_titles() -> dict[tuple[int, ...], str]:
-    # These two sections exist in the printed table of contents but were lost by OCR.
+    # These sections exist in the printed table of contents but were lost by OCR.
     return {
+        (2, 7): "2.7 小结",
+        (3, 9): "3.9 小结",
         (4, 3): "4.3 Petri 网",
+        (4, 5): "4.5 小结",
+        (5, 6): "5.6 小结",
+        (7, 10): "7.10 小结",
+        (8, 4, 2): "8.4.2 文档",
+        (8, 7): "8.7 小结",
+        (9, 6, 2): "9.6.2 用例建模",
+        (9, 8): "9.8 小结",
+        (10, 1, 1): "10.1.1 概述",
+        (10, 7): "10.7 小结",
         (11, 2): "11.2 启发规则",
+        (11, 12): "11.12 小结",
+        (12, 5): "12.5 小结",
+        (13, 8): "13.8 小结",
     }
 
 
@@ -2282,7 +2303,7 @@ def _textbook_catalog_payload(node_id: str, include_children: bool = True) -> di
     pages = []
     seen_pages = set()
     for section in sections:
-        if node_id.startswith("textbook_number::"):
+        if node_id.startswith("textbook_number::") or node_id.startswith("textbook_appendix::"):
             page_candidates = section.get("pages") or []
         else:
             source_pages = section.get("combined_pages") if include_children else section.get("pages")
@@ -2299,9 +2320,24 @@ def _textbook_catalog_payload(node_id: str, include_children: bool = True) -> di
     paragraphs = _format_reading_pages(pages, title)
     if not paragraphs and not exact_reading_section_used:
         paragraphs = [
-            {"page": (item.get("pages") or [None])[0], "text": _clean_text(item.get("content_preview") or "")}
+            {
+                "page": (item.get("pages") or [None])[0],
+                "text": _clean_text(
+                    item.get("content")
+                    or item.get("source_text")
+                    or item.get("content_preview")
+                    or item.get("source_text_preview")
+                    or ""
+                ),
+            }
             for item in items
-            if _clean_text(item.get("content_preview") or "")
+            if _clean_text(
+                item.get("content")
+                or item.get("source_text")
+                or item.get("content_preview")
+                or item.get("source_text_preview")
+                or ""
+            )
         ]
     images = _images_for_reading_section(title, display_path, pages or paragraphs)
     start_page = min(
@@ -2309,6 +2345,61 @@ def _textbook_catalog_payload(node_id: str, include_children: bool = True) -> di
         or [page for item in items for page in (item.get("pages") or []) if isinstance(page, int)]
         or [None]
     )
+
+    child_sections = []
+    if include_children and (node_id.startswith("textbook_number::") or node_id.startswith("textbook_appendix::")):
+        tree_node = _find_tree_node(node_id, _build_textbook_tree_from_knowledge_points())
+        for child in tree_node.get("children") or [] if isinstance(tree_node, dict) else []:
+            child_payload = _textbook_catalog_payload(child.get("node_id") or "", include_children=True)
+            if not child_payload:
+                continue
+            for section in child_payload.get("sections") or []:
+                if section.get("paragraphs"):
+                    child_sections.append(section)
+
+    if child_sections:
+        parent_section = {
+            "node_id": node_id,
+            "title": title,
+            "level": max(0, len(display_path) - 1),
+            "path": display_path,
+            "start_page": start_page,
+            "images": images,
+            "paragraphs": paragraphs,
+            "content_mode": "knowledge_point_textbook",
+        }
+        include_parent_section = bool(paragraphs) and not node_id.startswith("textbook_appendix::")
+        display_sections = ([parent_section] if include_parent_section else []) + child_sections
+        merged_images = list(images)
+        seen_image_keys = set()
+        for image in merged_images:
+            image_key = image.get("path") or image.get("absolute_path") or image.get("url")
+            seen_image_keys.add(image_key)
+        for section in display_sections:
+            for image in section.get("images") or []:
+                image_key = image.get("path") or image.get("absolute_path") or image.get("url")
+                if image_key in seen_image_keys:
+                    continue
+                seen_image_keys.add(image_key)
+                merged_images.append(image)
+        child_start_page = min(
+            [
+                section.get("start_page")
+                for section in display_sections
+                if isinstance(section.get("start_page"), int)
+            ]
+            or [None]
+        )
+        return {
+            "node_id": node_id,
+            "title": title,
+            "path": display_path,
+            "start_page": child_start_page,
+            "images": merged_images,
+            "sections": display_sections,
+            "exercise_questions": [],
+            "content_mode": "knowledge_point_textbook",
+        }
     return {
         "node_id": node_id,
         "title": title,
@@ -2370,7 +2461,26 @@ def _kp_section_payload(node_id: str, include_children: bool = True) -> dict | N
             if item_path[: len(target_path)] == target_path:
                 kp_items.append(item)
         kp_items.sort(key=lambda item: ((item.get("pages") or [10**9])[0] if isinstance(item.get("pages"), list) and item.get("pages") else 10**9, item.get("title") or ""))
-        paragraphs = [{"page": (item.get("pages") or [None])[0], "text": _clean_text(item.get("content_preview") or "")} for item in kp_items if _clean_text(item.get("content_preview") or "")]
+        paragraphs = [
+            {
+                "page": (item.get("pages") or [None])[0],
+                "text": _clean_text(
+                    item.get("content")
+                    or item.get("source_text")
+                    or item.get("content_preview")
+                    or item.get("source_text_preview")
+                    or ""
+                ),
+            }
+            for item in kp_items
+            if _clean_text(
+                item.get("content")
+                or item.get("source_text")
+                or item.get("content_preview")
+                or item.get("source_text_preview")
+                or ""
+            )
+        ]
         if not section_images:
             page_payload = [{"page": p.get("page"), "text": p.get("text")} for p in paragraphs if isinstance(p, dict)]
             section_images = _images_for_reading_section(title, target_path, page_payload)
