@@ -138,6 +138,7 @@ export const knowledgeApi = {
 
 export const evaluationApi = {
   bankStatus: () => http.get("/evaluation/bank-status"),
+  knowledgePoints: () => http.get("/evaluation/knowledge-points"),
   rebuildBank: (data = { force: true }) => http.post("/evaluation/rebuild-bank", data),
   questions: (data = {}) => http.post("/evaluation/questions", withProfileSession(data)),
   submit: (data) => http.post("/evaluation/submit", withProfileSession(data)),

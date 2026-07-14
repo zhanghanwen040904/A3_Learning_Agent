@@ -1,23 +1,23 @@
 <template>
   <div class="page system-page">
     <el-alert
-      title="这里用于展示项目是否真正连接了 MySQL 数据库和当前 AI 服务"
-      description="如果 AI 模式显示为模拟演示模式，说明 backend/.env 中开启了 MOCK_AI=true，或尚未配置真实模型密钥；如需连接真实模型，请填写百炼配置并重启后端。"
+      title="这里展示数据库与平台服务的当前连接状态"
+      description="可用于查看数据库、文本模型、视频接口和内容审核等服务是否已正常接入。"
       type="info"
       show-icon
       :closable="false"
     />
 
-    <el-row :gutter="18">
-      <el-col :span="12">
+    <el-row class="status-grid" :gutter="18">
+      <el-col :span="12" class="status-col">
         <el-card class="panel status-card">
           <template #header>
-            <div class="header-line">
+            <div class="header-line status-header">
               <span>数据库连接状态</span>
-              <el-button :loading="loading" @click="loadStatus">刷新</el-button>
+              <el-button class="status-refresh" :loading="loading" @click="loadStatus">刷新</el-button>
             </div>
           </template>
-          <el-descriptions :column="1" border>
+          <el-descriptions class="status-descriptions" :column="1" border>
             <el-descriptions-item label="连接状态">
               <el-tag type="success">已连接</el-tag>
             </el-descriptions-item>
@@ -29,14 +29,19 @@
         </el-card>
       </el-col>
 
-      <el-col :span="12">
+      <el-col :span="12" class="status-col">
         <el-card class="panel status-card">
-          <template #header>AI 模型连接状态</template>
-          <el-descriptions :column="1" border>
-            <el-descriptions-item label="当前模式">
+          <template #header>
+            <div class="header-line status-header">
+              <span>服务连接状态</span>
+              <span class="header-placeholder" aria-hidden="true"></span>
+            </div>
+          </template>
+          <el-descriptions class="status-descriptions" :column="1" border>
+            <el-descriptions-item label="运行模式">
               <el-tag :type="status.ai?.mock_ai ? 'warning' : 'success'">{{ status.ai?.mode || "-" }}</el-tag>
             </el-descriptions-item>
-            <el-descriptions-item label="主模型">
+            <el-descriptions-item label="文本模型">
               <el-tag :type="status.ai?.primary_model?.configured ? 'success' : 'danger'">
                 {{ status.ai?.primary_model?.configured ? "已配置" : "未配置" }}
               </el-tag>
@@ -44,9 +49,9 @@
             <el-descriptions-item label="模型名称">
               {{ status.ai?.primary_model?.model || "-" }}
             </el-descriptions-item>
-            <el-descriptions-item label="视频生成">
+            <el-descriptions-item label="视频接口">
               <el-tag :type="status.ai?.video?.configured ? 'success' : 'warning'">
-                {{ status.ai?.video?.configured ? "已配置" : "未配置" }}
+                {{ status.ai?.video?.configured ? "已接入" : "未接入" }}
               </el-tag>
             </el-descriptions-item>
             <el-descriptions-item label="内容审核">
@@ -76,8 +81,8 @@
     <el-card class="panel">
       <template #header>
         <div class="header-line">
-          <span>AI 连通性测试</span>
-          <el-button type="primary" :loading="testing" @click="testAi">测试当前模型</el-button>
+          <span>服务连通性测试</span>
+          <el-button type="primary" :loading="testing" @click="testAi">测试当前服务</el-button>
         </div>
       </template>
 
@@ -105,10 +110,10 @@ import { ElMessage } from "element-plus";
 import { systemApi } from "../api";
 
 const md = new MarkdownIt({ html: true, linkify: true, breaks: true });
-const status = reactive({ database: {}, ai: {} });
+const status = reactive({ database: {}, ai: {}, project_stage: {} });
 const loading = ref(false);
 const testing = ref(false);
-const prompt = ref("请用一句话说明你正在连接 A3 学习助手系统。");
+const prompt = ref("请用一句话说明你正在连接 MultiTutor 学习系统。");
 const aiResult = ref(null);
 
 function renderMarkdown(text) {
@@ -159,8 +164,73 @@ onMounted(loadStatus);
   justify-content: space-between;
 }
 
+.header-placeholder {
+  width: 64px;
+  height: 32px;
+  flex: 0 0 auto;
+}
+
+.status-header {
+  position: relative;
+  width: 100%;
+  min-height: 32px;
+}
+
+.status-refresh {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+}
+
+.status-grid {
+  align-items: stretch;
+}
+
+.status-col {
+  display: flex;
+}
+
 .status-card {
-  min-height: 330px;
+  display: flex;
+  width: 100%;
+  min-height: 286px;
+  flex-direction: column;
+}
+
+.status-card :deep(.el-card__header) {
+  display: flex;
+  min-height: 68px;
+  align-items: center;
+  padding: 18px 22px;
+}
+
+.status-card :deep(.el-card__header > div) {
+  width: 100%;
+}
+
+.status-card :deep(.el-card__body) {
+  flex: 1;
+  padding: 16px 22px 22px;
+}
+
+.status-descriptions {
+  height: 100%;
+}
+
+.status-descriptions :deep(.el-descriptions__body),
+.status-descriptions :deep(.el-descriptions__table) {
+  height: 100%;
+}
+
+.status-descriptions :deep(.el-descriptions__label) {
+  width: 40%;
+  min-width: 170px;
+  font-weight: 600;
+}
+
+.status-descriptions :deep(.el-descriptions__content) {
+  width: 60%;
 }
 
 .result-card {

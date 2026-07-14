@@ -42,10 +42,12 @@ RESOURCE_TYPE_LABELS = {
     "video": "教学短视频",
 }
 KNOWN_POINTS = [
-    "问题定义", "需求分析", "总体设计", "详细设计", "软件测试", "软件生命周期", "用例图", "类图", "时序图",
-    "数据流图", "模块划分", "编码实现", "软件维护", "可行性研究", "软件设计", "调试", "瀑布模型",
+    "问题定义", "可行性研究", "需求分析", "需求规格", "总体设计", "详细设计", "软件设计", "编码实现", "调试",
+    "软件测试", "软件维护", "软件生命周期", "瀑布模型", "用例图", "类图", "时序图", "数据流图", "模块划分",
+    "阶段衔接", "阶段边界", "阶段产物", "输入输出", "流程建构", "产物驱动", "质量闭环", "案例应用", "迁移应用",
 ]
 LIFECYCLE_STAGE_POINTS = ["问题定义", "可行性研究", "需求分析", "软件设计", "编码实现", "软件测试", "软件维护"]
+STAGE_NAMES = ["一", "二", "三", "四", "五"]
 
 
 def _profile_points(profile: dict, payload: dict | None = None) -> list[str]:
@@ -71,11 +73,115 @@ def _profile_points(profile: dict, payload: dict | None = None) -> list[str]:
     return result[:6]
 
 
+def _unique_points(values: list[str]) -> list[str]:
+    result = []
+    for value in values:
+        if value and value not in result:
+            result.append(value)
+    return result
+
+
+def _chunk_points(points: list[str], chunk_size: int) -> list[list[str]]:
+    values = _unique_points(points)
+    if not values:
+        return []
+    return [values[index:index + chunk_size] for index in range(0, len(values), chunk_size)]
+
+
+def _recommended_resources(points: list[str], is_last: bool = False) -> str:
+    items = ["讲解文档", "阶段知识导图", "教学短视频", "拓展阅读"]
+    if any(point in {"编码实现", "软件测试", "详细设计", "总体设计"} for point in points):
+        items.insert(2, "代码案例")
+    if is_last:
+        items.append("阶段测评")
+    return "、".join(_unique_points(items))
+
+
+def _render_stage(index: int, title: str, goal: str, tasks: list[str], points: list[str], practice: list[str], metrics: list[str]) -> str:
+    phase = STAGE_NAMES[index] if index < len(STAGE_NAMES) else str(index + 1)
+    return "\n".join(
+        [
+            f"## 阶段{phase}：{title}",
+            "### 学习安排",
+            f"**目标：** {goal}",
+            "**学习任务：**",
+            *[f"- {item}" for item in tasks],
+            "**推荐资源：**",
+            f"- {_recommended_resources(points, is_last=index >= 2)}。",
+            "**练习方式：**",
+            *[f"- {item}" for item in practice],
+            "**评估指标：**",
+            *[f"- {item}" for item in metrics],
+        ]
+    )
+
+
+def _build_dynamic_lifecycle_stages(goal: str, lifecycle_points: list[str]) -> list[str]:
+    point_chunks = _chunk_points(lifecycle_points[1:] if lifecycle_points[:1] == ["软件生命周期"] else lifecycle_points, 2)
+    titles = [
+        ("软件生命周期总览与阶段认知", "先建立“为什么要分阶段”的整体认识，理解软件生命周期覆盖软件从提出问题到维护演进的全过程。"),
+        ("前期阶段边界与输入输出", "分清生命周期前期阶段各自解决什么问题，避免把阶段目标、任务和产物混在一起。"),
+        ("开发实施与质量闭环", "理解设计、编码、测试、维护如何衔接，形成对开发闭环和返工风险的整体判断。"),
+        ("案例判断与阶段迁移应用", "把阶段知识放到真实项目案例中，能够判断当前所处阶段并解释依据。"),
+    ]
+    stages = []
+    for index, (title, intro) in enumerate(titles[: max(3, min(4, len(point_chunks) + 1))]):
+        points = point_chunks[index] if index < len(point_chunks) else lifecycle_points[-2:] or lifecycle_points[:2]
+        point_text = "、".join(points or lifecycle_points[:3])
+        tasks = [
+            f"围绕 {point_text} 阅读教材片段，梳理本阶段最关键的概念、任务和产物。",
+            f"结合阶段顺序说明 {point_text} 与前后环节如何衔接，避免边界混淆。",
+            f"把 {point_text} 写成简短清单、流程图或判断依据，形成自己的阶段框架。",
+        ]
+        practice = [
+            f"完成与 {point_text} 相关的概念辨析、顺序判断或输入输出匹配题。",
+            "如果能结合案例说明“这一阶段为什么不能跳过”，说明理解已经比较到位。",
+        ]
+        metrics = [
+            f"能准确解释 {point_text} 的核心任务、代表性产物和与相邻阶段的关系。",
+            "能根据错题定位自己究竟是概念没懂、顺序混淆，还是案例判断不稳。",
+        ]
+        stages.append(_render_stage(index, title, f"{intro} 当前学习目标聚焦：{goal}。", points=points, tasks=tasks, practice=practice, metrics=metrics))
+    return stages
+
+
+def _build_dynamic_general_stages(goal: str, points: list[str]) -> list[str]:
+    ordered = _unique_points(points) or ["软件生命周期", "需求分析", "软件测试"]
+    chunks = _chunk_points(ordered, 2)
+    stage_templates = [
+        ("核心概念澄清", "先把当前主题中最容易混淆的概念、定义和作用说清楚。"),
+        ("关联关系梳理", "把相邻知识点之间的顺序、边界、输入输出和阶段产物串起来。"),
+        ("案例分析应用", "放到课程案例或项目情境中，判断它们实际怎么使用。"),
+        ("薄弱点回补强化", "针对错题和薄弱点做一次定向补强，避免只会背概念。"),
+    ]
+    stage_count = 2 if len(ordered) <= 2 else 3 if len(ordered) <= 4 else 4
+    stages = []
+    for index in range(stage_count):
+        base_title, intro = stage_templates[index]
+        current_points = chunks[index] if index < len(chunks) else ordered[-2:]
+        point_text = "、".join(current_points)
+        tasks = [
+            f"围绕 {point_text} 阅读课程知识库，提炼关键词、核心结论和常见误区。",
+            f"说明 {point_text} 分别解决什么问题，以及它们在软件工程流程中的位置。",
+        ]
+        if index >= 1:
+            tasks.append(f"把 {point_text} 与前面阶段内容对照起来，找出容易混淆的边界。")
+        if index >= 2:
+            tasks.append(f"结合小案例判断 {point_text} 在真实项目中应该怎样落地。")
+        practice = [
+            f"完成与 {point_text} 相关的判断题、简答题或匹配题。",
+            "根据练习结果记录自己最容易混淆的概念和判断依据。",
+        ]
+        metrics = [
+            f"能用自己的话解释 {point_text} 的定义、作用和与其他知识点的关系。",
+            "能指出至少 1 个常见误区，并说明为什么错。",
+        ]
+        stages.append(_render_stage(index, f"{point_text}{base_title}", f"{intro} 当前学习目标聚焦：{goal}。", points=current_points, tasks=tasks, practice=practice, metrics=metrics))
+    return stages
+
+
 def _build_fast_path_content(profile: dict, payload: dict | None = None) -> str:
     points = _profile_points(profile, payload)
-    first = points[0] if len(points) > 0 else "软件生命周期"
-    second = points[1] if len(points) > 1 else "可行性研究"
-    third = points[2] if len(points) > 2 else "需求分析"
     goal = str((payload or {}).get("learning_need") or profile.get("study_goal") or "掌握软件工程核心知识").strip()
     all_text = " ".join(
         str(item or "")
@@ -94,109 +200,28 @@ def _build_fast_path_content(profile: dict, payload: dict | None = None) -> str:
         if len(lifecycle_points) < 5:
             lifecycle_points = ["软件生命周期", *LIFECYCLE_STAGE_POINTS]
         lifecycle_points = list(dict.fromkeys(lifecycle_points))
-        lifecycle_sequence = " → ".join(LIFECYCLE_STAGE_POINTS)
-        return normalize_markdown(f"""
-# 个性化学习路径
-
-## 阶段一：软件生命周期基础概念理解
-### 学习安排
-**目标：** 理解软件生命周期的整体含义、学习价值和基本阶段划分，明确它不是单个步骤，而是软件从问题提出到运行维护的完整过程，并联系当前学习目标：{goal}。
-**学习任务：**
-- 阅读课程知识库中与软件生命周期、问题定义、可行性研究和需求分析相关的教材片段。
-- 先建立“为什么要划分阶段”的整体认识，理解每个阶段都承担不同任务。
-- 用自己的话说明问题定义、可行性研究、需求分析在生命周期前期分别解决什么问题。
-**推荐资源：**
-- 讲解文档、阶段知识导图、教学短视频和拓展阅读。
-**练习方式：**
-- 完成基础概念判断题、阶段名称识别题和输入输出初步匹配题。
-**评估指标：**
-- 能说清软件生命周期的定义、作用、主要阶段名称，以及阶段划分对控制软件质量和降低返工的意义。
-
-## 阶段二：生命周期阶段顺序与任务产物梳理
-### 学习安排
-**目标：** 系统梳理{lifecycle_sequence}之间的先后顺序、主要任务、输入输出和阶段产物，重点解决“分不清阶段边界和衔接关系”的问题。
-**学习任务：**
-- 按顺序梳理每个阶段的核心任务、典型参与者、主要产物和对后续阶段的影响。
-- 对比问题定义、可行性研究、需求分析、设计、编码、测试、维护的边界，避免把任务和产物混淆。
-- 画出阶段流转图或检查清单，把“输入 → 活动 → 输出 → 后续影响”串联起来。
-**推荐资源：**
-- 讲解文档、阶段知识导图、教学短视频和拓展阅读。
-**练习方式：**
-- 完成流程排序题、阶段产物匹配题、输入输出连线题和易混边界辨析题。
-**评估指标：**
-- 能按正确顺序说明各阶段，并能列举每个阶段的主要任务、代表性产物和与相邻阶段的衔接关系。
-
-## 阶段三：软件生命周期案例练习与迁移应用
-### 学习安排
-**目标：** 将软件生命周期知识迁移到实际软件项目案例中，能够判断案例处于哪个阶段，说明该阶段应该完成什么任务、形成什么产物，以及遗漏该阶段会带来什么风险。
-**学习任务：**
-- 阅读课程案例或小型软件项目材料，判断项目当前处于生命周期中的哪个阶段。
-- 针对案例补充阶段任务、阶段产物和质量检查要点。
-- 总结常见错误，例如把需求分析当成设计、把测试当成调试、把维护理解成简单修改代码。
-**推荐资源：**
-- 讲解文档、阶段知识导图、教学短视频、拓展阅读和阶段测评。
-**练习方式：**
-- 完成案例判断题、阶段任务说明题、产物辨析题和综合测评。
-**评估指标：**
-- 能在案例中准确定位生命周期阶段，解释阶段任务、输入输出、产物和质量风险，并能根据错题回到对应阶段复习。
-
-## 动态调整建议
-如果基础概念题错误较多，回到阶段一补充软件生命周期定义和阶段名称；如果排序和产物匹配题错误较多，强化阶段二的流程图和输入输出梳理；如果案例判断题错误较多，强化阶段三的项目情境分析。
-
-## 参考依据
-本路径依据当前学生画像、学习目标、薄弱知识点和本地软件工程课程知识库生成。覆盖知识点包括：{'、'.join(lifecycle_points[:8])}。
-""")
-    return normalize_markdown(f"""
-# 个性化学习路径
-
-## 阶段一：{first}基础理解
-### 学习安排
-**目标：** 理解{first}的核心概念、阶段位置、输入输出和基本作用，并联系当前学习目标：{goal}。
-**学习任务：**
-- 阅读课程知识库中与{first}直接相关的教材片段。
-- 梳理它解决的问题、依赖的信息和形成的阶段产物。
-- 用自己的话解释它与后续阶段的关系。
-**推荐资源：**
-- 讲解文档、阶段知识导图、教学短视频和拓展阅读。
-**练习方式：**
-- 完成基础概念判断题和阶段顺序梳理题。
-**评估指标：**
-- 能准确说出{first}的定义、作用、输入输出和常见误区。
-
-## 阶段二：{second}方法关系建构
-### 学习安排
-**目标：** 建立{second}与前后阶段之间的方法关系，理解它在软件工程流程中的衔接作用。
-**学习任务：**
-- 对照教材片段梳理{second}的步骤、判断依据和阶段产物。
-- 比较它与{first}、{third}之间的边界。
-- 结合案例说明忽略该环节会产生的风险。
-**推荐资源：**
-- 讲解文档、阶段知识导图、教学短视频和拓展阅读。
-**练习方式：**
-- 完成流程排序题、案例分析题和输入输出匹配题。
-**评估指标：**
-- 能说明{second}的任务、产物、风险和与相邻阶段的联系。
-
-## 阶段三：{third}案例练习与迁移应用
-### 学习安排
-**目标：** 将{third}迁移到实际软件项目案例中，形成分析、判断和复审能力。
-**学习任务：**
-- 阅读{third}相关教材依据和案例材料。
-- 总结常见错误、质量风险和复审要点。
-- 用案例解释系统“应该做什么”和“不应该混淆什么”。
-**推荐资源：**
-- 讲解文档、阶段知识导图、教学短视频和拓展阅读。
-**练习方式：**
-- 完成案例判断题、简答题和阶段测评。
-**评估指标：**
-- 能独立判断{third}中的关键信息、常见误区和应用场景。
-
-## 动态调整建议
-根据练习结果，如果基础概念错误较多，回到阶段一补充定义和输入输出；如果案例题错误较多，强化阶段三的迁移练习。
-
-## 参考依据
-本路径依据当前学生画像、学习目标、薄弱知识点和本地软件工程课程知识库生成。
-""")
+        stages = _build_dynamic_lifecycle_stages(goal, lifecycle_points)
+        return normalize_markdown(
+            "\n\n".join(
+                [
+                    "# 个性化学习路径",
+                    *stages,
+                    "## 动态调整建议\n如果基础概念理解不稳，优先回到前两个阶段补概念和阶段边界；如果案例判断或产物辨析不稳，优先强化后半段的案例与迁移练习。",
+                    f"## 参考依据\n本路径依据当前学生画像、学习目标、薄弱知识点和本地软件工程课程知识库生成。覆盖知识点包括：{'、'.join(lifecycle_points[:8])}。",
+                ]
+            )
+        )
+    stages = _build_dynamic_general_stages(goal, points)
+    return normalize_markdown(
+        "\n\n".join(
+            [
+                "# 个性化学习路径",
+                *stages,
+                "## 动态调整建议\n如果概念题错误较多，优先回到前置阶段补定义和边界；如果案例题错误较多，优先强化后置阶段的迁移应用。",
+                f"## 参考依据\n本路径依据当前学生画像、学习目标、薄弱知识点和本地软件工程课程知识库生成。重点覆盖：{'、'.join((points or ['课程核心知识'])[:8])}。",
+            ]
+        )
+    )
 
 
 def _safe_json(value, default):
@@ -252,26 +277,6 @@ def _parse_path_stages(path_content: str) -> list[dict]:
                 "resources": [],
             }
         )
-    if len(stages) >= 3:
-        return stages
-    if stages:
-        merged_points = []
-        for stage in stages:
-            for point in stage.get("points") or []:
-                if point and point not in merged_points:
-                    merged_points.append(point)
-        fallback_specs = [
-            {"title": "方法关系建构", "duration": "预计3天", "goal": "建立相关方法、流程和阶段之间的关系。", "points": merged_points or ["课程核心知识"]},
-            {"title": "练习与实操巩固", "duration": "预计2天", "goal": "通过练习、案例和应用任务完成迁移。", "points": merged_points or ["课程核心知识"]},
-        ]
-        existing_titles = {stage.get("title") for stage in stages}
-        for item in fallback_specs:
-            if len(stages) >= 3:
-                break
-            if item["title"] in existing_titles:
-                continue
-            next_index = len(stages) + 1
-            stages.append({"index": next_index, "raw": "", "status": "pending", "resources": [], **item})
     return stages
 
 
@@ -455,17 +460,17 @@ def _build_planner_prompt(profile_text: str, knowledge: str, learning_need: str)
 
 输出要求：
 1. 只输出普通 Markdown 正文，不要代码围栏，不要 JSON，不要 ASCII 图，不要复杂表格，不要 emoji。
-2. 标题层级必须统一：一级标题用“# 个性化学习路径”，二级标题用“## 阶段一：...”“## 阶段二：...”“## 阶段三：...”，三级标题用“### 学习安排”。
-3. 必须生成 3 个学习阶段，不能只生成 1 个阶段；三个阶段应体现“基础理解 → 关系建构 → 练习应用”的递进关系。
-4. 阶段标题必须围绕学生的真实薄弱点和章节主题规划，不要简单把抽取到的前三个知识点机械填入标题。
-5. 如果学生学习的是软件生命周期、开发流程、阶段顺序或阶段产物，应优先按“基础概念理解 → 阶段顺序与任务产物梳理 → 案例练习与迁移应用”组织。
+2. 标题层级必须统一：一级标题用“# 个性化学习路径”，二级标题用“## 阶段一：...”这类形式，三级标题用“### 学习安排”。
+3. 根据主题复杂度动态生成 2 到 5 个学习阶段，不能只生成 1 个阶段；阶段之间应体现递进关系，但不要机械重复“基础理解 → 关系建构 → 练习应用”。
+4. 阶段标题必须围绕学生真实薄弱点、课程章节边界和任务难度规划，避免空泛标题，也不要简单把抽取到的前三个知识点直接拼接成标题。
+5. 如果学生学习的是软件生命周期、开发流程、阶段顺序或阶段产物，应优先按“总览认知 → 阶段边界 → 衔接与产物 → 案例应用”这类逻辑组织，但阶段数仍应按实际内容决定。
 6. 每个阶段固定包含五项，且五项名称必须一致：目标、学习任务、推荐资源、练习方式、评估指标。
 7. 每个阶段写成短段落和项目符号，不要把所有内容挤在一行。
 8. 内容要清楚说明学习顺序、为什么这样学、需要用到哪些文档/题库/视频/案例。
 9. 最后添加“## 动态调整建议”和“## 参考依据”两个小节。
 10. 只能依据教材原文和学生画像，不要编造不存在的页码、图片和结论。
 
-请严格按这个模板组织，三个阶段都必须保留：
+请严格按这个模板组织，阶段数量可以动态变化：
 
 # 个性化学习路径
 
@@ -481,7 +486,7 @@ def _build_planner_prompt(profile_text: str, knowledge: str, learning_need: str)
 **评估指标：**
 - ...
 
-## 阶段二：方法关系与流程建构
+## 阶段二：关系梳理与流程建构
 ### 学习安排
 **目标：** ...
 **学习任务：**
@@ -494,6 +499,18 @@ def _build_planner_prompt(profile_text: str, knowledge: str, learning_need: str)
 - ...
 
 ## 阶段三：案例练习与迁移应用
+### 学习安排
+**目标：** ...
+**学习任务：**
+- ...
+**推荐资源：**
+- ...
+**练习方式：**
+- ...
+**评估指标：**
+- ...
+
+## 阶段四：薄弱点回补强化
 ### 学习安排
 **目标：** ...
 **学习任务：**
@@ -521,14 +538,14 @@ def _valid_llm_path(path_content: str) -> tuple[bool, str]:
     if not content or _is_model_error_text(content):
         return False, "模型返回为空或调用失败"
     stages = _parse_path_stages(content)
-    if len(stages) != 3:
-        return False, f"阶段数量不是3个：{len(stages)}"
+    if not 2 <= len(stages) <= 5:
+        return False, f"阶段数量不在2到5之间：{len(stages)}"
     required_labels = ["目标", "学习任务", "推荐资源", "练习方式", "评估指标"]
     missing = [label for label in required_labels if f"**{label}" not in content]
     if missing:
         return False, f"缺少固定栏目：{'、'.join(missing)}"
     titles = [stage.get("title", "") for stage in stages]
-    if len(set(titles)) != 3:
+    if len(set(titles)) != len(titles):
         return False, "阶段标题重复"
     return True, "ok"
 
@@ -583,15 +600,15 @@ def generate_learning_path():
 
     输出要求：
     1. 只输出普通 Markdown 正文，不要代码围栏，不要 JSON，不要 ASCII 图，不要复杂表格，不要 emoji。
-    2. 标题层级必须统一：一级标题用“# 个性化学习路径”，二级标题用“## 阶段一：...”“## 阶段二：...”“## 阶段三：...”，三级标题用“### 学习安排”。
-    3. 必须生成 3 个学习阶段，不能只生成 1 个阶段；三个阶段应体现“基础理解 → 方法建构 → 练习应用”的递进关系。
+    2. 标题层级必须统一：一级标题用“# 个性化学习路径”，二级标题用“## 阶段一：...”这类形式，三级标题用“### 学习安排”。
+    3. 根据主题复杂度动态生成 2 到 5 个学习阶段，不能只生成 1 个阶段；阶段之间应体现递进关系，但不要机械重复同一套标题。
     4. 每个阶段固定包含五项，且五项名称必须一致：目标、学习任务、推荐资源、练习方式、评估指标。
     5. 每个阶段写成短段落和项目符号，不要把所有内容挤在一行。
     6. 内容要清楚说明学习顺序、为什么这样学、需要用到哪些文档/题库/视频/案例。
     7. 最后添加“## 动态调整建议”和“## 参考依据”两个小节。
     8. 只能依据教材原文和学生画像，不要编造不存在的页码、图片和结论。
 
-    请严格按这个模板组织，三个阶段都必须保留：
+    请严格按这个模板组织，阶段数量可以动态变化：
 
     # 个性化学习路径
 
@@ -620,6 +637,18 @@ def generate_learning_path():
     - ...
 
     ## 阶段三：案例练习与迁移应用
+    ### 学习安排
+    **目标：** ...
+    **学习任务：**
+    - ...
+    **推荐资源：**
+    - ...
+    **练习方式：**
+    - ...
+    **评估指标：**
+    - ...
+
+    ## 阶段四：薄弱点回补强化
     ### 学习安排
     **目标：** ...
     **学习任务：**

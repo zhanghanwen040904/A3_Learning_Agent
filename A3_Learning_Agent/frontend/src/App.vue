@@ -3,7 +3,11 @@
     <el-container class="app-shell">
       <el-aside v-if="!isAuthPage" width="292px" class="sidebar">
         <div class="sidebar-topbar">
-          <div class="brand-title">学习助手</div>
+          <div class="brand-mark" aria-hidden="true">M</div>
+          <div class="brand-copy">
+            <div class="brand-title">MultiTutor</div>
+            <div class="brand-subtitle">学习智能体</div>
+          </div>
         </div>
 
         <el-button class="new-chat-button" :loading="creatingSession" @click="createNewChat">
@@ -503,15 +507,43 @@ function syncActiveSession() {
 .sidebar-topbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 4px 8px 2px;
+  gap: 12px;
+  padding: 8px 10px 4px;
+}
+
+.brand-mark {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #2563eb, #0f766e);
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.24);
+}
+
+.brand-copy {
+  display: grid;
+  gap: 2px;
 }
 
 .brand-title {
   color: #111827;
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.brand-subtitle {
+  color: #7b8794;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
 }
 
 .new-chat-button {
