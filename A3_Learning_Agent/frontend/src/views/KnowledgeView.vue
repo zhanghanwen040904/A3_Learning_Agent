@@ -52,6 +52,16 @@
       </div>
     </el-card>
 
+    <el-alert
+      v-if="evidenceLocation.title"
+      class="evidence-location-alert"
+      type="success"
+      :closable="false"
+      show-icon
+      :title="`已定位生成证据：${evidenceLocation.title}`"
+      :description="evidenceLocation.description"
+    />
+
     <div class="knowledge-browser">
       <el-card class="panel tree-panel">
         <template #header><strong>教材资源目录</strong></template>
@@ -164,9 +174,12 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, ref } from "vue";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
+import { useRoute } from "vue-router";
 import { ElMessage } from "element-plus";
 import { knowledgeApi } from "../api";
+
+const route = useRoute();
 
 const refreshing = ref(false);
 const rebuilding = ref(false);
@@ -191,6 +204,7 @@ const importJsonPath = ref("");
 const selectedFile = ref(null);
 const treeRef = ref(null);
 const defaultExpandedKeys = ref([]);
+const evidenceLocation = ref({ title: "", description: "" });
 
 const hasTextbookContent = computed(() =>
   (sectionDetail.value.sections || []).some(
@@ -292,6 +306,104 @@ function collectExpandedKeys(nodes, keys = []) {
   return keys;
 }
 
+function findTreeNode(nodes, matcher) {
+  for (const node of nodes || []) {
+    if (matcher(node)) return node;
+    const child = findTreeNode(node.children || [], matcher);
+    if (child) return child;
+  }
+  return null;
+}
+
+function normalizeEvidenceText(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/[\s_\-—:：·、，。()（）\[\]【】]/g, "");
+}
+
+function evidenceRouteCandidates(evidenceTitle, result = {}) {
+  const routePath = String(route.query.path || "");
+  const resultPath = String(result.path || result.path_text || "");
+  const pathParts = [...routePath.split(/\s*\/\s*/), ...resultPath.split(/\s*\/\s*/)]
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .reverse();
+  return [route.query.section, result.section_title, ...pathParts, evidenceTitle]
+    .map(normalizeEvidenceText)
+    .filter((item, index, items) => item.length > 2 && items.indexOf(item) === index);
+}
+
+function expandTreeNode(nodeId) {
+  let current = treeRef.value?.getNode?.(nodeId);
+  while (current) {
+    current.expanded = true;
+    current = current.parent;
+  }
+}
+
+async function selectEvidenceNode(node, evidenceTitle, result = {}) {
+  if (!node?.node_id) return false;
+  activeNodeId.value = node.node_id;
+  await nextTick();
+  expandTreeNode(node.node_id);
+  treeRef.value?.setCurrentKey?.(node.node_id);
+  await loadSection(node.node_id);
+  evidenceLocation.value = {
+    title: evidenceTitle || node.title,
+    description: [result.path || node.path_text, result.page ? `第 ${result.page} 页` : "", result.chunk_index !== undefined ? `证据片段 ${result.chunk_index}` : ""].filter(Boolean).join(" · ") || "已打开对应知识库章节原文",
+  };
+  return true;
+}
+
+async function locateEvidenceFromRoute() {
+  const evidenceTitle = String(route.query.evidence || "").trim();
+  const nodeId = String(route.query.nodeId || "").trim();
+  if (!evidenceTitle && !nodeId) return;
+
+  if (nodeId) {
+    const direct = findTreeNode(chapterTree.value, (node) => String(node.node_id) === nodeId);
+    if (direct && await selectEvidenceNode(direct, evidenceTitle)) return;
+  }
+
+  let result = {};
+  if (evidenceTitle) {
+    try {
+      const items = unwrap(await knowledgeApi.search({ query: evidenceTitle, top_k: 5 })) || [];
+      result = items.find((item) => item.section_node_id) || items[0] || {};
+    } catch {
+      result = {};
+    }
+  }
+  const resultNodeId = String(result.section_node_id || "").trim();
+  const candidates = evidenceRouteCandidates(evidenceTitle, result);
+  let target = resultNodeId
+    ? findTreeNode(chapterTree.value, (node) => String(node.node_id) === resultNodeId)
+    : null;
+  // Match candidates one by one so the deepest evidence section wins over
+  // generic ancestors such as the course root "软件工程".
+  for (const candidate of candidates) {
+    if (target) break;
+    target = findTreeNode(
+      chapterTree.value,
+      (node) => normalizeEvidenceText(node.title) === candidate,
+    );
+  }
+  if (!target) {
+    for (const candidate of candidates) {
+      if (target) break;
+      target = findTreeNode(chapterTree.value, (node) => {
+        const title = normalizeEvidenceText(node.title);
+        return title.length > 3 && (title.includes(candidate) || candidate.includes(title));
+      });
+    }
+  }
+  if (target) {
+    await selectEvidenceNode(target, evidenceTitle, result);
+  } else {
+    evidenceLocation.value = { title: evidenceTitle, description: "已进入知识库管理，但暂未匹配到精确章节，请通过左侧目录继续查找。" };
+  }
+}
+
 async function loadStatus() {
   const data = unwrap(await knowledgeApi.status());
   status.value = data;
@@ -335,7 +447,8 @@ async function loadSection(nodeId) {
 async function refreshAll() {
   refreshing.value = true;
   try {
-    await Promise.all([loadStatus(), loadTree(!activeNodeId.value)]);
+    const hasEvidenceRoute = Boolean(route.query.evidence || route.query.nodeId || route.query.section || route.query.path);
+    await Promise.all([loadStatus(), loadTree(!activeNodeId.value && !hasEvidenceRoute)]);
     if (activeNodeId.value) {
       await nextTick();
       treeRef.value?.setCurrentKey?.(activeNodeId.value);
@@ -401,7 +514,13 @@ function handleTreeClick(node) {
 
 onMounted(async () => {
   await refreshAll();
+  await locateEvidenceFromRoute();
 });
+
+watch(
+  () => [route.query.evidence, route.query.nodeId, route.query.section, route.query.path],
+  () => locateEvidenceFromRoute(),
+);
 </script>
 
 <style scoped>
@@ -409,6 +528,11 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+.evidence-location-alert {
+  border: 1px solid #bbf7d0;
+  background: #f0fdf4;
 }
 
 .panel-head {

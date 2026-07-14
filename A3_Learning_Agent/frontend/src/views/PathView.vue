@@ -171,7 +171,7 @@
 
     <el-card class="panel feedback feedback-card"><div><el-tag type="primary" effect="light">学习反馈与动态调整</el-tag><b>让后续学习方案随掌握情况变化</b><p>提交学习反馈后，EvaluatorAgent 将分析你的掌握情况，由 PlannerAgent 动态调整后续阶段的难度与资源侧重。</p></div><div><el-button plain @click="fb('easy')">觉得太简单</el-button><el-button plain @click="fb('hard')">觉得太难</el-button><el-button type="primary" @click="fb('quiz')">根据练习结果调整</el-button></div></el-card>
 
-    <el-dialog v-model="detailDialog.visible" :title="detailDialog.type==='basis'?'生成依据':'质量审核报告'" width="560px" destroy-on-close>
+    <el-dialog v-model="detailDialog.visible" :title="detailDialog.type==='basis'?'生成依据':'质量审核报告'" width="min(720px, 92vw)" destroy-on-close>
       <div v-if="detailDialog.resource" class="detail-dialog-body">
         <template v-if="detailDialog.type==='basis'">
           <h3>{{detailDialog.resource.title}}</h3>
@@ -179,6 +179,28 @@
           <div class="detail-kv"><span>资源类型</span><b>{{typeName(detailDialog.resource.resource_type)}}</b></div>
           <div class="detail-kv"><span>关联知识点</span><b>{{kps(detailDialog.resource).join('、')||'课程核心知识'}}</b></div>
           <div class="detail-kv"><span>知识库来源</span><b>{{sourceText(detailDialog.resource)}}</b></div>
+          <div v-if="evidenceSources(detailDialog.resource).length" class="evidence-source-list">
+            <button
+              v-for="(source,index) in evidenceSources(detailDialog.resource)"
+              :key="`${source.title}-${source.chunk_index}-${index}`"
+              type="button"
+              class="evidence-source-card"
+              @click="openEvidenceSource(source)"
+            >
+              <span class="evidence-index">{{index+1}}</span>
+              <span class="evidence-main">
+                <strong>{{source.title}}</strong>
+                <small>{{source.section_path||source.source_file||'课程知识库'}}</small>
+                <em v-if="source.content_preview">{{source.content_preview}}</em>
+              </span>
+              <span class="evidence-meta">
+                <small v-if="source.pages">第 {{source.pages}} 页</small>
+                <small v-if="source.chunk_index!==''">片段 {{source.chunk_index}}</small>
+                <b>查看原文 →</b>
+              </span>
+            </button>
+          </div>
+          <el-alert v-else type="warning" :closable="false" title="该资源暂未保存可定位的知识库证据" />
         </template>
         <template v-else>
           <h3>{{detailDialog.resource.title}}</h3>
@@ -207,6 +229,9 @@ const paths=ref([]),resources=ref([]),profile=ref({}),integrated=ref({}),loading
 const profileTipDisabled=ref(localStorage.getItem('a3_path_profile_tip_seen')==='1');
 const detailDialog=ref({visible:false,type:'basis',resource:null});
 let pathLoadToken=0;
+let trackedResource=null;
+let trackedSince=0;
+let usageHeartbeat=null;
 const agents=[{name:'PlannerAgent',short:'PL',desc:'读取画像并规划阶段目标',p:18},{name:'RetrieverAgent',short:'RG',desc:'检索课程知识库和章节依据',p:34},{name:'ResourceAgents',short:'RA',desc:'生成讲解、练习、思维导图等资源',p:64},{name:'AuditAgent',short:'AU',desc:'校验事实准确性和格式质量',p:82},{name:'PackagerAgent',short:'PK',desc:'按阶段挂载资源并刷新页面',p:100}];
 const markmapTransformer=new Transformer();
 const markdownRenderer=new MarkdownIt({html:false,linkify:true,breaks:true});
@@ -522,6 +547,37 @@ function typeName(t){return({doc:'讲解文档',quiz:'基础练习题',reading:'
 function resourceIcon(t){return({doc:'📄',mindmap:'🧠',quiz:'✏️',code:'💻',video:'▶️',reading:'📖'}[t]||'📎')}
 function resourceClass(r){return `res-${r.resource_type||'default'}`}
 function rid(r){return`${r.id||r.resource_type}-${r.title}`}
+function visibleLearningResource(){
+  const stage=stages.value[activeStageIndex.value];
+  if(!stage)return null;
+  const activeId=activeResourceTabs.value[activeStageIndex.value];
+  return (stage.resources||[]).find(item=>rid(item)===activeId&&Number(item.id)>0)||null;
+}
+async function flushLearningDuration(){
+  const resource=trackedResource;
+  if(!resource||!trackedSince)return;
+  const now=Date.now();
+  const durationSec=Math.floor((now-trackedSince)/1000);
+  trackedSince=now;
+  if(durationSec<2)return;
+  try{
+    await resourceApi.usage(resource.id,{duration_sec:durationSec,progress:0,completed:false});
+  }catch{
+    // A later heartbeat will continue recording without interrupting learning.
+  }
+}
+function syncLearningDurationTracker(){
+  const next=visibleLearningResource();
+  if(rid(next||{})===rid(trackedResource||{}))return;
+  void flushLearningDuration();
+  trackedResource=next;
+  trackedSince=next?Date.now():0;
+}
+function handleLearningVisibility(){
+  if(document.hidden){void flushLearningDuration();return;}
+  trackedSince=trackedResource?Date.now():0;
+  syncLearningDurationTracker();
+}
 function hasModelError(t){const text=String(t||'');return /\{\s*"?success"?\s*:\s*false/i.test(text)||text.includes('调用失败')||text.includes('AppIdNoAuthError')||text.includes('NoAuth')||text.includes('anthropic/messages')}
 function preview(r){const text=resourceText(r);return text.length>180?`${text.slice(0,180)}...`:text}
 function extractJsonText(raw){return String(raw||'').replace(/^\s*```(?:json)?\s*/i,'').replace(/```\s*$/,'').replace(/^\s*json\s*/i,'').trim()}
@@ -864,7 +920,34 @@ function openResourceDetail(resource,type){detailDialog.value={visible:true,type
 function toggleResource(r){const id=rid(r);openResources.value={...openResources.value,[id]:!openResources.value[id]}}
 function toggleStage(i){if(i>current.value&&!done(i)){ElMessage.warning('请先完成前置阶段，再解锁后续学习内容');return}openStages.value={...openStages.value,[i]:!(openStages.value[i]??i===current.value)}}
 function q(r){return r.quality||r.metadata?.quality||{}}function qScore(r){return Number(r.quality_score||q(r).total||80)}function qPass(r){return q(r).passed!==false&&qScore(r)>=75}
-function sourceText(r){const n=[...new Set((r.sources||[]).map(s=>s.source||s.source_name).filter(Boolean))].length;return n?`已关联 ${n} 个课程知识库来源，并保留防幻觉审核信息。`:'建议在资源页复核课程依据。'}
+function sourceText(r){const n=evidenceSources(r).length;return n?`已关联 ${n} 条可追溯课程证据，并保留防幻觉审核信息。`:'建议在资源页复核课程依据。'}
+function evidenceSources(r){
+  const json=resourceJson(r)||{};
+  const metadata=r.metadata||{};
+  const detailed=[...(Array.isArray(metadata.evidence)?metadata.evidence:[]),...(Array.isArray(json.learningresources)?json.learningresources:[])];
+  const fallback=Array.isArray(r.sources)?r.sources:[];
+  const normalized=[...detailed,...fallback].map((item)=>{
+    const path=item.section_path||item.sectionpath||item.path||[];
+    const pathParts=Array.isArray(path)?path.map((part)=>String(part).trim()).filter(Boolean):String(path||'').split(/\s*[/＞>]\s*/).map((part)=>part.trim()).filter(Boolean);
+    const pages=item.pages||item.page||[];
+    return {
+      title:String(item.title||item.section_title||item.source||item.source_name||'课程知识库证据').trim(),
+      section_path:pathParts.join(' / '),
+      section_title:String(item.section_title||pathParts[pathParts.length-1]||'').trim(),
+      pages:Array.isArray(pages)?pages.join('、'):String(pages||''),
+      source_file:String(item.source_file||item.source||item.source_name||'').trim(),
+      chunk_index:item.chunk_index??'',
+      content_preview:String(item.content_preview||item.content||'').trim().slice(0,120),
+      node_id:String(item.section_node_id||item.node_id||'').trim(),
+    };
+  });
+  const seen=new Set();
+  return normalized.filter((item)=>{const key=`${item.title}|${item.section_path}|${item.chunk_index}`;if(seen.has(key))return false;seen.add(key);return Boolean(item.title)}).slice(0,8);
+}
+function openEvidenceSource(source){
+  detailDialog.value.visible=false;
+  router.push({path:'/knowledge',query:{evidence:source.title,section:source.section_title||undefined,path:source.section_path||undefined,nodeId:source.node_id||undefined,source:source.source_file||undefined,page:source.pages||undefined,chunk:source.chunk_index!==''?String(source.chunk_index):undefined}});
+}
 function done(i){return completed.value.includes(i)}function state(i){return done(i)?'completed':i===current.value?'current':'pending'}function label(i){return{completed:'已完成',current:'当前阶段',pending:'未开始'}[state(i)]}function tag(i){return{completed:'success',current:'primary',pending:'info'}[state(i)]}
 async function toggle(i){
   const stage=stages.value[i];
@@ -1040,11 +1123,15 @@ onMounted(async()=>{
     await triggerAutoGenerate();
   }
   window.addEventListener('resize',refitAllMarkmaps);
+  document.addEventListener('visibilitychange',handleLearningVisibility);
+  syncLearningDurationTracker();
+  usageHeartbeat=setInterval(()=>void flushLearningDuration(),60000);
 });
-onBeforeUnmount(()=>{stopMindmapDrag();window.removeEventListener('resize',refitAllMarkmaps);});
-watch(()=>route.query.sessionId,async()=>{await loadAll(currentSessionId());renderMarkmaps()});
+onBeforeUnmount(()=>{void flushLearningDuration();if(usageHeartbeat)clearInterval(usageHeartbeat);document.removeEventListener('visibilitychange',handleLearningVisibility);stopMindmapDrag();window.removeEventListener('resize',refitAllMarkmaps);});
+watch(()=>route.query.sessionId,async()=>{await flushLearningDuration();trackedResource=null;trackedSince=0;await loadAll(currentSessionId());renderMarkmaps();syncLearningDurationTracker()});
 watch(stages,()=>{if(activeStageIndex.value>=stages.value.length)activeStageIndex.value=Math.max(stages.value.length-1,0);ensureActiveResourceTabs();nextTick(()=>renderMarkmaps())},{deep:true,flush:'post'});
-watch(activeResourceTabs,()=>{nextTick(()=>renderMarkmaps())},{deep:true});
+watch(activeResourceTabs,()=>{syncLearningDurationTracker();nextTick(()=>renderMarkmaps())},{deep:true});
+watch(activeStageIndex,()=>syncLearningDurationTracker());
 watch(current,(value)=>{if(!done(activeStageIndex.value)&&activeStageIndex.value<value)activeStageIndex.value=value});
 </script>
 
@@ -1055,6 +1142,7 @@ watch(current,(value)=>{if(!done(activeStageIndex.value)&&activeStageIndex.value
 @media(max-width:800px){.agents,.stats{grid-template-columns:1fr}.stage{grid-template-columns:42px 1fr}.stage-head,.feedback,.prestudy-head{flex-direction:column;align-items:flex-start}.prestudy-card{grid-template-columns:1fr}}.adaptive-focus-bar{display:flex;align-items:flex-start;gap:10px;margin-top:14px;padding:10px 12px;border:1px solid #fde7b0;border-radius:14px;background:#fffaf0;color:#7c5a10;line-height:1.65;font-size:13px}
 .adaptive-panel .el-card__body{display:grid;gap:12px}.adaptive-ranking-list{display:grid;gap:12px}.adaptive-ranking-item{padding:14px 16px;border:1px solid #eceff5;border-radius:16px;background:#fff}.adaptive-ranking-title{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}.adaptive-ranking-item p{margin:0;color:#475569;line-height:1.7}
 .adaptive-explanation{margin-top:10px;color:#526072;line-height:1.75;font-size:14px;max-width:860px}
+.evidence-source-list{display:grid;gap:10px}.evidence-source-card{display:grid;grid-template-columns:30px minmax(0,1fr) auto;align-items:center;gap:12px;width:100%;padding:13px 14px;border:1px solid #dbeafe;border-radius:14px;background:#f8fbff;color:#334155;text-align:left;cursor:pointer;transition:.18s ease}.evidence-source-card:hover{border-color:#60a5fa;background:#eff6ff;transform:translateY(-1px)}.evidence-index{display:grid;width:28px;height:28px;place-items:center;border-radius:9px;background:#dbeafe;color:#1d4ed8;font-size:12px;font-weight:800}.evidence-main{display:grid;min-width:0;gap:4px}.evidence-main strong{overflow:hidden;color:#0f172a;text-overflow:ellipsis;white-space:nowrap}.evidence-main small{overflow:hidden;color:#64748b;font-size:12px;text-overflow:ellipsis;white-space:nowrap}.evidence-main em{display:-webkit-box;overflow:hidden;color:#64748b;font-size:12px;font-style:normal;line-height:1.5;-webkit-box-orient:vertical;-webkit-line-clamp:2}.evidence-meta{display:grid;justify-items:end;gap:3px;color:#64748b;font-size:11px;white-space:nowrap}.evidence-meta b{color:#2563eb;font-size:12px}@media(max-width:720px){.evidence-source-card{grid-template-columns:30px minmax(0,1fr)}.evidence-meta{grid-column:2;justify-items:start}}
 </style>
 
 
