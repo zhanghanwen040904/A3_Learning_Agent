@@ -5,6 +5,8 @@ import ChatView from "./views/ChatView.vue";
 import EvaluationView from "./views/EvaluationView.vue";
 import WrongBookView from "./views/WrongBookView.vue";
 import KnowledgeView from "./views/KnowledgeView.vue";
+import CourseGuideView from "./views/CourseGuideView.vue";
+import KnowledgeJarView from "./views/KnowledgeJarView.vue";
 import PathView from "./views/PathView.vue";
 import ProfileView from "./views/ProfileView.vue";
 import StudentPortraitView from "./views/StudentPortraitView.vue";
@@ -16,8 +18,10 @@ const routes = [
   { path: "/architecture", component: ArchitectureView, meta: { title: "智能体架构", requiresAuth: true } },
   { path: "/profile", component: ProfileView, meta: { title: "新对话", requiresAuth: true } },
   { path: "/student-portrait", component: StudentPortraitView, meta: { title: "学生画像", requiresAuth: true } },
+  { path: "/course-guide", component: CourseGuideView, meta: { title: "课程导学", requiresAuth: true } },
   { path: "/resources", redirect: "/path", meta: { title: "学习路径", requiresAuth: true } },
   { path: "/path", component: PathView, meta: { title: "学习路径", requiresAuth: true } },
+  { path: "/knowledge-jar", component: KnowledgeJarView, meta: { title: "知识收藏瓶", requiresAuth: true } },
   { path: "/resource", redirect: "/path", meta: { title: "学习路径", requiresAuth: true } },
   { path: "/chat", component: ChatView, meta: { title: "智能答疑", requiresAuth: true } },
   { path: "/evaluation", component: EvaluationView, meta: { title: "学习评估", requiresAuth: true } },

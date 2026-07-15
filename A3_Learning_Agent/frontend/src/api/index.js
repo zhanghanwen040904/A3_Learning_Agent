@@ -110,6 +110,12 @@ export const pathApi = {
   submitFeedback: (data = {}, profileSessionId = "") => http.post("/path/feedback", withExplicitProfileSession(data, profileSessionId)),
 };
 
+export const knowledgeJarApi = {
+  list: () => http.get("/knowledge-jar/"),
+  collect: (data = {}) => http.post("/knowledge-jar/collect", withProfileSession(data)),
+  remove: (data = {}) => http.post("/knowledge-jar/remove", withProfileSession(data)),
+};
+
 export const chatApi = {
   answer: (data) => http.post("/chat/answer", withProfileSession(data)),
   history: () => http.get("/chat/history", { params: profileSessionParams() }),

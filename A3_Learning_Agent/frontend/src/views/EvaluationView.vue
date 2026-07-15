@@ -15,22 +15,10 @@
       </template>
 
       <div class="stats-grid">
-        <div class="stat-card">
-          <span class="stat-label">平均得分</span>
-          <strong class="stat-value">{{ summary.avg_score || 0 }}<em>分</em></strong>
-        </div>
-        <div class="stat-card">
-          <span class="stat-label">已完成题数</span>
-          <strong class="stat-value">{{ summary.quiz_count || 0 }}</strong>
-        </div>
-        <div class="stat-card">
-          <span class="stat-label">当前薄弱点</span>
-          <strong class="stat-value">{{ liveWeakPoints.length }}</strong>
-        </div>
-        <div class="stat-card">
-          <span class="stat-label">题库题目数</span>
-          <strong class="stat-value">{{ summary.bank_status?.question_count || 0 }}</strong>
-        </div>
+        <div class="stat-card"><span class="stat-label">平均得分</span><strong class="stat-value">{{ summary.avg_score || 0 }}<em>分</em></strong></div>
+        <div class="stat-card"><span class="stat-label">已完成题数</span><strong class="stat-value">{{ summary.quiz_count || 0 }}</strong></div>
+        <div class="stat-card"><span class="stat-label">当前薄弱点</span><strong class="stat-value">{{ liveWeakPoints.length }}</strong></div>
+        <div class="stat-card"><span class="stat-label">题库题目数</span><strong class="stat-value">{{ summary.bank_status?.question_count || 0 }}</strong></div>
       </div>
 
       <div class="profile-box">
@@ -67,7 +55,11 @@
             </el-form-item>
 
             <el-form-item label="题目数量" class="count-item">
-              <el-input-number v-model="generator.count" :min="3" :max="10" />
+              <div class="question-stepper" aria-label="题目数量">
+                <button type="button" :disabled="generator.count <= 3" @click="generator.count = Math.max(3, generator.count - 1)">−</button>
+                <strong>{{ generator.count }}</strong>
+                <button type="button" :disabled="generator.count >= 10" @click="generator.count = Math.min(10, generator.count + 1)">＋</button>
+              </div>
             </el-form-item>
           </div>
 
@@ -995,6 +987,56 @@ onMounted(async () => {
   width: 100%;
 }
 
+.question-stepper {
+  display: grid;
+  grid-template-columns: 34px 60px 34px;
+  width: 128px;
+  height: 42px;
+  overflow: hidden;
+  border: 1px solid #dce3ed;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.question-stepper button {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: #f7f9fc;
+  color: #536175;
+  font: inherit;
+  font-size: 17px;
+  cursor: pointer;
+  transition: background .18s, color .18s;
+}
+
+.question-stepper button:first-child {
+  border-right: 1px solid #dce3ed;
+}
+
+.question-stepper button:last-child {
+  border-left: 1px solid #dce3ed;
+}
+
+.question-stepper button:hover:not(:disabled) {
+  background: #eaf3ff;
+  color: #2f75df;
+}
+
+.question-stepper button:disabled {
+  color: #bdc6d3;
+  cursor: not-allowed;
+}
+
+.question-stepper strong {
+  display: grid;
+  place-items: center;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 600;
+}
+
 .generator-panel :deep(.el-form-item__label) {
   color: #334155;
   font-size: 13px;
@@ -1298,5 +1340,122 @@ onMounted(async () => {
     align-items: flex-start;
     gap: 4px;
   }
+}
+
+/* Keep all generator controls on one consistent visual scale. */
+.generator-grid {
+  grid-template-columns: 380px minmax(0, 1fr);
+  gap: 20px;
+}
+
+.generator-form {
+  padding-top: 4px;
+}
+
+.generator-top-row {
+  grid-template-columns: 232px 128px;
+  gap: 12px;
+}
+
+.generator-top-row .el-form-item {
+  margin-bottom: 16px;
+}
+
+.generator-panel :deep(.el-form-item__label) {
+  height: 28px;
+  padding: 0;
+  line-height: 28px;
+}
+
+.generator-panel :deep(.el-radio-group) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: 100%;
+  height: 42px;
+  overflow: hidden;
+  border: 1px solid #dce3ed;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.generator-panel :deep(.el-radio-button) {
+  min-width: 0;
+}
+
+.generator-panel :deep(.el-radio-button__inner) {
+  display: grid;
+  width: 100%;
+  height: 40px;
+  place-items: center;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 10px !important;
+  font-size: 13px;
+  line-height: 1;
+}
+
+.count-item :deep(.el-input-number) {
+  width: 128px;
+  height: 42px;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.count-item :deep(.el-input-number__decrease),
+.count-item :deep(.el-input-number__increase) {
+  top: 1px;
+  bottom: 1px;
+  width: 32px;
+  height: auto;
+}
+
+.count-item :deep(.el-input__wrapper) {
+  height: 42px;
+  padding-right: 32px;
+  padding-left: 32px;
+  border-radius: 12px;
+}
+
+.count-item :deep(.el-input-number__decrease) {
+  left: 1px;
+}
+
+.count-item :deep(.el-input-number__increase) {
+  right: 1px;
+}
+
+.generator-panel :deep(.el-select__wrapper) {
+  min-height: 44px;
+  border-radius: 12px;
+}
+
+.generate-button {
+  min-width: 140px;
+  height: 44px;
+  border-radius: 12px;
+  font-size: 14px;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, .16);
+}
+
+.generator-info {
+  padding: 16px 18px;
+  border-radius: 16px;
+}
+
+.generator-info :deep(.el-tag) {
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 9px;
+  font-size: 12px;
+}
+
+@media (max-width: 1180px) {
+  .generator-grid { grid-template-columns: 1fr; }
+  .generator-top-row { grid-template-columns: minmax(220px, 232px) 128px; }
+}
+
+@media (max-width: 640px) {
+  .generator-top-row { grid-template-columns: 1fr; }
+  .count-item :deep(.el-input-number) { width: 100%; }
 }
 </style>
