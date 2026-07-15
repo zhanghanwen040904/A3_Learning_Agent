@@ -3,10 +3,17 @@
     <el-container class="app-shell">
       <el-aside v-if="!isAuthPage" width="292px" class="sidebar">
         <div class="sidebar-topbar">
-          <div class="brand-mark" aria-hidden="true">M</div>
+          <div class="brand-mark" aria-hidden="true">
+            <span class="book-icon">
+              <span class="book-page left"></span>
+              <span class="book-page right"></span>
+              <span class="book-spine"></span>
+            </span>
+            <span class="badge-corner"></span>
+          </div>
           <div class="brand-copy">
             <div class="brand-title">MultiTutor</div>
-            <div class="brand-subtitle">学习智能体</div>
+            <div class="brand-subtitle">智伴学堂</div>
           </div>
         </div>
 
@@ -512,18 +519,79 @@ function syncActiveSession() {
 }
 
 .brand-mark {
-  display: grid;
+  position: relative;
   width: 38px;
   height: 38px;
   flex: 0 0 auto;
-  place-items: center;
   border-radius: 12px;
-  background: linear-gradient(135deg, #2563eb, #0f766e);
-  color: #ffffff;
-  font-size: 20px;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.24);
+  overflow: hidden;
+  background: linear-gradient(135deg, #38bdf8 0%, #60a5fa 100%);
+  box-shadow: 0 10px 22px rgba(56, 189, 248, 0.24);
+}
+
+.brand-mark::before {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid rgba(255, 255, 255, 0.78);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.78);
+  border-radius: 0 0 4px 0;
+  content: "";
+}
+
+.book-icon {
+  position: absolute;
+  left: 7px;
+  top: 9px;
+  z-index: 2;
+  width: 22px;
+  height: 17px;
+}
+
+.book-page {
+  position: absolute;
+  top: 0;
+  width: 11px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.book-page.left {
+  left: 0;
+  border-right: 0;
+  border-radius: 5px 0 0 5px;
+  transform: skewY(-5deg);
+}
+
+.book-page.right {
+  right: 0;
+  border-left: 0;
+  border-radius: 0 5px 5px 0;
+  transform: skewY(5deg);
+}
+
+.book-spine {
+  position: absolute;
+  left: 10px;
+  top: 2px;
+  width: 3px;
+  height: 15px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.badge-corner {
+  position: absolute;
+  right: 6px;
+  top: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9);
 }
 
 .brand-copy {
