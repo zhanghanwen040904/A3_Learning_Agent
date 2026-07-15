@@ -1,7 +1,7 @@
 ﻿import json
 import time
 from datetime import datetime
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 from config import config
 
@@ -295,7 +295,9 @@ def _call_spark_compatible(prompt: str) -> str:
         "max_tokens": _max_output_tokens(),
         "stream": False,
     }
-    response = requests.post(
+    session = requests.Session()
+    session.trust_env = False
+    response = session.post(
         config.SPARK_BASE_URL,
         headers={
             "Authorization": f"Bearer {config.SPARK_APIPASSWORD}",
@@ -313,7 +315,7 @@ def _call_spark_compatible(prompt: str) -> str:
     raise RuntimeError(f"讯飞星火接口未返回有效内容：{data}")
 
 
-def _anthropic_candidate_urls() -> list[str]:
+def _anthropic_candidate_urls() -> List[str]:
     base_url = str(config.ANTHROPIC_BASE_URL or "").rstrip("/")
     if not base_url:
         return []
@@ -331,7 +333,7 @@ def _anthropic_candidate_urls() -> list[str]:
     return result
 
 
-def _anthropic_header_variants() -> list[dict[str, str]]:
+def _anthropic_header_variants() -> List[Dict[str, str]]:
     token = config.ANTHROPIC_AUTH_TOKEN
     return [
         {
@@ -432,7 +434,7 @@ def llm_chat(prompt: str) -> str:
     if config.MOCK_AI:
         return _mock_llm_response(prompt)
 
-    use_spark = config.AI_PROVIDER in {"spark", "xunfei", "xfyun"}
+    use_spark = config.AI_PROVIDER in {"spark", "xunfei", "xfyun", "iflytek"}
     if use_spark:
         if not (config.SPARK_APIPASSWORD and config.SPARK_BASE_URL and config.SPARK_MODEL):
             return json.dumps(_standard_error("讯飞星火配置不完整"), ensure_ascii=False)

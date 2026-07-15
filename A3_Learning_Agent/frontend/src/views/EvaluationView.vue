@@ -15,22 +15,10 @@
       </template>
 
       <div class="stats-grid">
-        <div class="stat-card">
-          <span class="stat-label">平均得分</span>
-          <strong class="stat-value">{{ summary.avg_score || 0 }}<em>分</em></strong>
-        </div>
-        <div class="stat-card">
-          <span class="stat-label">已完成题数</span>
-          <strong class="stat-value">{{ summary.quiz_count || 0 }}</strong>
-        </div>
-        <div class="stat-card">
-          <span class="stat-label">当前薄弱点</span>
-          <strong class="stat-value">{{ liveWeakPoints.length }}</strong>
-        </div>
-        <div class="stat-card">
-          <span class="stat-label">题库题目数</span>
-          <strong class="stat-value">{{ summary.bank_status?.question_count || 0 }}</strong>
-        </div>
+        <div class="stat-card"><span class="stat-label">平均得分</span><strong class="stat-value">{{ summary.avg_score || 0 }}<em>分</em></strong></div>
+        <div class="stat-card"><span class="stat-label">已完成题数</span><strong class="stat-value">{{ summary.quiz_count || 0 }}</strong></div>
+        <div class="stat-card"><span class="stat-label">当前薄弱点</span><strong class="stat-value">{{ liveWeakPoints.length }}</strong></div>
+        <div class="stat-card"><span class="stat-label">题库题目数</span><strong class="stat-value">{{ summary.bank_status?.question_count || 0 }}</strong></div>
       </div>
 
       <div class="profile-box">
