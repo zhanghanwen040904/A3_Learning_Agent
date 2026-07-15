@@ -1,5 +1,6 @@
 ﻿import json
 import re
+from datetime import date, datetime, timedelta
 from typing import Any, Optional
 
 import pymysql
@@ -676,6 +677,103 @@ def _portrait_score_fallback(profile: dict, evidence: dict) -> dict:
         "dynamic_profile": dynamic,
     }
 
+def _parse_learning_time(value):
+    if isinstance(value, datetime):
+        return value
+    text = str(value or "").strip()
+    if not text:
+        return None
+    try:
+        return datetime.fromisoformat(text.replace("Z", "+00:00")).replace(tzinfo=None)
+    except ValueError:
+        return None
+
+
+def _build_learning_effect_overview(quiz_rows: list, event_rows: list, resource_usage_items: list) -> dict:
+    today = date.today()
+    days = [today - timedelta(days=offset) for offset in range(6, -1, -1)]
+    daily = {
+        item: {"duration_sec": 0, "completed_tasks": 0, "quiz_scores": [], "event_count": 0}
+        for item in days
+    }
+
+    total_duration_sec = 0
+    completed_resources = 0
+    progress_values = []
+    for item in resource_usage_items:
+        duration = max(0, _safe_int(item.get("duration_sec"), 0))
+        progress = max(0, min(100, _safe_int(item.get("progress"), 0)))
+        completed = bool(item.get("completed")) or progress >= 100
+        occurred_at = _parse_learning_time(item.get("time"))
+        if occurred_at and occurred_at.date() in daily:
+            total_duration_sec += duration
+            progress_values.append(progress)
+            completed_resources += int(completed)
+            daily[occurred_at.date()]["duration_sec"] += duration
+            daily[occurred_at.date()]["completed_tasks"] += int(completed)
+
+    stage_states = {}
+    for item in event_rows:
+        occurred_at = _parse_learning_time(item.get("create_time"))
+        event_type = str(item.get("event_type") or "").strip()
+        detail = _json_loads(item.get("detail"), {})
+        if event_type == "complete_stage":
+            stage_key = detail.get("stage_index") if isinstance(detail, dict) else None
+            path_key = detail.get("path_id") if isinstance(detail, dict) else None
+            state_key = (str(item.get("profile_session_id") or ""), str(path_key or ""), str(stage_key or ""))
+            if state_key not in stage_states:
+                stage_states[state_key] = {
+                    "completed": bool(detail.get("completed", True)) if isinstance(detail, dict) else True,
+                    "time": occurred_at,
+                }
+        if occurred_at and occurred_at.date() in daily and event_type != "resource_usage":
+            daily[occurred_at.date()]["event_count"] += 1
+
+    completed_stages = set()
+    for state_key, state in stage_states.items():
+        occurred_at = state.get("time")
+        if not state.get("completed") or not occurred_at or occurred_at.date() not in daily:
+            continue
+        completed_stages.add(state_key)
+        daily[occurred_at.date()]["completed_tasks"] += 1
+
+    quiz_scores = []
+    for item in quiz_rows:
+        score = max(0, min(100, _safe_int(item.get("score"), 0)))
+        occurred_at = _parse_learning_time(item.get("create_time"))
+        if occurred_at and occurred_at.date() in daily:
+            quiz_scores.append(score)
+            daily[occurred_at.date()]["quiz_scores"].append(score)
+
+    trend = []
+    for day_value in days:
+        item = daily[day_value]
+        avg_score = round(sum(item["quiz_scores"]) / len(item["quiz_scores"]), 1) if item["quiz_scores"] else 0
+        duration_score = min(45, round(item["duration_sec"] / 120))
+        completion_score = min(25, item["completed_tasks"] * 10)
+        activity_score = min(15, item["event_count"] * 3)
+        quiz_score = round(avg_score * 0.15) if item["quiz_scores"] else 0
+        trend.append(
+            {
+                "date": day_value.strftime("%m/%d"),
+                "activity_score": min(100, duration_score + completion_score + activity_score + quiz_score),
+                "duration_sec": item["duration_sec"],
+                "completed_tasks": item["completed_tasks"],
+                "avg_score": avg_score,
+            }
+        )
+
+    return {
+        "period": f"{days[0].strftime('%m/%d')} - {days[-1].strftime('%m/%d')}",
+        "total_duration_sec": total_duration_sec,
+        "completed_tasks": completed_resources + len(completed_stages),
+        "task_completion_rate": round(sum(progress_values) / len(progress_values)) if progress_values else 0,
+        "correct_rate": round(sum(quiz_scores) / len(quiz_scores)) if quiz_scores else 0,
+        "quiz_count": len(quiz_scores),
+        "trend": trend,
+    }
+
+
 def _build_portrait_scoring_evidence(user_id: int, profile: dict) -> dict:
     quiz_rows = mysql_db.query_all(
         "SELECT score, knowledge_point, create_time FROM quiz_result WHERE user_id=%s ORDER BY create_time DESC LIMIT 50",
@@ -686,15 +784,21 @@ def _build_portrait_scoring_evidence(user_id: int, profile: dict) -> dict:
         (user_id,),
     )
     event_rows = mysql_db.query_all(
-        "SELECT event_type, knowledge_point, detail, create_time FROM learning_event WHERE user_id=%s ORDER BY create_time DESC LIMIT 50",
+        "SELECT id, profile_session_id, event_type, knowledge_point, detail, create_time FROM learning_event WHERE user_id=%s ORDER BY create_time DESC, id DESC LIMIT 50",
         (user_id,),
     )
     resource_feedback_rows = mysql_db.query_all(
         "SELECT rating, comment, create_time FROM resource_feedback WHERE user_id=%s ORDER BY create_time DESC LIMIT 30",
         (user_id,),
     )
-    resource_rows = mysql_db.query_all(
-        "SELECT resource_type, title, create_time FROM study_resource WHERE user_id=%s ORDER BY create_time DESC LIMIT 50",
+    resource_usage_rows = mysql_db.query_all(
+        """
+        SELECT detail, create_time
+        FROM learning_event
+        WHERE user_id=%s AND event_type='resource_usage'
+        ORDER BY create_time DESC, id DESC
+        LIMIT 50
+        """,
         (user_id,),
     )
     wrong_book_rows = mysql_db.query_all(
@@ -710,6 +814,32 @@ def _build_portrait_scoring_evidence(user_id: int, profile: dict) -> dict:
 
     quiz_scores = [_safe_int(item.get("score"), 0) for item in quiz_rows]
     mastery_scores = [_safe_int(item.get("mastery_score"), 0) for item in mastery_rows]
+
+    resource_usage_by_id = {}
+    for item in resource_usage_rows:
+        detail = _json_loads(item.get("detail"), {})
+        if not isinstance(detail, dict):
+            detail = {}
+        resource_id = str(detail.get("resource_id") or f"{detail.get('resource_type')}:{detail.get('title')}")
+        current = resource_usage_by_id.setdefault(
+            resource_id,
+            {
+                "resource_id": detail.get("resource_id"),
+                "resource_type": _trim_text(detail.get("resource_type"), 40),
+                "title": _trim_text(detail.get("title"), 80),
+                "progress": 0,
+                "duration_sec": 0,
+                "completed": False,
+                "time": str(item.get("create_time") or ""),
+            },
+        )
+        current["duration_sec"] += max(0, _safe_int(detail.get("duration_sec"), 0))
+        current["progress"] = max(current["progress"], _safe_int(detail.get("progress"), 0))
+        current["completed"] = current["completed"] or bool(detail.get("completed"))
+
+    resource_usage_items = list(resource_usage_by_id.values())
+
+    learning_effect_overview = _build_learning_effect_overview(quiz_rows, event_rows, resource_usage_items)
 
     return {
         "profile_snapshot": {
@@ -771,14 +901,8 @@ def _build_portrait_scoring_evidence(user_id: int, profile: dict) -> dict:
             }
             for item in resource_feedback_rows[:12]
         ],
-        "resource_usage": [
-            {
-                "resource_type": _trim_text(item.get("resource_type"), 40),
-                "title": _trim_text(item.get("title"), 80),
-                "time": str(item.get("create_time") or ""),
-            }
-            for item in resource_rows[:15]
-        ],
+        "resource_usage": resource_usage_items[:50],
+        "learning_effect_overview": learning_effect_overview,
         "wrong_book": [
             {
                 "knowledge_point": _trim_text(item.get("knowledge_point"), 80),
@@ -796,7 +920,7 @@ def _build_portrait_scoring_evidence(user_id: int, profile: dict) -> dict:
             "mastery_count": len(mastery_rows),
             "event_count": len(event_rows),
             "resource_feedback_count": len(resource_feedback_rows),
-            "resource_count": len(resource_rows),
+            "resource_count": len(resource_usage_items),
             "wrong_book_count": len(wrong_book_rows),
         },
     }
@@ -892,12 +1016,25 @@ def _derive_learning_profile(profile: dict, evidence: dict) -> dict:
         sum(_safe_int(item.get("rating"), 0) for item in resource_feedback) / len(resource_feedback),
         1,
     ) if resource_feedback else 0.0
-    support_match_score = _clamp_percent(
+    support_match_raw_score = _clamp_percent(
         26
         + 24 * (1 if _normalize_text(profile.get("support_preference")) else 0)
         + 18 * (1 if _normalize_text(profile.get("preferred_resource")) else 0)
         + 6 * avg_feedback
         + _saturating_count_score(len(resource_feedback), 4, 8)
+    )
+    support_match_score = _cap_with_excellence_gate(
+        support_match_raw_score,
+        93,
+        100,
+        [
+            avg_feedback >= 4.5,
+            len(resource_feedback) >= 3,
+            resource_count >= 3,
+            _normalize_text(profile.get("support_preference")) != "",
+            _normalize_text(profile.get("preferred_resource")) != "",
+            mastery_score >= 78,
+        ],
     )
 
     common_mistake_text = " ".join(
@@ -966,7 +1103,7 @@ def _derive_learning_profile(profile: dict, evidence: dict) -> dict:
         "weak_point_distribution": f"薄弱点分布从 100 分起，根据薄弱知识点数({weak_count})、错题数({wrong_book_count}) 和掌握度不足部分扣分，当前为 {weak_distribution_score} 分。",
         "learning_progress": f"学习进度 = 35%掌握质量 + 强项知识点({strong_count}) + 阶段完成数({stage_complete_count}) + 答题记录({quiz_count}) + 资源学习({resource_count}) + 当前主题识别，并对薄弱点数做小幅扣分。未满足卓越门槛时最高 92 分；当前原始分 {progress_raw_score}，展示分 {progress_score}。",
         "engagement_level": f"学习投入 = 基础分 + 学习事件({event_count}) + 答题记录({quiz_count}) + 资源学习({resource_count}) + 投入状态识别，并对错题积压做小幅扣分。未满足卓越门槛时最高 90 分；当前原始分 {engagement_raw_score}，展示分 {engagement_score}。",
-        "support_match": f"支持方式匹配 = 基础分 + 支持偏好识别 + 资源偏好识别 + 资源反馈均分({avg_feedback:.1f}) + 反馈次数修正，当前为 {support_match_score} 分。",
+        "support_match": f"支持方式匹配 = 基础分 + 支持偏好识别 + 资源偏好识别 + 资源反馈均分({avg_feedback:.1f}) + 反馈次数修正。未满足卓越门槛时最高 93 分；当前原始分 {support_match_raw_score}，展示分 {support_match_score}。",
         "error_pattern_stability": f"易错类型稳定性根据错题与反馈文本中的错误模式关键词判断，结合错题数量({wrong_book_count})修正，当前为 {error_pattern_score} 分。",
         "goal_attainment_risk": f"目标达成把握根据任务目标文本是否量化以及目标与当前掌握度的差距判断，当前为 {goal_risk_score} 分。",
     }
@@ -1101,12 +1238,18 @@ def _cached_portrait_scoring(user_id: int, profile: dict) -> Optional[dict]:
 
 def _aggregate_profile_payload(user_id: int, profile: dict, refresh_scoring: bool = False) -> dict:
     payload = dict(profile or {})
+    evidence = _build_portrait_scoring_evidence(user_id, payload)
     if refresh_scoring:
         payload["portrait_scoring"] = _portrait_dimension_scores(user_id, payload)
     else:
         cached_scoring = _cached_portrait_scoring(user_id, payload)
-        payload["portrait_scoring"] = cached_scoring or _portrait_score_fallback(payload, {})
+        payload["portrait_scoring"] = cached_scoring or _portrait_score_fallback(payload, evidence)
     payload["dynamic_profile"] = (payload.get("portrait_scoring") or {}).get("dynamic_profile") or {}
+    payload["learning_events"] = evidence.get("learning_events") or []
+    payload["resource_feedback"] = evidence.get("resource_feedback") or []
+    payload["resource_usage"] = evidence.get("resource_usage") or []
+    payload["learning_effect_overview"] = evidence.get("learning_effect_overview") or {}
+    payload["evidence_counts"] = evidence.get("counts") or {}
     payload["portrait_history"] = _portrait_history(user_id, limit=6)
     return payload
 

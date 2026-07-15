@@ -3026,7 +3026,7 @@ def _database_keyword_search(query: str, top_k: int) -> list[dict]:
     tokens = _extract_search_tokens(text)
     rows = mysql_db.query_all(
         """
-        SELECT section_title, path_text, page, content
+        SELECT section_node_id, section_title, path_text, page, content, chunk_index, source_file
         FROM knowledge_chunks
         ORDER BY id DESC
         LIMIT 5000
@@ -3081,9 +3081,12 @@ def _database_keyword_search(query: str, top_k: int) -> list[dict]:
                 -index,
                 {
                     "content": content[:300],
+                    "section_node_id": row.get("section_node_id"),
                     "section_title": section_title,
                     "path": path_text,
                     "page": row.get("page"),
+                    "chunk_index": row.get("chunk_index"),
+                    "source_file": row.get("source_file"),
                     "score": round(min(0.9999, score / 100.0), 4),
                 },
             )

@@ -97,6 +97,8 @@ export const profileApi = {
 export const resourceApi = {
   generate: (data = {}, profileSessionId = "") => http.post("/resource/generate", withExplicitProfileSession(data, profileSessionId)),
   list: (profileSessionId = "") => http.get("/resource/", { params: explicitProfileSessionParams({}, profileSessionId) }),
+  feedback: (id, data = {}, profileSessionId = "") => http.post(`/resource/${id}/feedback`, withExplicitProfileSession(data, profileSessionId)),
+  usage: (id, data = {}, profileSessionId = "") => http.post(`/resource/${id}/usage`, withExplicitProfileSession(data, profileSessionId)),
 };
 
 export const pathApi = {
@@ -105,6 +107,7 @@ export const pathApi = {
   integrated: (profileSessionId = "") => http.get("/path/integrated", { params: explicitProfileSessionParams({}, profileSessionId) }),
   stageProgress: (profileSessionId = "") => http.get("/path/stage-progress", { params: explicitProfileSessionParams({}, profileSessionId) }),
   saveStageProgress: (data = {}, profileSessionId = "") => http.post("/path/stage-progress", withExplicitProfileSession(data, profileSessionId)),
+  submitFeedback: (data = {}, profileSessionId = "") => http.post("/path/feedback", withExplicitProfileSession(data, profileSessionId)),
 };
 
 export const chatApi = {

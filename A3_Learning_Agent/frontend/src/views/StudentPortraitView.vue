@@ -65,6 +65,34 @@
         </div>
       </div>
 
+      <section class="effect-overview">
+        <div class="effect-heading">
+          <div>
+            <span class="eyebrow">Learning Outcomes</span>
+            <h2>学习效果概览</h2>
+            <p>基于资源学习、阶段任务与测评记录自动统计</p>
+          </div>
+          <span class="effect-period">近 7 日 · {{ learningEffect.period || "暂无周期数据" }}</span>
+        </div>
+
+        <div class="effect-body">
+          <div class="effect-stat-grid">
+            <article v-for="item in effectStats" :key="item.label" class="effect-stat-card">
+              <span>{{ item.label }}</span>
+              <strong>{{ item.value }}<small>{{ item.unit }}</small></strong>
+              <p>{{ item.hint }}</p>
+            </article>
+          </div>
+          <div class="effect-trend-card">
+            <div class="effect-trend-title">
+              <strong>学习趋势</strong>
+              <span>综合学习时长、任务完成和测评表现</span>
+            </div>
+            <div ref="effectTrendRef" class="effect-trend-chart"></div>
+          </div>
+        </div>
+      </section>
+
       <div class="visual-panel">
         <section class="radar-stage">
           <div class="radar-card radar-card-main">
@@ -105,6 +133,16 @@
                   <strong>{{ item.score }}</strong>
                   <small>{{ item.value }}</small>
                 </div>
+              </div>
+            </div>
+            <div v-if="hasHistoryComparison" class="portrait-compare-strip">
+              <div class="compare-chip">
+                <span>上一轮画像</span>
+                <strong>{{ formatTime(previousPortraitSnapshot?.create_time) }}</strong>
+              </div>
+              <div class="compare-chip compare-chip-current">
+                <span>当前画像</span>
+                <strong>{{ formatTime(currentPortraitSnapshot?.create_time) }}</strong>
               </div>
             </div>
           </div>
@@ -210,6 +248,59 @@
           </div>
         </div>
       </div>
+
+      <div class="feedback-evidence-grid">
+        <div class="feedback-evidence-card">
+          <div class="card-header">
+            <div>
+              <span class="eyebrow">Resource Feedback</span>
+              <strong>资源反馈证据</strong>
+            </div>
+          </div>
+          <div v-if="resourceFeedbackItems.length" class="feedback-evidence-list">
+            <div v-for="(item, index) in resourceFeedbackItems" :key="`feedback-${index}`" class="feedback-evidence-item">
+              <strong>{{ item.ratingText }}</strong>
+              <p>{{ item.comment }}</p>
+              <small>{{ item.time }}</small>
+            </div>
+          </div>
+          <el-empty v-else description="当前还没有资源反馈记录" />
+        </div>
+
+        <div class="feedback-evidence-card">
+          <div class="card-header">
+            <div>
+              <span class="eyebrow">Resource Usage</span>
+              <strong>资源使用行为</strong>
+            </div>
+          </div>
+          <div v-if="resourceUsageItems.length" class="feedback-evidence-list">
+            <div v-for="(item, index) in resourceUsageItems" :key="`usage-${index}`" class="feedback-evidence-item">
+              <strong>{{ item.resource_type }}</strong>
+              <p>{{ item.title }}</p>
+              <small>{{ item.time }}</small>
+            </div>
+          </div>
+          <el-empty v-else description="当前还没有资源使用记录" />
+        </div>
+
+        <div class="feedback-evidence-card feedback-evidence-card-wide">
+          <div class="card-header">
+            <div>
+              <span class="eyebrow">Adaptive Trace</span>
+              <strong>反馈驱动的持续优化依据</strong>
+            </div>
+          </div>
+          <div v-if="learningEventItems.length" class="feedback-evidence-list">
+            <div v-for="(item, index) in learningEventItems" :key="`event-${index}`" class="feedback-evidence-item">
+              <strong>{{ item.event_type }}</strong>
+              <p>{{ item.detail }}</p>
+              <small>{{ item.time }}</small>
+            </div>
+          </div>
+          <el-empty v-else description="当前还没有学习行为事件记录" />
+        </div>
+      </div>
     </template>
 
     <el-empty v-else description="当前还没有足够的学生画像信息，先去对话区交流几轮吧。">
@@ -222,19 +313,21 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import * as echarts from "echarts/core";
-import { RadarChart } from "echarts/charts";
+import { LineChart, RadarChart } from "echarts/charts";
 import { GridComponent, TooltipComponent } from "echarts/components";
 import { CanvasRenderer } from "echarts/renderers";
 import { profileApi } from "../api";
 
-echarts.use([RadarChart, GridComponent, TooltipComponent, CanvasRenderer]);
+echarts.use([LineChart, RadarChart, GridComponent, TooltipComponent, CanvasRenderer]);
 
 const router = useRouter();
 const radarRef = ref(null);
+const effectTrendRef = ref(null);
 const loading = ref(false);
 const aggregateProfile = reactive({});
 const sessions = ref([]);
 let radarChart = null;
+let effectTrendChart = null;
 let refreshTimer = null;
 let refreshRequestId = 0;
 let refreshPending = false;
@@ -294,6 +387,24 @@ const previewProfile = computed(() => ({
 const portraitScoring = computed(() => aggregateProfile.portrait_scoring || {});
 const portraitDimensions = computed(() => portraitScoring.value.dimensions || {});
 const dynamicProfile = computed(() => aggregateProfile.dynamic_profile || portraitScoring.value.dynamic_profile || {});
+const learningEffect = computed(() => aggregateProfile.learning_effect_overview || {});
+
+function formatStudyDuration(seconds) {
+  const value = Math.max(0, Number(seconds) || 0);
+  if (value >= 3600) return { value: (value / 3600).toFixed(1), unit: "小时" };
+  if (value > 0 && value < 60) return { value: "<1", unit: "分钟" };
+  return { value: Math.round(value / 60), unit: "分钟" };
+}
+
+const effectStats = computed(() => {
+  const duration = formatStudyDuration(learningEffect.value.total_duration_sec);
+  return [
+    { label: "学习时长", value: duration.value, unit: duration.unit, hint: "来自资源实际停留时长" },
+    { label: "完成任务", value: learningEffect.value.completed_tasks || 0, unit: "个", hint: "已完成资源与学习阶段" },
+    { label: "任务完成度", value: learningEffect.value.task_completion_rate || 0, unit: "%", hint: "资源学习进度均值" },
+    { label: "测评正确率", value: learningEffect.value.correct_rate || 0, unit: "%", hint: `累计 ${learningEffect.value.quiz_count || 0} 次测评` },
+  ];
+});
 
 function dynamicValue(key) {
   return normalizeValue(dynamicProfile.value[key]);
@@ -479,6 +590,30 @@ const supportCards = computed(() => {
   }));
 });
 
+const resourceFeedbackItems = computed(() =>
+  (aggregateProfile.resource_feedback || []).slice(0, 6).map((item) => ({
+    ratingText: item.rating ? `${item.rating} / 5 分反馈` : "资源反馈",
+    comment: normalizeValue(item.comment) !== DEFAULT_VALUE ? normalizeValue(item.comment) : "学生未填写具体文字反馈，系统已记录评分。",
+    time: formatTime(item.time),
+  }))
+);
+
+const resourceUsageItems = computed(() =>
+  (aggregateProfile.resource_usage || []).slice(0, 6).map((item) => ({
+    resource_type: normalizeValue(item.resource_type) !== DEFAULT_VALUE ? normalizeValue(item.resource_type) : "学习资源",
+    title: normalizeValue(item.title) !== DEFAULT_VALUE ? normalizeValue(item.title) : "资源标题待记录",
+    time: formatTime(item.time),
+  }))
+);
+
+const learningEventItems = computed(() =>
+  (aggregateProfile.learning_events || []).slice(0, 8).map((item) => ({
+    event_type: normalizeValue(item.event_type) !== DEFAULT_VALUE ? normalizeValue(item.event_type) : "学习事件",
+    detail: normalizeValue(item.detail) !== DEFAULT_VALUE ? normalizeValue(item.detail) : "系统已记录一次新的学习行为。",
+    time: formatTime(item.time),
+  }))
+);
+
 const timelineItems = computed(() => {
   const list = portraitHistory.value
     .slice(0, 6)
@@ -570,6 +705,59 @@ function renderRadar() {
   });
 }
 
+function renderEffectTrend() {
+  nextTick(() => {
+    if (!effectTrendRef.value || !hasAnyMeaningfulProfile.value) return;
+    if (!effectTrendChart) effectTrendChart = echarts.init(effectTrendRef.value);
+    const trend = Array.isArray(learningEffect.value.trend) ? learningEffect.value.trend : [];
+    effectTrendChart.setOption({
+      grid: { left: 34, right: 18, top: 28, bottom: 28 },
+      tooltip: {
+        trigger: "axis",
+        confine: true,
+        formatter(params) {
+          const index = params?.[0]?.dataIndex || 0;
+          const item = trend[index] || {};
+          return `${item.date || ""}<br/>学习活跃度：${item.activity_score || 0}<br/>学习时长：${Math.round((item.duration_sec || 0) / 60)} 分钟<br/>完成任务：${item.completed_tasks || 0} 个<br/>测评均分：${item.avg_score || 0}%`;
+        },
+      },
+      xAxis: {
+        type: "category",
+        boundaryGap: false,
+        data: trend.map((item) => item.date),
+        axisLine: { lineStyle: { color: "#dbe5f2" } },
+        axisTick: { show: false },
+        axisLabel: { color: "#7b8798", fontSize: 11 },
+      },
+      yAxis: {
+        type: "value",
+        min: 0,
+        max: 100,
+        splitNumber: 4,
+        axisLabel: { color: "#94a3b8", fontSize: 11 },
+        splitLine: { lineStyle: { color: "#edf2f8" } },
+      },
+      series: [{
+        name: "学习活跃度",
+        type: "line",
+        smooth: 0.35,
+        symbol: "circle",
+        symbolSize: 7,
+        data: trend.map((item) => item.activity_score || 0),
+        lineStyle: { color: "#3478f6", width: 3 },
+        itemStyle: { color: "#3478f6", borderColor: "#ffffff", borderWidth: 2 },
+        areaStyle: { color: "rgba(52, 120, 246, 0.09)" },
+      }],
+    });
+    effectTrendChart.resize();
+  });
+}
+
+function renderCharts() {
+  renderRadar();
+  renderEffectTrend();
+}
+
 async function refreshData() {
   if (loading.value) {
     refreshPending = true;
@@ -595,7 +783,7 @@ async function refreshData() {
       sessions.value = sessionRes.data.sessions || [];
     }
 
-    renderRadar();
+    renderCharts();
   } finally {
     if (requestId === refreshRequestId) {
       loading.value = false;
@@ -616,7 +804,7 @@ function handleRefreshEvent() {
 
 onMounted(() => {
   refreshData();
-  window.addEventListener("resize", renderRadar);
+  window.addEventListener("resize", renderCharts);
   window.addEventListener("a3-profile-session-refresh", handleRefreshEvent);
 });
 
@@ -625,11 +813,15 @@ onBeforeUnmount(() => {
     clearTimeout(refreshTimer);
     refreshTimer = null;
   }
-  window.removeEventListener("resize", renderRadar);
+  window.removeEventListener("resize", renderCharts);
   window.removeEventListener("a3-profile-session-refresh", handleRefreshEvent);
   if (radarChart) {
     radarChart.dispose();
     radarChart = null;
+  }
+  if (effectTrendChart) {
+    effectTrendChart.dispose();
+    effectTrendChart = null;
   }
 });
 </script>
@@ -677,6 +869,7 @@ onBeforeUnmount(() => {
 
 .hero-panel,
 .metric-card,
+.effect-overview,
 .radar-card,
 .portrait-analysis-card,
 .dimension-card,
@@ -778,6 +971,104 @@ onBeforeUnmount(() => {
   border-color: #d9e2ef;
 }
 
+.effect-overview {
+  padding: 22px 24px;
+}
+
+.effect-heading,
+.effect-trend-title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.effect-heading h2 {
+  margin: 5px 0 4px;
+  color: #0f172a;
+  font-size: 22px;
+}
+
+.effect-heading p,
+.effect-trend-title span {
+  margin: 0;
+  color: #8491a3;
+  font-size: 13px;
+}
+
+.effect-period {
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: #f3f7fd;
+  color: #607089;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.effect-body {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: minmax(360px, .85fr) minmax(460px, 1.15fr);
+  gap: 18px;
+}
+
+.effect-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.effect-stat-card,
+.effect-trend-card {
+  border: 1px solid #e5ebf4;
+  border-radius: 16px;
+  background: #fbfcff;
+}
+
+.effect-stat-card {
+  padding: 16px 18px;
+  display: grid;
+  align-content: center;
+  gap: 7px;
+}
+
+.effect-stat-card > span,
+.effect-stat-card p {
+  color: #718096;
+  font-size: 12px;
+}
+
+.effect-stat-card strong {
+  color: #175fd2;
+  font-size: 28px;
+  line-height: 1;
+}
+
+.effect-stat-card strong small {
+  margin-left: 5px;
+  color: #52627a;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.effect-stat-card p {
+  margin: 0;
+}
+
+.effect-trend-card {
+  padding: 16px 18px 8px;
+  min-width: 0;
+}
+
+.effect-trend-title strong {
+  color: #26354d;
+  font-size: 14px;
+}
+
+.effect-trend-chart {
+  height: 210px;
+}
+
 .visual-panel {
   display: grid;
   gap: 14px;
@@ -834,6 +1125,38 @@ onBeforeUnmount(() => {
   color: #475569;
   font-size: 13px;
   line-height: 1.6;
+}
+
+.portrait-compare-strip {
+  margin-top: 14px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.compare-chip {
+  min-width: 160px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid #ddd6fe;
+  background: #f8f5ff;
+  display: grid;
+  gap: 4px;
+}
+
+.compare-chip span {
+  font-size: 12px;
+  color: #7c6bb3;
+}
+
+.compare-chip strong {
+  color: #4338ca;
+  font-size: 14px;
+}
+
+.compare-chip-current {
+  border-color: #c7d2fe;
+  background: #eef2ff;
 }
 
 .radar-side-panel {
@@ -1145,6 +1468,7 @@ onBeforeUnmount(() => {
 
 @media (max-width: 1280px) {
   .hero-panel,
+  .effect-body,
   .radar-stage,
   .radar-layout {
     grid-template-columns: 1fr;
@@ -1173,6 +1497,7 @@ onBeforeUnmount(() => {
   }
 
   .support-grid,
+  .effect-stat-grid,
   .dimension-card-grid,
   .analysis-reason-list,
   .metric-row {
@@ -1182,5 +1507,58 @@ onBeforeUnmount(() => {
   .profile-radar {
     height: 360px;
   }
+
+  .effect-heading,
+  .effect-trend-title {
+    flex-direction: column;
+  }
 }
+
+.feedback-evidence-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+.feedback-evidence-card {
+  padding: 22px;
+  border-radius: 24px;
+  border: 1px solid #e7ecf5;
+  background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+}
+.feedback-evidence-card-wide {
+  grid-column: 1 / -1;
+}
+.feedback-evidence-list {
+  display: grid;
+  gap: 12px;
+}
+.feedback-evidence-item {
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid #ecf1f7;
+}
+.feedback-evidence-item strong {
+  display: block;
+  color: #0f172a;
+  font-size: 14px;
+}
+.feedback-evidence-item p {
+  margin: 6px 0 4px;
+  color: #475569;
+  line-height: 1.7;
+}
+.feedback-evidence-item small {
+  color: #94a3b8;
+}
+@media (max-width: 960px) {
+  .feedback-evidence-grid {
+    grid-template-columns: 1fr;
+  }
+  .feedback-evidence-card-wide {
+    grid-column: auto;
+  }
+}
+
 </style>
