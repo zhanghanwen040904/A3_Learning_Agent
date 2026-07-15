@@ -1,7 +1,7 @@
 ﻿import json
 import time
 from datetime import datetime
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 from config import config
 
@@ -279,7 +279,37 @@ def _call_bailian_compatible(prompt: str) -> str:
     raise RuntimeError(f"Bailian接口未返回有效内容：{data}")
 
 
-def _anthropic_candidate_urls() -> list[str]:
+def _call_spark_compatible(prompt: str) -> str:
+    import requests
+
+    payload = {
+        "model": config.SPARK_MODEL or "4.0Ultra",
+        "messages": [{"role": "user", "content": _limit_model_prompt(prompt)}],
+        "temperature": 0.5,
+        "max_tokens": int(__import__("os").getenv("AI_MAX_TOKENS", "1024")),
+        "stream": False,
+    }
+    session = requests.Session()
+    session.trust_env = False
+    response = session.post(
+        config.SPARK_BASE_URL,
+        headers={
+            "Authorization": f"Bearer {config.SPARK_APIPASSWORD}",
+            "Content-Type": "application/json",
+        },
+        json=payload,
+        timeout=config.AI_TIMEOUT,
+    )
+    if response.status_code >= 400:
+        raise RuntimeError(_extract_http_error(response))
+    data = response.json()
+    text = _extract_chat_text(data)
+    if text:
+        return text
+    raise RuntimeError(f"讯飞星火接口未返回有效内容：{data}")
+
+
+def _anthropic_candidate_urls() -> List[str]:
     base_url = str(config.ANTHROPIC_BASE_URL or "").rstrip("/")
     if not base_url:
         return []
@@ -297,7 +327,7 @@ def _anthropic_candidate_urls() -> list[str]:
     return result
 
 
-def _anthropic_header_variants() -> list[dict[str, str]]:
+def _anthropic_header_variants() -> List[Dict[str, str]]:
     token = config.ANTHROPIC_AUTH_TOKEN
     return [
         {
@@ -389,7 +419,7 @@ def _has_anthropic_compatible_config() -> bool:
 def llm_chat(prompt: str) -> str:
     """同步调用当前配置的大模型生成文本。
 
-    功能：根据 AI_PROVIDER 选择当前启用的大模型，优先支持百炼，也兼容 settings.json 中的 Anthropic/OpenAI 兼容接口。
+    功能：根据 AI_PROVIDER 选择当前启用的大模型，支持讯飞星火、百炼及 Anthropic/OpenAI 兼容接口。
     输入：prompt，自然语言提示词。
     输出：成功时返回模型文本；失败时返回 JSON 字符串格式的标准错误信息。
     """
@@ -397,6 +427,15 @@ def llm_chat(prompt: str) -> str:
         return json.dumps(_standard_error("prompt不能为空"), ensure_ascii=False)
     if config.MOCK_AI:
         return _mock_llm_response(prompt)
+
+    use_spark = config.AI_PROVIDER in {"spark", "xfyun", "iflytek"}
+    if use_spark:
+        if not (config.SPARK_APIPASSWORD and config.SPARK_BASE_URL and config.SPARK_MODEL):
+            return json.dumps(_standard_error("讯飞星火配置不完整"), ensure_ascii=False)
+        try:
+            return _retry_call(lambda: _call_spark_compatible(prompt))
+        except Exception as exc:
+            return json.dumps(_standard_error("讯飞星火调用失败", str(exc)), ensure_ascii=False)
 
     use_bailian = config.AI_PROVIDER in {"bailian", "dashscope", "qwen"}
     if use_bailian:
@@ -416,7 +455,7 @@ def llm_chat(prompt: str) -> str:
         except Exception as exc:
             return json.dumps(_standard_error("settings.json大模型调用失败", str(exc)), ensure_ascii=False)
     return json.dumps(
-        _standard_error(f"不支持的 AI_PROVIDER：{config.AI_PROVIDER}，当前请使用 bailian 或 settings"),
+        _standard_error(f"不支持的 AI_PROVIDER：{config.AI_PROVIDER}，当前请使用 spark、bailian 或 settings"),
         ensure_ascii=False,
     )
 
