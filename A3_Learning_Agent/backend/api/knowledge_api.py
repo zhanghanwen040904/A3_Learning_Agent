@@ -565,7 +565,7 @@ def _load_question_bank_items() -> list[dict]:
 def _load_answers_items() -> list[dict]:
     payload = _load_first_json("answers_json", {})
     rows = payload.get("answers") if isinstance(payload, dict) else payload if isinstance(payload, list) else []
-    return [item for item in rows if isinstance(item, dict)]
+    return [item for item in (rows or []) if isinstance(item, dict)]
 
 
 def _group_question_bank_by_resets(items: list[dict]) -> list[list[dict]]:
@@ -711,12 +711,18 @@ def _workbook_questions_for_chapter(chapter_no: int | None) -> list[dict]:
         return []
     if not chapter_no:
         return items
+    chapter_title_map = _chapter_title_defaults()
+    if chapter_no not in chapter_title_map:
+        return []
     chapter_key = f"chapter_{chapter_no}"
     keyed = [item for item in items if _clean_chapter_key(item.get("question_chapter_key") or "") == chapter_key]
     if keyed:
         return keyed
+    inferred = [item for item in items if _infer_question_chapter_no(item) == chapter_no]
+    if inferred:
+        return inferred
     groups = _group_question_bank_by_resets(items)
-    if 1 <= chapter_no <= len(groups):
+    if 1 <= chapter_no <= min(len(groups), len(chapter_title_map)):
         return groups[chapter_no - 1]
     return []
 
@@ -733,10 +739,14 @@ def _question_no_int(value) -> int | None:
 
 
 def _chapter_no_from_text(value: str) -> int | None:
-    match = re.search(r"第\s*(\d+)\s*章", str(value or ""))
+    text = str(value or "")
+    match = re.search(r"第\s*(\d+)\s*章", text)
     if match:
         return int(match.group(1))
-    match = re.search(r"第\s*([一二三四五六七八九十]+)\s*章", str(value or ""))
+    match = re.search(r"习\s*题\s*(\d+)", text)
+    if match:
+        return int(match.group(1))
+    match = re.search(r"第\s*([一二三四五六七八九十]+)\s*章", text)
     if not match:
         return None
     chars = match.group(1)
@@ -828,6 +838,39 @@ def _clean_chapter_key(value: str) -> str:
 def _chapter_no_from_key(value: str) -> int | None:
     match = re.search(r"chapter_(\d+)", str(value or ""))
     return int(match.group(1)) if match else None
+
+
+def _infer_question_chapter_no(item: dict) -> int | None:
+    if not isinstance(item, dict):
+        return None
+    direct = _chapter_no_from_key(item.get("question_chapter_key") or "")
+    if direct is not None:
+        return direct
+    candidates = []
+    for key in ("section_path", "path"):
+        value = item.get(key)
+        if isinstance(value, list):
+            candidates.extend(str(part or "") for part in value)
+        elif value:
+            candidates.append(str(value))
+    learning_location = item.get("learning_location") or {}
+    if isinstance(learning_location, dict):
+        for key in ("section", "subsection", "chapter", "path_text"):
+            if learning_location.get(key):
+                candidates.append(str(learning_location.get(key) or ""))
+        path = learning_location.get("path")
+        if isinstance(path, list):
+            candidates.extend(str(part or "") for part in path)
+    metadata = item.get("metadata") or {}
+    if isinstance(metadata, dict):
+        for key in ("chapter_key", "question_chapter_key", "section_title", "path_text"):
+            if metadata.get(key):
+                candidates.append(str(metadata.get(key) or ""))
+    for candidate in candidates:
+        chapter_no = _chapter_no_from_text(candidate)
+        if chapter_no is not None:
+            return chapter_no
+    return None
 
 
 def _sort_sub_question_no(value: str) -> tuple[int, str]:
@@ -994,7 +1037,12 @@ def _group_exercise_questions(items: list[dict]) -> list[dict]:
                     "question_images": item.get("question_images") or [],
                     "answer_images": item.get("answer_images") or [],
                     "images": item.get("images") or [],
+                    "question_chapter_key": item.get("question_chapter_key") or "",
+                    "related_knowledge": item.get("related_knowledge") or [],
+                    "related_knowledge_ids": item.get("related_knowledge_ids") or [],
+                    "related_knowledge_node_ids": item.get("related_knowledge_node_ids") or [],
                     "related_knowledge_titles": item.get("related_knowledge_titles") or [],
+                    "knowledge_points": item.get("knowledge_points") or item.get("related_knowledge_titles") or [],
                 }
             )
 
@@ -1408,6 +1456,7 @@ def _format_bank_question(item: dict, fallback_stem: str = "", chapter_no: int |
     answer = _clean_formula_text(item.get("reference_answer") or item.get("answer") or first_link.get("answer_part_preview") or "")
     analysis = _clean_formula_text(item.get("analysis") or item.get("explanation") or answer)
     stem = _clean_text(item.get("stem") or item.get("content") or fallback_stem)
+    options = item.get("options") if isinstance(item.get("options"), list) else []
     knowledge_titles = _question_knowledge_titles(item)
     formatted = {
         "id": item.get("question_id") or item.get("id") or f"question_{_question_no_int(item.get('question_no')) or len(stem)}",
@@ -1416,7 +1465,8 @@ def _format_bank_question(item: dict, fallback_stem: str = "", chapter_no: int |
         "question_no_int": _question_no_int(item.get("question_no")),
         "sub_question_no": str(item.get("sub_question_no") or ""),
         "stem": stem,
-        "content": stem,
+        "content": "\n".join([stem, *[str(option) for option in options]]).strip() if options else stem,
+        "options": options,
         "question_type": item.get("question_type") or "练习题",
         "difficulty_level": item.get("difficulty_level") or item.get("difficulty") or "",
         "answer": answer,
@@ -1439,7 +1489,12 @@ def _format_bank_question(item: dict, fallback_stem: str = "", chapter_no: int |
         "has_answer_images": bool(item.get("answer_images")),
         "answer_pages": first_link.get("answer_pages") or [],
         "source": item.get("source_file") or "",
+        "question_chapter_key": item.get("question_chapter_key") or "",
+        "related_knowledge": item.get("related_knowledge") or [],
+        "related_knowledge_ids": item.get("related_knowledge_ids") or [],
+        "related_knowledge_node_ids": item.get("related_knowledge_node_ids") or [],
         "related_knowledge_titles": knowledge_titles,
+        "knowledge_points": item.get("knowledge_points") or knowledge_titles,
         "sub_questions": [],
         "has_sub_questions": False,
     }
@@ -1484,7 +1539,12 @@ def _exercise_questions_for_reading_node(node_id: str) -> list[dict]:
     for item in question_bank:
         links = item.get("answer_links") or []
         key_text = " ".join(str(link.get("question_chapter_key") or "") for link in links)
-        if chapter_key_prefix and chapter_key_prefix not in key_text and chapter_key_alt not in key_text:
+        if (
+            chapter_no
+            and chapter_key_prefix not in key_text
+            and chapter_key_alt not in key_text
+            and _infer_question_chapter_no(item) != chapter_no
+        ):
             continue
         chapter_items.append(item)
         no = _question_no_int(item.get("question_no"))
@@ -1644,6 +1704,68 @@ def _tidy_reading_text(text: str) -> str:
     return value.strip()
 
 
+def _is_reading_heading_line(text: str, markdown_heading: bool = False) -> bool:
+    value = _tidy_reading_text(text)
+    compact = value.replace(" ", "")
+    if not compact or _is_reading_noise_line(value):
+        return False
+    if markdown_heading:
+        return len(compact) <= 80
+    if re.match(r"^\d{1,2}(?:\.\d{1,2}){1,3}\s*\S+", value):
+        return True
+    if re.match(r"^\d{1,2}[.．、]\s*\S+", value):
+        return len(compact) <= 36 and not re.search(r"[。；！？!?]", compact)
+    if re.match(r"^[一二三四五六七八九十]+[.．、]\s*\S+", value):
+        return len(compact) <= 36 and not re.search(r"[。；！？!?]", compact)
+    return False
+
+
+def _split_embedded_numbered_headings(text: str) -> list[str]:
+    value = str(text or "")
+    if not value:
+        return []
+    # OCR sometimes drops line breaks before subsection headings such as
+    # "1.1.3 消除软件危机的途径"; restore those breaks before final tidying.
+    value = re.sub(
+        r"(?<!^)(?<![\d.])(?=\d{1,2}(?:\.\d{1,2}){1,3}\s*[\u4e00-\u9fa5A-Za-z])",
+        "\n",
+        value,
+    )
+    return [part for part in value.splitlines() if part.strip()]
+
+
+def _format_reading_text_segments(raw_text: str, page=None) -> list[dict]:
+    segments = []
+    buffer = []
+
+    def flush_buffer():
+        if not buffer:
+            return
+        text = _tidy_reading_text("\n".join(buffer))
+        buffer.clear()
+        if text and not _is_reading_noise_line(text):
+            segments.append({"page": page, "text": text})
+
+    for raw_line in str(raw_text or "").splitlines():
+        if not raw_line.strip():
+            flush_buffer()
+            continue
+        markdown_heading = bool(re.match(r"^\s*#{1,6}\s+", raw_line))
+        line = _strip_markdown_heading(raw_line)
+        for part in _split_embedded_numbered_headings(line):
+            text = _tidy_reading_text(part)
+            if not text or _is_reading_noise_line(text):
+                continue
+            if _is_reading_heading_line(text, markdown_heading):
+                flush_buffer()
+                segments.append({"page": page, "text": text})
+            else:
+                buffer.append(text)
+            markdown_heading = False
+    flush_buffer()
+    return segments
+
+
 def _section_number_tuple(text: str) -> tuple[int, ...]:
     match = re.search(r"(?<!\d)(\d+(?:\.\d+)+)(?!\d)", str(text or ""))
     if not match:
@@ -1704,9 +1826,7 @@ def _format_reading_pages(pages, section_title: str = "") -> list[dict]:
 
         block = "\n".join(cleaned_lines)
         for paragraph in re.split(r"\n\s*\n+", block):
-            text = _tidy_reading_text(paragraph)
-            if text and not _is_reading_noise_line(text):
-                paragraphs.append({"page": item.get("page"), "text": text})
+            paragraphs.extend(_format_reading_text_segments(paragraph, item.get("page")))
     return paragraphs
 
 
@@ -1735,23 +1855,23 @@ def _build_exercise_tree_for_reading(reading_tree: list[dict]) -> list[dict]:
     question_bank = _load_question_bank_items()
     if not question_bank:
         return []
+    chapter_title_map = _chapter_title_defaults()
+    valid_chapters = set(chapter_title_map)
 
     chapter_groups: dict[int, list[dict]] = {}
     for item in question_bank:
-        chapter_no = _chapter_no_from_key(item.get("question_chapter_key") or "")
-        if chapter_no is None or chapter_no > 10:
+        chapter_no = _infer_question_chapter_no(item)
+        if chapter_no not in valid_chapters:
             continue
         chapter_groups.setdefault(chapter_no, []).append(item)
     if not chapter_groups:
         chapter_groups = {
             chapter_no: group
             for chapter_no, group in enumerate(_group_question_bank_by_resets(question_bank), start=1)
-            if chapter_no <= 10 and group
+            if group and chapter_no in valid_chapters
         }
     if not chapter_groups:
         return []
-
-    chapter_title_map = _chapter_title_defaults()
 
     children = []
     for index in sorted(chapter_groups):
@@ -2098,6 +2218,9 @@ def _exercise_payload_for_node(node_id: str) -> dict | None:
         return None
 
     chapter_no = int(match.group(1))
+    chapter_title = _chapter_title_defaults().get(chapter_no)
+    if not chapter_title:
+        return None
     workbook_items = _workbook_questions_for_chapter(chapter_no)
     questions = []
     if workbook_items:
@@ -2105,8 +2228,8 @@ def _exercise_payload_for_node(node_id: str) -> dict | None:
         questions = [_combine_question_group(dict(item)) for item in grouped]
     return {
         "node_id": node_id,
-        "title": f"{_chapter_title_defaults().get(chapter_no, f'第 {chapter_no} 章')}习题",
-        "path": ["习题", f"{_chapter_title_defaults().get(chapter_no, f'第 {chapter_no} 章')}习题"],
+        "title": f"{chapter_title}习题",
+        "path": ["习题", f"{chapter_title}习题"],
         "start_page": None,
         "images": [],
         "sections": [],
@@ -2319,26 +2442,17 @@ def _textbook_catalog_payload(node_id: str, include_children: bool = True) -> di
 
     paragraphs = _format_reading_pages(pages, title)
     if not paragraphs and not exact_reading_section_used:
-        paragraphs = [
-            {
-                "page": (item.get("pages") or [None])[0],
-                "text": _clean_text(
-                    item.get("content")
-                    or item.get("source_text")
-                    or item.get("content_preview")
-                    or item.get("source_text_preview")
-                    or ""
-                ),
-            }
-            for item in items
-            if _clean_text(
+        paragraphs = []
+        for item in items:
+            text = (
                 item.get("content")
                 or item.get("source_text")
                 or item.get("content_preview")
                 or item.get("source_text_preview")
                 or ""
             )
-        ]
+            if _clean_text(text):
+                paragraphs.extend(_format_reading_text_segments(text, (item.get("pages") or [None])[0]))
     images = _images_for_reading_section(title, display_path, pages or paragraphs)
     start_page = min(
         [page.get("page") for page in pages if isinstance(page, dict) and isinstance(page.get("page"), int)]
@@ -2461,26 +2575,17 @@ def _kp_section_payload(node_id: str, include_children: bool = True) -> dict | N
             if item_path[: len(target_path)] == target_path:
                 kp_items.append(item)
         kp_items.sort(key=lambda item: ((item.get("pages") or [10**9])[0] if isinstance(item.get("pages"), list) and item.get("pages") else 10**9, item.get("title") or ""))
-        paragraphs = [
-            {
-                "page": (item.get("pages") or [None])[0],
-                "text": _clean_text(
-                    item.get("content")
-                    or item.get("source_text")
-                    or item.get("content_preview")
-                    or item.get("source_text_preview")
-                    or ""
-                ),
-            }
-            for item in kp_items
-            if _clean_text(
+        paragraphs = []
+        for item in kp_items:
+            text = (
                 item.get("content")
                 or item.get("source_text")
                 or item.get("content_preview")
                 or item.get("source_text_preview")
                 or ""
             )
-        ]
+            if _clean_text(text):
+                paragraphs.extend(_format_reading_text_segments(text, (item.get("pages") or [None])[0]))
         if not section_images:
             page_payload = [{"page": p.get("page"), "text": p.get("text")} for p in paragraphs if isinstance(p, dict)]
             section_images = _images_for_reading_section(title, target_path, page_payload)
@@ -3354,6 +3459,14 @@ def tree():
 def section_detail(node_id: str):
     try:
         include_children = str(request.args.get("include_children", "true")).lower() == "true"
+        exercise_payload = _exercise_payload_for_node(node_id)
+        if exercise_payload:
+            return success(exercise_payload, "章节内容加载成功")
+
+        kp_payload = _kp_section_payload(node_id, include_children)
+        if kp_payload:
+            return success(kp_payload, "章节内容加载成功")
+
         reading_payload = _section_payload_from_reading(node_id, include_children)
         if reading_payload:
             return success(reading_payload, "章节内容加载成功")
