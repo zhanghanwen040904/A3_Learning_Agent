@@ -57,7 +57,7 @@ def status():
         partial_tables = sum(1 for item in tables if item["status"] == "partial")
 
         provider = (config.AI_PROVIDER or "spark").lower()
-        if provider in {"spark", "xfyun", "iflytek"}:
+        if provider in {"spark", "xunfei", "xfyun", "iflytek"}:
             primary_configured = bool(config.SPARK_APIPASSWORD and config.SPARK_BASE_URL and config.SPARK_MODEL)
             primary_key = config.SPARK_APIPASSWORD
             primary_url = config.SPARK_BASE_URL

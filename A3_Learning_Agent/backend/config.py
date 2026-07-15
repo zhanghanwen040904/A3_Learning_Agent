@@ -58,7 +58,7 @@ class Config:
     )
     BAILIAN_MODEL: str = os.getenv("BAILIAN_MODEL", "qwen-plus")
 
-    SPARK_APIPASSWORD: str = os.getenv("SPARK_APIPASSWORD", "")
+    SPARK_APIPASSWORD: str = os.getenv("SPARK_APIPASSWORD", os.getenv("SPARK_API_PASSWORD", ""))
     SPARK_BASE_URL: str = os.getenv(
         "SPARK_BASE_URL",
         "https://spark-api-open.xf-yun.com/v1/chat/completions",

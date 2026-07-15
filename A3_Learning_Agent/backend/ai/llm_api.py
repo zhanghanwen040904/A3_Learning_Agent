@@ -242,13 +242,19 @@ def _extract_http_error(response) -> str:
 
 
 def _limit_model_prompt(prompt: str) -> str:
-    max_chars = int(__import__("os").getenv("BAILIAN_MAX_INPUT_CHARS", "2500"))
+    default_max_chars = "24000" if config.AI_PROVIDER in {"spark", "xunfei", "xfyun"} else "2500"
+    max_chars = int(__import__("os").getenv("AI_MAX_INPUT_CHARS", __import__("os").getenv("BAILIAN_MAX_INPUT_CHARS", default_max_chars)))
     text = str(prompt or "")
     if len(text) <= max_chars:
         return text
     head_len = int(max_chars * 0.68)
     tail_len = max_chars - head_len
     return text[:head_len].rstrip() + "\n\n...(因模型上下文限制，中间内容已截断)...\n\n" + text[-tail_len:].lstrip()
+
+
+def _max_output_tokens() -> int:
+    default_max_tokens = "4096" if config.AI_PROVIDER in {"spark", "xunfei", "xfyun"} else "1024"
+    return int(__import__("os").getenv("AI_MAX_TOKENS", __import__("os").getenv("BAILIAN_MAX_TOKENS", default_max_tokens)))
 
 
 def _call_bailian_compatible(prompt: str) -> str:
@@ -258,7 +264,7 @@ def _call_bailian_compatible(prompt: str) -> str:
         "model": config.BAILIAN_MODEL or "qwen-plus",
         "messages": [{"role": "user", "content": _limit_model_prompt(prompt)}],
         "temperature": 0.5,
-        "max_tokens": int(__import__("os").getenv("BAILIAN_MAX_TOKENS", "1024")),
+        "max_tokens": _max_output_tokens(),
         "stream": False,
     }
     response = requests.post(
@@ -286,7 +292,7 @@ def _call_spark_compatible(prompt: str) -> str:
         "model": config.SPARK_MODEL or "4.0Ultra",
         "messages": [{"role": "user", "content": _limit_model_prompt(prompt)}],
         "temperature": 0.5,
-        "max_tokens": int(__import__("os").getenv("AI_MAX_TOKENS", "1024")),
+        "max_tokens": _max_output_tokens(),
         "stream": False,
     }
     session = requests.Session()
@@ -383,14 +389,14 @@ def _call_anthropic_compatible(prompt: str) -> str:
     model = config.ANTHROPIC_MODEL or config.ANTHROPIC_SMALL_FAST_MODEL
     anthropic_payload = {
         "model": model,
-        "max_tokens": int(__import__("os").getenv("BAILIAN_MAX_TOKENS", "1024")),
+        "max_tokens": _max_output_tokens(),
         "temperature": 0.5,
         "messages": [{"role": "user", "content": _limit_model_prompt(prompt)}],
     }
     openai_payload = {
         "model": model,
         "temperature": 0.5,
-        "max_tokens": int(__import__("os").getenv("BAILIAN_MAX_TOKENS", "1024")),
+        "max_tokens": _max_output_tokens(),
         "messages": [{"role": "user", "content": _limit_model_prompt(prompt)}],
     }
     errors = []
@@ -419,7 +425,7 @@ def _has_anthropic_compatible_config() -> bool:
 def llm_chat(prompt: str) -> str:
     """同步调用当前配置的大模型生成文本。
 
-    功能：根据 AI_PROVIDER 选择当前启用的大模型，支持讯飞星火、百炼及 Anthropic/OpenAI 兼容接口。
+    功能：根据 AI_PROVIDER 选择当前启用的大模型，支持讯飞星火、百炼，以及 settings.json 中的 Anthropic/OpenAI 兼容接口。
     输入：prompt，自然语言提示词。
     输出：成功时返回模型文本；失败时返回 JSON 字符串格式的标准错误信息。
     """
@@ -428,7 +434,7 @@ def llm_chat(prompt: str) -> str:
     if config.MOCK_AI:
         return _mock_llm_response(prompt)
 
-    use_spark = config.AI_PROVIDER in {"spark", "xfyun", "iflytek"}
+    use_spark = config.AI_PROVIDER in {"spark", "xunfei", "xfyun", "iflytek"}
     if use_spark:
         if not (config.SPARK_APIPASSWORD and config.SPARK_BASE_URL and config.SPARK_MODEL):
             return json.dumps(_standard_error("讯飞星火配置不完整"), ensure_ascii=False)

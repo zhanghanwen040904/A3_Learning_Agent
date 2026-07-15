@@ -14,13 +14,15 @@ MYSQL_DATABASE=a3_learning_agent
 
 ## AI 模型
 
-当前项目主模型统一使用百炼兼容接口：
+当前项目主模型统一使用讯飞星火 Spark Ultra-32K HTTP 兼容接口：
 
 ```env
-AI_PROVIDER=bailian
-BAILIAN_API_KEY=你的百炼 API Key
-BAILIAN_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions
-BAILIAN_MODEL=qwen-plus
+AI_PROVIDER=spark
+AI_MAX_INPUT_CHARS=24000
+AI_MAX_TOKENS=4096
+SPARK_APIPASSWORD=你的讯飞 APIPassword
+SPARK_BASE_URL=https://spark-api-open.xf-yun.com/v1/chat/completions
+SPARK_MODEL=4.0Ultra
 ```
 
 ## 其他可选能力

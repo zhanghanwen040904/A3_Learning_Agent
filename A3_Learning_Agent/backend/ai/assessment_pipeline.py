@@ -433,7 +433,7 @@ def _normalize_generated_question_item(item: dict) -> dict:
         "difficulty": _normalize_difficulty(item.get("difficulty_level") or item.get("difficulty") or "basic"),
         "prompt": stem,
         "stem": stem,
-        "options": item.get("options") or [],
+        "options": _normalize_question_options(item.get("options") or []),
         "reference_answer": item.get("reference_answer") or item.get("answer") or "",
         "answer": item.get("answer") or item.get("reference_answer") or "",
         "explanation": item.get("analysis") or item.get("explanation") or "",
@@ -461,6 +461,61 @@ def _normalize_generated_question_item(item: dict) -> dict:
     }
 
 
+def _normalize_question_options(options) -> List[dict]:
+    if not isinstance(options, list):
+        return []
+    normalized: List[dict] = []
+    auto_index = 0
+    for option in options:
+        label = ""
+        text = ""
+        if isinstance(option, dict):
+            label = str(option.get("label") or option.get("key") or option.get("option") or option.get("value") or "").strip()
+            text = str(option.get("text") or option.get("content") or option.get("title") or option.get("description") or "").strip()
+        else:
+            raw = str(option or "").strip()
+            match = re.match(r"^\s*([A-H])\s*[\.\．、:：)]\s*(.+?)\s*$", raw, flags=re.IGNORECASE)
+            if match:
+                label = match.group(1).upper()
+                text = match.group(2).strip()
+            else:
+                text = raw
+        if not label:
+            label = chr(ord("A") + auto_index)
+        if text:
+            normalized.append({"label": label, "text": text})
+            auto_index += 1
+    return normalized
+
+
+def _question_text(item: dict) -> str:
+    return str(
+        item.get("stem")
+        or item.get("prompt")
+        or item.get("content")
+        or item.get("question")
+        or ""
+    ).strip()
+
+
+def _question_dedupe_key(item: dict) -> str:
+    return _normalize_match_text(_question_text(item))
+
+
+def _dedupe_question_items(items: List[dict]) -> List[dict]:
+    deduped: List[dict] = []
+    seen = set()
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        key = _question_dedupe_key(item)
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        deduped.append(item)
+    return deduped
+
+
 def _load_generated_question_bank() -> List[dict]:
     for questions_dir in PREFERRED_QUESTION_BANK_DIRS:
         if not questions_dir.exists():
@@ -479,7 +534,7 @@ def _load_generated_question_bank() -> List[dict]:
                 if isinstance(item, dict):
                     items.append(_normalize_generated_question_item(item))
         if items:
-            return items
+            return _dedupe_question_items(items)
 
     fallback_questions_dir = questions_json_dir()
     if not fallback_questions_dir.exists():
@@ -493,19 +548,19 @@ def _load_generated_question_bank() -> List[dict]:
         for item in payload.get("questions", []) if isinstance(payload, dict) else []:
             if isinstance(item, dict):
                 items.append(_normalize_generated_question_item(item))
-    return items
+    return _dedupe_question_items(items)
 
 
 def load_question_bank() -> List[dict]:
     manual_question_bank = _load_manual_question_bank()
     if manual_question_bank:
-        return manual_question_bank
+        return _dedupe_question_items(manual_question_bank)
     generated_question_bank = _load_generated_question_bank()
     if generated_question_bank:
         return generated_question_bank
     if not QUESTION_BANK_PATH.exists():
         build_assessment_assets(force=True)
-    return json.loads(QUESTION_BANK_PATH.read_text(encoding="utf-8"))
+    return _dedupe_question_items(json.loads(QUESTION_BANK_PATH.read_text(encoding="utf-8")))
 
 
 def _normalize_match_text(text: str) -> str:
@@ -638,10 +693,10 @@ def _difficulty_preferences(stage_index: int | None) -> List[str]:
 
 
 def generate_personalized_questions(profile: dict, mastery_records: List[dict], count: int = DEFAULT_COUNT, knowledge_point: str = "", knowledge_points: List[str] | None = None, stage_index: int | None = None, stage_title: str = "") -> dict:
-    question_bank = load_question_bank()
+    question_bank = _dedupe_question_items(load_question_bank())
     if not question_bank:
         build_assessment_assets()
-        question_bank = load_question_bank()
+        question_bank = _dedupe_question_items(load_question_bank())
     knowledge_points_tree = load_knowledge_points()
     focus_points = _parse_profile_focus(profile, mastery_records)
 
@@ -673,22 +728,29 @@ def generate_personalized_questions(profile: dict, mastery_records: List[dict], 
             scored_questions = positive + rest
     selected: List[dict] = []
     used_paths = set()
+    used_question_keys = set()
     for score, item in scored_questions:
         path = item.get("knowledge_path")
+        question_key = _question_dedupe_key(item)
         if len(selected) >= count:
             break
+        if not question_key or question_key in used_question_keys:
+            continue
         if score <= 0 and focus_points:
             continue
         if path not in used_paths or score > 0:
             selected.append(item)
             used_paths.add(path)
+            used_question_keys.add(question_key)
 
     if len(selected) < count:
         for item in question_bank:
+            question_key = _question_dedupe_key(item)
             if len(selected) >= count:
                 break
-            if item not in selected:
+            if question_key and question_key not in used_question_keys:
                 selected.append(item)
+                used_question_keys.add(question_key)
 
     selected = [dict(item, order=index + 1) for index, item in enumerate(selected[:count])]
     recommended_paths = []
@@ -703,6 +765,7 @@ def generate_personalized_questions(profile: dict, mastery_records: List[dict], 
         "knowledge_tree": knowledge_points_tree,
         "questions": selected,
         "question_count": len(selected),
+        "question_bank_count": len(question_bank),
     }
 
 
