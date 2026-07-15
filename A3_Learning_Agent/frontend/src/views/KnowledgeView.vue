@@ -103,6 +103,11 @@
                 </div>
 
                 <p class="exercise-stem">{{ question.stem }}</p>
+                <div v-if="question.options?.length" class="exercise-option-list">
+                  <div v-for="option in question.options" :key="`${question.id}-${option}`" class="exercise-option-item">
+                    {{ option }}
+                  </div>
+                </div>
                 <div v-if="questionKnowledgeTitles(question).length" class="exercise-kp-list">
                   <span class="exercise-kp-label">所属知识点</span>
                   <el-tag
@@ -741,6 +746,23 @@ watch(
   margin: 12px 0 0;
   color: #0f172a;
   line-height: 1.9;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.exercise-option-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.exercise-option-item {
+  padding: 9px 12px;
+  border: 1px solid #dbeafe;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #1e293b;
+  line-height: 1.7;
   white-space: pre-wrap;
   word-break: break-word;
 }
