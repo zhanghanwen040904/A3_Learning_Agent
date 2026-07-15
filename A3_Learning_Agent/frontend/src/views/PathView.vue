@@ -30,39 +30,6 @@
 
     <el-empty v-if="!loading&&!stages.length" class="panel" description="当前画像还没有路径学习方案。请先生成画像，再点击生成路径与资源。"><el-button type="primary" @click="generateAll()">立即生成路径与资源</el-button></el-empty>
 
-    <section v-if="!loading&&stages.length" class="panel route-panel">
-      <div class="route-head">
-        <div>
-          <el-tag type="primary" effect="light">开始前先看</el-tag>
-          <h3>接下来你会这样学习</h3>
-          <p>正式进入阶段学习前，先快速了解每个阶段的学习内容、重点和整体框架。</p>
-        </div>
-        <div class="route-progress"><b>{{percent}}%</b><span>已完成</span></div>
-      </div>
-      <div class="route-grid">
-        <button
-          v-for="(s,i) in stages"
-          :key="`route-${s.key||i}`"
-          type="button"
-          :class="['route-card',state(i),{active:i===activeStageIndex,locked:i>current&&!done(i)}]"
-          @click="selectStage(i)"
-        >
-          <span class="route-index">{{i+1}}</span>
-          <div class="route-content">
-            <div class="route-title"><b>第{{i+1}}阶段</b><em>{{label(i)}}</em></div>
-            <h4>{{s.title}}</h4>
-            <p>{{s.goal}}</p>
-            <div class="route-tags">
-              <el-tag v-for="p in (s.points||[]).slice(0,3)" :key="p" size="small" effect="plain">{{p}}</el-tag>
-              <el-tag v-if="s.adaptive_focus" size="small" type="warning" effect="light">优先补强</el-tag>
-              <span>{{s.duration||'按计划推进'}}</span>
-            </div>
-          </div>
-        </button>
-      </div>
-      <div class="route-progress-bar"><el-progress :percentage="percent" :stroke-width="8" striped striped-flow /></div>
-    </section>
-
     <el-card v-if="!loading && Array.isArray(integrated.stage_rankings) && integrated.stage_rankings.length" class="panel adaptive-panel">
       <template #header>
         <div class="line">
@@ -83,11 +50,33 @@
     </el-card>
 
     <div v-if="!loading&&stages.length" class="stage-workspace">
+      <nav class="stage-map-nav" aria-label="学习阶段导航">
+        <div class="stage-map-status"><span>学习阶段</span><b>{{percent}}% 已完成</b></div>
+        <div class="stage-map-items">
+          <button v-for="(s,i) in stages" :key="`map-${s.key}`" type="button" :class="[state(i),{active:i===activeStageIndex}]" @click="selectStage(i)">
+            <span>{{done(i)?'✓':i+1}}</span><b>{{s.title}}</b>
+          </button>
+        </div>
+        <el-progress :percentage="percent" :stroke-width="5" :show-text="false" />
+      </nav>
       <div class="timeline compact-timeline">
       <div v-for="(s,i) in stages" v-show="i===activeStageIndex" :key="s.key" :class="['stage',state(i)]">
         <el-card class="stage-card" shadow="never">
-          <template #header><div class="stage-head compact-stage-head"><div class="stage-title-block"><el-tag :type="tag(i)" effect="dark">{{ label(i) }}</el-tag><h3>第{{i+1}}阶段：{{s.title}}</h3><p>{{s.goal}}</p></div><div class="stage-head-actions"><el-tag v-for="p in (s.points||[]).slice(0,3)" :key="p" size="small" type="info" effect="plain">{{p}}</el-tag><el-button size="small" plain @click="toggle(i)">{{done(i)?'取消完成':'标记完成'}}</el-button></div></div></template>
-          <div class="body"><div class="section"><b>本阶段配套资源</b><span>保留个性化说明与质量审核报告</span></div><el-tabs v-if="s.resources.length" v-model="activeResourceTabs[i]" class="resource-tabs" stretch @tab-change="onResourceTabChange">
+          <template #header><div class="stage-head compact-stage-head"><div class="stage-title-block"><el-tag :type="tag(i)" effect="dark">{{ label(i) }}</el-tag><h3>第{{i+1}}阶段：{{s.title}}</h3></div><div class="stage-head-actions"><el-tag v-for="p in (s.points||[]).slice(0,3)" :key="p" size="small" type="info" effect="plain">{{p}}</el-tag><el-button size="small" plain @click="toggle(i)">{{done(i)?'取消完成':'标记完成'}}</el-button></div></div></template>
+          <div class="body">
+            <section class="stage-guide-panel">
+              <div class="stage-guide-title"><span>阶段导学</span><b>{{stagePosition(i)}}</b></div>
+              <div class="stage-guide-summary">
+                <div><small>前置知识</small><strong>{{stagePrerequisites(i)}}</strong></div>
+                <i></i>
+                <div><small>能力目标</small><strong>{{stageOutcome(s)}}</strong></div>
+              </div>
+              <div class="stage-jar-row">
+                <div><b>知识收藏瓶</b><span>点亮想沉淀的知识点，完成本阶段后将自动全部收集。</span></div>
+                <div class="stage-jar-points"><button v-for="point in s.points||[]" :key="point" :class="{collected:isJarCollected(point)}" :disabled="jarBusy===point" @click="toggleJarPoint(point,s,i)"><span>{{isJarCollected(point)?'✓':'＋'}}</span>{{point}}</button></div>
+              </div>
+            </section>
+            <div class="section"><b>本阶段配套资源</b><span>保留个性化说明与质量审核报告</span></div><el-tabs v-if="s.resources.length" v-model="activeResourceTabs[i]" class="resource-tabs" stretch @tab-change="onResourceTabChange">
                 <el-tab-pane v-for="r in s.resources" :key="rid(r)" :name="rid(r)">
                   <template #label><span class="resource-tab-label"><span>{{resourceIcon(r.resource_type)}}</span>{{typeName(r.resource_type)}}</span></template>
                   <div :class="['res',resourceClass(r),{'res-static-toggle':usesButtonToggleOnly(r)}]" @click="resourceCardClick(r)">
@@ -221,13 +210,14 @@ import { Transformer } from 'markmap-lib';
 import { Markmap } from 'markmap-view';
 import MarkdownIt from 'markdown-it';
 import { ElMessage } from 'element-plus';
-import { activeProfileSessionId,pathApi,profileApi,resourceApi } from '../api';
+import { activeProfileSessionId,knowledgeJarApi,pathApi,profileApi,resourceApi } from '../api';
 const router=useRouter();
 const route=useRoute();
 const autoGenerating=ref(false);
 const paths=ref([]),resources=ref([]),profile=ref({}),integrated=ref({}),loading=ref(false),progress=ref(0),completed=ref([]),hint=ref(''),openStages=ref({}),openResources=ref({}),assessmentRecords=ref([]),agentSteps=ref([]),activeStageIndex=ref(0),activeResourceTabs=ref({});
 const profileTipDisabled=ref(localStorage.getItem('a3_path_profile_tip_seen')==='1');
 const detailDialog=ref({visible:false,type:'basis',resource:null});
+const jarPoints=ref(new Set()),jarBusy=ref('');
 let pathLoadToken=0;
 let trackedResource=null;
 let trackedSince=0;
@@ -262,6 +252,10 @@ const percent=computed(()=>Math.round(completed.value.length/Math.max(stages.val
 const activeStage=computed(()=>stages.value[activeStageIndex.value]||stages.value[current.value]||stages.value[0]||null);
 const totalDays=computed(()=>integrated.value.total_duration||`${stages.value.reduce((n,s)=>n+Number(String(s.duration).match(/\d+/)?.[0]||0),0)||stages.value.length}天`);
 function clean(t){return String(t||'').replace(/[#*_`>\-]/g,'').trim()}
+function stagePosition(i){return i===0?'课程起点：建立基础认知':i===stages.value.length-1?'课程收束：综合迁移与验证':`课程中段：第 ${i+1} 个关键学习环节`}
+function stagePositionDetail(i){const previous=stages.value[i-1]?.title;const next=stages.value[i+1]?.title;if(!previous)return `为后续“${next||'综合应用'}”建立共同基础。`;if(!next)return `整合“${previous}”并完成课程能力验证。`;return `承接“${previous}”，为“${next}”做好准备。`}
+function stagePrerequisites(i){if(i===0)return '无需专门前置，从软件工程课程基础开始';const previous=stages.value[i-1];return (previous?.points||[]).slice(0,3).join('、')||previous?.title||'上一阶段核心内容'}
+function stageOutcome(stage){const goal=clean(stage?.goal||'掌握本阶段核心知识并完成应用');return /^能够|^掌握|^理解|^建立|^完成/.test(goal)?goal:`能够${goal}`}
 const stagePointKeywords=['问题定义','可行性研究','需求分析','需求规格','总体设计','详细设计','软件设计','编码实现','调试','软件测试','软件维护','软件生命周期','瀑布模型','用例图','类图','时序图','数据流图','模块划分','阶段衔接','阶段边界','阶段产物','输入输出','流程建构','产物驱动','质量闭环','案例应用','迁移应用'];
 function parseStages(md){return String(md||'').split(/\n(?=##\s*阶段[一二三四五六七八九十\d]+)/).filter(b=>/^##\s*阶段/.test(b.trim())).map((b,i)=>({title:clean((b.split('\n')[0]||'').replace(/^##\s*阶段[一二三四五六七八九十\d]+[：:、.．\s]*/,''))||`学习阶段${i+1}`,goal:section(b,'目标')||section(b,'学习任务')||'围绕画像短板完成本阶段学习任务。',points:points(b),duration:(b.match(/(\d+)\s*天/)?.[1]?`预计${b.match(/(\d+)\s*天/)[1]}天`:`预计${i+2}天`),raw:b}))}
 function section(b,l){const m=b.match(new RegExp(`\\*\\*${l}[：:]?\\*\\*\\s*([^\\n]+)`));return m?clean(m[1]):''}
@@ -678,7 +672,6 @@ function readingBullets(markdown,title){
 function renderReading(r,stage={}){
   const markdown=readingText(r,stage);
   const points=[...new Set([...(stage.points||[]),...kps(r)])].filter(Boolean).slice(0,4);
-  const title=cleanDocDisplayText(r.title||`${stage.title||points[0]||'课程核心知识'}・拓展阅读`);
   const intro=readingSection(markdown,'为什么值得读')||resourceText(r)||stage.goal||'通过拓展阅读，把本阶段知识点放到更完整的软件工程场景中理解。';
   const connection=readingSection(markdown,'与课程知识点的连接')||`本阅读围绕${points.join('、')||'课程核心知识'}展开，帮助你理解概念、流程、产物和应用边界。`;
   const explanation=readingSection(markdown,'拓展知识讲解')||'';
@@ -686,7 +679,7 @@ function renderReading(r,stage={}){
   const guide=readingBullets(markdown,'阅读导读');
   const questions=readingBullets(markdown,'思考问题');
   const explore=readingSection(markdown,'进一步探索方向');
-  const lines=[`# ${title}`,'',`> 预计时长：20分钟 · 关键词：${points.join('、')||'课程核心知识'}`,''];
+  const lines=[`> 预计时长：20分钟 · 关键词：${points.join('、')||'课程核心知识'}`,''];
   lines.push('## 本阶段阅读导入',cleanDocDisplayText(intro),'');
   lines.push('## 与课程知识点的连接',cleanDocDisplayText(connection),'');
   if(explanation)lines.push('## 拓展知识讲解',cleanDocDisplayText(explanation),'');
@@ -709,7 +702,6 @@ function uniqueByText(items,getter){const seen=new Set();return (items||[]).filt
 function renderDoc(r,stage){
   const data=resourceJson(r)||{};
   const points=[...new Set([...(stage.points||[]),...kps(r)])].filter(Boolean).slice(0,4);
-  const title=data.resourcetitle||r.title||`${stage.title}・讲解文档`;
   const overview=cleanDocDisplayText(data.overview?.content||data.content||stage.goal||resourceText(r));
   const mainTitle=cleanDocDisplayText(data.main_explanation?.title||points[0]||stage.title||'核心知识讲解');
   const mainContent=cleanDocDisplayText(data.main_explanation?.content||data.main_explanation?.explanation||'');
@@ -718,7 +710,7 @@ function renderDoc(r,stage){
   const mistakes=uniqueByText(data.mistakes||[],item=>item.mistake).slice(0,3);
   const checks=uniqueByText(data.self_check||[],item=>item.question).slice(0,3);
   const learningPath=uniqueByText((data.learning_path||[]).map(item=>({text:item})),item=>item.text).slice(0,3);
-  const lines=[`# ${cleanDocDisplayText(title)}`,'',`> 预计时长：${cleanDocDisplayText(data.estimatedtime||data.studytimepreferred||'25分钟')} · 关键词：${points.join('、')||'课程核心知识'}`,''];
+  const lines=[`> 预计时长：${cleanDocDisplayText(data.estimatedtime||data.studytimepreferred||'25分钟')} · 关键词：${points.join('、')||'课程核心知识'}`,''];
   if(overview)lines.push('## 本阶段学习导入',overview,'');
   if(mainContent) lines.push(`## 核心知识讲解：${mainTitle}`, mainContent, '');
   if(concepts.length){lines.push('## 相关核心概念');concepts.forEach(item=>{lines.push(`### ${cleanDocDisplayText(item.name)}`,cleanDocDisplayText(item.definition||item.why_it_matters||''));if(item.example)lines.push(`- 示例：${cleanDocDisplayText(item.example)}`);if(item.common_misunderstanding)lines.push(`- 易错：${cleanDocDisplayText(item.common_misunderstanding)}`);lines.push('')})}
@@ -961,6 +953,7 @@ async function toggle(i){
     const sessionId=currentSessionId();
     const res=await pathApi.saveStageProgress({stage_index:i+1,stage_title:stage.title,completed:nextCompleted,knowledge_points:stage.points||[],path_id:latest.value?.id||integrated.value?.path_id||null},sessionId);
     if(res.code!==200)throw new Error(res.msg||'阶段进度保存失败');
+    if(nextCompleted){const added=res.data?.knowledge_jar_added||[];jarPoints.value=new Set([...jarPoints.value,...(stage.points||[])]);if(added.length)ElMessage.success(`阶段完成，${added.length} 个知识点已自动加入收藏瓶`)}
     window.dispatchEvent(new CustomEvent('a3-profile-session-refresh'));
   }catch(e){
     completed.value=previous;
@@ -968,6 +961,9 @@ async function toggle(i){
     ElMessage.error(e?.message||'阶段进度保存失败');
   }
 }
+function isJarCollected(point){return jarPoints.value.has(String(point||'').trim())}
+async function loadKnowledgeJar(){const res=await knowledgeJarApi.list();if(res.code===200)jarPoints.value=new Set((res.data?.items||[]).map(item=>String(item.knowledge_point||'').trim()).filter(Boolean))}
+async function toggleJarPoint(point,stage,index){const value=String(point||'').trim();if(!value||jarBusy.value)return;jarBusy.value=value;try{const collected=isJarCollected(value);const payload={knowledge_point:value,source:'manual',source_label:'学习路径手动收藏',stage_index:index+1,stage_title:stage.title};const res=collected?await knowledgeJarApi.remove(payload):await knowledgeJarApi.collect(payload);if(res.code!==200)throw new Error(res.msg||'收藏操作失败');const next=new Set(jarPoints.value);collected?next.delete(value):next.add(value);jarPoints.value=next;ElMessage.success(collected?'已从收藏瓶移出':'已加入知识收藏瓶')}catch(error){ElMessage.error(error?.message||'收藏操作失败')}finally{jarBusy.value=''}}
 function ensureActiveResourceTabs(){
   const next={...activeResourceTabs.value};
   stages.value.forEach((stage,index)=>{
@@ -1018,6 +1014,7 @@ async function loadAll(sessionId=currentSessionId()){
   await nextTick();
   if(token!==pathLoadToken)return;
   ensureActiveResourceTabs();
+  await loadKnowledgeJar();
 }
 async function generateAll(extra='',forceResources=false){
   loading.value=true;progress.value=5;resetAgentSteps();
@@ -1143,6 +1140,9 @@ watch(current,(value)=>{if(!done(activeStageIndex.value)&&activeStageIndex.value
 .adaptive-panel .el-card__body{display:grid;gap:12px}.adaptive-ranking-list{display:grid;gap:12px}.adaptive-ranking-item{padding:14px 16px;border:1px solid #eceff5;border-radius:16px;background:#fff}.adaptive-ranking-title{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}.adaptive-ranking-item p{margin:0;color:#475569;line-height:1.7}
 .adaptive-explanation{margin-top:10px;color:#526072;line-height:1.75;font-size:14px;max-width:860px}
 .evidence-source-list{display:grid;gap:10px}.evidence-source-card{display:grid;grid-template-columns:30px minmax(0,1fr) auto;align-items:center;gap:12px;width:100%;padding:13px 14px;border:1px solid #dbeafe;border-radius:14px;background:#f8fbff;color:#334155;text-align:left;cursor:pointer;transition:.18s ease}.evidence-source-card:hover{border-color:#60a5fa;background:#eff6ff;transform:translateY(-1px)}.evidence-index{display:grid;width:28px;height:28px;place-items:center;border-radius:9px;background:#dbeafe;color:#1d4ed8;font-size:12px;font-weight:800}.evidence-main{display:grid;min-width:0;gap:4px}.evidence-main strong{overflow:hidden;color:#0f172a;text-overflow:ellipsis;white-space:nowrap}.evidence-main small{overflow:hidden;color:#64748b;font-size:12px;text-overflow:ellipsis;white-space:nowrap}.evidence-main em{display:-webkit-box;overflow:hidden;color:#64748b;font-size:12px;font-style:normal;line-height:1.5;-webkit-box-orient:vertical;-webkit-line-clamp:2}.evidence-meta{display:grid;justify-items:end;gap:3px;color:#64748b;font-size:11px;white-space:nowrap}.evidence-meta b{color:#2563eb;font-size:12px}@media(max-width:720px){.evidence-source-card{grid-template-columns:30px minmax(0,1fr)}.evidence-meta{grid-column:2;justify-items:start}}
+.stage-map-nav{position:sticky;z-index:8;top:10px;display:grid;grid-template-columns:190px minmax(0,1fr);gap:9px 15px;padding:13px 16px;border:1px solid rgba(191,219,254,.92);border-radius:18px;background:rgba(255,255,255,.95);box-shadow:0 12px 28px rgba(15,23,42,.08);backdrop-filter:blur(12px)}.stage-map-status{display:grid}.stage-map-status span{color:#2563eb;font-size:12px;font-weight:800}.stage-map-status b{margin-top:3px;color:#0f172a;font-size:14px}.stage-map-items{display:flex;gap:7px;overflow-x:auto}.stage-map-items button{display:flex;min-width:0;align-items:center;gap:7px;padding:7px 10px;border:1px solid #e2e8f0;border-radius:12px;background:#fff;color:#64748b;cursor:pointer}.stage-map-items button span{display:grid;flex:0 0 24px;height:24px;place-items:center;border-radius:8px;background:#e2e8f0;font-size:11px}.stage-map-items button b{max-width:150px;overflow:hidden;font-size:12px;text-overflow:ellipsis;white-space:nowrap}.stage-map-items button.active{border-color:#60a5fa;background:#eff6ff;color:#1d4ed8}.stage-map-items button.completed span{background:#22c55e;color:#fff}.stage-map-nav>.el-progress{grid-column:1/-1}.stage-guide-panel{padding:17px;border:1px solid #bfdbfe;border-radius:18px;background:linear-gradient(135deg,#f8fbff,#fff)}.stage-guide-title{display:flex;align-items:center;gap:12px;margin-bottom:13px}.stage-guide-title span{padding:5px 9px;border-radius:999px;background:#dbeafe;color:#1d4ed8;font-size:12px;font-weight:800}.stage-guide-title b{color:#0f172a}.stage-guide-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.stage-guide-grid>div{padding:13px 14px;border:1px solid #e2e8f0;border-radius:14px;background:#fff}.stage-guide-grid small{display:block;color:#2563eb;font-weight:700}.stage-guide-grid strong{display:block;margin:7px 0;color:#0f172a;line-height:1.55}.stage-guide-grid p{margin:0;color:#64748b;font-size:12px;line-height:1.65}@media(max-width:1050px){.stage-map-nav,.stage-guide-grid{grid-template-columns:1fr}}@media(max-width:720px){.stage-map-nav{top:4px}.stage-map-items button b{max-width:96px}}
+.stage-jar-row{display:grid;grid-template-columns:minmax(210px,.42fr) minmax(0,1fr);gap:16px;align-items:center;margin-top:12px;padding:13px 14px;border:1px solid #d8eee9;border-radius:15px;background:#f7fcfb}.stage-jar-row>div:first-child{display:grid;gap:4px}.stage-jar-row b{color:#167f70;font-size:13px}.stage-jar-row>div:first-child span{color:#718892;font-size:11px}.stage-jar-points{display:flex;flex-wrap:wrap;gap:7px}.stage-jar-points button{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border:1px solid #dce8e6;border-radius:999px;background:#fff;color:#526b75;font-size:11px;cursor:pointer;transition:.16s}.stage-jar-points button span{color:#19917e;font-weight:900}.stage-jar-points button:hover,.stage-jar-points button.collected{border-color:#74c9ba;background:#eaf8f5;color:#147568}.stage-jar-points button:disabled{cursor:wait;opacity:.55}@media(max-width:820px){.stage-jar-row{grid-template-columns:1fr}}
+.stage-guide-summary{display:grid;grid-template-columns:minmax(180px,.35fr) 1px minmax(0,1fr);gap:16px;align-items:center;padding:13px 15px;border:1px solid #e2e8f0;border-radius:14px;background:#fff}.stage-guide-summary div{display:grid;gap:5px;min-width:0}.stage-guide-summary small{color:#64748b;font-size:11px}.stage-guide-summary strong{color:#172033;font-size:13px;line-height:1.6}.stage-guide-summary i{width:1px;height:34px;background:#e2e8f0}@media(max-width:720px){.stage-guide-summary{grid-template-columns:1fr}.stage-guide-summary i{display:none}}
 </style>
 
 

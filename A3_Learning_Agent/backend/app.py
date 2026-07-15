@@ -5,6 +5,7 @@ from api.auth_api import auth_bp
 from api.chat_api import chat_bp
 from api.evaluation_api import evaluation_bp
 from api.knowledge_api import knowledge_bp
+from api.knowledge_jar_api import knowledge_jar_bp
 from api.path_api import path_bp
 from api.profile_api import profile_bp
 from api.resource_api import resource_bp
@@ -43,6 +44,7 @@ def create_app() -> Flask:
     app.register_blueprint(path_bp, url_prefix="/api/path")
     app.register_blueprint(chat_bp, url_prefix="/api/chat")
     app.register_blueprint(knowledge_bp, url_prefix="/api/knowledge")
+    app.register_blueprint(knowledge_jar_bp, url_prefix="/api/knowledge-jar")
     app.register_blueprint(evaluation_bp, url_prefix="/api/evaluation")
     app.register_blueprint(system_bp, url_prefix="/api/system")
 

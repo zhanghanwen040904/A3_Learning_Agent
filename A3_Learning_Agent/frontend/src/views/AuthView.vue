@@ -1,7 +1,7 @@
 ﻿<template>
   <div class="auth-shell">
     <section class="hero-panel">
-      <div class="brand-row"><div class="brand-mark"><span class="logo-link link-a"></span><span class="logo-link link-b"></span><span class="logo-dot dot-a"></span><span class="logo-dot dot-b"></span><span class="logo-dot dot-c"></span><i>M</i></div><div><h1>MultiTutor</h1><p>学习智能体</p></div></div>
+      <div class="brand-row"><div class="brand-mark"><el-icon class="brand-symbol"><Connection /></el-icon><el-icon class="brand-book"><Reading /></el-icon></div><div><h1>MultiTutor</h1><p>学习智能体</p></div></div>
       <div class="hero-badge"><span></span>AI 驱动的个性化学习伙伴</div>
       <div class="hero-main">
         <h2>让学习更<span>高效</span><br />让成长更<span>可见</span></h2>
@@ -44,7 +44,7 @@
 import { reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
-import { Lock, User } from "@element-plus/icons-vue";
+import { Connection, Lock, Reading, User } from "@element-plus/icons-vue";
 import { authApi } from "../api";
 const router = useRouter();
 const route = useRoute();
@@ -68,7 +68,7 @@ async function register() { if (!validateLoginForm(registerForm)) return; if (re
 /* Balanced desktop composition */
 .auth-shell{--p:#3467f6;--s:#5f5cf5;--a:#18bfe9;grid-template-columns:minmax(680px,3fr) minmax(480px,2fr);background:radial-gradient(circle at 14% 14%,rgba(56,189,248,.17),transparent 28%),radial-gradient(circle at 66% 10%,rgba(99,102,241,.17),transparent 30%),linear-gradient(135deg,#f8fbff 0%,#eef5ff 52%,#fafcff 100%)}
 .hero-panel{padding:clamp(34px,4vh,56px) clamp(42px,4.5vw,82px) 28px}
-.brand-row{gap:16px}.brand-mark{width:58px;height:58px;border-radius:18px}.brand-mark i{font-size:25px}.logo-link,.logo-dot{display:none}.brand-row h1{font-size:32px}.brand-row p{font-size:15px}.hero-badge{margin-top:30px;padding:9px 16px;font-size:14px}
+.brand-row{gap:16px}.brand-mark{width:58px;height:58px;border-radius:18px}.brand-mark .brand-symbol{color:#fff;font-size:32px;transform:rotate(-8deg)}.brand-mark .brand-book{position:absolute;right:-4px;bottom:-4px;display:grid;width:23px;height:23px;place-items:center;border:3px solid #f8fbff;border-radius:8px;background:#14b8a6;color:#fff;font-size:13px}.logo-link,.logo-dot{display:none}.brand-row h1{font-size:32px}.brand-row p{font-size:15px}.hero-badge{margin-top:30px;padding:9px 16px;font-size:14px}
 .hero-main{width:min(520px,48%);padding-bottom:24px}.hero-main h2{font-size:clamp(48px,4.6vw,76px);line-height:1.04}.hero-main p{max-width:500px;margin-top:26px;font-size:17px;line-height:1.9}
 .visual-stage{right:clamp(30px,4.2vw,76px);top:52%;width:clamp(320px,27vw,430px);height:390px}.orbit-one{width:350px;height:250px}.orbit-two{width:260px;height:184px}.agent-core{width:136px;height:136px;border:8px solid rgba(255,255,255,.62);border-radius:38px}.agent-core strong{font-size:44px}.agent-core small{margin-top:-28px;font-size:12px}.node-planner{left:4px;top:72px}.node-teacher{right:4px;top:70px}.node-resource{left:8px;bottom:72px}.node-eval{right:4px;bottom:74px}.agent-node{padding:9px 13px;font-size:12px}
 .login-panel{padding:38px clamp(38px,4vw,78px) 38px 20px}.login-card{width:min(500px,100%);padding:52px 48px 42px;border-radius:32px;background:rgba(255,255,255,.78)}.card-header{text-align:left}.card-kicker{display:block;margin-bottom:12px;color:var(--p);font-size:14px;font-weight:800}.card-header h3{font-size:38px;line-height:1.18}.card-header p{margin-top:12px;font-size:16px}.login-divider{margin:30px 0 28px}.login-form :deep(.el-form-item){margin-bottom:22px}.login-form :deep(.el-form-item__label){font-size:14px}.login-form :deep(.el-input__wrapper){min-height:56px;border-radius:16px}.login-button{height:56px;margin-top:8px;border-radius:16px;font-size:17px}.register-line{margin-top:28px;font-size:14px}.auth-footer{font-size:13px}

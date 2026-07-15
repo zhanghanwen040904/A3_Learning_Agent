@@ -996,6 +996,21 @@ def save_stage_progress():
             },
         )
 
+        jar_added = []
+        if detail["completed"] and detail["knowledge_points"]:
+            from api.knowledge_jar_api import record_knowledge_collections
+
+            jar_added = record_knowledge_collections(
+                request.user_id,
+                session["id"],
+                detail["knowledge_points"],
+                source="stage_complete",
+                source_label="完成学习阶段自动沉淀",
+                stage_index=stage_index,
+                stage_title=detail["stage_title"],
+                auto_collected=True,
+            )
+
         from api.profile_api import _aggregate_profile_payload, _persist_portrait_snapshot, _refresh_aggregate_profile
 
         aggregate_profile = _aggregate_profile_payload(
@@ -1017,6 +1032,7 @@ def save_stage_progress():
                 "profile_session_id": session["id"],
                 "stage_index": stage_index,
                 "completed": detail["completed"],
+                "knowledge_jar_added": jar_added,
                 "aggregate_profile": aggregate_profile,
             },
             "阶段进度已记录，画像已刷新",

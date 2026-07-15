@@ -63,6 +63,12 @@
           <strong>{{ portraitHistory.length }}</strong>
           <small>已记录 {{ portraitHistory.length }} 次画像快照</small>
         </div>
+
+        <button class="metric-card knowledge-asset-card" type="button" @click="router.push('/knowledge-jar')">
+          <span>知识收藏瓶</span>
+          <strong>{{ knowledgeJarStats.total || 0 }} 个</strong>
+          <small>查看个人动态知识资产 →</small>
+        </button>
       </div>
 
       <section class="effect-overview">
@@ -164,143 +170,65 @@
         <div class="portrait-analysis-card" v-if="hasPortraitAnalysisReason">
           <div class="card-header">
             <div>
-              <span class="eyebrow">Analysis Reason</span>
-              <strong>学习画像分析依据</strong>
+              <span class="eyebrow">Portrait Diagnosis</span>
+              <strong>核心能力诊断</strong>
             </div>
             <el-tag round effect="plain">{{ confidenceLabel }}</el-tag>
           </div>
-          <p v-if="portraitScoring.teacher_summary" class="analysis-summary">
-            {{ portraitScoring.teacher_summary }}
-          </p>
-          <p v-if="portraitScoring.evidence_summary" class="analysis-evidence">
-            {{ portraitScoring.evidence_summary }}
-          </p>
-          <div class="analysis-reason-list">
-            <div v-for="item in portraitReasonCards" :key="item.id" class="analysis-reason-item">
-              <div>
-                <b>{{ item.label }}</b>
-                <span>{{ item.score }} · {{ item.level }}</span>
+          <div class="diagnosis-intro">
+            <p v-if="portraitScoring.teacher_summary" class="analysis-summary">{{ portraitScoring.teacher_summary }}</p>
+            <p v-if="portraitScoring.evidence_summary" class="analysis-evidence">{{ portraitScoring.evidence_summary }}</p>
+          </div>
+          <div class="diagnosis-grid">
+            <article v-for="item in coreCards" :key="item.id" :class="['diagnosis-item', { filled: item.filled }]">
+              <div class="diagnosis-item-head">
+                <span>{{ item.label }}</span>
+                <div><strong>{{ item.score }}</strong><em v-if="item.deltaText" :class="item.deltaClass">{{ item.deltaText }}</em></div>
               </div>
-              <p v-if="item.teacher_judgement">{{ item.teacher_judgement }}</p>
-              <small>{{ item.reason }}</small>
-            </div>
+              <el-progress :percentage="Number.parseInt(item.score) || 0" :stroke-width="6" :show-text="false" />
+              <b>{{ item.value }}</b>
+              <p>{{ item.reason }}</p>
+              <details v-if="item.formula || item.changeReason">
+                <summary>查看计算依据</summary>
+                <small v-if="item.formula">{{ item.formula }}</small>
+                <small v-if="item.changeReason">{{ item.changeReason }}</small>
+              </details>
+            </article>
           </div>
           <div v-if="portraitScoring.overall_comment" class="analysis-next-step">
-            <b>下一步建议</b>
-            <span>{{ portraitScoring.overall_comment }}</span>
-          </div>
-        </div>
-
-        <div class="dimension-card-grid">
-          <div
-            v-for="item in coreCards"
-            :key="item.id"
-            :class="['dimension-card', { filled: item.filled }]"
-          >
-            <div class="dimension-card-top">
-              <span>{{ item.label }}</span>
-              <div class="dimension-score-wrap">
-                <strong>{{ item.score }}</strong>
-                <span v-if="item.deltaText" :class="['dimension-delta', item.deltaClass]">{{ item.deltaText }}</span>
-              </div>
-            </div>
-            <p class="dimension-value">{{ item.value }}</p>
-            <p class="dimension-reason">{{ item.reason }}</p>
-            <p v-if="item.formula" class="dimension-formula">{{ item.formula }}</p>
-            <p v-if="item.changeReason" class="dimension-change">{{ item.changeReason }}</p>
+            <b>下一步建议</b><span>{{ portraitScoring.overall_comment }}</span>
           </div>
         </div>
       </div>
 
-      <div class="secondary-panel">
-        <div class="section-header">
-          <span class="eyebrow">辅助信息</span>
-          <strong>辅助判断信息</strong>
+      <section class="learning-trace-panel">
+        <div class="trace-heading">
+          <div><span class="eyebrow">Growth Signals</span><h2>成长线索与更新记录</h2></div>
+          <span>由对话、资源学习、测评与反馈共同沉淀</span>
         </div>
-
-        <div class="support-grid">
-          <div
-            v-for="item in supportCards"
-            :key="item.id"
-            class="support-card"
-          >
-            <span>{{ item.label }}</span>
-            <strong>{{ item.value }}</strong>
+        <div class="trace-overview">
+          <div class="support-summary">
+            <article v-for="item in supportCards" :key="item.id">
+              <span>{{ item.label }}</span><strong>{{ item.value }}</strong>
+            </article>
           </div>
-        </div>
-      </div>
-
-      <div class="timeline-card">
-        <div class="card-header">
-          <div>
-            <span class="eyebrow">更新轨迹</span>
-            <strong>画像更新轨迹</strong>
-          </div>
-        </div>
-
-        <div class="timeline-list">
-          <div v-for="item in timelineItems" :key="item.id" class="timeline-item">
-            <span class="timeline-dot"></span>
-            <div>
-              <strong>{{ item.title }}</strong>
-              <p>{{ item.desc }}</p>
+          <div class="compact-timeline">
+            <div v-for="item in timelineItems.slice(0, 4)" :key="item.id" class="compact-timeline-item">
+              <i></i><div><strong>{{ item.title }}</strong><p>{{ item.desc }}</p></div>
             </div>
           </div>
         </div>
-      </div>
-
-      <div class="feedback-evidence-grid">
-        <div class="feedback-evidence-card">
-          <div class="card-header">
-            <div>
-              <span class="eyebrow">Resource Feedback</span>
-              <strong>资源反馈证据</strong>
+        <el-collapse class="evidence-archive">
+          <el-collapse-item name="evidence">
+            <template #title><div class="evidence-title"><b>学习证据档案</b><span>反馈 {{ resourceFeedbackItems.length }} · 资源行为 {{ resourceUsageItems.length }} · 学习事件 {{ learningEventItems.length }}</span></div></template>
+            <div class="evidence-columns">
+              <div><h3>资源反馈</h3><div v-if="resourceFeedbackItems.length" class="feedback-evidence-list"><div v-for="(item,index) in resourceFeedbackItems.slice(0,4)" :key="`feedback-${index}`" class="feedback-evidence-item"><strong>{{ item.ratingText }}</strong><p>{{ item.comment }}</p><small>{{ item.time }}</small></div></div><el-empty v-else description="暂无资源反馈" /></div>
+              <div><h3>资源使用</h3><div v-if="resourceUsageItems.length" class="feedback-evidence-list"><div v-for="(item,index) in resourceUsageItems.slice(0,4)" :key="`usage-${index}`" class="feedback-evidence-item"><strong>{{ item.resource_type }}</strong><p>{{ item.title }}</p><small>{{ item.time }}</small></div></div><el-empty v-else description="暂无资源使用记录" /></div>
+              <div><h3>自适应事件</h3><div v-if="learningEventItems.length" class="feedback-evidence-list"><div v-for="(item,index) in learningEventItems.slice(0,4)" :key="`event-${index}`" class="feedback-evidence-item"><strong>{{ item.event_type }}</strong><p>{{ item.detail }}</p><small>{{ item.time }}</small></div></div><el-empty v-else description="暂无学习行为事件" /></div>
             </div>
-          </div>
-          <div v-if="resourceFeedbackItems.length" class="feedback-evidence-list">
-            <div v-for="(item, index) in resourceFeedbackItems" :key="`feedback-${index}`" class="feedback-evidence-item">
-              <strong>{{ item.ratingText }}</strong>
-              <p>{{ item.comment }}</p>
-              <small>{{ item.time }}</small>
-            </div>
-          </div>
-          <el-empty v-else description="当前还没有资源反馈记录" />
-        </div>
-
-        <div class="feedback-evidence-card">
-          <div class="card-header">
-            <div>
-              <span class="eyebrow">Resource Usage</span>
-              <strong>资源使用行为</strong>
-            </div>
-          </div>
-          <div v-if="resourceUsageItems.length" class="feedback-evidence-list">
-            <div v-for="(item, index) in resourceUsageItems" :key="`usage-${index}`" class="feedback-evidence-item">
-              <strong>{{ item.resource_type }}</strong>
-              <p>{{ item.title }}</p>
-              <small>{{ item.time }}</small>
-            </div>
-          </div>
-          <el-empty v-else description="当前还没有资源使用记录" />
-        </div>
-
-        <div class="feedback-evidence-card feedback-evidence-card-wide">
-          <div class="card-header">
-            <div>
-              <span class="eyebrow">Adaptive Trace</span>
-              <strong>反馈驱动的持续优化依据</strong>
-            </div>
-          </div>
-          <div v-if="learningEventItems.length" class="feedback-evidence-list">
-            <div v-for="(item, index) in learningEventItems" :key="`event-${index}`" class="feedback-evidence-item">
-              <strong>{{ item.event_type }}</strong>
-              <p>{{ item.detail }}</p>
-              <small>{{ item.time }}</small>
-            </div>
-          </div>
-          <el-empty v-else description="当前还没有学习行为事件记录" />
-        </div>
-      </div>
+          </el-collapse-item>
+        </el-collapse>
+      </section>
     </template>
 
     <el-empty v-else description="当前还没有足够的学生画像信息，先去对话区交流几轮吧。">
@@ -316,7 +244,7 @@ import * as echarts from "echarts/core";
 import { LineChart, RadarChart } from "echarts/charts";
 import { GridComponent, TooltipComponent } from "echarts/components";
 import { CanvasRenderer } from "echarts/renderers";
-import { profileApi } from "../api";
+import { knowledgeJarApi, profileApi } from "../api";
 
 echarts.use([LineChart, RadarChart, GridComponent, TooltipComponent, CanvasRenderer]);
 
@@ -325,6 +253,7 @@ const radarRef = ref(null);
 const effectTrendRef = ref(null);
 const loading = ref(false);
 const aggregateProfile = reactive({});
+const knowledgeJarStats = reactive({ total: 0, auto_count: 0, manual_count: 0, stage_count: 0 });
 const sessions = ref([]);
 let radarChart = null;
 let effectTrendChart = null;
@@ -767,9 +696,10 @@ async function refreshData() {
   const requestId = ++refreshRequestId;
   loading.value = true;
   try {
-    const [aggregateRes, sessionRes] = await Promise.all([
+    const [aggregateRes, sessionRes, jarRes] = await Promise.all([
       profileApi.getAggregate(),
       profileApi.sessions(),
+      knowledgeJarApi.list(),
     ]);
 
     if (requestId !== refreshRequestId) return;
@@ -782,6 +712,7 @@ async function refreshData() {
     if (sessionRes.code === 200) {
       sessions.value = sessionRes.data.sessions || [];
     }
+    if (jarRes.code === 200) Object.assign(knowledgeJarStats, jarRes.data?.stats || {});
 
     renderCharts();
   } finally {
@@ -947,7 +878,7 @@ onBeforeUnmount(() => {
 
 .metric-row {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
 }
 
@@ -969,6 +900,26 @@ onBeforeUnmount(() => {
 
 .metric-card-primary {
   border-color: #d9e2ef;
+}
+
+.knowledge-asset-card {
+  width: 100%;
+  border: 1px solid #d6e5fb;
+  background: linear-gradient(135deg, #ffffff, #f2f7ff);
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  transition: 0.2s ease;
+}
+
+.knowledge-asset-card:hover {
+  transform: translateY(-2px);
+  border-color: #73a6f2;
+  box-shadow: 0 12px 26px rgba(37, 99, 235, 0.1);
+}
+
+.knowledge-asset-card strong {
+  color: #2867d8;
 }
 
 .effect-overview {
@@ -1559,6 +1510,228 @@ onBeforeUnmount(() => {
   .feedback-evidence-card-wide {
     grid-column: auto;
   }
+}
+
+.diagnosis-intro {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.diagnosis-intro p {
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #f6f9fd;
+  color: #526072;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.diagnosis-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.diagnosis-item {
+  min-width: 0;
+  padding: 15px;
+  border: 1px solid #e3eaf3;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #ffffff, #f8fbff);
+}
+.diagnosis-item-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.diagnosis-item-head > span { color: #526072; font-size: 13px; font-weight: 700; }
+.diagnosis-item-head div { display: flex; align-items: center; gap: 5px; }
+.diagnosis-item-head strong { color: #172033; font-size: 18px; }
+.diagnosis-item-head em { color: #94a3b8; font-size: 11px; font-style: normal; }
+.diagnosis-item-head em.up { color: #159a73; }
+.diagnosis-item-head em.down { color: #e56a68; }
+.diagnosis-item > b {
+  display: -webkit-box;
+  overflow: hidden;
+  margin-top: 10px;
+  color: #172033;
+  font-size: 13px;
+  line-height: 1.55;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.diagnosis-item > p {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 6px 0 0;
+  color: #718096;
+  font-size: 12px;
+  line-height: 1.6;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+.diagnosis-item details { margin-top: 9px; color: #64748b; font-size: 11px; }
+.diagnosis-item summary { color: #2f72dc; cursor: pointer; }
+.diagnosis-item details small { display: block; margin-top: 7px; line-height: 1.6; }
+
+.learning-trace-panel {
+  padding: 22px 24px;
+  border: 1px solid #e3eaf3;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, .045);
+}
+.trace-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; }
+.trace-heading h2 { margin: 5px 0 0; color: #111827; font-size: 24px; }
+.trace-heading > span { color: #8a99ad; font-size: 12px; }
+.trace-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(320px, .8fr);
+  gap: 18px;
+  margin-top: 18px;
+}
+.support-summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.support-summary article { padding: 13px 14px; border: 1px solid #e7edf5; border-radius: 14px; background: #f8fafc; }
+.support-summary span { display: block; color: #78879a; font-size: 11px; }
+.support-summary strong { display: -webkit-box; overflow: hidden; margin-top: 5px; color: #1f2937; font-size: 13px; line-height: 1.55; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.compact-timeline { padding: 4px 0 4px 16px; border-left: 1px solid #dce6f2; }
+.compact-timeline-item { position: relative; display: grid; grid-template-columns: 8px minmax(0, 1fr); gap: 10px; padding: 0 0 13px; }
+.compact-timeline-item:last-child { padding-bottom: 0; }
+.compact-timeline-item i { width: 8px; height: 8px; margin-left: -20px; border: 2px solid #fff; border-radius: 50%; background: #4f8df7; box-shadow: 0 0 0 2px #dbeafe; }
+.compact-timeline-item strong { color: #334155; font-size: 12px; }
+.compact-timeline-item p { display: -webkit-box; overflow: hidden; margin: 3px 0 0; color: #7b899c; font-size: 11px; line-height: 1.55; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.evidence-archive { margin-top: 18px; border-top: 1px solid #edf1f6; border-bottom: 0; }
+.evidence-title { display: flex; flex: 1; align-items: center; justify-content: space-between; gap: 14px; padding-right: 10px; }
+.evidence-title b { color: #26364b; }
+.evidence-title span { color: #8b99aa; font-size: 11px; }
+.evidence-columns { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; padding-bottom: 6px; }
+.evidence-columns > div { min-width: 0; padding: 14px; border-radius: 16px; background: #f7f9fc; }
+.evidence-columns h3 { margin: 0 0 10px; color: #334155; font-size: 13px; }
+.evidence-columns .feedback-evidence-item { padding: 10px 11px; border-radius: 12px; }
+.evidence-columns .feedback-evidence-item p { display: -webkit-box; overflow: hidden; font-size: 11px; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+
+@media (max-width: 1180px) {
+  .diagnosis-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .evidence-columns { grid-template-columns: 1fr; }
+}
+@media (max-width: 860px) {
+  .diagnosis-intro, .diagnosis-grid, .trace-overview, .support-summary { grid-template-columns: 1fr; }
+  .trace-heading { align-items: flex-start; flex-direction: column; }
+  .evidence-title { align-items: flex-start; flex-direction: column; gap: 2px; }
+}
+
+/* Keep the portrait summary visible without pushing learning outcomes below the fold. */
+.portrait-view-page {
+  gap: 12px;
+  padding: 16px 22px 26px;
+}
+
+.page-header {
+  align-items: center;
+}
+
+.page-header h1 {
+  margin: 3px 0 4px;
+  font-size: 30px;
+}
+
+.page-header p {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.header-actions {
+  gap: 8px;
+}
+
+.header-actions :deep(.el-button) {
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 11px;
+}
+
+.hero-panel {
+  grid-template-columns: minmax(0, 1.7fr) minmax(230px, .65fr);
+  gap: 12px;
+  padding: 17px 20px;
+  border-radius: 17px;
+}
+
+.hero-main {
+  gap: 8px;
+}
+
+.hero-main h2 {
+  font-size: 22px;
+}
+
+.hero-main p {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 13px;
+  line-height: 1.65;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.hero-tags {
+  gap: 6px;
+}
+
+.hero-side {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.hero-side-card {
+  align-content: center;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: 13px;
+}
+
+.hero-side-card strong {
+  font-size: 19px;
+}
+
+.hero-side-card small {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 11px;
+  line-height: 1.4;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.metric-row {
+  gap: 9px;
+}
+
+.metric-card {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 3px 10px;
+  min-height: 72px;
+  padding: 11px 14px;
+  border-radius: 15px;
+}
+
+.metric-card strong {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  font-size: 22px;
+}
+
+.metric-card small {
+  grid-column: 1;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+@media (max-width: 1100px) {
+  .hero-side { grid-template-columns: 1fr; }
+  .metric-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 </style>

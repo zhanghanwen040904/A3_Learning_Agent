@@ -3,7 +3,10 @@
     <el-container class="app-shell">
       <el-aside v-if="!isAuthPage" width="292px" class="sidebar">
         <div class="sidebar-topbar">
-          <div class="brand-mark" aria-hidden="true">M</div>
+          <div class="brand-mark" aria-hidden="true">
+            <el-icon class="brand-symbol"><Connection /></el-icon>
+            <el-icon class="brand-book"><Reading /></el-icon>
+          </div>
           <div class="brand-copy">
             <div class="brand-title">MultiTutor</div>
             <div class="brand-subtitle">学习智能体</div>
@@ -170,6 +173,7 @@ import {
   MoreFilled,
   Monitor,
   Plus,
+  Reading,
   RefreshRight,
   User,
 } from "@element-plus/icons-vue";
@@ -180,6 +184,7 @@ const route = useRoute();
 
 const primaryNav = [
   { path: "/student-portrait", label: "学生画像", icon: User },
+  { path: "/course-guide", label: "课程导学", icon: Reading },
   { path: "/path", label: "学习路径", icon: Connection },
   { path: "/evaluation", label: "学习评估", icon: DataAnalysis },
   { path: "/wrong-book", label: "错题本", icon: Collection },
@@ -512,6 +517,7 @@ function syncActiveSession() {
 }
 
 .brand-mark {
+  position: relative;
   display: grid;
   width: 38px;
   height: 38px;
@@ -520,10 +526,22 @@ function syncActiveSession() {
   border-radius: 12px;
   background: linear-gradient(135deg, #2563eb, #0f766e);
   color: #ffffff;
-  font-size: 20px;
-  font-weight: 800;
-  letter-spacing: -0.03em;
   box-shadow: 0 10px 22px rgba(37, 99, 235, 0.24);
+}
+.brand-symbol { font-size: 23px; transform: rotate(-8deg); }
+.brand-book {
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  display: grid;
+  width: 17px;
+  height: 17px;
+  place-items: center;
+  border: 2px solid #fff;
+  border-radius: 6px;
+  background: #14b8a6;
+  color: #fff;
+  font-size: 10px;
 }
 
 .brand-copy {

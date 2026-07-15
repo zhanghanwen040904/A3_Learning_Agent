@@ -941,6 +941,25 @@ def _derive_learning_profile(profile: dict, evidence: dict) -> dict:
     wrong_book_count = len(wrong_book)
     stage_complete_events = [item for item in learning_events if str(item.get("event_type") or "") == "complete_stage"]
     stage_complete_count = len(stage_complete_events)
+    conversation_message_count = sum(
+        1
+        for item in ((evidence or {}).get("conversation_sessions") or [])
+        if isinstance(item, dict)
+        for message in (item.get("messages") or [])
+        if isinstance(message, dict)
+        and str(message.get("role") or "").strip().lower() in {"user", "student", "学生", "我"}
+    )
+    has_observation_evidence = any(
+        [
+            conversation_message_count,
+            quiz_count,
+            len(mastery_items),
+            event_count,
+            len(resource_feedback),
+            resource_count,
+            wrong_book_count,
+        ]
+    )
 
     weak_points = [item for item in mastery_items if _safe_int(item.get("mastery_score"), 0) < 70]
     strong_points = [item for item in mastery_items if _safe_int(item.get("mastery_score"), 0) >= 85]
@@ -1097,6 +1116,26 @@ def _derive_learning_profile(profile: dict, evidence: dict) -> dict:
         goal_risk = "已有目标方向，但尚未量化到可跟踪标准"
         goal_risk_score = 66
 
+    # A newly registered user has no observable learning evidence. Baseline constants
+    # must not be presented as measured ability, otherwise the portrait is misleading.
+    if not has_observation_evidence:
+        foundation_score = 0
+        mastery_score = 0
+        weak_distribution_score = 0
+        progress_raw_score = 0
+        progress_score = 0
+        engagement_raw_score = 0
+        engagement_score = 0
+        support_match_raw_score = 0
+        support_match_score = 0
+        error_pattern_score = 0
+        goal_risk_score = 0
+        stage_label = "待进一步观察"
+        weak_summary = DEFAULT_VALUE
+        strong_summary = DEFAULT_VALUE
+        error_pattern = DEFAULT_VALUE
+        goal_risk = DEFAULT_VALUE
+
     score_details = {
         "knowledge_foundation": f"知识基础 = 55%掌握度({avg_mastery:.1f}) + 15%答题均分({avg_quiz:.1f}) + 背景识别加分 + 专业识别加分，当前为 {foundation_score} 分。",
         "knowledge_mastery": f"知识点掌握 = 65%掌握度({avg_mastery:.1f}) + 35%答题均分({avg_quiz:.1f})，当前为 {mastery_score} 分。",
@@ -1107,6 +1146,11 @@ def _derive_learning_profile(profile: dict, evidence: dict) -> dict:
         "error_pattern_stability": f"易错类型稳定性根据错题与反馈文本中的错误模式关键词判断，结合错题数量({wrong_book_count})修正，当前为 {error_pattern_score} 分。",
         "goal_attainment_risk": f"目标达成把握根据任务目标文本是否量化以及目标与当前掌握度的差距判断，当前为 {goal_risk_score} 分。",
     }
+    if not has_observation_evidence:
+        score_details = {
+            key: f"{label}尚无对话、练习、资源学习或反馈证据，暂不评分；完成首次真实学习行为后将自动更新。"
+            for key, label in DIMENSION_LABELS.items()
+        }
 
     return {
         "knowledge_foundation": f"{_score_band_text(foundation_score)}（{foundation_score}分）",
@@ -1225,7 +1269,7 @@ def _latest_portrait_snapshot(user_id: int) -> dict:
 def _cached_portrait_scoring(user_id: int, profile: dict) -> Optional[dict]:
     latest = _latest_portrait_snapshot(user_id)
     scoring = _json_loads(latest.get("portrait_scoring"), {})
-    if not isinstance(scoring, dict) or not scoring.get("dimensions"):
+    if not isinstance(scoring, dict) or not scoring.get("dimensions") or scoring.get("scoring_version") != 3:
         return None
 
     cached_snapshot = _json_loads(latest.get("profile_snapshot"), {})
@@ -1244,6 +1288,7 @@ def _aggregate_profile_payload(user_id: int, profile: dict, refresh_scoring: boo
     else:
         cached_scoring = _cached_portrait_scoring(user_id, payload)
         payload["portrait_scoring"] = cached_scoring or _portrait_score_fallback(payload, evidence)
+    payload["portrait_scoring"]["scoring_version"] = 3
     payload["dynamic_profile"] = (payload.get("portrait_scoring") or {}).get("dynamic_profile") or {}
     payload["learning_events"] = evidence.get("learning_events") or []
     payload["resource_feedback"] = evidence.get("resource_feedback") or []
@@ -1717,7 +1762,11 @@ def get_my_profile():
 @login_required
 def get_aggregate_profile():
     try:
-        profile = _cached_aggregate_profile(request.user_id)
+        # Recover profile fields from persisted dialogue when the asynchronous
+        # profile-sync request was interrupted or the user navigated away early.
+        session = _active_session(request.user_id, create_if_missing=False)
+        recovered_profile = _ensure_session_profile_from_conversation(request.user_id, session) if session else None
+        profile = _refresh_aggregate_profile(request.user_id, transient_profile=recovered_profile) if recovered_profile else _cached_aggregate_profile(request.user_id)
         if not profile:
             profile = _refresh_aggregate_profile(request.user_id)
         profile = _merge_personal_info(profile or _empty_profile(), _user_personal_info(request.user_id))
