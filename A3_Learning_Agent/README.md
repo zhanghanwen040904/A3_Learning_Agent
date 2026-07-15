@@ -2,14 +2,14 @@
 
 面向“软件杯”赛题的多智能体学习辅助系统。
 
-当前版本已经统一切换到“阿里云百炼 / 通义千问”作为主大模型入口，后端保留课程知识库、学习画像、学习路径、学习评估与对话答疑等核心能力。
+当前版本已经统一切换到“讯飞星火 Spark Ultra-32K”作为主大模型入口，后端保留课程知识库、学习画像、学习路径、学习评估与对话答疑等核心能力。
 
 ## 项目概览
 
 - 前端：Vue 3 + Vite + Element Plus
 - 后端：Flask + PyMySQL
 - 检索：RAG 课程知识库 + 关键词降级检索
-- 大模型：阿里云百炼兼容接口
+- 大模型：讯飞星火 Spark Ultra-32K HTTP 兼容接口
 - 画像机制：对话过程中自动抽取并持续更新学生画像
 
 ## 当前主要能力
@@ -63,13 +63,15 @@ http://localhost:5173
 
 ## 环境变量说明
 
-当前主模型使用百炼兼容接口，核心变量如下：
+当前主模型使用讯飞星火 Spark Ultra-32K，核心变量如下：
 
 ```env
-AI_PROVIDER=bailian
-BAILIAN_API_KEY=你的百炼 API Key
-BAILIAN_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions
-BAILIAN_MODEL=qwen-plus
+AI_PROVIDER=spark
+AI_MAX_INPUT_CHARS=24000
+AI_MAX_TOKENS=4096
+SPARK_APIPASSWORD=你的讯飞 APIPassword
+SPARK_BASE_URL=https://spark-api-open.xf-yun.com/v1/chat/completions
+SPARK_MODEL=4.0Ultra
 ```
 
 如果只做本地演示，也可以启用：

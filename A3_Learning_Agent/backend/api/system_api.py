@@ -56,16 +56,26 @@ def status():
         planned_tables = sum(1 for item in tables if item["status"] == "planned")
         partial_tables = sum(1 for item in tables if item["status"] == "partial")
 
-        provider = (config.AI_PROVIDER or "bailian").lower()
+        provider = (config.AI_PROVIDER or "spark").lower()
+        if provider in {"spark", "xunfei", "xfyun"}:
+            primary_configured = bool(config.SPARK_APIPASSWORD and config.SPARK_BASE_URL and config.SPARK_MODEL)
+            primary_key = config.SPARK_APIPASSWORD
+            primary_url = config.SPARK_BASE_URL
+            primary_model = config.SPARK_MODEL
+        else:
+            primary_configured = bool(config.BAILIAN_API_KEY and config.BAILIAN_BASE_URL and config.BAILIAN_MODEL)
+            primary_key = config.BAILIAN_API_KEY
+            primary_url = config.BAILIAN_BASE_URL
+            primary_model = config.BAILIAN_MODEL
         ai_status = {
             "mock_ai": config.MOCK_AI,
             "provider": provider,
             "mode": "mock" if config.MOCK_AI else "live",
             "primary_model": {
-                "configured": bool(config.BAILIAN_API_KEY and config.BAILIAN_BASE_URL and config.BAILIAN_MODEL),
-                "api_key": _mask(config.BAILIAN_API_KEY),
-                "base_url": config.BAILIAN_BASE_URL or "未配置",
-                "model": config.BAILIAN_MODEL or "未配置",
+                "configured": primary_configured,
+                "api_key": _mask(primary_key),
+                "base_url": primary_url or "未配置",
+                "model": primary_model or "未配置",
             },
             "video": {
                 "configured": bool(config.SEEDANCE_API_KEY and config.SEEDANCE_API_URL),
