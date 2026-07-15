@@ -711,6 +711,9 @@ def _workbook_questions_for_chapter(chapter_no: int | None) -> list[dict]:
         return []
     if not chapter_no:
         return items
+    chapter_title_map = _chapter_title_defaults()
+    if chapter_no not in chapter_title_map:
+        return []
     chapter_key = f"chapter_{chapter_no}"
     keyed = [item for item in items if _clean_chapter_key(item.get("question_chapter_key") or "") == chapter_key]
     if keyed:
@@ -719,7 +722,7 @@ def _workbook_questions_for_chapter(chapter_no: int | None) -> list[dict]:
     if inferred:
         return inferred
     groups = _group_question_bank_by_resets(items)
-    if 1 <= chapter_no <= len(groups):
+    if 1 <= chapter_no <= min(len(groups), len(chapter_title_map)):
         return groups[chapter_no - 1]
     return []
 
@@ -1034,7 +1037,12 @@ def _group_exercise_questions(items: list[dict]) -> list[dict]:
                     "question_images": item.get("question_images") or [],
                     "answer_images": item.get("answer_images") or [],
                     "images": item.get("images") or [],
+                    "question_chapter_key": item.get("question_chapter_key") or "",
+                    "related_knowledge": item.get("related_knowledge") or [],
+                    "related_knowledge_ids": item.get("related_knowledge_ids") or [],
+                    "related_knowledge_node_ids": item.get("related_knowledge_node_ids") or [],
                     "related_knowledge_titles": item.get("related_knowledge_titles") or [],
+                    "knowledge_points": item.get("knowledge_points") or item.get("related_knowledge_titles") or [],
                 }
             )
 
@@ -1481,7 +1489,12 @@ def _format_bank_question(item: dict, fallback_stem: str = "", chapter_no: int |
         "has_answer_images": bool(item.get("answer_images")),
         "answer_pages": first_link.get("answer_pages") or [],
         "source": item.get("source_file") or "",
+        "question_chapter_key": item.get("question_chapter_key") or "",
+        "related_knowledge": item.get("related_knowledge") or [],
+        "related_knowledge_ids": item.get("related_knowledge_ids") or [],
+        "related_knowledge_node_ids": item.get("related_knowledge_node_ids") or [],
         "related_knowledge_titles": knowledge_titles,
+        "knowledge_points": item.get("knowledge_points") or knowledge_titles,
         "sub_questions": [],
         "has_sub_questions": False,
     }
@@ -1842,23 +1855,23 @@ def _build_exercise_tree_for_reading(reading_tree: list[dict]) -> list[dict]:
     question_bank = _load_question_bank_items()
     if not question_bank:
         return []
+    chapter_title_map = _chapter_title_defaults()
+    valid_chapters = set(chapter_title_map)
 
     chapter_groups: dict[int, list[dict]] = {}
     for item in question_bank:
         chapter_no = _infer_question_chapter_no(item)
-        if chapter_no is None:
+        if chapter_no not in valid_chapters:
             continue
         chapter_groups.setdefault(chapter_no, []).append(item)
     if not chapter_groups:
         chapter_groups = {
             chapter_no: group
             for chapter_no, group in enumerate(_group_question_bank_by_resets(question_bank), start=1)
-            if group
+            if group and chapter_no in valid_chapters
         }
     if not chapter_groups:
         return []
-
-    chapter_title_map = _chapter_title_defaults()
 
     children = []
     for index in sorted(chapter_groups):
@@ -2205,6 +2218,9 @@ def _exercise_payload_for_node(node_id: str) -> dict | None:
         return None
 
     chapter_no = int(match.group(1))
+    chapter_title = _chapter_title_defaults().get(chapter_no)
+    if not chapter_title:
+        return None
     workbook_items = _workbook_questions_for_chapter(chapter_no)
     questions = []
     if workbook_items:
@@ -2212,8 +2228,8 @@ def _exercise_payload_for_node(node_id: str) -> dict | None:
         questions = [_combine_question_group(dict(item)) for item in grouped]
     return {
         "node_id": node_id,
-        "title": f"{_chapter_title_defaults().get(chapter_no, f'第 {chapter_no} 章')}习题",
-        "path": ["习题", f"{_chapter_title_defaults().get(chapter_no, f'第 {chapter_no} 章')}习题"],
+        "title": f"{chapter_title}习题",
+        "path": ["习题", f"{chapter_title}习题"],
         "start_page": None,
         "images": [],
         "sections": [],

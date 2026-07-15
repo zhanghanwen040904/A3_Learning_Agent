@@ -1,6 +1,9 @@
 import hashlib
 import json
+import os
+import re
 import shutil
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -10,7 +13,29 @@ RAG_ROOT = PROJECT_ROOT / "rag_data"
 QUESTION_PATH = next((RAG_ROOT / "questions_json").glob("*.json"))
 QUESTION_BANK_PATH = next((RAG_ROOT / "question_bank_json").glob("*.json"))
 STUDENT_KB_PATH = next((RAG_ROOT / "student_knowledge_base_json").glob("*.json"))
-KNOWLEDGE_PATH = next((RAG_ROOT / "knowledge_points_json").glob("*.json"))
+
+
+def resolve_primary_knowledge_path() -> Path:
+    candidates = [
+        path
+        for path in (RAG_ROOT / "knowledge_points_json").glob("*.json")
+        if ".bak_" not in path.name
+    ]
+    ranked = []
+    for path in candidates:
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            points = payload.get("knowledge_points", []) if isinstance(payload, dict) else []
+            ranked.append((len(points), os.path.getsize(path), path))
+        except Exception:
+            continue
+    if not ranked:
+        raise FileNotFoundError("no usable knowledge_points_json file found")
+    ranked.sort(reverse=True)
+    return ranked[0][2]
+
+
+KNOWLEDGE_PATH = resolve_primary_knowledge_path()
 
 
 CHAPTERS = {
@@ -666,7 +691,14 @@ def load_json(path: Path) -> dict:
 
 def backup(path: Path) -> None:
     stamp = datetime.now().strftime("%Y%m%d%H%M%S")
-    shutil.copy2(path, path.with_name(f"{path.name}.bak_{stamp}"))
+    target = path.with_name(f"{path.name}.bak_{stamp}")
+    for _ in range(3):
+        try:
+            shutil.copy2(path, target)
+            return
+        except PermissionError:
+            time.sleep(0.5)
+    print(f"skip backup for locked file: {path}")
 
 
 def build_knowledge_lookup() -> dict:
@@ -681,7 +713,14 @@ def build_title_lookup(knowledge_lookup: dict) -> dict:
         title = str(item.get("title") or "").strip()
         if title and title not in result:
             result[title] = item
+        normalized = normalize_text(title)
+        if normalized and normalized not in result:
+            result[normalized] = item
     return result
+
+
+def normalize_text(value: str) -> str:
+    return re.sub(r"[\s/,_\-，。；：、“”‘’（）()【】\[\]]+", "", str(value or "")).lower()
 
 
 def knowledge_ref(item: dict, chapter_no: int, score: int = 100) -> dict:
@@ -709,9 +748,21 @@ def build_question(chapter_no: int, item: dict, title_lookup: dict) -> dict:
     reference_answer = f"{answer}：{option_text[3:].strip()}\n{item['analysis']}"
     refs = []
     for index, title in enumerate(item["knowledge"]):
-        if title not in title_lookup:
+        candidate = title_lookup.get(title) or title_lookup.get(normalize_text(title))
+        if not candidate:
+            normalized = normalize_text(title)
+            for key, value in title_lookup.items():
+                if not isinstance(key, str):
+                    continue
+                compact = normalize_text(key)
+                if not compact:
+                    continue
+                if normalized in compact or compact in normalized:
+                    candidate = value
+                    break
+        if not candidate:
             raise KeyError(f"knowledge title not found: chapter {chapter_no} / {title}")
-        refs.append(knowledge_ref(title_lookup[title], chapter_no, max(88, 100 - index * 4)))
+        refs.append(knowledge_ref(candidate, chapter_no, max(88, 100 - index * 4)))
     titles = [ref["title"] for ref in refs]
     question_id = stable_id("question", f"chapter{chapter_no}_choice:{question_no}:{stem}")
     answer_id = stable_id("answer", f"chapter{chapter_no}_choice:{question_no}:{answer}:{item['analysis']}")

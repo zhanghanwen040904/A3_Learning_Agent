@@ -1,5 +1,7 @@
 import hashlib
 import json
+import os
+import re
 import shutil
 from datetime import datetime
 from pathlib import Path
@@ -10,7 +12,29 @@ RAG_ROOT = PROJECT_ROOT / "rag_data"
 QUESTION_PATH = next((RAG_ROOT / "questions_json").glob("*.json"))
 QUESTION_BANK_PATH = next((RAG_ROOT / "question_bank_json").glob("*.json"))
 STUDENT_KB_PATH = next((RAG_ROOT / "student_knowledge_base_json").glob("*.json"))
-KNOWLEDGE_PATH = next((RAG_ROOT / "knowledge_points_json").glob("*.json"))
+
+
+def resolve_primary_knowledge_path() -> Path:
+    candidates = [
+        path
+        for path in (RAG_ROOT / "knowledge_points_json").glob("*.json")
+        if ".bak_" not in path.name
+    ]
+    ranked = []
+    for path in candidates:
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            points = payload.get("knowledge_points", []) if isinstance(payload, dict) else []
+            ranked.append((len(points), os.path.getsize(path), path))
+        except Exception:
+            continue
+    if not ranked:
+        raise FileNotFoundError("no usable knowledge_points_json file found")
+    ranked.sort(reverse=True)
+    return ranked[0][2]
+
+
+KNOWLEDGE_PATH = resolve_primary_knowledge_path()
 
 SECTION_PATH = ["软件工程", "软件工程学概述", "第 1 章 软件工程概论", "选择题"]
 SECTION_TITLE = "第 1 章 软件工程概论 选择题"
