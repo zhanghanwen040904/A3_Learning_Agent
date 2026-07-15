@@ -203,9 +203,12 @@
                 show-icon
               />
               <p><strong>得分：</strong><span :class="scoreClass(currentQuestion.result.score)">{{ currentQuestion.result.score }}</span></p>
+              <p><strong>判题方式：</strong>{{ gradingSourceText(currentQuestion.result) }}</p>
+              <p v-if="currentQuestion.result.llm_error" class="answer-source"><strong>模型错误：</strong>{{ currentQuestion.result.llm_error }}</p>
               <p><strong>反馈：</strong>{{ currentQuestion.result.feedback }}</p>
               <p><strong>参考答案：</strong>{{ currentQuestion.result.reference_answer }}</p>
               <p><strong>解析：</strong>{{ currentQuestion.result.explanation }}</p>
+              <p v-if="currentQuestion.result.deduction_reason"><strong>扣分依据：</strong>{{ currentQuestion.result.deduction_reason }}</p>
               <p><strong>易错点：</strong>{{ currentQuestion.result.common_mistake }}</p>
               <div v-if="currentQuestion.result.scoring_points?.length">
                 <strong>得分点：</strong>
@@ -272,9 +275,12 @@
                 show-icon
               />
               <p><strong>得分：</strong><span :class="scoreClass(question.result.score)">{{ question.result.score }}</span></p>
+              <p><strong>判题方式：</strong>{{ gradingSourceText(question.result) }}</p>
+              <p v-if="question.result.llm_error" class="answer-source"><strong>模型错误：</strong>{{ question.result.llm_error }}</p>
               <p><strong>反馈：</strong>{{ question.result.feedback }}</p>
               <p><strong>参考答案：</strong>{{ question.result.reference_answer }}</p>
               <p><strong>解析：</strong>{{ question.result.explanation }}</p>
+              <p v-if="question.result.deduction_reason"><strong>扣分依据：</strong>{{ question.result.deduction_reason }}</p>
               <p><strong>易错点：</strong>{{ question.result.common_mistake }}</p>
               <div v-if="question.result.scoring_points?.length">
                 <strong>得分点：</strong>
@@ -509,6 +515,14 @@ function answerSourceText(question) {
   const method = question?.answer_link_method || first.match_method || "";
   const confidence = question?.answer_link_confidence || first.match_confidence || "";
   return [pageText, method ? `匹配方式：${method}` : "", confidence ? `置信度：${confidence}` : ""].filter(Boolean).join("；");
+}
+
+function gradingSourceText(result) {
+  const source = result?.graded_by || "";
+  if (source === "llm") return "大模型判题";
+  if (source === "rule_fallback") return "规则兜底";
+  if (source === "rule_objective") return "客观题规则判题";
+  return source || "未标记";
 }
 
 function saveStageRecordIfFinished() {
