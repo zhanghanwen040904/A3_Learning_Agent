@@ -58,9 +58,11 @@ def status():
 
         provider = (config.AI_PROVIDER or "spark").lower()
         if provider in {"spark", "xunfei", "xfyun", "iflytek"}:
-            primary_configured = bool(config.SPARK_APIPASSWORD and config.SPARK_BASE_URL and config.SPARK_MODEL)
-            primary_key = config.SPARK_APIPASSWORD
-            primary_url = config.SPARK_BASE_URL
+            spark_http_configured = bool(config.SPARK_APIPASSWORD and config.SPARK_BASE_URL and config.SPARK_MODEL)
+            spark_ws_configured = bool(config.SPARK_APPID and config.SPARK_APISECRET and config.SPARK_APIKEY and config.SPARK_WS_URL)
+            primary_configured = spark_http_configured or spark_ws_configured
+            primary_key = config.SPARK_APIPASSWORD or config.SPARK_APIKEY
+            primary_url = config.SPARK_BASE_URL if spark_http_configured else config.SPARK_WS_URL
             primary_model = config.SPARK_MODEL
         else:
             primary_configured = bool(config.BAILIAN_API_KEY and config.BAILIAN_BASE_URL and config.BAILIAN_MODEL)

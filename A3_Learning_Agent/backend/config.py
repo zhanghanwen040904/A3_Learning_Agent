@@ -64,6 +64,11 @@ class Config:
         "https://spark-api-open.xf-yun.com/v1/chat/completions",
     )
     SPARK_MODEL: str = os.getenv("SPARK_MODEL", "4.0Ultra")
+    SPARK_APPID: str = os.getenv("SPARK_APPID", "")
+    SPARK_APISECRET: str = os.getenv("SPARK_APISECRET", os.getenv("SPARK_API_SECRET", ""))
+    SPARK_APIKEY: str = os.getenv("SPARK_APIKEY", os.getenv("SPARK_API_KEY", ""))
+    SPARK_WS_URL: str = os.getenv("SPARK_WS_URL", "wss://spark-api.xf-yun.com/v4.0/chat")
+    SPARK_WS_DOMAIN: str = os.getenv("SPARK_WS_DOMAIN", "4.0Ultra")
 
     SEEDANCE_API_KEY: str = os.getenv("SEEDANCE_API_KEY", "")
     SEEDANCE_API_URL: str = os.getenv("SEEDANCE_API_URL", "")

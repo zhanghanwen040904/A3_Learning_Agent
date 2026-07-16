@@ -1,6 +1,8 @@
 ﻿import json
 import time
 from datetime import datetime
+from email.utils import formatdate
+from urllib.parse import urlencode, urlparse
 from typing import Any, Callable, Dict, List, Optional
 
 from config import config
@@ -315,6 +317,88 @@ def _call_spark_compatible(prompt: str) -> str:
     raise RuntimeError(f"讯飞星火接口未返回有效内容：{data}")
 
 
+def _spark_websocket_auth_url() -> str:
+    import base64
+    import hashlib
+    import hmac
+
+    parsed = urlparse(config.SPARK_WS_URL)
+    host = parsed.netloc
+    path = parsed.path or "/"
+    date = formatdate(timeval=None, localtime=False, usegmt=True)
+    signature_origin = f"host: {host}\ndate: {date}\nGET {path} HTTP/1.1"
+    signature_sha = hmac.new(
+        config.SPARK_APISECRET.encode("utf-8"),
+        signature_origin.encode("utf-8"),
+        digestmod=hashlib.sha256,
+    ).digest()
+    signature = base64.b64encode(signature_sha).decode("utf-8")
+    authorization_origin = (
+        f'api_key="{config.SPARK_APIKEY}", algorithm="hmac-sha256", '
+        f'headers="host date request-line", signature="{signature}"'
+    )
+    authorization = base64.b64encode(authorization_origin.encode("utf-8")).decode("utf-8")
+    return f"{config.SPARK_WS_URL}?{urlencode({'authorization': authorization, 'date': date, 'host': host})}"
+
+
+def _call_spark_websocket(prompt: str) -> str:
+    import websocket
+
+    request = {
+        "header": {
+            "app_id": config.SPARK_APPID,
+            "uid": "a3_learning_agent",
+        },
+        "parameter": {
+            "chat": {
+                "domain": config.SPARK_WS_DOMAIN or "4.0Ultra",
+                "temperature": 0.5,
+                "max_tokens": _max_output_tokens(),
+            }
+        },
+        "payload": {
+            "message": {
+                "text": [
+                    {
+                        "role": "user",
+                        "content": _limit_model_prompt(prompt),
+                    }
+                ]
+            }
+        },
+    }
+    ws = websocket.create_connection(
+        _spark_websocket_auth_url(),
+        timeout=config.AI_TIMEOUT,
+        enable_multithread=False,
+        http_proxy_host=None,
+        http_proxy_port=None,
+    )
+    chunks: List[str] = []
+    try:
+        ws.send(json.dumps(request, ensure_ascii=False))
+        while True:
+            raw = ws.recv()
+            data = json.loads(raw)
+            header = data.get("header") or {}
+            code = int(header.get("code", -1))
+            if code != 0:
+                raise RuntimeError(data.get("message") or header.get("message") or data)
+            choices = ((data.get("payload") or {}).get("choices") or {})
+            for item in choices.get("text") or []:
+                content = item.get("content")
+                if content:
+                    chunks.append(str(content))
+            if int(header.get("status", choices.get("status", 0))) == 2:
+                break
+    finally:
+        ws.close()
+    text = "".join(chunks).strip()
+    if text:
+        return text
+    raise RuntimeError("讯飞星火WebSocket接口未返回有效内容")
+
+
 def _anthropic_candidate_urls() -> List[str]:
     base_url = str(config.ANTHROPIC_BASE_URL or "").rstrip("/")
     if not base_url:
@@ -436,11 +520,20 @@ def llm_chat(prompt: str) -> str:
 
     use_spark = config.AI_PROVIDER in {"spark", "xunfei", "xfyun", "iflytek"}
     if use_spark:
-        if not (config.SPARK_APIPASSWORD and config.SPARK_BASE_URL and config.SPARK_MODEL):
+        has_http_config = bool(config.SPARK_APIPASSWORD and config.SPARK_BASE_URL and config.SPARK_MODEL)
+        has_ws_config = bool(config.SPARK_APPID and config.SPARK_APISECRET and config.SPARK_APIKEY and config.SPARK_WS_URL)
+        if not (has_http_config or has_ws_config):
             return json.dumps(_standard_error("讯飞星火配置不完整"), ensure_ascii=False)
         try:
-            return _retry_call(lambda: _call_spark_compatible(prompt))
+            if has_http_config:
+                return _retry_call(lambda: _call_spark_compatible(prompt))
+            return _retry_call(lambda: _call_spark_websocket(prompt))
         except Exception as exc:
+            if has_http_config and has_ws_config:
+                try:
+                    return _retry_call(lambda: _call_spark_websocket(prompt), retry_times=1)
+                except Exception as ws_exc:
+                    return json.dumps(_standard_error("讯飞星火调用失败", f"HTTP: {exc}; WebSocket: {ws_exc}"), ensure_ascii=False)
             return json.dumps(_standard_error("讯飞星火调用失败", str(exc)), ensure_ascii=False)
 
     use_bailian = config.AI_PROVIDER in {"bailian", "dashscope", "qwen"}
