@@ -1,18 +1,17 @@
 <template>
   <div class="page evaluation-page">
-    <el-card class="panel overview-panel">
-      <template #header>
-        <div class="header-line">
-          <div>
-            <div class="page-title">学习检测与掌握度更新</div>
-            <div class="page-subtitle">围绕当前画像、薄弱点与指定知识点快速组织练习，并实时更新掌握度表现。</div>
-          </div>
-          <div class="header-actions">
-            <el-button class="soft-button" :loading="summaryLoading" @click="loadSummary">刷新评估</el-button>
-            <el-button class="soft-button" :loading="bankLoading" @click="rebuildBank">重建题库</el-button>
-          </div>
+    <section class="evaluation-top">
+      <div class="header-line">
+        <div>
+          <div class="page-eyebrow">LEARNING ASSESSMENT</div>
+          <div class="page-title">学习检测与掌握度更新</div>
+          <div class="page-subtitle">围绕当前画像、薄弱点与指定知识点快速组织练习，并实时更新掌握度表现。</div>
         </div>
-      </template>
+        <div class="header-actions">
+          <el-button class="soft-button" :loading="summaryLoading" @click="loadSummary">刷新评估</el-button>
+          <el-button class="soft-button" :loading="bankLoading" @click="rebuildBank">重建题库</el-button>
+        </div>
+      </div>
 
       <div class="stats-grid">
         <div class="stat-card"><span class="stat-label">平均得分</span><strong class="stat-value">{{ summary.avg_score || 0 }}<em>分</em></strong></div>
@@ -29,7 +28,7 @@
           <el-tag v-if="summary.profile?.course_progress">进度：{{ summary.profile.course_progress }}</el-tag>
         </el-space>
       </div>
-    </el-card>
+    </section>
 
     <el-card v-if="stageContext.active" class="panel stage-assessment-card">
       <div>
@@ -702,13 +701,21 @@ onMounted(async () => {
 <style scoped>
 .evaluation-page {
   display: grid;
-  gap: 20px;
+  gap: 26px;
+  min-height: 100vh;
+  padding: 24px 16px 28px;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, #f4f7fb 0%, #f7f9fc 100%);
+  overflow-x: hidden;
 }
 
 .panel {
-  border-radius: 24px;
-  border: 1px solid #e9edf5;
-  box-shadow: 0 12px 36px rgba(15, 23, 42, 0.06);
+  border: 1px solid #e7ecf3;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow:
+    0 1px 2px rgba(20, 34, 55, 0.02),
+    0 8px 28px rgba(31, 47, 70, 0.035);
 }
 
 .panel :deep(.el-card__header) {
@@ -718,6 +725,12 @@ onMounted(async () => {
 
 .panel :deep(.el-card__body) {
   padding: 24px 28px 28px;
+}
+
+.evaluation-top {
+  display: grid;
+  gap: 22px;
+  padding: 0 0 2px;
 }
 
 .knowledge-select {
@@ -815,9 +828,21 @@ onMounted(async () => {
 
 .header-line {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
+  gap: 24px;
+}
+
+.evaluation-top > .header-line {
+  padding: 0 22px;
+  box-sizing: border-box;
+}
+
+.evaluation-top > .header-line > div:first-child {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .question-header-main {
@@ -829,16 +854,26 @@ onMounted(async () => {
 
 .page-title {
   color: #0f172a;
-  font-size: 28px;
+  font-size: 38px;
+  line-height: 1.25;
   font-weight: 800;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.04em;
+}
+
+.page-eyebrow {
+  color: #4386d8;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
 }
 
 .page-subtitle {
-  margin-top: 6px;
+  max-width: 50em;
+  margin-top: 0;
   color: #6b7280;
-  font-size: 14px;
-  line-height: 1.6;
+  font-size: 16px;
+  line-height: 1.7;
 }
 
 .soft-button {
@@ -886,6 +921,9 @@ onMounted(async () => {
 
 .header-actions {
   display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 10px;
 }
 
@@ -900,9 +938,9 @@ onMounted(async () => {
   gap: 6px;
   min-height: 88px;
   padding: 14px 18px;
-  border-radius: 18px;
-  background: linear-gradient(180deg, #fbfdff 0%, #f4f8fd 100%);
-  border: 1px solid #e5edf8;
+  border-radius: 16px;
+  background: #f8fafc;
+  border: 1px solid #e4eaf2;
 }
 
 .stat-label {
@@ -933,7 +971,11 @@ onMounted(async () => {
 }
 
 .profile-box {
-  margin-top: 16px;
+  margin-top: 0;
+  padding: 16px 18px;
+  border: 1px solid #e4eaf2;
+  border-radius: 16px;
+  background: #f8fafc;
 }
 
 .section-title {
@@ -1090,7 +1132,7 @@ onMounted(async () => {
   border: 1px solid #e8edf5;
   border-radius: 18px;
   padding: 22px;
-  background: #fbfdff;
+  background: #f8fafc;
 }
 
 .question-card--focus {
@@ -1191,8 +1233,8 @@ onMounted(async () => {
   margin-bottom: 18px;
   padding: 16px 18px;
   border-radius: 18px;
-  background: linear-gradient(180deg, #f8fbff 0%, #f3f8ff 100%);
-  border: 1px solid #e1ebfa;
+  background: #f8fafc;
+  border: 1px solid #e4eaf2;
 }
 
 .focus-strip-text {
@@ -1233,13 +1275,14 @@ onMounted(async () => {
 .weak-item {
   display: grid;
   gap: 8px;
-  padding: 10px 0;
-  border-bottom: 1px solid #edf1f7;
+  padding: 12px;
+  border: 1px solid #e4eaf2;
+  border-radius: 14px;
+  background: #f8fafc;
 }
 
 .weak-item:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
+  padding-bottom: 12px;
 }
 
 .weak-name {
@@ -1333,6 +1376,11 @@ onMounted(async () => {
   .header-line {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: flex-start;
   }
 
   .question-header-main {

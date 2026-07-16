@@ -1,53 +1,42 @@
 <template>
   <div class="page path-page">
-    <el-card class="panel top overview-card">
-      <div class="overview-grid">
-        <div class="overview-main">
-          <el-tag effect="dark">学习计划</el-tag>
-          <h2>{{ planTitle }}</h2>
-          <p>根据你的学习目标和当前掌握情况，整理了 3 个循序渐进的学习阶段。你可以按阶段学习、完成测评，并根据结果调整后续节奏。</p>
-          <div class="profile-tags">
-            <el-tooltip :disabled="profileTipDisabled" :content="basis" placement="bottom-start" @show="markProfileTipShown"><el-tag type="primary" effect="light">基础：{{profile.knowledge_base||profile.knowledge_level||'待观察'}}</el-tag></el-tooltip>
-            <el-tooltip :disabled="profileTipDisabled" :content="basis" placement="bottom-start" @show="markProfileTipShown"><el-tag type="danger" effect="light">需加强：{{profile.error_prone_points||profile.weak_points||'待观察'}}</el-tag></el-tooltip>
-            <el-tooltip :disabled="profileTipDisabled" :content="basis" placement="bottom-start" @show="markProfileTipShown"><el-tag type="success" effect="light">目标：{{profile.study_goal||'待观察'}}</el-tag></el-tooltip>
-          </div>
-          <div v-if="integrated.adaptive_focus" class="adaptive-focus-bar">
-            <el-tag type="warning" effect="light">反馈驱动重点</el-tag>
-            <span>{{ integrated.adaptive_focus }}</span>
-          </div>
-          <div v-if="integrated.adaptive_explanation" class="adaptive-explanation">
-            {{ integrated.adaptive_explanation }}
-          </div>
-        </div>
-        <div class="overview-side">
-          <div class="stats"><div><b>{{ totalDays }}</b><span>预计时长</span></div><div><b>{{ stages.length }}</b><span>学习阶段</span></div><div><b>{{ resources.length }}</b><span>学习材料</span></div></div>
-          <div class="overview-actions"><el-button text :loading="loading" @click="generateAll('',true)">更新计划</el-button><el-dropdown @command="pace"><el-button plain>调整学习节奏</el-button><template #dropdown><el-dropdown-menu><el-dropdown-item command="fast">节奏加快</el-dropdown-item><el-dropdown-item command="slow">节奏放慢</el-dropdown-item><el-dropdown-item command="practice">增加实操练习</el-dropdown-item></el-dropdown-menu></template></el-dropdown></div>
+    <section class="plan-hero-card">
+      <div class="plan-title-row">
+        <div class="plan-hero-main overview-main">
+          <span class="page-eyebrow">LEARNING PLAN</span>
+          <h2 class="plan-hero-title">{{ planTitle }}</h2>
+          <p class="plan-hero-description">根据你的学习目标和当前掌握情况，整理了 3 个循序渐进的学习阶段。你可以按阶段学习、完成测评，并根据结果调整后续节奏。</p>
         </div>
       </div>
-    </el-card>
+      <div class="plan-overview-card">
+        <div class="plan-overview-main">
+          <div class="plan-status-tags">
+            <el-tooltip :disabled="profileTipDisabled" :content="basis" placement="bottom-start" @show="markProfileTipShown"><el-tag class="plan-status-tag plan-status-tag--base" type="primary" effect="light">基础：{{profile.knowledge_base||profile.knowledge_level||'待观察'}}</el-tag></el-tooltip>
+            <el-tooltip :disabled="profileTipDisabled" :content="basis" placement="bottom-start" @show="markProfileTipShown"><el-tag class="plan-status-tag plan-status-tag--weak" type="danger" effect="light">需加强：{{profile.error_prone_points||profile.weak_points||'待观察'}}</el-tag></el-tooltip>
+            <el-tooltip :disabled="profileTipDisabled" :content="basis" placement="bottom-start" @show="markProfileTipShown"><el-tag class="plan-status-tag plan-status-tag--goal" type="success" effect="light">目标：{{profile.study_goal||'待观察'}}</el-tag></el-tooltip>
+          </div>
+          <div v-if="integrated.adaptive_focus" class="plan-feedback-panel adaptive-focus-bar">
+            <el-tag class="plan-feedback-label" type="warning" effect="light">反馈驱动重点</el-tag>
+            <span class="plan-feedback-content">{{ integrated.adaptive_focus }}</span>
+          </div>
+          <p v-if="integrated.adaptive_explanation" class="plan-resource-note adaptive-explanation">
+            {{ integrated.adaptive_explanation }}
+          </p>
+        </div>
+        <aside class="plan-hero-side">
+          <div class="plan-metrics-grid">
+            <div class="plan-metric-card"><div class="plan-metric-value">{{ totalDays }}</div><div class="plan-metric-label">预计时长</div></div>
+            <div class="plan-metric-card"><div class="plan-metric-value">{{ stages.length }}</div><div class="plan-metric-label">学习阶段</div></div>
+            <div class="plan-metric-card"><div class="plan-metric-value">{{ resources.length }}</div><div class="plan-metric-label">学习材料</div></div>
+          </div>
+          <div class="plan-hero-actions"><el-button text :loading="loading" @click="generateAll('',true)">更新计划</el-button><el-dropdown @command="pace"><el-button plain>调整学习节奏</el-button><template #dropdown><el-dropdown-menu><el-dropdown-item command="fast">节奏加快</el-dropdown-item><el-dropdown-item command="slow">节奏放慢</el-dropdown-item><el-dropdown-item command="practice">增加实操练习</el-dropdown-item></el-dropdown-menu></template></el-dropdown></div>
+        </aside>
+      </div>
+    </section>
 
     <el-card v-if="loading" class="panel run-panel"><template #header><div class="line"><span>多智能体协同生成中</span><el-tag type="primary">{{ progress }}%</el-tag></div></template><el-progress :percentage="progress" striped striped-flow /><div class="run-grid"><div class="agent-flow"><div v-for="step in agentSteps" :key="step.name" :class="['run-step',step.status]"><b>{{step.short}}</b><div><strong>{{step.name}}</strong><span>{{step.desc}}</span></div><em>{{step.statusText}}</em></div></div><div class="live-preview"><b>当前系统正在做什么</b><p>{{agentSteps.find(s=>s.status==='running')?.desc||'正在整理学习路径与资源结果。'}}</p><small>你可以先查看已生成内容，系统会在完成后自动刷新路径与资源。</small></div></div></el-card>
 
     <el-empty v-if="!loading&&!stages.length" class="panel" description="当前画像还没有路径学习方案。请先生成画像，再点击生成路径与资源。"><el-button type="primary" @click="generateAll()">立即生成路径与资源</el-button></el-empty>
-
-    <el-card v-if="!loading && Array.isArray(integrated.stage_rankings) && integrated.stage_rankings.length" class="panel adaptive-panel">
-      <template #header>
-        <div class="line">
-          <span>反馈驱动的阶段调整</span>
-          <el-tag type="warning" effect="light">自动优化中</el-tag>
-        </div>
-      </template>
-      <div class="adaptive-ranking-list">
-        <div v-for="item in integrated.stage_rankings.slice(0, 3)" :key="`rank-${item.index}`" class="adaptive-ranking-item">
-          <div class="adaptive-ranking-title">
-            <strong>第{{ item.index }}阶段 · {{ item.title }}</strong>
-            <el-tag v-if="item.priority_score > 0" type="warning" size="small">优先级 {{ item.priority_score }}</el-tag>
-            <el-tag v-else size="small" effect="plain">按原计划推进</el-tag>
-          </div>
-          <p>{{ (item.notes && item.notes.length ? item.notes.join(' ') : '当前该阶段没有额外的补强压力，可按计划推进。') }}</p>
-        </div>
-      </div>
-    </el-card>
 
     <div v-if="!loading&&stages.length" class="stage-workspace">
       <nav class="stage-map-nav" aria-label="学习阶段导航">
@@ -1143,6 +1132,31 @@ watch(current,(value)=>{if(!done(activeStageIndex.value)&&activeStageIndex.value
 .stage-map-nav{position:sticky;z-index:8;top:10px;display:grid;grid-template-columns:190px minmax(0,1fr);gap:9px 15px;padding:13px 16px;border:1px solid rgba(191,219,254,.92);border-radius:18px;background:rgba(255,255,255,.95);box-shadow:0 12px 28px rgba(15,23,42,.08);backdrop-filter:blur(12px)}.stage-map-status{display:grid}.stage-map-status span{color:#2563eb;font-size:12px;font-weight:800}.stage-map-status b{margin-top:3px;color:#0f172a;font-size:14px}.stage-map-items{display:flex;gap:7px;overflow-x:auto}.stage-map-items button{display:flex;min-width:0;align-items:center;gap:7px;padding:7px 10px;border:1px solid #e2e8f0;border-radius:12px;background:#fff;color:#64748b;cursor:pointer}.stage-map-items button span{display:grid;flex:0 0 24px;height:24px;place-items:center;border-radius:8px;background:#e2e8f0;font-size:11px}.stage-map-items button b{max-width:150px;overflow:hidden;font-size:12px;text-overflow:ellipsis;white-space:nowrap}.stage-map-items button.active{border-color:#60a5fa;background:#eff6ff;color:#1d4ed8}.stage-map-items button.completed span{background:#22c55e;color:#fff}.stage-map-nav>.el-progress{grid-column:1/-1}.stage-guide-panel{padding:17px;border:1px solid #bfdbfe;border-radius:18px;background:linear-gradient(135deg,#f8fbff,#fff)}.stage-guide-title{display:flex;align-items:center;gap:12px;margin-bottom:13px}.stage-guide-title span{padding:5px 9px;border-radius:999px;background:#dbeafe;color:#1d4ed8;font-size:12px;font-weight:800}.stage-guide-title b{color:#0f172a}.stage-guide-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.stage-guide-grid>div{padding:13px 14px;border:1px solid #e2e8f0;border-radius:14px;background:#fff}.stage-guide-grid small{display:block;color:#2563eb;font-weight:700}.stage-guide-grid strong{display:block;margin:7px 0;color:#0f172a;line-height:1.55}.stage-guide-grid p{margin:0;color:#64748b;font-size:12px;line-height:1.65}@media(max-width:1050px){.stage-map-nav,.stage-guide-grid{grid-template-columns:1fr}}@media(max-width:720px){.stage-map-nav{top:4px}.stage-map-items button b{max-width:96px}}
 .stage-jar-row{display:grid;grid-template-columns:minmax(210px,.42fr) minmax(0,1fr);gap:16px;align-items:center;margin-top:12px;padding:13px 14px;border:1px solid #d8eee9;border-radius:15px;background:#f7fcfb}.stage-jar-row>div:first-child{display:grid;gap:4px}.stage-jar-row b{color:#167f70;font-size:13px}.stage-jar-row>div:first-child span{color:#718892;font-size:11px}.stage-jar-points{display:flex;flex-wrap:wrap;gap:7px}.stage-jar-points button{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border:1px solid #dce8e6;border-radius:999px;background:#fff;color:#526b75;font-size:11px;cursor:pointer;transition:.16s}.stage-jar-points button span{color:#19917e;font-weight:900}.stage-jar-points button:hover,.stage-jar-points button.collected{border-color:#74c9ba;background:#eaf8f5;color:#147568}.stage-jar-points button:disabled{cursor:wait;opacity:.55}@media(max-width:820px){.stage-jar-row{grid-template-columns:1fr}}
 .stage-guide-summary{display:grid;grid-template-columns:minmax(180px,.35fr) 1px minmax(0,1fr);gap:16px;align-items:center;padding:13px 15px;border:1px solid #e2e8f0;border-radius:14px;background:#fff}.stage-guide-summary div{display:grid;gap:5px;min-width:0}.stage-guide-summary small{color:#64748b;font-size:11px}.stage-guide-summary strong{color:#172033;font-size:13px;line-height:1.6}.stage-guide-summary i{width:1px;height:34px;background:#e2e8f0}@media(max-width:720px){.stage-guide-summary{grid-template-columns:1fr}.stage-guide-summary i{display:none}}
+.path-page{width:100%;min-height:100%;padding:24px 16px 28px;gap:26px;box-sizing:border-box;background:linear-gradient(180deg,#f4f7fb 0%,#f7f9fc 100%);overflow-x:hidden}
+.plan-hero-card{display:grid;gap:22px;width:100%;box-sizing:border-box;padding:0 0 2px;overflow:visible;background:transparent;border:0;border-radius:0;box-shadow:none}
+.plan-title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:28px;padding:0 22px;box-sizing:border-box}
+.plan-overview-card{display:grid;grid-template-columns:minmax(0,1fr) 380px;align-items:start;gap:28px;padding:18px 22px 20px;border:1px solid #e7ecf3;border-radius:20px;background:#fff;box-shadow:0 1px 2px rgba(20,34,55,.02),0 8px 28px rgba(31,47,70,.035);box-sizing:border-box}
+.plan-overview-main{min-width:0}
+.plan-hero-main{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.page-eyebrow{display:block;margin-top:6px;margin-bottom:0;color:#4386d8;font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.plan-hero-title{max-width:100%;margin:0;overflow-wrap:anywhere}
+.overview-main .plan-hero-title{margin:0;font-size:38px;line-height:1.25;letter-spacing:-.04em}
+.overview-main .plan-hero-description{max-width:50em;margin:0;color:#475569;font-size:16px;line-height:1.9}
+.plan-status-tags{width:100%;display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.plan-status-tag{height:auto;white-space:normal;overflow-wrap:anywhere}
+.plan-feedback-panel{width:100%;box-sizing:border-box}
+.plan-feedback-label{flex:0 0 auto}
+.plan-feedback-content{min-width:0;flex:1;overflow-wrap:anywhere}
+.plan-resource-note{max-width:100%;overflow-wrap:anywhere}
+.plan-hero-side{min-width:0;display:flex;flex-direction:column;align-items:stretch}
+.plan-hero-actions{min-height:36px;display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-top:12px}
+.plan-metrics-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.plan-metric-card{min-width:0;min-height:82px;padding:13px 14px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;border:1px solid #e1e8f1;border-radius:15px;background:linear-gradient(180deg,#f9fbfd 0%,#f5f8fc 100%)}
+.plan-metric-value{white-space:nowrap}
+.plan-metric-label{margin-top:7px;white-space:nowrap}
+@media(max-width:1100px){.plan-overview-card{grid-template-columns:minmax(0,1fr) 330px;gap:20px}.plan-metric-card{padding-left:10px;padding-right:10px}}
+@media(max-width:900px){.plan-overview-card{grid-template-columns:1fr}.plan-hero-side{width:100%}.plan-hero-actions{justify-content:flex-start}.plan-metrics-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:600px){.plan-overview-card{padding:16px;border-radius:16px}.plan-hero-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.plan-hero-actions :deep(.el-button){width:100%}.plan-metrics-grid{grid-template-columns:1fr}.plan-feedback-panel{align-items:flex-start;flex-direction:column;gap:7px}}
 </style>
 
 

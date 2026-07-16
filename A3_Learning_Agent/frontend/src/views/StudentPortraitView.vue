@@ -790,7 +790,7 @@ onBeforeUnmount(() => {
   font-size: 12px;
   font-weight: 700;
   letter-spacing: .04em;
-  color: #8a94a6;
+  color: #4386d8;
 }
 
 .header-actions {
@@ -1623,12 +1623,14 @@ onBeforeUnmount(() => {
 
 /* Keep the portrait summary visible without pushing learning outcomes below the fold. */
 .portrait-view-page {
-  gap: 12px;
-  padding: 16px 22px 26px;
+  gap: 26px;
+  padding: 24px 16px 28px;
 }
 
 .page-header {
   align-items: center;
+  padding: 0 24px;
+  box-sizing: border-box;
 }
 
 .page-header h1 {
@@ -1732,6 +1734,34 @@ onBeforeUnmount(() => {
 @media (max-width: 1100px) {
   .hero-side { grid-template-columns: 1fr; }
   .metric-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.page-header > div:first-child {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.page-header .eyebrow {
+  color: #4386d8;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 38px;
+  line-height: 1.25;
+  letter-spacing: -0.04em;
+}
+
+.page-header p {
+  max-width: 50em;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.7;
 }
 
 </style>
