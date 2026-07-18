@@ -293,20 +293,6 @@
           </div>
 
           <div class="side-section">
-            <div class="mini-title">最近得分</div>
-            <div v-if="recentScores.length" class="score-chip-list">
-              <el-tag
-                v-for="(item, index) in recentScores"
-                :key="index"
-                :type="item >= 85 ? 'success' : item >= 70 ? 'primary' : 'danger'"
-              >
-                {{ item }} 分
-              </el-tag>
-            </div>
-            <el-empty v-else description="提交题目后会在这里显示最近得分" />
-          </div>
-
-          <div class="side-section">
             <div class="mini-title">当前薄弱知识点</div>
             <div v-if="liveWeakPoints.length" class="weak-list">
               <div v-for="item in liveWeakPoints" :key="item.name" class="weak-item">
@@ -377,7 +363,6 @@ const questions = ref([]);
 const knowledgePointOptions = ref([]);
 const knowledgePointGroups = ref([]);
 const recommendedPoints = ref([]);
-const recentScores = ref([]);
 const stageContext = computed(() => ({
   active: route.query.stage !== undefined,
   fromPath: route.query.from === "path",
@@ -595,7 +580,6 @@ async function generateQuestions(options = {}) {
     });
     if (res.code === 200) {
       activeQuestionIndex.value = 0;
-      recentScores.value = [];
       recommendedPoints.value = res.data.recommended_knowledge_points || [];
       questions.value = (res.data.questions || []).map((item) => ({
         ...item,
@@ -639,11 +623,10 @@ async function submitQuestion(question) {
       });
     if (res.code === 200) {
       question.result = res.data;
-      recentScores.value = [res.data.score, ...recentScores.value].slice(0, 6);
       ElMessage.success(`判题完成，得到 ${res.data.score} 分`);
       await loadSummary();
-      window.dispatchEvent(new CustomEvent("a3-profile-session-refresh"));
       saveStageRecordIfFinished();
+      window.dispatchEvent(new CustomEvent("a3-profile-session-refresh"));
 
       if (generator.mode === "single" && activeQuestionIndex.value < questions.value.length - 1) {
         setTimeout(() => {
@@ -1505,5 +1488,171 @@ onMounted(async () => {
 @media (max-width: 640px) {
   .generator-top-row { grid-template-columns: 1fr; }
   .count-item :deep(.el-input-number) { width: 100%; }
+}
+
+/* Fit the assessment workspace into the visible screen and keep both columns usable. */
+.evaluation-page {
+  width: 100%;
+  max-width: 100%;
+  min-height: 100%;
+  gap: 18px;
+  overflow-x: hidden;
+}
+
+.panel :deep(.el-card__header) {
+  padding: 16px 20px 13px;
+}
+
+.panel :deep(.el-card__body) {
+  padding: 18px 20px 20px;
+}
+
+.evaluation-top {
+  gap: 14px;
+}
+
+.workspace-grid {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  grid-template-columns: minmax(0, calc(100% - 296px)) 280px;
+  gap: 16px;
+  align-items: stretch;
+}
+
+.workspace-grid > *,
+.main-panel,
+.question-panel,
+.side-panel-stack,
+.portrait-panel,
+.task-panel {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.question-panel {
+  max-height: calc(100vh - 220px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+}
+
+.side-panel-stack {
+  position: sticky;
+  top: 12px;
+  align-self: start;
+  gap: 16px;
+  max-height: calc(100vh - 24px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+}
+
+.question-panel :deep(.el-card__header),
+.question-panel :deep(.el-card__body),
+.portrait-panel :deep(.el-card__header),
+.portrait-panel :deep(.el-card__body),
+.task-panel :deep(.el-card__header),
+.task-panel :deep(.el-card__body) {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.question-header-main,
+.question-title-line,
+.question-meta,
+.option-list,
+.option-item,
+.result-box,
+.answer-box,
+.weak-list,
+.weak-item {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.question-meta :deep(.el-tag),
+.generator-info :deep(.el-tag) {
+  max-width: 100%;
+  height: auto;
+  min-height: 24px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.45;
+}
+
+.generator-info :deep(.el-space),
+.summary-tags :deep(.el-space) {
+  max-width: 100%;
+}
+
+.question-title-line {
+  flex-wrap: wrap;
+}
+
+.question-title-line h3,
+.option-item,
+.answer-box p,
+.result-box p,
+.weak-name {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.portrait-panel :deep(.el-card__body) {
+  padding-bottom: 16px;
+}
+
+.side-section {
+  margin-bottom: 14px;
+}
+
+.weak-item {
+  padding: 10px;
+}
+
+.task-panel :deep(.el-card__body) {
+  max-height: 210px;
+  overflow-y: auto;
+}
+
+.generator-panel :deep(.el-card__body) {
+  padding-top: 14px;
+  padding-bottom: 16px;
+}
+
+.generator-grid {
+  grid-template-columns: minmax(0, 520px) minmax(260px, 1fr);
+  gap: 16px;
+}
+
+.generator-info {
+  min-height: auto;
+}
+
+.question-card {
+  padding: 18px;
+}
+
+.question-title-line h3 {
+  font-size: 17px;
+}
+
+@media (max-width: 1200px) {
+  .workspace-grid {
+    grid-template-columns: minmax(0, 1fr);
+    overflow: visible;
+  }
+
+  .side-panel-stack {
+    position: static;
+  }
+
+  .question-panel,
+  .side-panel-stack {
+    max-height: none;
+    overflow-y: visible;
+  }
 }
 </style>

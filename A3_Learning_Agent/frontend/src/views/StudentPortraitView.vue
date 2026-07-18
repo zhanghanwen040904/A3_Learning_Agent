@@ -244,7 +244,7 @@ import * as echarts from "echarts/core";
 import { LineChart, RadarChart } from "echarts/charts";
 import { GridComponent, TooltipComponent } from "echarts/components";
 import { CanvasRenderer } from "echarts/renderers";
-import { knowledgeJarApi, profileApi } from "../api";
+import { evaluationApi, knowledgeJarApi, pathApi, profileApi } from "../api";
 
 echarts.use([LineChart, RadarChart, GridComponent, TooltipComponent, CanvasRenderer]);
 
@@ -254,6 +254,12 @@ const effectTrendRef = ref(null);
 const loading = ref(false);
 const aggregateProfile = reactive({});
 const knowledgeJarStats = reactive({ total: 0, auto_count: 0, manual_count: 0, stage_count: 0 });
+const taskProgress = reactive({
+  stageCount: 0,
+  completedStages: 0,
+  completedAssessments: 0,
+  quizCount: 0,
+});
 const sessions = ref([]);
 let radarChart = null;
 let effectTrendChart = null;
@@ -317,6 +323,26 @@ const portraitScoring = computed(() => aggregateProfile.portrait_scoring || {});
 const portraitDimensions = computed(() => portraitScoring.value.dimensions || {});
 const dynamicProfile = computed(() => aggregateProfile.dynamic_profile || portraitScoring.value.dynamic_profile || {});
 const learningEffect = computed(() => aggregateProfile.learning_effect_overview || {});
+const pathAssessmentTaskTotal = computed(() => taskProgress.stageCount * 2);
+const pathAssessmentCompleted = computed(() =>
+  Math.min(pathAssessmentTaskTotal.value, taskProgress.completedStages + taskProgress.completedAssessments)
+);
+const taskCompletionRate = computed(() => {
+  if (pathAssessmentTaskTotal.value > 0) {
+    return Math.round((pathAssessmentCompleted.value / pathAssessmentTaskTotal.value) * 100);
+  }
+  return Number(learningEffect.value.task_completion_rate || 0);
+});
+const completedTaskCount = computed(() => {
+  if (pathAssessmentTaskTotal.value > 0) return pathAssessmentCompleted.value;
+  return Number(learningEffect.value.completed_tasks || 0);
+});
+const taskCompletionHint = computed(() => {
+  if (pathAssessmentTaskTotal.value > 0) {
+    return `阶段完成 ${taskProgress.completedStages}/${taskProgress.stageCount}，阶段测评 ${taskProgress.completedAssessments}/${taskProgress.stageCount}`;
+  }
+  return "资源学习进度均值";
+});
 
 function formatStudyDuration(seconds) {
   const value = Math.max(0, Number(seconds) || 0);
@@ -329,9 +355,9 @@ const effectStats = computed(() => {
   const duration = formatStudyDuration(learningEffect.value.total_duration_sec);
   return [
     { label: "学习时长", value: duration.value, unit: duration.unit, hint: "来自资源实际停留时长" },
-    { label: "完成任务", value: learningEffect.value.completed_tasks || 0, unit: "个", hint: "已完成资源与学习阶段" },
-    { label: "任务完成度", value: learningEffect.value.task_completion_rate || 0, unit: "%", hint: "资源学习进度均值" },
-    { label: "测评正确率", value: learningEffect.value.correct_rate || 0, unit: "%", hint: `累计 ${learningEffect.value.quiz_count || 0} 次测评` },
+    { label: "完成任务", value: completedTaskCount.value, unit: "个", hint: "已完成学习阶段与阶段测评" },
+    { label: "任务完成度", value: taskCompletionRate.value, unit: "%", hint: taskCompletionHint.value },
+    { label: "测评正确率", value: learningEffect.value.correct_rate || 0, unit: "%", hint: `累计 ${taskProgress.quizCount || learningEffect.value.quiz_count || 0} 次测评` },
   ];
 });
 
@@ -687,6 +713,39 @@ function renderCharts() {
   renderEffectTrend();
 }
 
+function readCompletedAssessmentRecords() {
+  try {
+    const records = JSON.parse(localStorage.getItem("a3_stage_assessment_records") || "[]");
+    if (!Array.isArray(records)) return 0;
+    return new Set(records.filter((item) => item?.completed).map((item) => Number(item.stageIndex))).size;
+  } catch {
+    return 0;
+  }
+}
+
+function stageCountFromIntegrated(value) {
+  const stages = value?.stages;
+  if (Array.isArray(stages)) return stages.length;
+  return 0;
+}
+
+async function refreshTaskProgress() {
+  const [integratedRes, stageProgressRes, summaryRes] = await Promise.all([
+    pathApi.integrated(),
+    pathApi.stageProgress(),
+    evaluationApi.summary(),
+  ]);
+
+  const stageItems = stageProgressRes.code === 200 && Array.isArray(stageProgressRes.data?.items)
+    ? stageProgressRes.data.items
+    : [];
+  const stageCount = stageCountFromIntegrated(integratedRes.code === 200 ? integratedRes.data : {});
+  taskProgress.stageCount = Math.max(stageCount, stageItems.length);
+  taskProgress.completedStages = stageItems.filter((item) => item.completed).length;
+  taskProgress.completedAssessments = readCompletedAssessmentRecords();
+  taskProgress.quizCount = summaryRes.code === 200 ? Number(summaryRes.data?.quiz_count || 0) : 0;
+}
+
 async function refreshData() {
   if (loading.value) {
     refreshPending = true;
@@ -700,6 +759,7 @@ async function refreshData() {
       profileApi.getAggregate(),
       profileApi.sessions(),
       knowledgeJarApi.list(),
+      refreshTaskProgress(),
     ]);
 
     if (requestId !== refreshRequestId) return;
