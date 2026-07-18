@@ -367,18 +367,23 @@ onBeforeUnmount(() => { window.removeEventListener("resize", resizeGraph); graph
 .guide-overview-card{
   display:grid;
   grid-template-columns:minmax(0,1fr) minmax(300px,480px);
-  gap:24px;
-  align-items:start;
-  padding:18px 22px 20px;
-  border:1px solid #e7ecf3;
-  border-radius:20px;
-  background:#fff;
-  box-shadow:0 1px 2px rgba(20,34,55,.02),0 8px 28px rgba(31,47,70,.035);
+  gap:26px;
+  align-items:center;
+  min-height:132px;
+  padding:20px 24px;
+  border:1px solid #dbe7f5;
+  border-radius:24px;
+  background:linear-gradient(135deg,#ffffff 0%,#f8fbff 100%);
+  box-shadow:0 14px 32px rgba(15,23,42,.055);
   box-sizing:border-box;
 }
 .guide-overview-card .hero-actions{
   margin-top:0;
-  align-self:end;
+  align-self:center;
+  display:flex;
+  align-items:center;
+  min-height:92px;
+  gap:14px;
 }
 .course-facts div,
 .summary-grid article,
@@ -422,6 +427,75 @@ onBeforeUnmount(() => { window.removeEventListener("resize", resizeGraph); graph
   .guide-overview-card{
     grid-template-columns:1fr;
     padding:16px;
+  }
+}
+
+/* Keep the course guide actions close to the title area on wide and narrow screens. */
+.guide-overview-card{
+  align-items:center;
+  padding:20px 24px;
+}
+
+.guide-overview-card .hero-actions{
+  align-self:center;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:14px;
+}
+
+.guide-overview-card .hero-actions :deep(.el-button){
+  height:46px;
+  min-width:164px;
+  padding:0 22px;
+  border-radius:14px;
+  font-size:15px;
+  font-weight:800;
+  box-shadow:none;
+}
+
+.guide-overview-card .hero-actions :deep(.el-button--primary){
+  box-shadow:0 12px 22px rgba(64,158,255,.2);
+}
+
+.course-facts div{
+  display:grid;
+  align-content:center;
+  min-height:92px;
+  padding:18px 20px;
+  border-color:#dce8f6;
+  border-radius:18px;
+  background:linear-gradient(145deg,#ffffff,#f7faff);
+  box-shadow:0 8px 20px rgba(15,23,42,.04);
+}
+
+.course-facts strong{
+  color:#0b1324;
+  font-size:31px;
+  line-height:1;
+}
+
+.course-facts span{
+  margin-top:7px;
+  color:#52657c;
+  font-size:13px;
+  font-weight:700;
+}
+
+@media(max-width:980px){
+  .guide-overview-card{
+    grid-template-columns:1fr;
+    gap:14px;
+  }
+  .guide-overview-card .hero-actions{
+    width:100%;
+    min-height:auto;
+  }
+}
+
+@media(max-width:560px){
+  .guide-overview-card .hero-actions :deep(.el-button){
+    width:100%;
+    margin-left:0;
   }
 }
 </style>
